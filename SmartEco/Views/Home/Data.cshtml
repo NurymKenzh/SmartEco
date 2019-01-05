@@ -1,0 +1,8 @@
+﻿@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Data"];
+}
+
+<a class="btn btn-default" asp-controller="MeasuredParameters" asp-action="Index">@SharedLocalizer["MeasuredParameters"]</a>

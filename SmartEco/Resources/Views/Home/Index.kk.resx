@@ -117,49 +117,7 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="BackToList" xml:space="preserve">
-    <value>Тізімге оралу</value>
-  </data>
-  <data name="Create" xml:space="preserve">
-    <value>Жасау</value>
-  </data>
-  <data name="Data" xml:space="preserve">
-    <value>Деректер</value>
-  </data>
-  <data name="Delete" xml:space="preserve">
-    <value>Жою</value>
-  </data>
-  <data name="Details" xml:space="preserve">
-    <value>Егжей</value>
-  </data>
-  <data name="Edit" xml:space="preserve">
-    <value>Өңдеу</value>
-  </data>
-  <data name="Find" xml:space="preserve">
-    <value>Табу</value>
-  </data>
-  <data name="Language" xml:space="preserve">
-    <value>Тіл</value>
-  </data>
-  <data name="MeasuredParameter" xml:space="preserve">
-    <value>Өлшенетін параметр</value>
-  </data>
-  <data name="MeasuredParameters" xml:space="preserve">
-    <value>Өлшенетін параметрлер</value>
-  </data>
-  <data name="Name" xml:space="preserve">
-    <value>Атауы</value>
-  </data>
-  <data name="NameEN" xml:space="preserve">
-    <value>Аты (ағылшын)</value>
-  </data>
-  <data name="NameKK" xml:space="preserve">
-    <value>Аты (қазақ)</value>
-  </data>
-  <data name="NameRU" xml:space="preserve">
-    <value>Аты (орыс)</value>
-  </data>
-  <data name="Save" xml:space="preserve">
-    <value>Сақтау</value>
+  <data name="Home" xml:space="preserve">
+    <value>Басты</value>
   </data>
 </root>
