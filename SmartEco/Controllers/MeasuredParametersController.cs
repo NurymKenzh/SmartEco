@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
-using SmartEco.Data;
+using SmartEco.Models;
 
 namespace SmartEco.Controllers
 {

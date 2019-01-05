@@ -14,6 +14,8 @@ using SmartEco.Data;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Razor;
+using System.Globalization;
+using Microsoft.AspNetCore.Localization;
 
 namespace SmartEco
 {
@@ -68,6 +70,21 @@ namespace SmartEco
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 app.UseHsts();
             }
+
+            var supportedCultures = new[]
+            {
+                new CultureInfo("kk"),
+                new CultureInfo("ru"),
+                new CultureInfo("en")
+            };
+            app.UseRequestLocalization(new RequestLocalizationOptions
+            {
+                DefaultRequestCulture = new RequestCulture("ru"),
+                // Formatting numbers, dates, etc.
+                SupportedCultures = supportedCultures,
+                // UI strings that we have localized.
+                SupportedUICultures = supportedCultures
+            });
 
             app.UseHttpsRedirection();
             app.UseStaticFiles();

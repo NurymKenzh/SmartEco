@@ -1,16 +1,25 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartEco.Data
+namespace SmartEco.Models
 {
     public class MeasuredParameter
     {
         public int Id { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameKK")]
         public string NameKK { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameRU")]
         public string NameRU { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameEN")]
         public string NameEN { get; set; }
+
+        [Display(Name = "EcomonCode")]
         public int? EcomonCode { get; set; }
     }
 }
