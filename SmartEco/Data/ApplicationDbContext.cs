@@ -4,6 +4,7 @@ using System.Text;
 using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SmartEco.Data;
+using SmartEco.Models;
 
 namespace SmartEco.Data
 {
@@ -13,5 +14,6 @@ namespace SmartEco.Data
             : base(options)
         {
         }
+        public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
     }
 }

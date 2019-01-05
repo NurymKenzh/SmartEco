@@ -132,6 +132,12 @@
   <data name="Details" xml:space="preserve">
     <value>Details</value>
   </data>
+  <data name="EcomonMonitoringPoint" xml:space="preserve">
+    <value>Ecomon monitoring point</value>
+  </data>
+  <data name="EcomonMonitoringPoints" xml:space="preserve">
+    <value>Ecomon monitoring points</value>
+  </data>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
   </data>
@@ -158,6 +164,9 @@
   </data>
   <data name="NameRU" xml:space="preserve">
     <value>Name (russian)</value>
+  </data>
+  <data name="Number" xml:space="preserve">
+    <value>Number</value>
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>

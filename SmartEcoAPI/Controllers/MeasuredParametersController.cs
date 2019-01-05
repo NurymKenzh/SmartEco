@@ -31,7 +31,6 @@ namespace SmartEcoAPI.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            //return await _context.MeasuredParameter.ToListAsync();
             var measuredParameters = _context.MeasuredParameter
                 .Where(m => true);
 

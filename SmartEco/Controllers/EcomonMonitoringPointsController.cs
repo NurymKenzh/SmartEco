@@ -8,41 +8,33 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using SmartEco.Data;
 using SmartEco.Models;
 
 namespace SmartEco.Controllers
 {
-    public class MeasuredParametersController : Controller
+    public class EcomonMonitoringPointsController : Controller
     {
         private readonly HttpApiClientController _HttpApiClient;
 
-        public MeasuredParametersController(HttpApiClientController HttpApiClient)
+        public EcomonMonitoringPointsController(HttpApiClientController HttpApiClient)
         {
             _HttpApiClient = HttpApiClient;
         }
 
-        // GET: MeasuredParameters
+        // GET: EcomonMonitoringPoints
         public async Task<IActionResult> Index(string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            List<EcomonMonitoringPoint> ecomonMonitoringPoints = new List<EcomonMonitoringPoint>();
 
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.NumberFilter = NumberFilter;
 
-            ViewBag.NameKKSort = SortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
-            ViewBag.NameRUSort = SortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
-            ViewBag.NameENSort = SortOrder == "NameEN" ? "NameENDesc" : "NameEN";
-            ViewBag.EcomonCodeSort = SortOrder == "EcomonCode" ? "EcomonCodeDesc" : "EcomonCode";
+            ViewBag.NumberSort = SortOrder == "Number" ? "NumberDesc" : "Number";
 
-            string url = "api/MeasuredParameters",
+            string url = "api/EcomonMonitoringPoints",
                 route = "",
                 routeCount = "";
             if (!string.IsNullOrEmpty(SortOrder))
@@ -50,33 +42,12 @@ namespace SmartEco.Controllers
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"SortOrder={SortOrder}";
             }
-            if (!string.IsNullOrEmpty(NameKKFilter))
+            if (NumberFilter != null)
             {
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"NameKK={NameKKFilter}";
+                route += $"Number={NumberFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
-                routeCount += $"NameKK={NameKKFilter}";
-            }
-            if (!string.IsNullOrEmpty(NameRUFilter))
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"NameRU={NameRUFilter}";
-                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
-                routeCount += $"NameRU={NameRUFilter}";
-            }
-            if (!string.IsNullOrEmpty(NameENFilter))
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"NameEN={NameENFilter}";
-                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
-                routeCount += $"NameEN={NameENFilter}";
-            }
-            if (EcomonCodeFilter!=null)
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"EcomonCode={EcomonCodeFilter}";
-                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
-                routeCount += $"EcomonCode={EcomonCodeFilter}";
+                routeCount += $"Number={NumberFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -111,17 +82,17 @@ namespace SmartEco.Controllers
                 responseCount = await _HttpApiClient.GetAsync(url + "/count" + routeCount);
             if (response.IsSuccessStatusCode)
             {
-                measuredParameters = await response.Content.ReadAsAsync<List<MeasuredParameter>>();
+                ecomonMonitoringPoints = await response.Content.ReadAsAsync<List<EcomonMonitoringPoint>>();
             }
-            int measuredParametersCount = 0;
+            int ecomonMonitoringPointCount = 0;
             if (responseCount.IsSuccessStatusCode)
             {
-                measuredParametersCount = await responseCount.Content.ReadAsAsync<int>();
+                ecomonMonitoringPointCount = await responseCount.Content.ReadAsAsync<int>();
             }
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber != null ? PageNumber : 1;
-            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(measuredParametersCount / (decimal)PageSize) : 1;
+            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(ecomonMonitoringPointCount / (decimal)PageSize) : 1;
             ViewBag.StartPage = PageNumber - 5;
             ViewBag.EndPage = PageNumber + 4;
             if (ViewBag.StartPage <= 0)
@@ -138,89 +109,71 @@ namespace SmartEco.Controllers
                 }
             }
 
-            return View(measuredParameters);
+            return View(ecomonMonitoringPoints);
         }
 
-        // GET: MeasuredParameters/Details/5
+        // GET: EcomonMonitoringPoints/Details/5
         public async Task<IActionResult> Details(int? id,
             string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.NumberFilter = NumberFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            MeasuredParameter measuredParameter = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
+            EcomonMonitoringPoint ecomonMonitoringPoint = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/EcomonMonitoringPoints/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                ecomonMonitoringPoint = await response.Content.ReadAsAsync<EcomonMonitoringPoint>();
             }
-            if (measuredParameter == null)
+            if (ecomonMonitoringPoint == null)
             {
                 return NotFound();
             }
 
-            return View(measuredParameter);
+            return View(ecomonMonitoringPoint);
         }
 
-        // GET: MeasuredParameters/Create
+        // GET: EcomonMonitoringPoints/Create
         public IActionResult Create(string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.NumberFilter = NumberFilter;
             return View();
         }
 
-        // POST: MeasuredParameters/Create
+        // POST: EcomonMonitoringPoints/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN,EcomonCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Create([Bind("Id,Number")] EcomonMonitoringPoint ecomonMonitoringPoint,
             string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.NumberFilter = NumberFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
-                    "api/MeasuredParameters", measuredParameter);
+                    "api/EcomonMonitoringPoints", ecomonMonitoringPoint);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -235,72 +188,64 @@ namespace SmartEco.Controllers
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(measuredParameter);
+                    return View(ecomonMonitoringPoint);
                 }
 
                 return RedirectToAction(nameof(Index),
-                    new {
-                        SortOrder = ViewBag.SortOrder, PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter
+                    new
+                    {
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        NumberFilter = ViewBag.NumberFilter
                     });
             }
-            return View(measuredParameter);
+            return View(ecomonMonitoringPoint);
         }
 
-        // GET: MeasuredParameters/Edit/5
+        // GET: EcomonMonitoringPoints/Edit/5
         public async Task<IActionResult> Edit(int? id,
             string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            MeasuredParameter measuredParameter = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
+            ViewBag.NumberFilter = NumberFilter;
+            EcomonMonitoringPoint ecomonMonitoringPoint = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/EcomonMonitoringPoints/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                ecomonMonitoringPoint = await response.Content.ReadAsAsync<EcomonMonitoringPoint>();
             }
-            return View(measuredParameter);
+            return View(ecomonMonitoringPoint);
         }
 
-        // POST: MeasuredParameters/Edit/5
+        // POST: EcomonMonitoringPoints/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,EcomonCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number")] EcomonMonitoringPoint ecomonMonitoringPoint,
             string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            if (id != measuredParameter.Id)
+            ViewBag.NumberFilter = NumberFilter;
+            if (id != ecomonMonitoringPoint.Id)
             {
                 return NotFound();
             }
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
-                    $"api/MeasuredParameters/{measuredParameter.Id}", measuredParameter);
+                    $"api/EcomonMonitoringPoints/{ecomonMonitoringPoint.Id}", ecomonMonitoringPoint);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -315,84 +260,80 @@ namespace SmartEco.Controllers
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(measuredParameter);
+                    return View(ecomonMonitoringPoint);
                 }
 
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                ecomonMonitoringPoint = await response.Content.ReadAsAsync<EcomonMonitoringPoint>();
                 return RedirectToAction(nameof(Index),
-                    new {
-                        SortOrder = ViewBag.SortOrder, PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter
+                    new
+                    {
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        NumberFilter = ViewBag.NumberFilter
                     });
             }
-            return View(measuredParameter);
+            return View(ecomonMonitoringPoint);
         }
 
-        // GET: MeasuredParameters/Delete/5
+        // GET: EcomonMonitoringPoints/Delete/5
         public async Task<IActionResult> Delete(int? id,
             string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.NumberFilter = NumberFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            MeasuredParameter measuredParameter = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
+            EcomonMonitoringPoint ecomonMonitoringPoint = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/EcomonMonitoringPoints/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                ecomonMonitoringPoint = await response.Content.ReadAsAsync<EcomonMonitoringPoint>();
             }
-            if (measuredParameter == null)
+            if (ecomonMonitoringPoint == null)
             {
                 return NotFound();
             }
 
-            return View(measuredParameter);
+            return View(ecomonMonitoringPoint);
         }
 
-        // POST: MeasuredParameters/Delete/5
+        // POST: EcomonMonitoringPoints/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id,
             string SortOrder,
-            string NameKKFilter,
-            string NameRUFilter,
-            string NameENFilter,
-            int? EcomonCodeFilter,
+            int? NumberFilter,
             int? PageSize,
             int? PageNumber)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
-            ViewBag.NameKKFilter = NameKKFilter;
-            ViewBag.NameRUFilter = NameRUFilter;
-            ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.NumberFilter = NumberFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
-                $"api/MeasuredParameters/{id}");
+                $"api/EcomonMonitoringPoints/{id}");
             return RedirectToAction(nameof(Index),
-                    new {
-                        SortOrder = ViewBag.SortOrder, PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter
+                    new
+                    {
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        NumberFilter = ViewBag.NumberFilter
                     });
         }
 
-        //private bool MeasuredParameterExists(int id)
+        //private bool EcomonMonitoringPointExists(int id)
         //{
-        //    return _context.MeasuredParameter.Any(e => e.Id == id);
+        //    return _context.EcomonMonitoringPoint.Any(e => e.Id == id);
         //}
     }
 }
