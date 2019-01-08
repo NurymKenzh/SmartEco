@@ -106,7 +106,7 @@ namespace EcomonDownloader
                     {
                         try
                         {
-                            measuredData.Value = Convert.ToDecimal(value.Replace('.', ','));
+                            measuredData.Value = Convert.ToDecimal(value);
                         }
                         catch
                         {

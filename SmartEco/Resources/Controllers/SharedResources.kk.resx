@@ -126,6 +126,9 @@
   <data name="Data" xml:space="preserve">
     <value>Деректер</value>
   </data>
+  <data name="DateTime" xml:space="preserve">
+    <value>Күні мен уақыты</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Жою</value>
   </data>
@@ -146,6 +149,12 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Тіл</value>
+  </data>
+  <data name="MeasuredData" xml:space="preserve">
+    <value>Өлшенген деректер</value>
+  </data>
+  <data name="MeasuredDatas" xml:space="preserve">
+    <value>Өлшенген деректер</value>
   </data>
   <data name="MeasuredParameter" xml:space="preserve">
     <value>Өлшенетін параметр</value>
@@ -170,5 +179,8 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сақтау</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Мағынасы</value>
   </data>
 </root>

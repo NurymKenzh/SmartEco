@@ -126,6 +126,9 @@
   <data name="Data" xml:space="preserve">
     <value>Данные</value>
   </data>
+  <data name="DateTime" xml:space="preserve">
+    <value>Дата и время</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Удалить</value>
   </data>
@@ -146,6 +149,12 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Язык</value>
+  </data>
+  <data name="MeasuredData" xml:space="preserve">
+    <value>Измеренные данные</value>
+  </data>
+  <data name="MeasuredDatas" xml:space="preserve">
+    <value>Измеренные данные</value>
   </data>
   <data name="MeasuredParameter" xml:space="preserve">
     <value>Измеряемый параметр</value>
@@ -170,5 +179,8 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value>Значение</value>
   </data>
 </root>

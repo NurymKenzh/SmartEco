@@ -37,6 +37,9 @@
     <EmbeddedResource Update="Resources\Controllers\SharedResources.ru.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
+    <EmbeddedResource Update="Resources\Models\MeasuredData.ru.resx">
+      <Generator>ResXFileCodeGenerator</Generator>
+    </EmbeddedResource>
     <EmbeddedResource Update="Resources\Models\MeasuredParameter.en.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>
