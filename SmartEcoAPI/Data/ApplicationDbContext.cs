@@ -26,5 +26,7 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.MeasuredParameter> MeasuredParameter { get; set; }
 
         public DbSet<SmartEcoAPI.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.MeasuredData> MeasuredData { get; set; }
     }
 }
