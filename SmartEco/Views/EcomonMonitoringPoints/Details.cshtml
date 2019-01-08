@@ -6,11 +6,13 @@
     ViewData["Title"] = SharedLocalizer["Details"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
-
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
+<script src="~/lib/chart.js/dist/Chart.js"></script>
 <h1>@SharedLocalizer["Details"]</h1>
 
 <div>
-    <h4>@SharedLocalizer["EcomonMonitoringPoint"]</h4>
+    <h4 id="EcomonMonitoringPoint">@SharedLocalizer["EcomonMonitoringPoint"]</h4>
     <hr />
     <dl class="row">
         <dt class="col-sm-2">
@@ -19,9 +21,123 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.Number)
         </dd>
+        <dt class="col-sm-2">
+            @SharedLocalizer["MeasuredParameter"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DropDownList("MeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, htmlAttributes: new { @class = "form-control", @id = "MeasuredParameterId", @onchange = "GetMeasuredDatas()" })
+        </dd>
+        <dt class="col-sm-2" id="DateTime">
+            @SharedLocalizer["DateTime"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.TextBox("DateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control", @id = "DateFrom", @onchange = "GetMeasuredDatas()" })
+            @Html.TextBox("TimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control", @id = "TimeFrom", @onchange = "GetMeasuredDatas()" })
+            -
+            @Html.TextBox("DateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control", @id = "DateTo", @onchange = "GetMeasuredDatas()" })
+            @Html.TextBox("TimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control", @id = "TimeTo", @onchange = "GetMeasuredDatas()" })
+        </dd>
+        <dt class="col-sm-2">
+            @SharedLocalizer["Chart"]
+        </dt>
+        <dd class="col-sm-10">
+            <canvas id="chartMeasuredDatas"></canvas>
+        </dd>
     </dl>
 </div>
 <div>
     @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter }) |
     @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter })
 </div>
+<div hidden="hidden">
+    <input id="Value" value="@SharedLocalizer["Value"]"/>
+</div>
+<script>
+    function GetMeasuredDatas() {
+        $.ajax({
+            url: '@Url.Action("GetMeasuredDatas")',
+            data: {
+                MeasuredParameterId: $('#MeasuredParameterId').val(),
+                DateFrom: $('#DateFrom').val(),
+                TimeFrom: $('#TimeFrom').val(),
+                DateTo: $('#DateTo').val(),
+                TimeTo: $('#TimeTo').val(),
+            },
+            type: 'POST',
+            success: function (data) {
+                ChangeChart(data);
+            },
+            error: function () {
+                //alert('Error');
+            }
+        })
+    }
+    var ChartMeasuredDatas = null;
+    function ChangeChart(data) {
+        if (ChartMeasuredDatas != null) {
+            ChartMeasuredDatas.destroy();
+        }
+        var ctx1 = document.getElementById("chartMeasuredDatas").getContext('2d');
+        var data1 = [];
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            data1.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': data.measureddatas[i].value
+            });
+        }
+        ChartMeasuredDatas = new Chart(ctx1, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: $("#MeasuredParameterId option:selected").text(),
+                    data: data1,
+                    backgroundColor: 'rgba(85,255,0,1)',
+                    borderColor: 'rgba(85,255,0,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                }]
+            },
+            options: {
+                spanGaps: true,
+                title: {
+                    display: true,
+                    text: $("#EcomonMonitoringPoint").text()
+                },
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        time: {
+                            displayFormats: {
+                                second: 'lll',
+                                minute: 'lll',
+                                hour: 'lll',
+                                day: 'lll',
+                                week: 'lll',
+                                month: 'lll',
+                                quarter: 'lll',
+                                year: 'lll',
+                            }
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#DateTime").text()
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#Value").val()
+                        }
+                    }]
+                }
+            }
+        });
+    }
+    $(document).ready(function () {
+        GetMeasuredDatas();
+    });
+</script>

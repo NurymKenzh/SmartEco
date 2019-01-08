@@ -67,7 +67,7 @@
                         new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.DateTimeSort, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.TextBox("DateTimeFromFilter", (string) ViewBag.DateTimeFromFilter, new { type = "date", @class = "form-control" }) -
-                    @Html.TextBox("DateTimeToFilter", (string)ViewBag.DateTimeToFilter, new { type = "date", @class = "form-control" })
+                    @Html.TextBox("DateTimeToFilter", (string) ViewBag.DateTimeToFilter, new { type = "date", @class = "form-control" })
                 </th>
                 <th>
                     @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().Value)

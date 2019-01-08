@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -139,6 +140,20 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+
+            ViewBag.MeasuredParameters = new SelectList(measuredParameters.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = (DateTime.Now).ToString("HH:mm:ss");
             return View(ecomonMonitoringPoint);
         }
 
@@ -335,5 +350,47 @@ namespace SmartEco.Controllers
         //{
         //    return _context.EcomonMonitoringPoint.Any(e => e.Id == id);
         //}
+
+        [HttpPost]
+        public async Task<IActionResult> GetMeasuredDatas(int MeasuredParameterId,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo)
+        {
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            MeasuredData[] measureddatas = null;
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            string url = "api/MeasuredDatas",
+                route = "";
+            // MeasuredParameterId
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MeasuredParameterId={MeasuredParameterId}";
+            }
+            // dateTimeFrom
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+            }
+            // dateTimeTo
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+            }
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            if (response.IsSuccessStatusCode)
+            {
+                measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+            }
+            measureddatas = measuredDatas.ToArray();
+            return Json(new
+            {
+                measureddatas
+            });
+        }
     }
 }

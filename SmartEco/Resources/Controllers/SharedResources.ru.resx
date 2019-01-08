@@ -120,6 +120,9 @@
   <data name="BackToList" xml:space="preserve">
     <value>Обратно к списку</value>
   </data>
+  <data name="Chart" xml:space="preserve">
+    <value>График</value>
+  </data>
   <data name="Create" xml:space="preserve">
     <value>Создать</value>
   </data>
