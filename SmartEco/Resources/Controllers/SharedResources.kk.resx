@@ -138,6 +138,9 @@
   <data name="Details" xml:space="preserve">
     <value>Егжей</value>
   </data>
+  <data name="EastLongitude" xml:space="preserve">
+    <value>Шығыс бойлық</value>
+  </data>
   <data name="EcomonMonitoringPoint" xml:space="preserve">
     <value>Экомон бақылау нүктесі</value>
   </data>
@@ -176,6 +179,9 @@
   </data>
   <data name="NameRU" xml:space="preserve">
     <value>Аты (орыс)</value>
+  </data>
+  <data name="NorthLatitude" xml:space="preserve">
+    <value>Солтүстік ендік</value>
   </data>
   <data name="Number" xml:space="preserve">
     <value>Нөмірі</value>

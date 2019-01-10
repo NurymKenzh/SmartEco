@@ -138,6 +138,9 @@
   <data name="Details" xml:space="preserve">
     <value />
   </data>
+  <data name="EastLongitude" xml:space="preserve">
+    <value />
+  </data>
   <data name="EcomonMonitoringPoint" xml:space="preserve">
     <value />
   </data>
@@ -175,6 +178,9 @@
     <value />
   </data>
   <data name="NameRU" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NorthLatitude" xml:space="preserve">
     <value />
   </data>
   <data name="Number" xml:space="preserve">

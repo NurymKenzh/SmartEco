@@ -138,6 +138,9 @@
   <data name="Details" xml:space="preserve">
     <value>Детали</value>
   </data>
+  <data name="EastLongitude" xml:space="preserve">
+    <value>Восточная долгота</value>
+  </data>
   <data name="EcomonMonitoringPoint" xml:space="preserve">
     <value>Точка мониторинга Экомон</value>
   </data>
@@ -176,6 +179,9 @@
   </data>
   <data name="NameRU" xml:space="preserve">
     <value>Название (русский)</value>
+  </data>
+  <data name="NorthLatitude" xml:space="preserve">
+    <value>Северная широта</value>
   </data>
   <data name="Number" xml:space="preserve">
     <value>Номер</value>

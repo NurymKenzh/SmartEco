@@ -175,7 +175,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Number")] EcomonMonitoringPoint ecomonMonitoringPoint,
+        public async Task<IActionResult> Create([Bind("Id,Number,NorthLatitude,EastLongitude")] EcomonMonitoringPoint ecomonMonitoringPoint,
             string SortOrder,
             int? NumberFilter,
             int? PageSize,
@@ -243,7 +243,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number")] EcomonMonitoringPoint ecomonMonitoringPoint,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,NorthLatitude,EastLongitude")] EcomonMonitoringPoint ecomonMonitoringPoint,
             string SortOrder,
             int? NumberFilter,
             int? PageSize,

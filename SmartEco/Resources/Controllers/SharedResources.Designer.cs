@@ -126,6 +126,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string EastLongitude {
+            get {
+                return ResourceManager.GetString("EastLongitude", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string EcomonMonitoringPoint {
             get {
                 return ResourceManager.GetString("EcomonMonitoringPoint", resourceCulture);
@@ -237,6 +246,15 @@ namespace SmartEco.Resources.Controllers {
         public static string NameRU {
             get {
                 return ResourceManager.GetString("NameRU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NorthLatitude {
+            get {
+                return ResourceManager.GetString("NorthLatitude", resourceCulture);
             }
         }
         

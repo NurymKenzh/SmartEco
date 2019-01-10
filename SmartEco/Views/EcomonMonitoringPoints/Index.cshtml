@@ -62,6 +62,12 @@
                     @Html.Editor("NumberFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.NorthLatitude)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.EastLongitude)
+                </th>
+                <th>
                     @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
                     <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
                 </th>
@@ -73,6 +79,12 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Number)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NorthLatitude)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.EastLongitude)
                     </td>
                     <td>
                         @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter }) |
