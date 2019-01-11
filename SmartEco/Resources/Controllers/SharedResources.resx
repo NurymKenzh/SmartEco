@@ -132,6 +132,12 @@
   <data name="DateTime" xml:space="preserve">
     <value />
   </data>
+  <data name="DateTimeEnd" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DateTimeStart" xml:space="preserve">
+    <value />
+  </data>
   <data name="Delete" xml:space="preserve">
     <value />
   </data>
@@ -151,6 +157,9 @@
     <value />
   </data>
   <data name="Find" xml:space="preserve">
+    <value />
+  </data>
+  <data name="History" xml:space="preserve">
     <value />
   </data>
   <data name="Language" xml:space="preserve">

@@ -132,6 +132,12 @@
   <data name="DateTime" xml:space="preserve">
     <value>Күні мен уақыты</value>
   </data>
+  <data name="DateTimeEnd" xml:space="preserve">
+    <value>Күні аяқталды</value>
+  </data>
+  <data name="DateTimeStart" xml:space="preserve">
+    <value>Күні басталады</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Жою</value>
   </data>
@@ -152,6 +158,9 @@
   </data>
   <data name="Find" xml:space="preserve">
     <value>Табу</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>Тарих</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>Тіл</value>

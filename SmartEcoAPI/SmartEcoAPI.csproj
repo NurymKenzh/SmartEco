@@ -6,6 +6,13 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <Compile Remove="Migrations\20190110165909_Log_20190110_00.cs" />
+    <Compile Remove="Migrations\20190110165909_Log_20190110_00.Designer.cs" />
+    <Compile Remove="Migrations\20190111090616_Log_20190111_00.cs" />
+    <Compile Remove="Migrations\20190111090616_Log_20190111_00.Designer.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
     <PackageReference Include="Microsoft.AspNetCore.App" />
     <PackageReference Include="Microsoft.AspNetCore.Razor.Design" Version="2.2.0" PrivateAssets="All" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.0" />

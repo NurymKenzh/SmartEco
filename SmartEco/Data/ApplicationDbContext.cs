@@ -14,6 +14,7 @@ namespace SmartEco.Data
             : base(options)
         {
         }
-        public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
+        //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
+        //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }
 }

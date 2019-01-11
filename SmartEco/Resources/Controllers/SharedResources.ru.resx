@@ -132,6 +132,12 @@
   <data name="DateTime" xml:space="preserve">
     <value>Дата и время</value>
   </data>
+  <data name="DateTimeEnd" xml:space="preserve">
+    <value>Дата конца</value>
+  </data>
+  <data name="DateTimeStart" xml:space="preserve">
+    <value>Дата начала</value>
+  </data>
   <data name="Delete" xml:space="preserve">
     <value>Удалить</value>
   </data>
@@ -152,6 +158,9 @@
   </data>
   <data name="Find" xml:space="preserve">
     <value>Найти</value>
+  </data>
+  <data name="History" xml:space="preserve">
+    <value>История</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>Язык</value>
