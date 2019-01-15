@@ -1,0 +1,155 @@
+﻿@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Map"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+
+<div hidden="hidden">
+    <input id="EcomonsLayerJson" type="text" value="@ViewBag.EcomonsLayerJson" />
+    @*<input id="Look" type="text" value="@SharedLocalizer["Look"]" />*@
+    <input id="Look" type="text" value="Смотреть" />
+    <input id="Number" type="text" value="@SharedLocalizer["Number"]" />
+    <input id="Data" type="text" value="@SharedLocalizer["Data"]" />
+</div>
+
+<h1>@SharedLocalizer["Map"]</h1>
+
+<div>
+    <input type="checkbox" id="EcomonPoints" value="ecomonPoints" onchange="ChangeLayers()"/>
+    <label for="EcomonPoints">@SharedLocalizer["EcomonMonitoringPoints"]</label>
+</div>
+<div class="form-group">
+    <div id="map" style="height: 400px; width: 100%;"></div>
+</div>
+<div>
+    <table id="info_Ecomons" class="table">
+        @*<caption>
+            @SharedLocalizer["EcomonMonitoringPoints"]
+        </caption>*@
+        @*<tr>
+            <th>
+                @SharedLocalizer["Number"]
+            </th>
+            <th>
+                @SharedLocalizer["Data"]
+            </th>
+        </tr>*@
+    </table>
+</div>
+
+<script type="text/javascript">
+    var source = new ol.source.Vector();
+    var layer = new ol.layer.Vector({
+        source: source
+    });
+
+    var layers = [];
+    layers.push(new ol.layer.Tile({
+        source: new ol.source.OSM()
+    }));
+    layers[0].set('name', 'OSM');
+
+    var EcomonsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/AirPosts.png'
+        }))
+    });
+    //function EcomonsStyleFunction(feature, resolution) {
+    //    return new ol.style.Style({
+    //        image: new ol.style.Circle({
+    //            radius: 3,
+    //            fill: new ol.style.Fill({
+    //                color: [255, 0, 0, 1]
+    //            }),
+    //            stroke: new ol.style.Stroke({
+    //                color: [255, 0, 0, 1],
+    //                width: 1
+    //            })
+    //        })
+    //    });
+    //};
+    var EcomonsLayerJson = $("#EcomonsLayerJson").val();
+    var Source_Ecomons = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(EcomonsLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_Ecomons = new ol.layer.Vector({
+        source: Source_Ecomons,
+        style: EcomonsStyle,
+        renderBuffer: 200
+    });
+    Layer_Ecomons.set('name', 'Ecomons');
+    Layer_Ecomons.setVisible(false);
+    Layer_Ecomons.setOpacity(1);
+    layers.push(Layer_Ecomons);
+
+    var map = new ol.Map({
+        target: 'map',
+        layers: layers,
+        view: new ol.View({
+            center: ol.proj.fromLonLat([68.291, 47.5172]),
+            zoom: 4
+        })
+    });
+
+    function ChangeLayers() {
+        map.getLayers().forEach(function (layer) {
+            if (document.getElementById("EcomonPoints").checked == true) {
+                layers[1].setVisible(true);
+            }
+            if (document.getElementById("EcomonPoints").checked == false) {
+                layers[1].setVisible(false);
+            }
+        })
+    }
+</script>
+
+<script>
+    map.on('singleclick', function (evt) {
+
+        //var viewResolution = (map.getView().getResolution());
+        var pixel = evt.pixel;
+
+        var featuresEcomons = [];
+
+        if (Layer_Ecomons.getVisible()) {
+            map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                if (layer == Layer_Ecomons) {
+                    featuresEcomons.push(feature);
+                }
+            });
+            var contentEcomons = '';
+            for (var i = 0, ii = featuresEcomons.length; i < ii; ++i) {
+                $('#info_Ecomons').empty();
+                contentEcomons +=
+                    '<tr>' +
+                    '<th>' +
+                        $('#Number').val() +
+                    '</th>' +
+                    '<th>' +
+                        $('#Data').val() +
+                    '</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>' +
+                    //'<a href="../Ecomons/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + featuresEcomons[i].get('Name') + '</a>' +
+                    featuresEcomons[i].get('Number') +
+                    '</td>' +
+                    '<td>' +
+                    '<a href="../EcomonMonitoringPoints/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + $('#Look').val() + '</a>' +
+                    '</td>' +
+                    '</tr>';
+            }
+            $('#info_Ecomons').append(contentEcomons);
+        }
+    });
+</script>

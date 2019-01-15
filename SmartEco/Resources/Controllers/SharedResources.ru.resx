@@ -165,6 +165,9 @@
   <data name="Language" xml:space="preserve">
     <value>Язык</value>
   </data>
+  <data name="Map" xml:space="preserve">
+    <value>Карта</value>
+  </data>
   <data name="MeasuredData" xml:space="preserve">
     <value>Измеренные данные</value>
   </data>
