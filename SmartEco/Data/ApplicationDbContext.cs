@@ -15,6 +15,7 @@ namespace SmartEco.Data
         {
         }
         public DbSet<SmartEco.Models.Pollutant> Pollutant { get; set; }
+        public DbSet<SmartEco.Models.PollutionSource> PollutionSource { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }
