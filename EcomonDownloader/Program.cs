@@ -47,33 +47,40 @@ namespace EcomonDownloader
             int sleepSeconds = 120;
             while(true)
             {
-                string token = File.ReadAllText(TokenFileName);
-                long start = 0,
-                    finish = Convert.ToInt64((DateTime.Now - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
-                List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-                List<EcomonMonitoringPoint> ecomonMonitoringPoints = new List<EcomonMonitoringPoint>();
-                using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                try
                 {
-                    connection.Open();
-                    var startDB = connection.Query<long?>("SELECT \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\" ORDER BY \"Ecomontimestamp_ms\" DESC LIMIT 1;");
-                    if (startDB.Count() != 0)
+                    string token = File.ReadAllText(TokenFileName);
+                    long start = 0,
+                        finish = Convert.ToInt64((DateTime.Now - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
+                    List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+                    List<EcomonMonitoringPoint> ecomonMonitoringPoints = new List<EcomonMonitoringPoint>();
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
-                        start = (long)startDB.FirstOrDefault() / 1000;
-                    }
-                    if (start == 0)
-                    {
-                        start = Convert.ToInt64((DateTime.Now.AddDays(-14) - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
-                    }
+                        connection.Open();
+                        var startDB = connection.Query<long?>("SELECT \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\" ORDER BY \"Ecomontimestamp_ms\" DESC LIMIT 1;");
+                        if (startDB.Count() != 0)
+                        {
+                            start = (long)startDB.FirstOrDefault() / 1000;
+                        }
+                        if (start == 0)
+                        {
+                            start = Convert.ToInt64((DateTime.Now.AddDays(-14) - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
+                        }
 
-                    var measuredParametersDB = connection.Query<MeasuredParameter>("SELECT \"Id\", \"NameKK\", \"NameRU\", \"NameEN\", \"EcomonCode\" FROM public.\"MeasuredParameter\";");
-                    measuredParameters = measuredParametersDB.Where(m => m.EcomonCode != null).ToList();
-                    var ecomonMonitoringPointsDB = connection.Query<EcomonMonitoringPoint>("SELECT \"Id\", \"Number\" FROM public.\"EcomonMonitoringPoint\";");
-                    ecomonMonitoringPoints = ecomonMonitoringPointsDB.ToList();
-                    var measuredDatasDB = connection.Query<MeasuredData>("SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"EcomonMonitoringPointId\", \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\"");
-                    foreach (MeasuredParameter measuredParameter in measuredParameters)
-                    {
-                        DownloadOne(measuredDatasDB.ToList(), measuredParameter, ecomonMonitoringPoints.FirstOrDefault(), token, start, finish);
+                        var measuredParametersDB = connection.Query<MeasuredParameter>("SELECT \"Id\", \"NameKK\", \"NameRU\", \"NameEN\", \"EcomonCode\" FROM public.\"MeasuredParameter\";");
+                        measuredParameters = measuredParametersDB.Where(m => m.EcomonCode != null).ToList();
+                        var ecomonMonitoringPointsDB = connection.Query<EcomonMonitoringPoint>("SELECT \"Id\", \"Number\" FROM public.\"EcomonMonitoringPoint\";");
+                        ecomonMonitoringPoints = ecomonMonitoringPointsDB.ToList();
+                        var measuredDatasDB = connection.Query<MeasuredData>("SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"EcomonMonitoringPointId\", \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\"");
+                        foreach (MeasuredParameter measuredParameter in measuredParameters)
+                        {
+                            DownloadOne(measuredDatasDB.ToList(), measuredParameter, ecomonMonitoringPoints.FirstOrDefault(), token, start, finish);
+                        }
                     }
+                }
+                catch
+                {
+
                 }
                 Thread.Sleep(sleepSeconds * 1000);
             }
