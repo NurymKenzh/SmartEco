@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -138,6 +139,20 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
+            List<Pollutant> pollutants = new List<Pollutant>();
+            string urlPollutants = "api/Pollutants",
+                routePollutants = "";
+            HttpResponseMessage responsePollutants = await _HttpApiClient.GetAsync(urlPollutants + routePollutants);
+            if (responsePollutants.IsSuccessStatusCode)
+            {
+                pollutants = await responsePollutants.Content.ReadAsAsync<List<Pollutant>>();
+            }
+
+            ViewBag.Pollutants = new SelectList(pollutants.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = (DateTime.Now).ToString("HH:mm:ss");
             return View(pollutionSource);
         }
 
@@ -334,5 +349,55 @@ namespace SmartEco.Controllers
         //{
         //    return _context.PollutionSource.Any(e => e.Id == id);
         //}
+
+        [HttpPost]
+        public async Task<IActionResult> GetPollutionSourceDatas(int PollutantId,
+            int PollutionSourceId,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo)
+        {
+            List<PollutionSourceData> pollutionSourceDatas = new List<PollutionSourceData>();
+            PollutionSourceData[] pollutionsourcedatas = null;
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            string url = "api/PollutionSourceDatas",
+                route = "";
+            // PollutantId
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"PollutantId={PollutantId}";
+            }
+            // PollutionSourceId
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"PollutionSourceId={PollutionSourceId}";
+            }
+            // dateTimeFrom
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+            }
+            // dateTimeTo
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+            }
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            if (response.IsSuccessStatusCode)
+            {
+                pollutionSourceDatas = await response.Content.ReadAsAsync<List<PollutionSourceData>>();
+            }
+            pollutionsourcedatas = pollutionSourceDatas
+                .OrderBy(p => p.DateTime)
+                .ToArray();
+            return Json(new
+            {
+                pollutionsourcedatas
+            });
+        }
     }
 }
