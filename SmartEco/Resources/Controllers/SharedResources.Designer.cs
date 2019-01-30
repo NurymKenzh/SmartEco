@@ -306,6 +306,60 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Pollutant {
+            get {
+                return ResourceManager.GetString("Pollutant", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Pollutants {
+            get {
+                return ResourceManager.GetString("Pollutants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PollutionSource {
+            get {
+                return ResourceManager.GetString("PollutionSource", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PollutionSourceData {
+            get {
+                return ResourceManager.GetString("PollutionSourceData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PollutionSourceDatas {
+            get {
+                return ResourceManager.GetString("PollutionSourceDatas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PollutionSources {
+            get {
+                return ResourceManager.GetString("PollutionSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);

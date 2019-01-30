@@ -1,0 +1,191 @@
+﻿@model IEnumerable<SmartEco.Models.PollutionSourceData>
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["PollutionSourceDatas"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["PollutionSourceDatas"]</h1>
+
+@*<p>
+        <a asp-action="Create">Create New</a>
+    </p>*@
+@using (Html.BeginForm("Index", "PollutionSourceDatas", new { SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().PollutantId).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.PollutantSort, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                    <br />
+                    @Html.DropDownList("PollutantIdFilter", (IEnumerable<SelectListItem>)ViewBag.Pollutants, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().PollutionSourceId).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.PollutionSourceSort, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                    <br />
+                    @Html.DropDownList("PollutionSourceIdFilter", (IEnumerable<SelectListItem>)ViewBag.PollutionSources, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().DateTime).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.DateTimeSort, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                    <br />
+                    @Html.TextBox("DateTimeFromFilter", (string)ViewBag.DateTimeFromFilter, new { type = "date", @class = "form-control" }) -
+                    @Html.TextBox("DateTimeToFilter", (string)ViewBag.DateTimeToFilter, new { type = "date", @class = "form-control" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().Value)
+                    <br />
+                </th>
+                <th>
+                    @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Pollutant.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PollutionSource.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DateTime)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Value)
+                </td>
+                <td>
+                    @*@Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }) |*@
+                    @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }) @*|
+            @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })*@
+                </td>
+            </tr>
+            }
+        </tbody>
+    </table>
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, PollutantIdFilter = ViewBag.PollutantIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                </li>
+            }
+        </ul>
+    }
+}
+@*<table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Pollutant)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.PollutionSourceId)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.DateTime)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Value)
+                </th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Pollutant.Id)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PollutionSourceId)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.DateTime)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Value)
+                    </td>
+                    <td>
+                        <a asp-action="Edit" asp-route-id="@item.Id">Edit</a> |
+                        <a asp-action="Details" asp-route-id="@item.Id">Details</a> |
+                        <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>*@

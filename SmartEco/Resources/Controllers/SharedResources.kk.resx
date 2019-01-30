@@ -198,6 +198,24 @@
   <data name="Number" xml:space="preserve">
     <value>Нөмірі</value>
   </data>
+  <data name="Pollutant" xml:space="preserve">
+    <value>Ластаушы</value>
+  </data>
+  <data name="Pollutants" xml:space="preserve">
+    <value>Ластағыштар</value>
+  </data>
+  <data name="PollutionSource" xml:space="preserve">
+    <value>Ластану көзі</value>
+  </data>
+  <data name="PollutionSourceData" xml:space="preserve">
+    <value>Қоршаған ортаның ластану көздерінен алынған деректер</value>
+  </data>
+  <data name="PollutionSourceDatas" xml:space="preserve">
+    <value>Қоршаған ортаның ластану көздерінен алынған деректер</value>
+  </data>
+  <data name="PollutionSources" xml:space="preserve">
+    <value>Ластану көздері</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Сақтау</value>
   </data>

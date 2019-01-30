@@ -198,6 +198,24 @@
   <data name="Number" xml:space="preserve">
     <value>Номер</value>
   </data>
+  <data name="Pollutant" xml:space="preserve">
+    <value>Загрязняющее вещество</value>
+  </data>
+  <data name="Pollutants" xml:space="preserve">
+    <value>Загрязняющие вещества</value>
+  </data>
+  <data name="PollutionSource" xml:space="preserve">
+    <value>Источник выделения загрязнения</value>
+  </data>
+  <data name="PollutionSourceData" xml:space="preserve">
+    <value>Данные с источников выделения загрязнения</value>
+  </data>
+  <data name="PollutionSourceDatas" xml:space="preserve">
+    <value>Данные с источников выделения загрязнения</value>
+  </data>
+  <data name="PollutionSources" xml:space="preserve">
+    <value>Источники выделения загрязнения</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
   </data>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190130013706_PollutionSourceData_20190130_00")]
+    partial class PollutionSourceData_20190130_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -134,7 +136,9 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<int>("PollutantId");
 
-                    b.Property<int>("PollutionSourceId");
+                    b.Property<int?>("PollutionSourceId");
+
+                    b.Property<int>("PollutionSourcetId");
 
                     b.Property<decimal>("Value");
 
@@ -168,8 +172,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasOne("SmartEcoAPI.Models.PollutionSource", "PollutionSource")
                         .WithMany()
-                        .HasForeignKey("PollutionSourceId")
-                        .OnDelete(DeleteBehavior.Cascade);
+                        .HasForeignKey("PollutionSourceId");
                 });
 #pragma warning restore 612, 618
         }

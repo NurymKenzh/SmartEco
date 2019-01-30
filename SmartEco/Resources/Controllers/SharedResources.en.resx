@@ -198,6 +198,24 @@
   <data name="Number" xml:space="preserve">
     <value>Number</value>
   </data>
+  <data name="Pollutant" xml:space="preserve">
+    <value>Pollutant</value>
+  </data>
+  <data name="Pollutants" xml:space="preserve">
+    <value>Pollutants</value>
+  </data>
+  <data name="PollutionSource" xml:space="preserve">
+    <value>Pollution Source</value>
+  </data>
+  <data name="PollutionSourceData" xml:space="preserve">
+    <value>Pollution Sources Data</value>
+  </data>
+  <data name="PollutionSourceDatas" xml:space="preserve">
+    <value>Pollution Sources Data</value>
+  </data>
+  <data name="PollutionSources" xml:space="preserve">
+    <value>Pollution Sources</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>
