@@ -61,6 +61,15 @@ namespace SmartEco.Resources.Controllers {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Additional Information.
+        /// </summary>
+        public static string AdditionalInformation {
+            get {
+                return ResourceManager.GetString("AdditionalInformation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string BackToList {
@@ -192,6 +201,24 @@ namespace SmartEco.Resources.Controllers {
         public static string History {
             get {
                 return ResourceManager.GetString("History", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KazHydromet monitoring post for the level of air pollution.
+        /// </summary>
+        public static string KazHydrometAirPost {
+            get {
+                return ResourceManager.GetString("KazHydrometAirPost", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to KazHydromet monitoring posts for the level of air pollution.
+        /// </summary>
+        public static string KazHydrometAirPosts {
+            get {
+                return ResourceManager.GetString("KazHydrometAirPosts", resourceCulture);
             }
         }
         

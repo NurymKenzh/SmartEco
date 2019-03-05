@@ -23,11 +23,10 @@ namespace SmartEco.Controllers
         {
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            string url = "api/EcomonMonitoringPoints";
+            string urlEcomonMonitoringPoints = "api/EcomonMonitoringPoints";
             List<EcomonMonitoringPoint> ecomons = new List<EcomonMonitoringPoint>();
-            HttpResponseMessage response = await _HttpApiClient.GetAsync(url);
-            ecomons = await response.Content.ReadAsAsync<List<EcomonMonitoringPoint>>();
-
+            HttpResponseMessage responseEcomonMonitoringPoints = await _HttpApiClient.GetAsync(urlEcomonMonitoringPoints);
+            ecomons = await responseEcomonMonitoringPoints.Content.ReadAsAsync<List<EcomonMonitoringPoint>>();
             JObject ecomonsObject = JObject.FromObject(new
             {
                 type = "FeatureCollection",
@@ -60,6 +59,43 @@ namespace SmartEco.Controllers
                            }
             });
             ViewBag.EcomonsLayerJson = ecomonsObject.ToString();
+
+            string urlKazHydrometAirPosts = "api/KazHydrometAirPosts";
+            List<KazHydrometAirPost> kazHydrometAirPosts = new List<KazHydrometAirPost>();
+            HttpResponseMessage responseKazHydrometAirPosts = await _HttpApiClient.GetAsync(urlKazHydrometAirPosts);
+            kazHydrometAirPosts = await responseKazHydrometAirPosts.Content.ReadAsAsync<List<KazHydrometAirPost>>();
+            JObject objectKazHydrometAirPosts = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from kazHydrometAirPost in kazHydrometAirPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = kazHydrometAirPost.Id,
+                                   Number = kazHydrometAirPost.Number
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                            {
+                            Convert.ToDecimal(kazHydrometAirPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                            Convert.ToDecimal(kazHydrometAirPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                            },
+                               }
+                           }
+            });
+            ViewBag.KazHydrometAirPostsLayerJson = objectKazHydrometAirPosts.ToString();
 
             return View();
         }

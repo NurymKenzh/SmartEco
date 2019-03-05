@@ -134,7 +134,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/EcomonMonitoringPoints/Count
         [HttpGet("count")]
-        public async Task<ActionResult<IEnumerable<EcomonMonitoringPoint>>> GetMeasuredParameterCount(int? Number)
+        public async Task<ActionResult<IEnumerable<EcomonMonitoringPoint>>> GetEcomonMonitoringPointCount(int? Number)
         {
             var ecomonMonitoringPoints = _context.EcomonMonitoringPoint
                 .Where(e => true);

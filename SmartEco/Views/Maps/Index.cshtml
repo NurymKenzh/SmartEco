@@ -13,6 +13,7 @@
 
 <div hidden="hidden">
     <input id="EcomonsLayerJson" type="text" value="@ViewBag.EcomonsLayerJson" />
+    <input id="KazHydrometAirPostsLayerJson" type="text" value="@ViewBag.KazHydrometAirPostsLayerJson" />
     @*<input id="Look" type="text" value="@SharedLocalizer["Look"]" />*@
     <input id="Look" type="text" value="Смотреть" />
     <input id="Number" type="text" value="@SharedLocalizer["Number"]" />
@@ -22,25 +23,19 @@
 <h1>@SharedLocalizer["Map"]</h1>
 
 <div>
-    <input type="checkbox" id="EcomonPoints" value="ecomonPoints" onchange="ChangeLayers()"/>
+    <input type="checkbox" id="EcomonPoints" value="ecomonPoints" onchange="ChangeLayers()" />
     <label for="EcomonPoints">@SharedLocalizer["EcomonMonitoringPoints"]</label>
+
+    <input type="checkbox" id="KazHydrometAirPosts" value="KazHydrometAirPosts" onchange="ChangeLayers()" />
+    <label for="KazHydrometAirPosts">@SharedLocalizer["KazHydrometAirPosts"]</label>
 </div>
 <div class="form-group">
     <div id="map" style="height: 400px; width: 100%;"></div>
 </div>
 <div>
     <table id="info_Ecomons" class="table">
-        @*<caption>
-            @SharedLocalizer["EcomonMonitoringPoints"]
-        </caption>*@
-        @*<tr>
-            <th>
-                @SharedLocalizer["Number"]
-            </th>
-            <th>
-                @SharedLocalizer["Data"]
-            </th>
-        </tr>*@
+    </table>
+    <table id="info_KazHydrometAirPosts" class="table">
     </table>
 </div>
 
@@ -58,7 +53,7 @@
 
     var EcomonsStyle = new ol.style.Style({
         image: new ol.style.Icon(({
-            src: '/images/AirPosts.png'
+            src: '/images/EcomonMonitoringPoints.png'
         }))
     });
     //function EcomonsStyleFunction(feature, resolution) {
@@ -92,6 +87,28 @@
     Layer_Ecomons.setOpacity(1);
     layers.push(Layer_Ecomons);
 
+    var KazHydrometAirPostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/KazHydrometAirPosts.png'
+        }))
+    });
+    var KazHydrometAirPostsLayerJson = $("#KazHydrometAirPostsLayerJson").val();
+    var Source_KazHydrometAirPosts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirPostsLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometAirPosts = new ol.layer.Vector({
+        source: Source_KazHydrometAirPosts,
+        style: KazHydrometAirPostsStyle,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometAirPosts.set('name', 'KazHydrometAirPosts');
+    Layer_KazHydrometAirPosts.setVisible(false);
+    Layer_KazHydrometAirPosts.setOpacity(1);
+    layers.push(Layer_KazHydrometAirPosts);
+
     var map = new ol.Map({
         target: 'map',
         layers: layers,
@@ -104,10 +121,16 @@
     function ChangeLayers() {
         map.getLayers().forEach(function (layer) {
             if (document.getElementById("EcomonPoints").checked == true) {
-                layers[1].setVisible(true);
+                Layer_Ecomons.setVisible(true);
             }
             if (document.getElementById("EcomonPoints").checked == false) {
-                layers[1].setVisible(false);
+                Layer_Ecomons.setVisible(false);
+            }
+            if (document.getElementById("KazHydrometAirPosts").checked == true) {
+                Layer_KazHydrometAirPosts.setVisible(true);
+            }
+            if (document.getElementById("KazHydrometAirPosts").checked == false) {
+                Layer_KazHydrometAirPosts.setVisible(false);
             }
         })
     }
@@ -119,8 +142,10 @@
         //var viewResolution = (map.getView().getResolution());
         var pixel = evt.pixel;
 
-        var featuresEcomons = [];
+        $('#info_Ecomons').empty();
+        $('#info_KazHydrometAirPosts').empty();
 
+        var featuresEcomons = [];
         if (Layer_Ecomons.getVisible()) {
             map.forEachFeatureAtPixel(pixel, function (feature, layer) {
                 if (layer == Layer_Ecomons) {
@@ -129,7 +154,7 @@
             });
             var contentEcomons = '';
             for (var i = 0, ii = featuresEcomons.length; i < ii; ++i) {
-                $('#info_Ecomons').empty();
+                
                 contentEcomons +=
                     '<tr>' +
                     '<th>' +
@@ -150,6 +175,38 @@
                     '</tr>';
             }
             $('#info_Ecomons').append(contentEcomons);
+        }
+
+        var featuresKazHydrometAirPosts = [];
+        if (Layer_KazHydrometAirPosts.getVisible()) {
+            map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                if (layer == Layer_KazHydrometAirPosts) {
+                    featuresKazHydrometAirPosts.push(feature);
+                }
+            });
+            var contentKazHydrometAirPosts = '';
+            for (var i = 0, ii = featuresKazHydrometAirPosts.length; i < ii; ++i) {
+                
+                contentKazHydrometAirPosts +=
+                    '<tr>' +
+                    '<th>' +
+                    $('#Number').val() +
+                    '</th>' +
+                    '<th>' +
+                    $('#Data').val() +
+                    '</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>' +
+                    //'<a href="../Ecomons/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + featuresEcomons[i].get('Name') + '</a>' +
+                    featuresKazHydrometAirPosts[i].get('Number') +
+                    '</td>' +
+                    '<td>' +
+                    '<a href="../KazHydrometAirPosts/Details/' + featuresKazHydrometAirPosts[i].get('Id') + '" target="_blank">' + $('#Look').val() + '</a>' +
+                    '</td>' +
+                    '</tr>';
+            }
+            $('#info_KazHydrometAirPosts').append(contentKazHydrometAirPosts);
         }
     });
 </script>

@@ -117,6 +117,9 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AdditionalInformation" xml:space="preserve">
+    <value>Қосымша ақпарат</value>
+  </data>
   <data name="BackToList" xml:space="preserve">
     <value>Тізімге оралу</value>
   </data>
@@ -161,6 +164,12 @@
   </data>
   <data name="History" xml:space="preserve">
     <value>Тарих</value>
+  </data>
+  <data name="KazHydrometAirPost" xml:space="preserve">
+    <value>Қазгидрометтің атмосфералық ауаның ластану деңгейін бақылау бекеті</value>
+  </data>
+  <data name="KazHydrometAirPosts" xml:space="preserve">
+    <value>Қазгидрометтің атмосфералық ауаның ластану деңгейін бақылау бекеттері</value>
   </data>
   <data name="Language" xml:space="preserve">
     <value>Тіл</value>
