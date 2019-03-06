@@ -177,6 +177,18 @@
   <data name="Map" xml:space="preserve">
     <value>Map</value>
   </data>
+  <data name="MaxValueDay" xml:space="preserve">
+    <value>The day of registration of maximum one-time concentration on the pollutant</value>
+  </data>
+  <data name="MaxValueMonth" xml:space="preserve">
+    <value>Month of registration of maximum one-time concentration on the pollutant</value>
+  </data>
+  <data name="MaxValuePerMonth" xml:space="preserve">
+    <value>Maximum one-time concentration of pollutant per month</value>
+  </data>
+  <data name="MaxValuePerYear" xml:space="preserve">
+    <value>Maximum one-time concentration of pollutant per year</value>
+  </data>
   <data name="MeasuredData" xml:space="preserve">
     <value>Measured data</value>
   </data>

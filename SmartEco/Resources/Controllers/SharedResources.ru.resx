@@ -177,6 +177,18 @@
   <data name="Map" xml:space="preserve">
     <value>Карта</value>
   </data>
+  <data name="MaxValueDay" xml:space="preserve">
+    <value>День регистрации максимально-разовой концентрации по загрязняющему веществу</value>
+  </data>
+  <data name="MaxValueMonth" xml:space="preserve">
+    <value>Месяц регистрации максимально-разовой концентрации по загрязняющему веществу</value>
+  </data>
+  <data name="MaxValuePerMonth" xml:space="preserve">
+    <value>Максимально-разовая концентрация загрязняющего вещества за месяц</value>
+  </data>
+  <data name="MaxValuePerYear" xml:space="preserve">
+    <value>Максимально-разовая концентрация загрязняющего вещества за год</value>
+  </data>
   <data name="MeasuredData" xml:space="preserve">
     <value>Измеренные данные</value>
   </data>

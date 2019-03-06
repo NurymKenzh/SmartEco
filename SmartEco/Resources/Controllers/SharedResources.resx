@@ -166,15 +166,27 @@
     <value />
   </data>
   <data name="KazHydrometAirPost" xml:space="preserve">
-    <value>KazHydromet monitoring post for the level of air pollution</value>
+    <value />
   </data>
   <data name="KazHydrometAirPosts" xml:space="preserve">
-    <value>KazHydromet monitoring posts for the level of air pollution</value>
+    <value />
   </data>
   <data name="Language" xml:space="preserve">
     <value />
   </data>
   <data name="Map" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValueDay" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValueMonth" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValuePerMonth" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValuePerYear" xml:space="preserve">
     <value />
   </data>
   <data name="MeasuredData" xml:space="preserve">

@@ -177,6 +177,18 @@
   <data name="Map" xml:space="preserve">
     <value>Карта</value>
   </data>
+  <data name="MaxValueDay" xml:space="preserve">
+    <value>Ластауышқа ең көп бір реттік концентрацияны тіркеу күні</value>
+  </data>
+  <data name="MaxValueMonth" xml:space="preserve">
+    <value>Ластауышта барынша бір реттік шоғырлануды тіркеу айлығы</value>
+  </data>
+  <data name="MaxValuePerMonth" xml:space="preserve">
+    <value>Ай сайын ластаушы заттардың бір жолғы шоғырлануы</value>
+  </data>
+  <data name="MaxValuePerYear" xml:space="preserve">
+    <value>Жылына бір рет ластауыштың ең көп концентрациясы</value>
+  </data>
   <data name="MeasuredData" xml:space="preserve">
     <value>Өлшенген деректер</value>
   </data>

@@ -205,7 +205,7 @@ namespace SmartEco.Resources.Controllers {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to KazHydromet monitoring post for the level of air pollution.
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string KazHydrometAirPost {
             get {
@@ -214,7 +214,7 @@ namespace SmartEco.Resources.Controllers {
         }
         
         /// <summary>
-        ///   Looks up a localized string similar to KazHydromet monitoring posts for the level of air pollution.
+        ///   Looks up a localized string similar to .
         /// </summary>
         public static string KazHydrometAirPosts {
             get {
@@ -237,6 +237,42 @@ namespace SmartEco.Resources.Controllers {
         public static string Map {
             get {
                 return ResourceManager.GetString("Map", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MaxValueDay {
+            get {
+                return ResourceManager.GetString("MaxValueDay", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MaxValueMonth {
+            get {
+                return ResourceManager.GetString("MaxValueMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MaxValuePerMonth {
+            get {
+                return ResourceManager.GetString("MaxValuePerMonth", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MaxValuePerYear {
+            get {
+                return ResourceManager.GetString("MaxValuePerYear", resourceCulture);
             }
         }
         

@@ -28,6 +28,8 @@ namespace SmartEco.Controllers
             int? MeasuredParameterIdFilter,
             DateTime? DateTimeFromFilter,
             DateTime? DateTimeToFilter,
+            int? EcomonMonitoringPointIdFilter,
+            int? KazHydrometAirPostIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -36,6 +38,8 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterIdFilter = MeasuredParameterIdFilter;
             ViewBag.DateTimeFromFilter = (DateTimeFromFilter)?.ToString("yyyy-MM-dd");
             ViewBag.DateTimeToFilter = (DateTimeToFilter)?.ToString("yyyy-MM-dd");
+            ViewBag.EcomonMonitoringPointIdFilter = EcomonMonitoringPointIdFilter;
+            ViewBag.KazHydrometAirPostIdFilter = KazHydrometAirPostIdFilter;
 
             ViewBag.MeasuredParameterSort = SortOrder == "MeasuredParameter" ? "MeasuredParameterDesc" : "MeasuredParameter";
             ViewBag.DateTimeSort = SortOrder == "DateTime" ? "DateTimeDesc" : "DateTime";
@@ -76,6 +80,20 @@ namespace SmartEco.Controllers
                 route += $"DateTimeTo={DateTimeToFilter?.ToString(dateTimeFormatInfo)}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"DateTimeTo={DateTimeToFilter?.ToString(dateTimeFormatInfo)}";
+            }
+            if (EcomonMonitoringPointIdFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"EcomonMonitoringPointId={EcomonMonitoringPointIdFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"EcomonMonitoringPointId={EcomonMonitoringPointIdFilter}";
+            }
+            if (KazHydrometAirPostIdFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"KazHydrometAirPostId={KazHydrometAirPostIdFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"KazHydrometAirPostId={KazHydrometAirPostIdFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -147,6 +165,26 @@ namespace SmartEco.Controllers
             }
             ViewBag.MeasuredParameters = new SelectList(measuredParameters.OrderBy(m => m.Name), "Id", "Name");
 
+            List<EcomonMonitoringPoint> ecomonMonitoringPoints = new List<EcomonMonitoringPoint>();
+            string urlEcomonMonitoringPoints = "api/EcomonMonitoringPoints",
+                routeEcomonMonitoringPoints = "";
+            HttpResponseMessage responseEcomonMonitoringPoints = await _HttpApiClient.GetAsync(urlEcomonMonitoringPoints + routeEcomonMonitoringPoints);
+            if (responseEcomonMonitoringPoints.IsSuccessStatusCode)
+            {
+                ecomonMonitoringPoints = await responseEcomonMonitoringPoints.Content.ReadAsAsync<List<EcomonMonitoringPoint>>();
+            }
+            ViewBag.EcomonMonitoringPoints = new SelectList(ecomonMonitoringPoints.OrderBy(m => m.Number), "Id", "Number");
+
+            List<KazHydrometAirPost> kazHydrometAirPosts = new List<KazHydrometAirPost>();
+            string urlKazHydrometAirPosts = "api/KazHydrometAirPosts",
+                routeKazHydrometAirPosts = "";
+            HttpResponseMessage responseKazHydrometAirPosts = await _HttpApiClient.GetAsync(urlKazHydrometAirPosts + routeKazHydrometAirPosts);
+            if (responseKazHydrometAirPosts.IsSuccessStatusCode)
+            {
+                kazHydrometAirPosts = await responseKazHydrometAirPosts.Content.ReadAsAsync<List<KazHydrometAirPost>>();
+            }
+            ViewBag.KazHydrometAirPosts = new SelectList(kazHydrometAirPosts.OrderBy(m => m.Name), "Id", "Name");
+
             return View(measuredDatas);
         }
 
@@ -156,6 +194,8 @@ namespace SmartEco.Controllers
             int? MeasuredParameterIdFilter,
             DateTime? DateTimeFromFilter,
             DateTime? DateTimeToFilter,
+            int? EcomonMonitoringPointIdFilter,
+            int? KazHydrometAirPostIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -165,6 +205,8 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterIdFilter = MeasuredParameterIdFilter;
             ViewBag.DateTimeFromFilter = DateTimeFromFilter;
             ViewBag.DateTimeToFilter = DateTimeToFilter;
+            ViewBag.EcomonMonitoringPointIdFilter = EcomonMonitoringPointIdFilter;
+            ViewBag.KazHydrometAirPostIdFilter = KazHydrometAirPostIdFilter;
             if (id == null)
             {
                 return NotFound();

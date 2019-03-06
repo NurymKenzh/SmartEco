@@ -11,10 +11,10 @@
 <h1>@SharedLocalizer["MeasuredDatas"]</h1>
 
 @*<p>
-        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
     </p>*@
 
-@using (Html.BeginForm("Index", "MeasuredDatas", new { SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }, FormMethod.Get))
+@using (Html.BeginForm("Index", "MeasuredDatas", new { SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter }, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
     @if (ViewBag.EndPage > 1)
@@ -24,11 +24,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
             }
 
@@ -36,7 +36,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
             }
 
@@ -44,11 +44,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
             }
         </ul>
@@ -57,14 +57,30 @@
         <thead>
             <tr>
                 <th>
+                    @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().EcomonMonitoringPointId)
+                    <br />
+                    @Html.DropDownList("EcomonMonitoringPointIdFilter", (IEnumerable<SelectListItem>)ViewBag.EcomonMonitoringPoints, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().KazHydrometAirPostId)
+                    <br />
+                    @Html.DropDownList("KazHydrometAirPostIdFilter", (IEnumerable<SelectListItem>)ViewBag.KazHydrometAirPosts, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+            </tr>
+        </thead>
+    </table>
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().MeasuredParameterId).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MeasuredParameterSort, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MeasuredParameterSort, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                     <br />
                     @Html.DropDownList("MeasuredParameterIdFilter", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, "", htmlAttributes: new { @class = "form-control" })
                 </th>
                 <th>
-                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().DateTime).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.DateTimeSort, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().DateTimeOrYearMonth).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.DateTimeSort, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                     <br />
                     @Html.TextBox("DateTimeFromFilter", (string) ViewBag.DateTimeFromFilter, new { type = "date", @class = "form-control" }) -
                     @Html.TextBox("DateTimeToFilter", (string) ViewBag.DateTimeToFilter, new { type = "date", @class = "form-control" })
@@ -87,15 +103,15 @@
                         @Html.DisplayFor(modelItem => item.MeasuredParameter.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.DateTime)
+                        @Html.DisplayFor(modelItem => item.DateTimeOrYearMonth)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Value)
                     </td>
                     <td>
-                        @*@Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }) |*@
-                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }) @*|
-                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })*@
+                        @*@Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter }) |*@
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter }) @*|
+                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })*@
                     </td>
                 </tr>
             }
@@ -108,11 +124,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
             }
 
@@ -120,7 +136,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
             }
 
@@ -128,11 +144,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                 </li>
             }
         </ul>
