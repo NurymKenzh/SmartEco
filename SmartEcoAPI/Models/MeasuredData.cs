@@ -31,5 +31,10 @@ namespace SmartEcoAPI.Models
 
         public decimal? MaxValuePerYear { get; set; }
         public decimal? MaxValuePerMonth { get; set; }
+
+        public int? KazHydrometSoilPostId { get; set; }
+        public KazHydrometSoilPost KazHydrometSoilPost { get; set; }
+
+        public Season Season { get; set; }
     }
 }
