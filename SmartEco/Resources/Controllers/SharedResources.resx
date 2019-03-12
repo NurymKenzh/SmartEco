@@ -171,6 +171,12 @@
   <data name="KazHydrometAirPosts" xml:space="preserve">
     <value />
   </data>
+  <data name="KazHydrometSoilPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometSoilPosts" xml:space="preserve">
+    <value />
+  </data>
   <data name="Language" xml:space="preserve">
     <value />
   </data>

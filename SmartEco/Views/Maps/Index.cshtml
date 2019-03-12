@@ -14,6 +14,7 @@
 <div hidden="hidden">
     <input id="EcomonsLayerJson" type="text" value="@ViewBag.EcomonsLayerJson" />
     <input id="KazHydrometAirPostsLayerJson" type="text" value="@ViewBag.KazHydrometAirPostsLayerJson" />
+    <input id="KazHydrometSoilPostsLayerJson" type="text" value="@ViewBag.KazHydrometSoilPostsLayerJson" />
     @*<input id="Look" type="text" value="@SharedLocalizer["Look"]" />*@
     <input id="Look" type="text" value="Смотреть" />
     <input id="Number" type="text" value="@SharedLocalizer["Number"]" />
@@ -28,15 +29,17 @@
 
     <input type="checkbox" id="KazHydrometAirPosts" value="KazHydrometAirPosts" onchange="ChangeLayers()" />
     <label for="KazHydrometAirPosts">@SharedLocalizer["KazHydrometAirPosts"]</label>
+
+    <input type="checkbox" id="KazHydrometSoilPosts" value="KazHydrometSoilPosts" onchange="ChangeLayers()" />
+    <label for="KazHydrometSoilPosts">@SharedLocalizer["KazHydrometSoilPosts"]</label>
 </div>
 <div class="form-group">
     <div id="map" style="height: 400px; width: 100%;"></div>
 </div>
 <div>
-    <table id="info_Ecomons" class="table">
-    </table>
-    <table id="info_KazHydrometAirPosts" class="table">
-    </table>
+    <table id="info_Ecomons" class="table"></table>
+    <table id="info_KazHydrometAirPosts" class="table"></table>
+    <table id="info_KazHydrometSoilPosts" class="table"></table>
 </div>
 
 <script type="text/javascript">
@@ -109,6 +112,28 @@
     Layer_KazHydrometAirPosts.setOpacity(1);
     layers.push(Layer_KazHydrometAirPosts);
 
+    var KazHydrometSoilPostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/KazHydrometSoilPosts.png'
+        }))
+    });
+    var KazHydrometSoilPostsLayerJson = $("#KazHydrometSoilPostsLayerJson").val();
+    var Source_KazHydrometSoilPosts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometSoilPostsLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometSoilPosts = new ol.layer.Vector({
+        source: Source_KazHydrometSoilPosts,
+        style: KazHydrometSoilPostsStyle,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometSoilPosts.set('name', 'KazHydrometSoilPosts');
+    Layer_KazHydrometSoilPosts.setVisible(false);
+    Layer_KazHydrometSoilPosts.setOpacity(1);
+    layers.push(Layer_KazHydrometSoilPosts);
+
     var map = new ol.Map({
         target: 'map',
         layers: layers,
@@ -132,6 +157,12 @@
             if (document.getElementById("KazHydrometAirPosts").checked == false) {
                 Layer_KazHydrometAirPosts.setVisible(false);
             }
+            if (document.getElementById("KazHydrometSoilPosts").checked == true) {
+                Layer_KazHydrometSoilPosts.setVisible(true);
+            }
+            if (document.getElementById("KazHydrometSoilPosts").checked == false) {
+                Layer_KazHydrometSoilPosts.setVisible(false);
+            }
         })
     }
 </script>
@@ -144,6 +175,7 @@
 
         $('#info_Ecomons').empty();
         $('#info_KazHydrometAirPosts').empty();
+        $('#info_KazHydrometSoilPosts').empty();
 
         var featuresEcomons = [];
         if (Layer_Ecomons.getVisible()) {
@@ -207,6 +239,38 @@
                     '</tr>';
             }
             $('#info_KazHydrometAirPosts').append(contentKazHydrometAirPosts);
+        }
+
+        var featuresKazHydrometSoilPosts = [];
+        if (Layer_KazHydrometSoilPosts.getVisible()) {
+            map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                if (layer == Layer_KazHydrometSoilPosts) {
+                    featuresKazHydrometSoilPosts.push(feature);
+                }
+            });
+            var contentKazHydrometSoilPosts = '';
+            for (var i = 0, ii = featuresKazHydrometSoilPosts.length; i < ii; ++i) {
+
+                contentKazHydrometSoilPosts +=
+                    '<tr>' +
+                    '<th>' +
+                    $('#Number').val() +
+                    '</th>' +
+                    '<th>' +
+                    $('#Data').val() +
+                    '</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>' +
+                    //'<a href="../Ecomons/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + featuresEcomons[i].get('Name') + '</a>' +
+                    featuresKazHydrometSoilPosts[i].get('Number') +
+                    '</td>' +
+                    '<td>' +
+                    '<a href="../KazHydrometSoilPosts/Details/' + featuresKazHydrometSoilPosts[i].get('Id') + '" target="_blank">' + $('#Look').val() + '</a>' +
+                    '</td>' +
+                    '</tr>';
+            }
+            $('#info_KazHydrometSoilPosts').append(contentKazHydrometSoilPosts);
         }
     });
 </script>

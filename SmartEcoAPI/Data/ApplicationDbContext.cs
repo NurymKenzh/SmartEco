@@ -38,5 +38,7 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.PollutionSourceData> PollutionSourceData { get; set; }
 
         public DbSet<SmartEcoAPI.Models.KazHydrometAirPost> KazHydrometAirPost { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.KazHydrometSoilPost> KazHydrometSoilPost { get; set; }
     }
 }

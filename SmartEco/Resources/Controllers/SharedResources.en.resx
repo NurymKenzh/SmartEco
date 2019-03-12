@@ -171,6 +171,12 @@
   <data name="KazHydrometAirPosts" xml:space="preserve">
     <value>KazHydromet monitoring posts for the level of air pollution</value>
   </data>
+  <data name="KazHydrometSoilPost" xml:space="preserve">
+    <value>KazHydromet Soil Pollution Monitoring Post</value>
+  </data>
+  <data name="KazHydrometSoilPosts" xml:space="preserve">
+    <value>Soil monitoring stations of KazHydromet</value>
+  </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
   </data>

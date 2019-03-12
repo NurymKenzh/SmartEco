@@ -18,6 +18,7 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.PollutionSource> PollutionSource { get; set; }
         public DbSet<SmartEco.Models.PollutionSourceData> PollutionSourceData { get; set; }
         public DbSet<SmartEco.Models.KazHydrometAirPost> KazHydrometAirPost { get; set; }
+        public DbSet<SmartEco.Models.KazHydrometSoilPost> KazHydrometSoilPost { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }
