@@ -70,5 +70,8 @@ namespace SmartEco.Models
                 return $"{Year?.ToString()}";
             }
         }
+
+        //public int? MonitoringPostId { get; set; }
+        //public MonitoringPost MonitoringPost { get; set; }
     }
 }
