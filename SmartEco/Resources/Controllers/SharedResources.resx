@@ -120,10 +120,16 @@
   <data name="AdditionalInformation" xml:space="preserve">
     <value>Additional Information</value>
   </data>
+  <data name="AreaType" xml:space="preserve">
+    <value />
+  </data>
   <data name="BackToList" xml:space="preserve">
     <value />
   </data>
   <data name="Chart" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Code" xml:space="preserve">
     <value />
   </data>
   <data name="Create" xml:space="preserve">
@@ -159,10 +165,19 @@
   <data name="Edit" xml:space="preserve">
     <value />
   </data>
+  <data name="EgovId" xml:space="preserve">
+    <value />
+  </data>
   <data name="Find" xml:space="preserve">
     <value />
   </data>
   <data name="History" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KATO" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KATOes" xml:space="preserve">
     <value />
   </data>
   <data name="KazHydrometAirPost" xml:space="preserve">
@@ -178,6 +193,9 @@
     <value />
   </data>
   <data name="Language" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Level" xml:space="preserve">
     <value />
   </data>
   <data name="Map" xml:space="preserve">
@@ -223,6 +241,9 @@
     <value />
   </data>
   <data name="Number" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ParentEgovId" xml:space="preserve">
     <value />
   </data>
   <data name="Pollutant" xml:space="preserve">

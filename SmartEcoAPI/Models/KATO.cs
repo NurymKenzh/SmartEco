@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -29,8 +30,13 @@ namespace SmartEcoAPI.Models
         {
             get
             {
-                // переписать (пример в class MeasuredParameter)
-                return NameRU;
+                string language = new RequestLocalizationOptions().DefaultRequestCulture.Culture.Name,
+                   name = NameRU;
+                if (language == "kk")
+                {
+                    name = NameKK;
+                }
+                return name;
             }
         }
     }

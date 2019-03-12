@@ -120,11 +120,17 @@
   <data name="AdditionalInformation" xml:space="preserve">
     <value>Қосымша ақпарат</value>
   </data>
+  <data name="AreaType" xml:space="preserve">
+    <value>Ауданның түрі</value>
+  </data>
   <data name="BackToList" xml:space="preserve">
     <value>Тізімге оралу</value>
   </data>
   <data name="Chart" xml:space="preserve">
     <value>График</value>
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value>Код</value>
   </data>
   <data name="Create" xml:space="preserve">
     <value>Жасау</value>
@@ -159,11 +165,20 @@
   <data name="Edit" xml:space="preserve">
     <value>Өңдеу</value>
   </data>
+  <data name="EgovId" xml:space="preserve">
+    <value>EgovId</value>
+  </data>
   <data name="Find" xml:space="preserve">
     <value>Табу</value>
   </data>
   <data name="History" xml:space="preserve">
     <value>Тарих</value>
+  </data>
+  <data name="KATO" xml:space="preserve">
+    <value>KATO</value>
+  </data>
+  <data name="KATOes" xml:space="preserve">
+    <value>KATOes</value>
   </data>
   <data name="KazHydrometAirPost" xml:space="preserve">
     <value>Қазгидрометтің атмосфералық ауаның ластану деңгейін бақылау бекеті</value>
@@ -179,6 +194,9 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Тіл</value>
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value>Деңгейі</value>
   </data>
   <data name="Map" xml:space="preserve">
     <value>Карта</value>
@@ -224,6 +242,9 @@
   </data>
   <data name="Number" xml:space="preserve">
     <value>Нөмірі</value>
+  </data>
+  <data name="ParentEgovId" xml:space="preserve">
+    <value>ParentEgovId</value>
   </data>
   <data name="Pollutant" xml:space="preserve">
     <value>Ластаушы</value>
