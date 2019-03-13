@@ -46,5 +46,7 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.PollutionEnvironment> PollutionEnvironment { get; set; }
 
         public DbSet<SmartEcoAPI.Models.DataProvider> DataProvider { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.Layer> Layer { get; set; }
     }
 }
