@@ -138,6 +138,12 @@
   <data name="Data" xml:space="preserve">
     <value>Data</value>
   </data>
+  <data name="DataProvider" xml:space="preserve">
+    <value>Data provider</value>
+  </data>
+  <data name="DataProviders" xml:space="preserve">
+    <value>Data providers</value>
+  </data>
   <data name="DateTime" xml:space="preserve">
     <value>Date and Time</value>
   </data>

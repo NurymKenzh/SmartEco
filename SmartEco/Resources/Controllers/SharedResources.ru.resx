@@ -138,6 +138,12 @@
   <data name="Data" xml:space="preserve">
     <value>Данные</value>
   </data>
+  <data name="DataProvider" xml:space="preserve">
+    <value>Поставщик данных</value>
+  </data>
+  <data name="DataProviders" xml:space="preserve">
+    <value>Поставщики данных</value>
+  </data>
   <data name="DateTime" xml:space="preserve">
     <value>Дата и время</value>
   </data>

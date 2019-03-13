@@ -138,6 +138,12 @@
   <data name="Data" xml:space="preserve">
     <value>Деректер</value>
   </data>
+  <data name="DataProvider" xml:space="preserve">
+    <value>Деректерді жеткізуші</value>
+  </data>
+  <data name="DataProviders" xml:space="preserve">
+    <value>Деректерді жеткізушілер</value>
+  </data>
   <data name="DateTime" xml:space="preserve">
     <value>Күні мен уақыты</value>
   </data>

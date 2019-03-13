@@ -23,10 +23,7 @@ namespace SmartEco.Controllers
         }
 
         // GET: KATOes
-        public async Task<IActionResult> Index(string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+        public async Task<IActionResult> Index(string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -41,33 +38,18 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
 
-            ViewBag.CodeSort = CodeSortOrder == "Code" ? "CodeDesc" : "Code";
-            ViewBag.LevelSort = LevelSortOrder == "Level" ? "LevelDesc" : "Level";
-            ViewBag.NameKKSort = NameKKSortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
-            ViewBag.NameRUSort = NameRUSortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
+            ViewBag.CodeSort = SortOrder == "Code" ? "CodeDesc" : "Code";
+            ViewBag.LevelSort = SortOrder == "Level" ? "LevelDesc" : "Level";
+            ViewBag.NameKKSort = SortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
+            ViewBag.NameRUSort = SortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
 
             string url = "api/KATOes",
                 route = "",
                 routeCount = "";
-            if (!string.IsNullOrEmpty(CodeSortOrder))
+            if (!string.IsNullOrEmpty(SortOrder))
             {
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"CodeSortOrder={CodeSortOrder}";
-            }
-            if (!string.IsNullOrEmpty(LevelSortOrder))
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"LevelSortOrder={LevelSortOrder}";
-            }
-            if (!string.IsNullOrEmpty(NameKKSortOrder))
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"NameKKSortOrder={NameKKSortOrder}";
-            }
-            if (!string.IsNullOrEmpty(NameRUSortOrder))
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"NameRUSortOrder={NameRUSortOrder}";
+                route += $"SortOrder={SortOrder}";
             }
 
             if (CodeFilter != null)
@@ -138,10 +120,7 @@ namespace SmartEco.Controllers
             {
                 KATOCount = await responseCount.Content.ReadAsAsync<int>();
             }
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber != null ? PageNumber : 1;
             ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(KATOCount / (decimal)PageSize) : 1;
@@ -166,10 +145,7 @@ namespace SmartEco.Controllers
 
         // GET: KATOes/Details/5
         public async Task<IActionResult> Details(int? id,
-            string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+            string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -177,10 +153,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.CodeFilter = CodeFilter;
@@ -203,23 +176,11 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
-            //List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            //string urlMeasuredParameters = "api/MeasuredParameters",
-            //    routeMeasuredParameters = "";
-            //HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            //if (responseMeasuredParameters.IsSuccessStatusCode)
-            //{
-            //    measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            //}
-
             return View(KATO);
         }
 
         // GET: KATOes/Create
-        public IActionResult Create(string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+        public IActionResult Create(string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -227,10 +188,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.CodeFilter = CodeFilter;
@@ -246,10 +204,7 @@ namespace SmartEco.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Code,Level,AreaType,EgovId,ParentEgovId,NameKK,NameRU")] KATO KATO,
-           string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+           string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -257,10 +212,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.CodeFilter = CodeFilter;
@@ -269,54 +221,29 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             if (ModelState.IsValid)
             {
-                //int logNumber = KATO.Number;
-                //decimal logNorthLatitude = KATO.NorthLatitude;
-                //decimal logEastLongitude = KATO.EastLongitude;
-                //DateTime logDateTimeStart = DateTime.Now;
+                HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
+                    "api/KATOes", KATO);
 
-                //string url = "api/Logs/AddNote",
-                //route = "";
-
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"Number={logNumber.ToString()}";
-
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"NorthLatitude={logNorthLatitude.ToString()}".Replace(',', '.');
-
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"EastLongitude={logEastLongitude.ToString()}".Replace(',', '.');
-
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"DateTimeStart={logDateTimeStart.ToString()}";
-
-                //HttpResponseMessage responseLog = await _HttpApiClient.PostAsync(url + route, null);
-
-                //HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
-                //    "api/KATOes", KATO);
-
-                //string OutputViewText = await response.Content.ReadAsStringAsync();
-                //OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
-                //try
-                //{
-                //    response.EnsureSuccessStatusCode();
-                //}
-                //catch
-                //{
-                //    dynamic errors = JsonConvert.DeserializeObject<dynamic>(OutputViewText);
-                //    foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
-                //    {
-                //        ModelState.AddModelError(property.Name, property.Value[0].ToString());
-                //    }
-                //    return View(KATO);
-                //}
+                string OutputViewText = await response.Content.ReadAsStringAsync();
+                OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch
+                {
+                    dynamic errors = JsonConvert.DeserializeObject<dynamic>(OutputViewText);
+                    foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
+                    {
+                        ModelState.AddModelError(property.Name, property.Value[0].ToString());
+                    }
+                    return View(KATO);
+                }
 
                 return RedirectToAction(nameof(Index),
                     new
                     {
-                        CodeSortOrder = ViewBag.CodeSortOrder,
-                        LevelSortOrder = ViewBag.LevelSortOrder,
-                        NameKKSortOrder = ViewBag.NameKKSortOrder,
-                        NameRUSortOrder = ViewBag.NameRUSortOrder,
+                        SortOrder = ViewBag.SortOrder,
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
                         CodeFilter = ViewBag.CodeFilter,
@@ -330,10 +257,7 @@ namespace SmartEco.Controllers
 
         // GET: KATOes/Edit/5
         public async Task<IActionResult> Edit(int? id,
-            string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+            string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -341,10 +265,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.CodeFilter = CodeFilter;
@@ -366,10 +287,7 @@ namespace SmartEco.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Code,Level,AreaType,EgovId,ParentEgovId,NameKK,NameRU")] KATO KATO,
-            string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+            string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -377,10 +295,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.CodeFilter = CodeFilter;
@@ -393,55 +308,30 @@ namespace SmartEco.Controllers
             }
             if (ModelState.IsValid)
             {
-                //int logNumber = KATO.Number;
-                //decimal logNorthLatitude = KATO.NorthLatitude;
-                //decimal logEastLongitude = KATO.EastLongitude;
-                //DateTime logDateTimeStart = DateTime.Now;
+                HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
+                    $"api/KATOes/{KATO.Id}", KATO);
 
-                //string url = "api/Logs/EditNote",
-                //route = "";
+                string OutputViewText = await response.Content.ReadAsStringAsync();
+                OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch
+                {
+                    dynamic errors = JsonConvert.DeserializeObject<dynamic>(OutputViewText);
+                    foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
+                    {
+                        ModelState.AddModelError(property.Name, property.Value[0].ToString());
+                    }
+                    return View(KATO);
+                }
 
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"Number={logNumber.ToString()}";
-
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"NorthLatitude={logNorthLatitude.ToString()}".Replace(',', '.');
-
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"EastLongitude={logEastLongitude.ToString()}".Replace(',', '.');
-
-                //route += string.IsNullOrEmpty(route) ? "?" : "&";
-                //route += $"DateTimeStart={logDateTimeStart.ToString()}";
-
-                //HttpResponseMessage responseLog = await _HttpApiClient.PostAsync(url + route, null);
-
-                //HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
-                //    $"api/KATOes/{KATO.Id}", KATO);
-
-                //string OutputViewText = await response.Content.ReadAsStringAsync();
-                //OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
-                //try
-                //{
-                //    response.EnsureSuccessStatusCode();
-                //}
-                //catch
-                //{
-                //    dynamic errors = JsonConvert.DeserializeObject<dynamic>(OutputViewText);
-                //    foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
-                //    {
-                //        ModelState.AddModelError(property.Name, property.Value[0].ToString());
-                //    }
-                //    return View(KATO);
-                //}
-
-                //KATO = await response.Content.ReadAsAsync<KATO>();
+                KATO = await response.Content.ReadAsAsync<KATO>();
                 return RedirectToAction(nameof(Index),
                     new
                     {
-                        CodeSortOrder = ViewBag.CodeSortOrder,
-                        LevelSortOrder = ViewBag.LevelSortOrder,
-                        NameKKSortOrder = ViewBag.NameKKSortOrder,
-                        NameRUSortOrder = ViewBag.NameRUSortOrder,
+                        SortOrder = ViewBag.SortOrder,
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
                         CodeFilter = ViewBag.CodeFilter,
@@ -455,10 +345,7 @@ namespace SmartEco.Controllers
 
         // GET: KATOes/Delete/5
         public async Task<IActionResult> Delete(int? id,
-            string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+            string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -466,10 +353,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.CodeFilter = CodeFilter;
@@ -499,10 +383,7 @@ namespace SmartEco.Controllers
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id,
-            string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+            string SortOrder,
             string CodeFilter,
             int? LevelFilter,
             string NameKKFilter,
@@ -510,10 +391,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            ViewBag.CodeSortOrder = CodeSortOrder;
-            ViewBag.LevelSortOrder = LevelSortOrder;
-            ViewBag.NameKKSortOrder = NameKKSortOrder;
-            ViewBag.NameRUSortOrder = NameRUSortOrder;
+            ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.CodeFilter = CodeFilter;
@@ -525,10 +403,7 @@ namespace SmartEco.Controllers
             return RedirectToAction(nameof(Index),
                     new
                     {
-                        CodeSortOrder = ViewBag.CodeSortOrder,
-                        LevelSortOrder = ViewBag.LevelSortOrder,
-                        NameKKSortOrder = ViewBag.NameKKSortOrder,
-                        NameRUSortOrder = ViewBag.NameRUSortOrder,
+                        SortOrder = ViewBag.SortOrder,
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
                         CodeFilter = ViewBag.CodeFilter,

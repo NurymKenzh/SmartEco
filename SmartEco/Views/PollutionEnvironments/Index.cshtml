@@ -11,13 +11,11 @@
 <h1>@SharedLocalizer["PollutionEnvironments"]</h1>
 
 <p>
-    @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+    @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
 </p>
-@using (Html.BeginForm("Index", "PollutionEnvironments", new { NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter }, FormMethod.Get))
+@using (Html.BeginForm("Index", "PollutionEnvironments", new { SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter }, FormMethod.Get))
 {
-    @Html.Editor("NameKKSortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.NameKKSortOrder })
-    @Html.Editor("NameRUSortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.NameRUSortOrder })
-    @Html.Editor("NameENSortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.NameENSortOrder })
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
     @if (ViewBag.EndPage > 1)
     {
         <ul class="pagination">
@@ -25,11 +23,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
             }
 
@@ -37,7 +35,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
             }
 
@@ -45,11 +43,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
             }
         </ul>
@@ -59,19 +57,19 @@
             <tr>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().NameKK).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSort, NameKKFilter = ViewBag.NameKKFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameKKSort, NameKKFilter = ViewBag.NameKKFilter })
                     <br />
                     @Html.Editor("NameKKFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().NameRU).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, NameRUSortOrder = ViewBag.NameRUSort, NameRUFilter = ViewBag.NameRUFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameRUSort, NameRUFilter = ViewBag.NameRUFilter })
                     <br />
                     @Html.Editor("NameRUFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().NameEN).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, NameENSortOrder = ViewBag.NameENSort, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameENSort, NameENFilter = ViewBag.NameENFilter })
                     <br />
                     @Html.Editor("NameENFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
@@ -95,9 +93,9 @@
                         @Html.DisplayFor(modelItem => item.NameEN)
                     </td>
                     <td>
-                        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter }) |
-                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter }) |
-                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                     </td>
                 </tr>
             }
@@ -110,11 +108,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
             }
 
@@ -122,7 +120,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
             }
 
@@ -130,11 +128,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
                 </li>
             }
         </ul>

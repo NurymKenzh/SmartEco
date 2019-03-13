@@ -126,6 +126,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string DataProvider {
+            get {
+                return ResourceManager.GetString("DataProvider", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string DataProviders {
+            get {
+                return ResourceManager.GetString("DataProviders", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string DateTime {
             get {
                 return ResourceManager.GetString("DateTime", resourceCulture);

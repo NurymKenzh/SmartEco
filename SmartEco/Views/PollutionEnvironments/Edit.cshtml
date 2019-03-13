@@ -32,9 +32,7 @@
                 <span asp-validation-for="NameEN" class="text-danger"></span>
             </div>
             <div hidden="hidden">
-                @Html.Editor("NameKKSortOrder", null, new { value = ViewBag.NameKKSortOrder })
-                @Html.Editor("NameRUSortOrder", null, new { value = ViewBag.NameRUSortOrder })
-                @Html.Editor("NameENSortOrder", null, new { value = ViewBag.NameENSortOrder })
+                @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
                 @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 @Html.Editor("NameKKFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
@@ -49,6 +47,9 @@
 </div>
 
 <div>
-    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, NameENSortOrder = ViewBag.NameENSortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter })
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

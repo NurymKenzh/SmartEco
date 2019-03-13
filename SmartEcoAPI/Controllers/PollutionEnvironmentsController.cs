@@ -10,6 +10,8 @@ using SmartEcoAPI.Models;
 
 namespace SmartEcoAPI.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class PollutionEnvironmentsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -21,9 +23,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionEnvironments
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<PollutionEnvironment>>> GetPollutionEnvironment(string NameKKSortOrder,
-            string NameRUSortOrder,
-            string NameENSortOrder,
+        public async Task<ActionResult<IEnumerable<PollutionEnvironment>>> GetPollutionEnvironment(string SortOrder,
             string NameKK,
             string NameRU,
             string NameEN,
@@ -33,53 +33,41 @@ namespace SmartEcoAPI.Controllers
             var pollutionEnvironments = _context.PollutionEnvironment
                 .Where(k => true);
 
-            if (NameKK != null)
+            if (!string.IsNullOrEmpty(NameKK))
             {
-                pollutionEnvironments = pollutionEnvironments.Where(k => k.NameKK == NameKK);
+                pollutionEnvironments = pollutionEnvironments.Where(m => m.NameKK.ToLower().Contains(NameKK.ToLower()));
             }
-            if (NameRU != null)
+            if (!string.IsNullOrEmpty(NameRU))
             {
-                pollutionEnvironments = pollutionEnvironments.Where(k => k.NameRU == NameRU);
+                pollutionEnvironments = pollutionEnvironments.Where(m => m.NameRU.ToLower().Contains(NameRU.ToLower()));
             }
-            if (NameEN != null)
+            if (!string.IsNullOrEmpty(NameEN))
             {
-                pollutionEnvironments = pollutionEnvironments.Where(k => k.NameEN == NameEN);
+                pollutionEnvironments = pollutionEnvironments.Where(m => m.NameEN.ToLower().Contains(NameEN.ToLower()));
             }
 
-            switch (NameKKSortOrder)
+            switch (SortOrder)
             {
                 case "NameKK":
-                    pollutionEnvironments = pollutionEnvironments.OrderBy(k => k.NameKK);
+                    pollutionEnvironments = pollutionEnvironments.OrderBy(m => m.NameKK);
                     break;
                 case "NameKKDesc":
-                    pollutionEnvironments = pollutionEnvironments.OrderByDescending(k => k.NameKK);
+                    pollutionEnvironments = pollutionEnvironments.OrderByDescending(m => m.NameKK);
                     break;
-                default:
-                    pollutionEnvironments = pollutionEnvironments.OrderBy(k => k.Id);
-                    break;
-            }
-            switch (NameRUSortOrder)
-            {
                 case "NameRU":
-                    pollutionEnvironments = pollutionEnvironments.OrderBy(k => k.NameRU);
+                    pollutionEnvironments = pollutionEnvironments.OrderBy(m => m.NameRU);
                     break;
                 case "NameRUDesc":
-                    pollutionEnvironments = pollutionEnvironments.OrderByDescending(k => k.NameRU);
+                    pollutionEnvironments = pollutionEnvironments.OrderByDescending(m => m.NameRU);
                     break;
-                default:
-                    pollutionEnvironments = pollutionEnvironments.OrderBy(k => k.Id);
-                    break;
-            }
-            switch (NameENSortOrder)
-            {
                 case "NameEN":
-                    pollutionEnvironments = pollutionEnvironments.OrderBy(k => k.NameEN);
+                    pollutionEnvironments = pollutionEnvironments.OrderBy(m => m.NameEN);
                     break;
                 case "NameENDesc":
-                    pollutionEnvironments = pollutionEnvironments.OrderByDescending(k => k.NameEN);
+                    pollutionEnvironments = pollutionEnvironments.OrderByDescending(m => m.NameEN);
                     break;
                 default:
-                    pollutionEnvironments = pollutionEnvironments.OrderBy(k => k.Id);
+                    pollutionEnvironments = pollutionEnvironments.OrderBy(m => m.Id);
                     break;
             }
 
@@ -175,17 +163,17 @@ namespace SmartEcoAPI.Controllers
             var pollutionEnvironments = _context.PollutionEnvironment
                 .Where(k => true);
 
-            if (NameKK != null)
+            if (!string.IsNullOrEmpty(NameKK))
             {
-                pollutionEnvironments = pollutionEnvironments.Where(k => k.NameKK == NameKK);
+                pollutionEnvironments = pollutionEnvironments.Where(m => m.NameKK.ToLower().Contains(NameKK.ToLower()));
             }
-            if (NameRU != null)
+            if (!string.IsNullOrEmpty(NameRU))
             {
-                pollutionEnvironments = pollutionEnvironments.Where(k => k.NameRU == NameRU);
+                pollutionEnvironments = pollutionEnvironments.Where(m => m.NameRU.ToLower().Contains(NameRU.ToLower()));
             }
-            if (NameEN != null)
+            if (!string.IsNullOrEmpty(NameEN))
             {
-                pollutionEnvironments = pollutionEnvironments.Where(k => k.NameEN == NameEN);
+                pollutionEnvironments = pollutionEnvironments.Where(m => m.NameEN.ToLower().Contains(NameEN.ToLower()));
             }
 
             int count = await pollutionEnvironments.CountAsync();

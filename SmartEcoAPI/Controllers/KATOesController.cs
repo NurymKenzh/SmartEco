@@ -10,6 +10,8 @@ using SmartEcoAPI.Models;
 
 namespace SmartEcoAPI.Controllers
 {
+    [Route("api/[controller]")]
+    [ApiController]
     public class KATOesController : ControllerBase
     {
         //private readonly ApplicationDbContext _context;
@@ -159,10 +161,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/KATOes
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<KATO>>> GetKATO(string CodeSortOrder,
-            string LevelSortOrder,
-            string NameKKSortOrder,
-            string NameRUSortOrder,
+        public async Task<ActionResult<IEnumerable<KATO>>> GetKATO(string SortOrder,
             string Code,
             int? Level,
             string NameKK,
@@ -172,25 +171,25 @@ namespace SmartEcoAPI.Controllers
         {
             var KATOes = _context.KATO
                 .Where(k => true);
-
-            if (Code != null)
+                        
+            if (!string.IsNullOrEmpty(Code))
             {
-                KATOes = KATOes.Where(k => k.Code == Code);
+                KATOes = KATOes.Where(m => m.Code.ToLower().Contains(Code.ToLower()));
             }
             if (Level != null)
             {
                 KATOes = KATOes.Where(k => k.Level == Level);
             }
-            if (NameKK != null)
+            if (!string.IsNullOrEmpty(NameKK))
             {
-                KATOes = KATOes.Where(k => k.NameKK == NameKK);
+                KATOes = KATOes.Where(m => m.NameKK.ToLower().Contains(NameKK.ToLower()));
             }
-            if (NameRU != null)
+            if (!string.IsNullOrEmpty(NameRU))
             {
-                KATOes = KATOes.Where(k => k.NameRU == NameRU);
+                KATOes = KATOes.Where(m => m.NameRU.ToLower().Contains(NameRU.ToLower()));
             }
 
-            switch (CodeSortOrder)
+            switch (SortOrder)
             {
                 case "Code":
                     KATOes = KATOes.OrderBy(k => k.Code);
@@ -198,41 +197,23 @@ namespace SmartEcoAPI.Controllers
                 case "CodeDesc":
                     KATOes = KATOes.OrderByDescending(k => k.Code);
                     break;
-                default:
-                    KATOes = KATOes.OrderBy(k => k.Id);
-                    break;
-            }
-            switch (LevelSortOrder)
-            {
                 case "Level":
                     KATOes = KATOes.OrderBy(k => k.Level);
                     break;
                 case "LevelDesc":
                     KATOes = KATOes.OrderByDescending(k => k.Level);
                     break;
-                default:
-                    KATOes = KATOes.OrderBy(k => k.Id);
-                    break;
-            }
-            switch (NameKKSortOrder)
-            {
                 case "NameKK":
-                    KATOes = KATOes.OrderBy(k => k.NameKK);
+                    KATOes = KATOes.OrderBy(m => m.NameKK);
                     break;
                 case "NameKKDesc":
-                    KATOes = KATOes.OrderByDescending(k => k.NameKK);
+                    KATOes = KATOes.OrderByDescending(m => m.NameKK);
                     break;
-                default:
-                    KATOes = KATOes.OrderBy(k => k.Id);
-                    break;
-            }
-            switch (NameRUSortOrder)
-            {
                 case "NameRU":
-                    KATOes = KATOes.OrderBy(k => k.NameRU);
+                    KATOes = KATOes.OrderBy(m => m.NameRU);
                     break;
                 case "NameRUDesc":
-                    KATOes = KATOes.OrderByDescending(k => k.NameRU);
+                    KATOes = KATOes.OrderByDescending(m => m.NameRU);
                     break;
                 default:
                     KATOes = KATOes.OrderBy(k => k.Id);
@@ -332,21 +313,21 @@ namespace SmartEcoAPI.Controllers
             var KATOes = _context.KATO
                 .Where(k => true);
 
-            if (Code != null)
+            if (!string.IsNullOrEmpty(Code))
             {
-                KATOes = KATOes.Where(k => k.Code == Code);
+                KATOes = KATOes.Where(m => m.Code.ToLower().Contains(Code.ToLower()));
             }
             if (Level != null)
             {
                 KATOes = KATOes.Where(k => k.Level == Level);
             }
-            if (NameKK != null)
+            if (!string.IsNullOrEmpty(NameKK))
             {
-                KATOes = KATOes.Where(k => k.NameKK == NameKK);
+                KATOes = KATOes.Where(m => m.NameKK.ToLower().Contains(NameKK.ToLower()));
             }
-            if (NameRU != null)
+            if (!string.IsNullOrEmpty(NameRU))
             {
-                KATOes = KATOes.Where(k => k.NameRU == NameRU);
+                KATOes = KATOes.Where(m => m.NameRU.ToLower().Contains(NameRU.ToLower()));
             }
 
             int count = await KATOes.CountAsync();

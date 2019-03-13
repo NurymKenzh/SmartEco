@@ -51,10 +51,7 @@
                 <span asp-validation-for="NameRU" class="text-danger"></span>
             </div>
             <div hidden="hidden">
-                @Html.Editor("CodeSortOrder", null, new { value = ViewBag.CodeSortOrder })
-                @Html.Editor("LevelSortOrder", null, new { value = ViewBag.LevelSortOrder })
-                @Html.Editor("NameKKSortOrder", null, new { value = ViewBag.NameKKSortOrder })
-                @Html.Editor("NameRUSortOrder", null, new { value = ViewBag.NameRUSortOrder })
+                @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
                 @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 @Html.Editor("CodeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
@@ -70,6 +67,9 @@
 </div>
 
 <div>
-    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, CodeSortOrder = ViewBag.CodeSortOrder, LevelSortOrder = ViewBag.LevelSortOrder, NameKKSortOrder = ViewBag.NameKKSortOrder, NameRUSortOrder = ViewBag.NameRUSortOrder, CodeFilter = ViewBag.CodeFilter, LevelFilter = ViewBag.LevelFilter, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter })
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, CodeFilter = ViewBag.CodeFilter, LevelFilter = ViewBag.LevelFilter, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter })
 </div>
 
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
