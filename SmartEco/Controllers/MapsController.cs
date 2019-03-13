@@ -97,6 +97,43 @@ namespace SmartEco.Controllers
             });
             ViewBag.KazHydrometAirPostsLayerJson = objectKazHydrometAirPosts.ToString();
 
+            string urlKazHydrometSoilPosts = "api/KazHydrometSoilPosts";
+            List<KazHydrometSoilPost> kazHydrometSoilPosts = new List<KazHydrometSoilPost>();
+            HttpResponseMessage responseKazHydrometSoilPosts = await _HttpApiClient.GetAsync(urlKazHydrometSoilPosts);
+            kazHydrometSoilPosts = await responseKazHydrometSoilPosts.Content.ReadAsAsync<List<KazHydrometSoilPost>>();
+            JObject objectKazHydrometSoilPosts = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from kazHydrometSoilPost in kazHydrometSoilPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = kazHydrometSoilPost.Id,
+                                   Number = kazHydrometSoilPost.Number
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                            {
+                            Convert.ToDecimal(kazHydrometSoilPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                            Convert.ToDecimal(kazHydrometSoilPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                            },
+                               }
+                           }
+            });
+            ViewBag.KazHydrometSoilPostsLayerJson = objectKazHydrometSoilPosts.ToString();
+
             return View();
         }
     }

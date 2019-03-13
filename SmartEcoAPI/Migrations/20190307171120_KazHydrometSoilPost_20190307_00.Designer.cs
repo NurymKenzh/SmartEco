@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,27 +10,16 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20190307171120_KazHydrometSoilPost_20190307_00")]
+    partial class KazHydrometSoilPost_20190307_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("DataProvider");
-                });
 
             modelBuilder.Entity("SmartEcoAPI.Models.EcomonMonitoringPoint", b =>
                 {
@@ -45,30 +35,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("EcomonMonitoringPoint");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.KATO", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AreaType");
-
-                    b.Property<string>("Code");
-
-                    b.Property<int>("EgovId");
-
-                    b.Property<int>("Level");
-
-                    b.Property<string>("NameKK");
-
-                    b.Property<string>("NameRU");
-
-                    b.Property<int>("ParentEgovId");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("KATO");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.KazHydrometAirPost", b =>
@@ -144,6 +110,8 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<int?>("KazHydrometAirPostId");
 
+                    b.Property<int?>("KazHydrometSoilPostId");
+
                     b.Property<int?>("MaxValueDay");
 
                     b.Property<int?>("MaxValueMonth");
@@ -156,6 +124,8 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<int?>("Month");
 
+                    b.Property<int>("Season");
+
                     b.Property<decimal?>("Value");
 
                     b.Property<int?>("Year");
@@ -165,6 +135,8 @@ namespace SmartEcoAPI.Migrations
                     b.HasIndex("EcomonMonitoringPointId");
 
                     b.HasIndex("KazHydrometAirPostId");
+
+                    b.HasIndex("KazHydrometSoilPostId");
 
                     b.HasIndex("MeasuredParameterId");
 
@@ -203,22 +175,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Pollutant");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.PollutionEnvironment", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("NameEN");
-
-                    b.Property<string>("NameKK");
-
-                    b.Property<string>("NameRU");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PollutionEnvironment");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.PollutionSource", b =>
@@ -264,6 +220,10 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.KazHydrometAirPost", "KazHydrometAirPost")
                         .WithMany()
                         .HasForeignKey("KazHydrometAirPostId");
+
+                    b.HasOne("SmartEcoAPI.Models.KazHydrometSoilPost", "KazHydrometSoilPost")
+                        .WithMany()
+                        .HasForeignKey("KazHydrometSoilPostId");
 
                     b.HasOne("SmartEcoAPI.Models.MeasuredParameter", "MeasuredParameter")
                         .WithMany()
