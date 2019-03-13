@@ -14,10 +14,11 @@ namespace SmartEco.Data
             : base(options)
         {
         }
-        public DbSet<SmartEco.Models.Pollutant> Pollutant { get; set; }
-        public DbSet<SmartEco.Models.PollutionSource> PollutionSource { get; set; }
-        public DbSet<SmartEco.Models.PollutionSourceData> PollutionSourceData { get; set; }
-        public DbSet<SmartEco.Models.KazHydrometAirPost> KazHydrometAirPost { get; set; }
+        //public DbSet<SmartEco.Models.Pollutant> Pollutant { get; set; }
+        //public DbSet<SmartEco.Models.PollutionSource> PollutionSource { get; set; }
+        //public DbSet<SmartEco.Models.PollutionSourceData> PollutionSourceData { get; set; }
+        //public DbSet<SmartEco.Models.KazHydrometAirPost> KazHydrometAirPost { get; set; }
+        //public DbSet<SmartEco.Models.Layer> Layer { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }

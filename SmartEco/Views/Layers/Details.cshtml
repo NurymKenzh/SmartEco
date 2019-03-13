@@ -1,0 +1,79 @@
+﻿@model SmartEco.Models.Layer
+
+@{
+    ViewData["Title"] = "Details";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>Details</h1>
+
+<div>
+    <h4>Layer</h4>
+    <hr />
+    <dl class="row">
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.GeoServerWorkspace)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GeoServerWorkspace)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.GeoServerName)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.GeoServerName)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NameKK)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NameKK)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NameRU)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NameRU)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.NameEN)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.NameEN)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.PollutionEnvironment)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.PollutionEnvironment.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.MeasuredParameter)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.MeasuredParameter.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.KATO)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.KATO.Id)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Season)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Season)
+        </dd>
+        <dt class = "col-sm-2">
+            @Html.DisplayNameFor(model => model.Hour)
+        </dt>
+        <dd class = "col-sm-10">
+            @Html.DisplayFor(model => model.Hour)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
+    <a asp-action="Index">Back to List</a>
+</div>
