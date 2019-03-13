@@ -252,6 +252,12 @@
   <data name="Pollutants" xml:space="preserve">
     <value>Ластағыштар</value>
   </data>
+  <data name="PollutionEnvironment" xml:space="preserve">
+    <value>Қоршаған орта</value>
+  </data>
+  <data name="PollutionEnvironments" xml:space="preserve">
+    <value>Ластану орталары</value>
+  </data>
   <data name="PollutionSource" xml:space="preserve">
     <value>Ластану көзі</value>
   </data>

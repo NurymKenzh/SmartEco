@@ -252,6 +252,12 @@
   <data name="Pollutants" xml:space="preserve">
     <value>Pollutants</value>
   </data>
+  <data name="PollutionEnvironment" xml:space="preserve">
+    <value>Pollution environment</value>
+  </data>
+  <data name="PollutionEnvironments" xml:space="preserve">
+    <value>Pollution environments</value>
+  </data>
   <data name="PollutionSource" xml:space="preserve">
     <value>Pollution Source</value>
   </data>
