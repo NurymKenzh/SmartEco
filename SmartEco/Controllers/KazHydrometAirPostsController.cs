@@ -319,27 +319,27 @@ namespace SmartEco.Controllers
             ViewBag.NumberFilter = NumberFilter;
             if (ModelState.IsValid)
             {
-                int logNumber = kazHydrometAirPost.Number;
-                decimal logNorthLatitude = kazHydrometAirPost.NorthLatitude;
-                decimal logEastLongitude = kazHydrometAirPost.EastLongitude;
-                DateTime logDateTimeStart = DateTime.Now;
+                //int logNumber = kazHydrometAirPost.Number;
+                //decimal logNorthLatitude = kazHydrometAirPost.NorthLatitude;
+                //decimal logEastLongitude = kazHydrometAirPost.EastLongitude;
+                //DateTime logDateTimeStart = DateTime.Now;
 
-                string url = "api/Logs/AddNote",
-                route = "";
+                //string url = "api/Logs/AddNote",
+                //route = "";
 
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"Number={logNumber.ToString()}";
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"Number={logNumber.ToString()}";
 
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"NorthLatitude={logNorthLatitude.ToString()}".Replace(',', '.');
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"NorthLatitude={logNorthLatitude.ToString()}".Replace(',', '.');
 
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"EastLongitude={logEastLongitude.ToString()}".Replace(',', '.');
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"EastLongitude={logEastLongitude.ToString()}".Replace(',', '.');
 
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeStart={logDateTimeStart.ToString()}";
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"DateTimeStart={logDateTimeStart.ToString()}";
 
-                HttpResponseMessage responseLog = await _HttpApiClient.PostAsync(url + route, null);
+                //HttpResponseMessage responseLog = await _HttpApiClient.PostAsync(url + route, null);
 
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
                     "api/KazHydrometAirPosts", kazHydrometAirPost);

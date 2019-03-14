@@ -48,5 +48,7 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.DataProvider> DataProvider { get; set; }
 
         public DbSet<SmartEcoAPI.Models.MonitoringPost> MonitoringPost { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.Layer> Layer { get; set; }
     }
 }
