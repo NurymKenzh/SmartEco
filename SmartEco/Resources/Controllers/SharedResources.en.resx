@@ -172,7 +172,7 @@
     <value>Edit</value>
   </data>
   <data name="EgovId" xml:space="preserve">
-    <value>EgovId</value>
+    <value>E-government</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Find</value>
@@ -184,7 +184,7 @@
     <value>KATO</value>
   </data>
   <data name="KATOes" xml:space="preserve">
-    <value>KATOes</value>
+    <value>KATO</value>
   </data>
   <data name="KazHydrometAirPost" xml:space="preserve">
     <value>KazHydromet monitoring post for the level of air pollution</value>
@@ -231,6 +231,12 @@
   <data name="MeasuredParameters" xml:space="preserve">
     <value>Measured parameters</value>
   </data>
+  <data name="MonitoringPost" xml:space="preserve">
+    <value>Monitoring post</value>
+  </data>
+  <data name="MonitoringPosts" xml:space="preserve">
+    <value>Monitoring posts</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>
@@ -250,7 +256,7 @@
     <value>Number</value>
   </data>
   <data name="ParentEgovId" xml:space="preserve">
-    <value>ParentEgovId</value>
+    <value>Parent Egov Id</value>
   </data>
   <data name="Pollutant" xml:space="preserve">
     <value>Pollutant</value>

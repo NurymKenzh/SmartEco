@@ -231,6 +231,12 @@
   <data name="MeasuredParameters" xml:space="preserve">
     <value />
   </data>
+  <data name="MonitoringPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MonitoringPosts" xml:space="preserve">
+    <value />
+  </data>
   <data name="Name" xml:space="preserve">
     <value />
   </data>
