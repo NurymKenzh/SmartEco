@@ -265,10 +265,10 @@
     <value>Загрязняющие вещества</value>
   </data>
   <data name="PollutionEnvironment" xml:space="preserve">
-    <value>Загрязнение окружающей среды</value>
+    <value>Среда загрязнения</value>
   </data>
   <data name="PollutionEnvironments" xml:space="preserve">
-    <value>Загрязнение окружающей среды</value>
+    <value>Среды загрязнения</value>
   </data>
   <data name="PollutionSource" xml:space="preserve">
     <value>Источник выделения загрязнения</value>

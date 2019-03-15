@@ -16,12 +16,7 @@ namespace SmartEcoAPI.Models
 
         public decimal? Value { get; set; }
 
-        public int? EcomonMonitoringPointId { get; set; }
-        public EcomonMonitoringPoint EcomonMonitoringPoint { get; set; }
         public long? Ecomontimestamp_ms { get; set; }
-
-        public int? KazHydrometAirPostId { get; set; }
-        public KazHydrometAirPost KazHydrometAirPost { get; set; }
 
         public int? Year { get; set; }
         public int? Month { get; set; }
@@ -32,7 +27,7 @@ namespace SmartEcoAPI.Models
         public decimal? MaxValuePerYear { get; set; }
         public decimal? MaxValuePerMonth { get; set; }
 
-        //public int? MonitoringPostId { get; set; }
-        //public MonitoringPost MonitoringPost { get; set; }
+        public int? MonitoringPostId { get; set; }
+        public MonitoringPost MonitoringPost { get; set; }
     }
 }

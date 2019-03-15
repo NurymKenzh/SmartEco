@@ -265,10 +265,10 @@
     <value>Ластағыштар</value>
   </data>
   <data name="PollutionEnvironment" xml:space="preserve">
-    <value>Қоршаған орта</value>
+    <value>Қоршаған орта ластануы</value>
   </data>
   <data name="PollutionEnvironments" xml:space="preserve">
-    <value>Ластану орталары</value>
+    <value>Қоршаған орта ластануы</value>
   </data>
   <data name="PollutionSource" xml:space="preserve">
     <value>Ластану көзі</value>
