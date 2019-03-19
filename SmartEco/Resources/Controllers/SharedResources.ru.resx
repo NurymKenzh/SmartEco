@@ -172,7 +172,7 @@
     <value>Редактировать</value>
   </data>
   <data name="EgovId" xml:space="preserve">
-    <value>EgovId</value>
+    <value>Электронное правительство</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Найти</value>
@@ -181,10 +181,10 @@
     <value>История</value>
   </data>
   <data name="KATO" xml:space="preserve">
-    <value>KATO</value>
+    <value>КАТО</value>
   </data>
   <data name="KATOes" xml:space="preserve">
-    <value>KATOes</value>
+    <value>КАТО</value>
   </data>
   <data name="KazHydrometAirPost" xml:space="preserve">
     <value>Пост наблюдения за уровнем загрязнения атмосферного воздуха КазГидромета</value>
@@ -231,6 +231,12 @@
   <data name="MeasuredParameters" xml:space="preserve">
     <value>Измеряемые параметры</value>
   </data>
+  <data name="MonitoringPost" xml:space="preserve">
+    <value>Пост мониторинга</value>
+  </data>
+  <data name="MonitoringPosts" xml:space="preserve">
+    <value>Посты мониторинга</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Название</value>
   </data>
@@ -250,7 +256,7 @@
     <value>Номер</value>
   </data>
   <data name="ParentEgovId" xml:space="preserve">
-    <value>ParentEgovId</value>
+    <value>Родительский Egov Id</value>
   </data>
   <data name="Pollutant" xml:space="preserve">
     <value>Загрязняющее вещество</value>
@@ -259,10 +265,10 @@
     <value>Загрязняющие вещества</value>
   </data>
   <data name="PollutionEnvironment" xml:space="preserve">
-    <value>Загрязнение окружающей среды</value>
+    <value>Среда загрязнения</value>
   </data>
   <data name="PollutionEnvironments" xml:space="preserve">
-    <value>Загрязнение окружающей среды</value>
+    <value>Среды загрязнения</value>
   </data>
   <data name="PollutionSource" xml:space="preserve">
     <value>Источник выделения загрязнения</value>

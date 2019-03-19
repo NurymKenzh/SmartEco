@@ -172,7 +172,7 @@
     <value>Өңдеу</value>
   </data>
   <data name="EgovId" xml:space="preserve">
-    <value>EgovId</value>
+    <value>Электрондық үкімет</value>
   </data>
   <data name="Find" xml:space="preserve">
     <value>Табу</value>
@@ -181,10 +181,10 @@
     <value>Тарих</value>
   </data>
   <data name="KATO" xml:space="preserve">
-    <value>KATO</value>
+    <value>КАТО</value>
   </data>
   <data name="KATOes" xml:space="preserve">
-    <value>KATOes</value>
+    <value>КАТО</value>
   </data>
   <data name="KazHydrometAirPost" xml:space="preserve">
     <value>Қазгидрометтің атмосфералық ауаның ластану деңгейін бақылау бекеті</value>
@@ -231,6 +231,12 @@
   <data name="MeasuredParameters" xml:space="preserve">
     <value>Өлшенетін параметрлер</value>
   </data>
+  <data name="MonitoringPost" xml:space="preserve">
+    <value>Мониторинг посты</value>
+  </data>
+  <data name="MonitoringPosts" xml:space="preserve">
+    <value>Мониторинг посттары</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Атауы</value>
   </data>
@@ -250,7 +256,7 @@
     <value>Нөмірі</value>
   </data>
   <data name="ParentEgovId" xml:space="preserve">
-    <value>ParentEgovId</value>
+    <value>Ата-ана Egov Id</value>
   </data>
   <data name="Pollutant" xml:space="preserve">
     <value>Ластаушы</value>
@@ -259,10 +265,10 @@
     <value>Ластағыштар</value>
   </data>
   <data name="PollutionEnvironment" xml:space="preserve">
-    <value>Қоршаған орта</value>
+    <value>Қоршаған орта ластануы</value>
   </data>
   <data name="PollutionEnvironments" xml:space="preserve">
-    <value>Ластану орталары</value>
+    <value>Қоршаған орта ластануы</value>
   </data>
   <data name="PollutionSource" xml:space="preserve">
     <value>Ластану көзі</value>

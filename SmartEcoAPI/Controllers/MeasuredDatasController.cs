@@ -28,15 +28,13 @@ namespace SmartEcoAPI.Controllers
             int? MeasuredParameterId,
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
-            int? EcomonMonitoringPointId,
-            int? KazHydrometAirPostId,
+            int? MonitoringPostId,
             int? PageSize,
             int? PageNumber)
         {
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
-                .Include(m => m.EcomonMonitoringPoint)
-                .Include(m => m.KazHydrometAirPost)
+                .Include(m => m.MonitoringPost)
                 .Where(m => true);
 
             if (MeasuredParameterId != null)
@@ -56,13 +54,9 @@ namespace SmartEcoAPI.Controllers
                     (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
                     (m.Year != null && m.Month != null &&  m.Year<= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
             }
-            if (EcomonMonitoringPointId != null)
+            if (MonitoringPostId != null)
             {
-                measuredDatas = measuredDatas.Where(m => m.EcomonMonitoringPointId == EcomonMonitoringPointId);
-            }
-            if (KazHydrometAirPostId != null)
-            {
-                measuredDatas = measuredDatas.Where(m => m.KazHydrometAirPostId == KazHydrometAirPostId);
+                measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
             }
 
             switch (SortOrder)
@@ -126,8 +120,7 @@ namespace SmartEcoAPI.Controllers
             //var measuredData = await _context.MeasuredData.FindAsync(id);
             var measuredData = await _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
-                .Include(m => m.EcomonMonitoringPoint)
-                .Include(m => m.KazHydrometAirPost)
+                .Include(m => m.MonitoringPost)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (measuredData == null)
@@ -185,7 +178,7 @@ namespace SmartEcoAPI.Controllers
             //var measuredData = await _context.MeasuredData.FindAsync(id);
             var measuredData = await _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
-                .Include(m => m.EcomonMonitoringPoint)
+                .Include(m => m.MonitoringPost)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (measuredData == null)
             {
@@ -208,8 +201,7 @@ namespace SmartEcoAPI.Controllers
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredDatasCount(int? MeasuredParameterId,
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
-            int? EcomonMonitoringPointId,
-            int? KazHydrometAirPostId)
+            int? MonitoringPostId)
         {
             var measuredDatas = _context.MeasuredData
                  .Where(m => true);
@@ -232,13 +224,9 @@ namespace SmartEcoAPI.Controllers
                     (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
                     (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
             }
-            if (EcomonMonitoringPointId != null)
+            if (MonitoringPostId != null)
             {
-                measuredDatas = measuredDatas.Where(m => m.EcomonMonitoringPointId == EcomonMonitoringPointId);
-            }
-            if (KazHydrometAirPostId != null)
-            {
-                measuredDatas = measuredDatas.Where(m => m.KazHydrometAirPostId == KazHydrometAirPostId);
+                measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
             }
 
             int count = await measuredDatas.CountAsync();

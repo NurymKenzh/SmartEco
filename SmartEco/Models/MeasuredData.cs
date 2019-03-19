@@ -21,18 +21,8 @@ namespace SmartEco.Models
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Value")]
         public decimal? Value { get; set; }
 
-        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "EcomonMonitoringPoint")]
-        public int? EcomonMonitoringPointId { get; set; }
-        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "EcomonMonitoringPoint")]
-        public EcomonMonitoringPoint EcomonMonitoringPoint { get; set; }
-
         [Display(Name = "Ecomontimestamp_ms")]
         public long? Ecomontimestamp_ms { get; set; }
-
-        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "KazHydrometAirPost")]
-        public int? KazHydrometAirPostId { get; set; }
-        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "KazHydrometAirPost")]
-        public KazHydrometAirPost KazHydrometAirPost { get; set; }
 
         public int? Year { get; set; }
         public int? Month { get; set; }
@@ -71,7 +61,9 @@ namespace SmartEco.Models
             }
         }
 
-        //public int? MonitoringPostId { get; set; }
-        //public MonitoringPost MonitoringPost { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MonitoringPost")]
+        public int? MonitoringPostId { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MonitoringPost")]
+        public MonitoringPost MonitoringPost { get; set; }
     }
 }
