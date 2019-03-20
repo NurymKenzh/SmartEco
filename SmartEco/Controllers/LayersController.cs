@@ -206,7 +206,7 @@ namespace SmartEco.Controllers
             {
                 kATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(kATOes.OrderBy(k => k.NameRU), "Id", "NameRU");
+            ViewBag.KATOes2 = new SelectList(kATOes.Where(k => k.Level == 2).OrderBy(k => k.Name), "Id", "Name");
 
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
             string urlMeasuredParameters = "api/MeasuredParameters",
@@ -241,7 +241,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,GeoServerWorkspace,GeoServerName,NameKK,NameRU,NameEN,PollutionEnvironmentId,MeasuredParameterId,KATOId,Season,Hour")] Layer layer,
+        public async Task<IActionResult> Create([Bind("Id,GeoServerWorkspace,GeoServerName,NameKK,NameRU,NameEN,PollutionEnvironmentId,MeasuredParameterId,KATOId,KATOId2,KATOId3,KATOId4,KATOId5,Season,Hour")] Layer layer,
             string SortOrder,
             string GeoServerNameFilter,
             string NameKKFilter,
@@ -268,6 +268,36 @@ namespace SmartEco.Controllers
             //ViewData["MeasuredParameterId"] = new SelectList(_context.Set<MeasuredParameter>(), "Id", "Id", layer.MeasuredParameterId);
             //ViewData["PollutionEnvironmentId"] = new SelectList(_context.Set<PollutionEnvironment>(), "Id", "Id", layer.PollutionEnvironmentId);
             //return View(layer);
+            List<KATO> kATOes = new List<KATO>();
+            string urlKATOes = "api/KATOes",
+                routeKATOes = "";
+            HttpResponseMessage responseKATOes = await _HttpApiClient.GetAsync(urlKATOes + routeKATOes);
+            if (responseKATOes.IsSuccessStatusCode)
+            {
+                kATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
+            }
+            int kATOId2 = 0;
+            if (layer.KATOId2 != null)
+            {
+                layer.KATOId = layer.KATOId2;
+                kATOId2 = (int)layer.KATOId2;
+                if (layer.KATOId3 != null)
+                {
+                    layer.KATOId = layer.KATOId3;
+                    kATOId2 = (int)layer.KATOId3;
+                    if (layer.KATOId4 != null)
+                    {
+                        layer.KATOId = layer.KATOId4;
+                        kATOId2 = (int)layer.KATOId4;
+                        if (layer.KATOId5 != null)
+                        {
+                            layer.KATOId = layer.KATOId5;
+                            kATOId2 = (int)layer.KATOId5;
+                        }
+                    }
+                }
+            }
+            ViewBag.KATOes2 = new SelectList(kATOes.Where(k => k.Level == 2).OrderBy(k => k.Name), "Id", "Name", kATOId2);
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
@@ -301,6 +331,26 @@ namespace SmartEco.Controllers
                         NameENFilter = ViewBag.NameENFilter
                     });
             }
+
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            ViewBag.MeasuredParameters = new SelectList(measuredParameters.OrderBy(m => m.Name), "Id", "Name", layer.MeasuredParameterId);
+
+            List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
+            string urlPollutionEnvironments = "api/PollutionEnvironments",
+                routePollutionEnvironments = "";
+            HttpResponseMessage responsePollutionEnvironments = await _HttpApiClient.GetAsync(urlPollutionEnvironments + routePollutionEnvironments);
+            if (responsePollutionEnvironments.IsSuccessStatusCode)
+            {
+                pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
+            }
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name", layer.PollutionEnvironmentId);
             return View(layer);
         }
 
@@ -397,5 +447,18 @@ namespace SmartEco.Controllers
         //{
         //    return _context.Layer.Any(e => e.Id == id);
         //}
+
+        [HttpPost]
+        public async Task<Layer[]> GetLayers()
+        {
+            string url = "api/Layers";
+            HttpResponseMessage responseLayers = await _HttpApiClient.GetAsync(url);
+            List<Layer> layers = new List<Layer>();
+            if (responseLayers.IsSuccessStatusCode)
+            {
+                layers = await responseLayers.Content.ReadAsAsync<List<Layer>>();
+            }
+            return layers.ToArray();
+        }
     }
 }

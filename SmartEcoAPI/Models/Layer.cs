@@ -25,7 +25,7 @@ namespace SmartEcoAPI.Models
         public KATO KATO { get; set; }
         public int? KATOId { get; set; }
 
-        public Season Season { get; set; }
+        public Season? Season { get; set; }
 
         public int? Hour { get; set; }
     }

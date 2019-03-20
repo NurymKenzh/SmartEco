@@ -1,5 +1,7 @@
 ﻿@model SmartEco.Models.Layer
-
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = "Create";
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -40,23 +42,32 @@
             </div>
             <div class="form-group">
                 <label asp-for="PollutionEnvironmentId" class="control-label"></label>
-                <select asp-for="PollutionEnvironmentId" class ="form-control" asp-items="ViewBag.PollutionEnvironments">
-                    <option disabled selected></option>
+                <select asp-for="PollutionEnvironmentId" class="form-control" asp-items="ViewBag.PollutionEnvironments">
+                    <option selected></option>
                 </select>
             </div>
             <div class="form-group">
                 <label asp-for="MeasuredParameterId" class="control-label"></label>
                 <select asp-for="MeasuredParameterId" class="form-control" asp-items="ViewBag.MeasuredParameters">
-                    <option disabled selected></option>
+                    <option selected></option>
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="KATOId" class="control-label"></label>
-                <select asp-for="KATOId" class ="form-control" asp-items="ViewBag.KATOes" ></select>
+                <label asp-for="KATOId2" class="control-label"></label>
+                <select asp-for="KATOId2" class="form-control" asp-items="ViewBag.KATOes2" id="KATOId2" onchange="ChangeKATO(2)">
+                    <option selected></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="KATOId3" class="control-label"></label>
+                <select asp-for="KATOId3" class="form-control" id="KATOId3" onchange="ChangeKATO(3)"></select>
             </div>
             <div class="form-group">
                 <label asp-for="Season" class="control-label"></label>
-                <select asp-for="Season" class="form-control"></select>
+                @*<select asp-for="Season" class="form-control"></select>*@
+                <select asp-for="Season" class="form-control" asp-items='Html.GetEnumSelectList<Season>().Select(c => {c.Text = SharedLocalizer[c.Text]; return c;}).ToList()'>
+                    <option selected></option>
+                </select>
                 <span asp-validation-for="Season" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -78,3 +89,31 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
+
+<script>
+    function ChangeKATO(level) {
+        var KATOId = null,
+            dropdown = null;
+        if (level == 2) {
+            KATOId = $("#KATOId2").val();
+            dropdown = $("#KATOId3");
+        }
+        if (KATOId) {
+            $.ajax({
+                url: '@Url.Action("GetKATOes", "KATOes")',
+                data: { KATOId: KATOId },
+                type: 'POST',
+                success: function (data) {
+                    dropdown.find('option').remove();
+                    dropdown.append($("<option selected></option>"));
+                    $.each(data, function () {
+                        dropdown.append($("<option />").val(this.id).text(this.name));
+                    });
+                },
+                error: function () {
+                }
+            });
+        }
+    }
+    ChangeKATO(2);
+</script>

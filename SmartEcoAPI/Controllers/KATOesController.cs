@@ -166,6 +166,7 @@ namespace SmartEcoAPI.Controllers
             int? Level,
             string NameKK,
             string NameRU,
+            int? ParentEgovId,
             int? PageSize,
             int? PageNumber)
         {
@@ -187,6 +188,10 @@ namespace SmartEcoAPI.Controllers
             if (!string.IsNullOrEmpty(NameRU))
             {
                 KATOes = KATOes.Where(m => m.NameRU.ToLower().Contains(NameRU.ToLower()));
+            }
+            if (ParentEgovId != null)
+            {
+                KATOes = KATOes.Where(k => k.ParentEgovId == ParentEgovId);
             }
 
             switch (SortOrder)
@@ -308,7 +313,8 @@ namespace SmartEcoAPI.Controllers
         public async Task<ActionResult<IEnumerable<KATO>>> GetKATOCount(string Code,
             int? Level,
             string NameKK,
-            string NameRU)
+            string NameRU,
+            int? ParentEgovId)
         {
             var KATOes = _context.KATO
                 .Where(k => true);
@@ -328,6 +334,10 @@ namespace SmartEcoAPI.Controllers
             if (!string.IsNullOrEmpty(NameRU))
             {
                 KATOes = KATOes.Where(m => m.NameRU.ToLower().Contains(NameRU.ToLower()));
+            }
+            if (ParentEgovId != null)
+            {
+                KATOes = KATOes.Where(k => k.ParentEgovId == ParentEgovId);
             }
 
             int count = await KATOes.CountAsync();

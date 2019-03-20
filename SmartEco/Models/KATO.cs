@@ -1,4 +1,5 @@
-﻿using System;
+﻿using Microsoft.AspNetCore.Builder;
+using System;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Linq;
@@ -30,5 +31,20 @@ namespace SmartEco.Models
 
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameRU")]
         public string NameRU { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Name")]
+        public string Name
+        {
+            get
+            {
+                string language = new RequestLocalizationOptions().DefaultRequestCulture.Culture.Name,
+                    name = NameRU;
+                if (language == "kk")
+                {
+                    name = NameKK;
+                }
+                return name;
+            }
+        }
     }
 }

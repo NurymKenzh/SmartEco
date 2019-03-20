@@ -32,6 +32,15 @@
 
     <input type="checkbox" id="KazHydrometSoilPosts" value="KazHydrometSoilPosts" onchange="ChangeLayers()" />
     <label for="KazHydrometSoilPosts">@SharedLocalizer["KazHydrometSoilPosts"]</label>
+
+    @{
+        List<Layer> layers = ViewBag.Layers;
+        foreach (Layer layer in layers)
+        {
+            <input type="checkbox" id="@layer.GeoServerName" value="@layer.GeoServerName" onchange="ChangeLayers()" />
+            <label for="Layers">@layer.Name</label>
+        }
+    }
 </div>
 <div class="form-group">
     <div id="map" style="height: 400px; width: 100%;"></div>
@@ -43,6 +52,9 @@
 </div>
 
 <script type="text/javascript">
+    var geoserverPort = '8080',
+        geoserverAddress = window.location.hostname;
+
     var source = new ol.source.Vector();
     var layer = new ol.layer.Vector({
         source: source
@@ -134,6 +146,21 @@
     Layer_KazHydrometSoilPosts.setOpacity(1);
     layers.push(Layer_KazHydrometSoilPosts);
 
+    //var Source_allsum201702_avg = new ol.source.ImageWMS({
+    //    url: 'http://' + 'localhost' + ':' + '8080' + '/geoserver/SmartEco/wms?',
+    //    params: {
+    //        'LAYERS': 'SmartEco:allsum201702_avg'
+    //    },
+    //    serverType: 'geoserver'
+    //});
+    //var Layer_allsum201702_avg = new ol.layer.Image({
+    //    source: Source_allsum201702_avg
+    //});
+    //Layer_allsum201702_avg.set('name', 'allsum201702_avg');
+    ////Layer_allsum201702_avg.setVisible(false);
+    //Layer_allsum201702_avg.setOpacity(0.8);
+    //layers.push(Layer_allsum201702_avg);
+
     var map = new ol.Map({
         target: 'map',
         layers: layers,
@@ -143,8 +170,49 @@
         })
     });
 
+    var gslayers = [],
+        gslayersdata = [];
+
+    $.ajax({
+        url: '@Url.Action("GetLayers", "Layers")',
+        //data: { KATOId: KATOId },
+        type: 'POST',
+        success: function (data) {
+            $.each(data, function () {
+                var Source_new_gs_layer = new ol.source.ImageWMS({
+                    url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/SmartEco/wms?',
+                    params: {
+                        'LAYERS': 'SmartEco:' + this.geoServerName
+                    },
+                    serverType: 'geoserver'
+                });
+                var Layer_new_gs_layer = new ol.layer.Image({
+                    source: Source_new_gs_layer
+                });
+                Layer_new_gs_layer.set('name', this.geoServerName);
+                Layer_new_gs_layer.setVisible(false);
+                Layer_new_gs_layer.setOpacity(0.8);
+                gslayers.push(Layer_new_gs_layer);
+                map.addLayer(Layer_new_gs_layer);
+                this.gslayer = Layer_new_gs_layer;
+                gslayersdata.push(this);
+            });
+        },
+        error: function () {
+        }
+    });
+
     function ChangeLayers() {
-        map.getLayers().forEach(function (layer) {
+        //alert(gslayersdata[0].geoServerName);
+        gslayersdata.forEach(function (gslayerdata) {
+            if (document.getElementById(gslayerdata.geoServerName).checked == true) {
+                gslayerdata.gslayer.setVisible(true);
+            }
+            if (document.getElementById(gslayerdata.geoServerName).checked == false) {
+                gslayerdata.gslayer.setVisible(false);
+            }
+        })
+        //map.getLayers().forEach(function (layer) {
             if (document.getElementById("EcomonPoints").checked == true) {
                 Layer_Ecomons.setVisible(true);
             }
@@ -163,7 +231,7 @@
             if (document.getElementById("KazHydrometSoilPosts").checked == false) {
                 Layer_KazHydrometSoilPosts.setVisible(false);
             }
-        })
+        //})
     }
 </script>
 

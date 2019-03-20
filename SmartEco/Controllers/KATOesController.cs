@@ -417,5 +417,27 @@ namespace SmartEco.Controllers
         //{
         //    return _context.KATO.Any(e => e.Id == id);
         //}
+
+        [HttpPost]
+        public async Task<KATO[]> GetKATOes(int KATOId)
+        {
+            KATO KATO = null;
+            HttpResponseMessage responseKATO = await _HttpApiClient.GetAsync($"api/KATOes/{KATOId.ToString()}");
+            if (responseKATO.IsSuccessStatusCode)
+            {
+                KATO = await responseKATO.Content.ReadAsAsync<KATO>();
+            }
+            string url = "api/KATOes",
+                route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"ParentEgovId={KATO.EgovId}";
+            HttpResponseMessage responseKATOes = await _HttpApiClient.GetAsync(url + route);
+            List<KATO> kATOes = new List<KATO>();
+            if (responseKATOes.IsSuccessStatusCode)
+            {
+                kATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
+            }
+            return kATOes.ToArray();
+        }
     }
 }

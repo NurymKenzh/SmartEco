@@ -23,6 +23,12 @@ namespace SmartEco.Controllers
         {
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
+            string urlLayers = "api/Layers";
+            List<Layer> layers = new List<Layer>();
+            HttpResponseMessage responseLayers = await _HttpApiClient.GetAsync(urlLayers);
+            layers = await responseLayers.Content.ReadAsAsync<List<Layer>>();
+            ViewBag.Layers = layers;
+
             string urlEcomonMonitoringPoints = "api/EcomonMonitoringPoints";
             List<EcomonMonitoringPoint> ecomons = new List<EcomonMonitoringPoint>();
             HttpResponseMessage responseEcomonMonitoringPoints = await _HttpApiClient.GetAsync(urlEcomonMonitoringPoints);
