@@ -228,7 +228,12 @@ namespace SmartEco.Controllers
             }
             ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
 
-            return View();
+            Layer layer = new Layer()
+            {
+                GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"]
+            };
+
+            return View(layer);
         }
 
         // POST: Layers/Create

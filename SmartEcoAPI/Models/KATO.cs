@@ -20,7 +20,7 @@ namespace SmartEcoAPI.Models
         public int EgovId { get; set; }
 
         //[Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Number")]
-        public int ParentEgovId { get; set; }
+        public int? ParentEgovId { get; set; }
 
         public string NameKK { get; set; }
 

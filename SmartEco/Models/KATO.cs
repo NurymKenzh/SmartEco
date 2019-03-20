@@ -23,7 +23,7 @@ namespace SmartEco.Models
         public int EgovId { get; set; }
 
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "ParentEgovId")]
-        public int ParentEgovId { get; set; }
+        public int? ParentEgovId { get; set; }
 
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameKK")]
         public string NameKK { get; set; }
