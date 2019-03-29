@@ -43,15 +43,15 @@ namespace SmartEcoAPI.Controllers
             }
             if (!string.IsNullOrEmpty(NameKK))
             {
-                layers = layers.Where(l => l.NameKK.ToLower().Contains(NameKK));
+                layers = layers.Where(l => l.NameKK.ToLower().Contains(NameKK.ToLower()));
             }
             if (!string.IsNullOrEmpty(NameRU))
             {
-                layers = layers.Where(l => l.NameRU.ToLower().Contains(NameRU));
+                layers = layers.Where(l => l.NameRU.ToLower().Contains(NameRU.ToLower()));
             }
             if (!string.IsNullOrEmpty(NameEN))
             {
-                layers = layers.Where(l => l.NameEN.ToLower().Contains(NameEN));
+                layers = layers.Where(l => l.NameEN.ToLower().Contains(NameEN.ToLower()));
             }
 
             switch (SortOrder)
@@ -156,7 +156,11 @@ namespace SmartEcoAPI.Controllers
         [HttpDelete("{id}")]
         public async Task<ActionResult<Layer>> DeleteLayer(int id)
         {
-            var layer = await _context.Layer.FindAsync(id);
+            var layer = await _context.Layer
+                .Include(l => l.KATO)
+                .Include(l => l.MeasuredParameter)
+                .Include(l => l.PollutionEnvironment)
+                .FirstOrDefaultAsync(m => m.Id == id);
             if (layer == null)
             {
                 return NotFound();
@@ -189,15 +193,15 @@ namespace SmartEcoAPI.Controllers
             }
             if (!string.IsNullOrEmpty(NameKK))
             {
-                layers = layers.Where(l => l.NameKK.ToLower().Contains(NameKK));
+                layers = layers.Where(l => l.NameKK.ToLower().Contains(NameKK.ToLower()));
             }
             if (!string.IsNullOrEmpty(NameRU))
             {
-                layers = layers.Where(l => l.NameRU.ToLower().Contains(NameRU));
+                layers = layers.Where(l => l.NameRU.ToLower().Contains(NameRU.ToLower()));
             }
             if (!string.IsNullOrEmpty(NameEN))
             {
-                layers = layers.Where(l => l.NameEN.ToLower().Contains(NameEN));
+                layers = layers.Where(l => l.NameEN.ToLower().Contains(NameEN.ToLower()));
             }
 
             int count = await layers.CountAsync();

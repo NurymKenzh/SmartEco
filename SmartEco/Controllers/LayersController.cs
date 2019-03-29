@@ -354,99 +354,194 @@ namespace SmartEco.Controllers
             return View(layer);
         }
 
-        //// GET: Layers/Edit/5
-        //public async Task<IActionResult> Edit(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // GET: Layers/Edit/5
+        public async Task<IActionResult> Edit(int? id, 
+            string SortOrder,
+            string GeoServerNameFilter,
+            string NameKKFilter,
+            string NameRUFilter,
+            string NameENFilter,
+            int? PageSize,
+            int? PageNumber)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageSize = PageSize;
+            ViewBag.PageNumber = PageNumber;
+            ViewBag.GeoServerNameFilter = GeoServerNameFilter;
+            ViewBag.NameKKFilter = NameKKFilter;
+            ViewBag.NameRUFilter = NameRUFilter;
+            ViewBag.NameENFilter = NameENFilter;
+            Layer layer = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Layers/{id.ToString()}");
+            if (response.IsSuccessStatusCode)
+            {
+                layer = await response.Content.ReadAsAsync<Layer>();
+            }
 
-        //    var layer = await _context.Layer.FindAsync(id);
-        //    if (layer == null)
-        //    {
-        //        return NotFound();
-        //    }
-        //    ViewData["KATOId"] = new SelectList(_context.Set<KATO>(), "Id", "Id", layer.KATOId);
-        //    ViewData["MeasuredParameterId"] = new SelectList(_context.Set<MeasuredParameter>(), "Id", "Id", layer.MeasuredParameterId);
-        //    ViewData["PollutionEnvironmentId"] = new SelectList(_context.Set<PollutionEnvironment>(), "Id", "Id", layer.PollutionEnvironmentId);
-        //    return View(layer);
-        //}
+            List<KATO> kATOes = new List<KATO>();
+            string urlKATOes = "api/KATOes",
+                routeKATOes = "";
+            HttpResponseMessage responseKATOes = await _HttpApiClient.GetAsync(urlKATOes + routeKATOes);
+            if (responseKATOes.IsSuccessStatusCode)
+            {
+                kATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
+            }
+            ViewBag.KATOes2 = new SelectList(kATOes.Where(k => k.Level == 2).OrderBy(k => k.Name), "Id", "Name");
 
-        //// POST: Layers/Edit/5
-        //// To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        //// more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(int id, [Bind("Id,GeoServerWorkspace,GeoServerName,NameKK,NameRU,NameEN,PollutionEnvironmentId,MeasuredParameterId,KATOId,Season,Hour")] Layer layer)
-        //{
-        //    if (id != layer.Id)
-        //    {
-        //        return NotFound();
-        //    }
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            ViewBag.MeasuredParameters = new SelectList(measuredParameters.OrderBy(m => m.Name), "Id", "Name");
 
-        //    if (ModelState.IsValid)
-        //    {
-        //        try
-        //        {
-        //            _context.Update(layer);
-        //            await _context.SaveChangesAsync();
-        //        }
-        //        catch (DbUpdateConcurrencyException)
-        //        {
-        //            if (!LayerExists(layer.Id))
-        //            {
-        //                return NotFound();
-        //            }
-        //            else
-        //            {
-        //                throw;
-        //            }
-        //        }
-        //        return RedirectToAction(nameof(Index));
-        //    }
-        //    ViewData["KATOId"] = new SelectList(_context.Set<KATO>(), "Id", "Id", layer.KATOId);
-        //    ViewData["MeasuredParameterId"] = new SelectList(_context.Set<MeasuredParameter>(), "Id", "Id", layer.MeasuredParameterId);
-        //    ViewData["PollutionEnvironmentId"] = new SelectList(_context.Set<PollutionEnvironment>(), "Id", "Id", layer.PollutionEnvironmentId);
-        //    return View(layer);
-        //}
+            List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
+            string urlPollutionEnvironments = "api/PollutionEnvironments",
+                routePollutionEnvironments = "";
+            HttpResponseMessage responsePollutionEnvironments = await _HttpApiClient.GetAsync(urlPollutionEnvironments + routePollutionEnvironments);
+            if (responsePollutionEnvironments.IsSuccessStatusCode)
+            {
+                pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
+            }
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
+            
+            return View(layer);
+        }
 
-        //// GET: Layers/Delete/5
-        //public async Task<IActionResult> Delete(int? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        // POST: Layers/Edit/5
+        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
+        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Edit(int id, [Bind("Id,GeoServerWorkspace,GeoServerName,NameKK,NameRU,NameEN,PollutionEnvironmentId,MeasuredParameterId,KATOId,Season,Hour")] Layer layer,
+            string SortOrder,
+            string GeoServerNameFilter,
+            string NameKKFilter,
+            string NameRUFilter,
+            string NameENFilter,
+            int? PageSize,
+            int? PageNumber)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageSize = PageSize;
+            ViewBag.PageNumber = PageNumber;
+            ViewBag.GeoServerNameFilter = GeoServerNameFilter;
+            ViewBag.NameKKFilter = NameKKFilter;
+            ViewBag.NameRUFilter = NameRUFilter;
+            ViewBag.NameENFilter = NameENFilter;
+            if (id != layer.Id)
+            {
+                return NotFound();
+            }
+            if (ModelState.IsValid)
+            {
+                HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
+                    $"api/Layers/{layer.Id}", layer);
 
-        //    var layer = await _context.Layer
-        //        .Include(l => l.KATO)
-        //        .Include(l => l.MeasuredParameter)
-        //        .Include(l => l.PollutionEnvironment)
-        //        .FirstOrDefaultAsync(m => m.Id == id);
-        //    if (layer == null)
-        //    {
-        //        return NotFound();
-        //    }
+                string OutputViewText = await response.Content.ReadAsStringAsync();
+                OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch
+                {
+                    dynamic errors = JsonConvert.DeserializeObject<dynamic>(OutputViewText);
+                    foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
+                    {
+                        ModelState.AddModelError(property.Name, property.Value[0].ToString());
+                    }
+                    return View(layer);
+                }
 
-        //    return View(layer);
-        //}
+                layer = await response.Content.ReadAsAsync<Layer>();
+                return RedirectToAction(nameof(Index),
+                    new
+                    {
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        GeoServerNameFilter = ViewBag.GeoServerNameFilter,
+                        NameKKFilter = ViewBag.NameKKFilter,
+                        NameRUFilter = ViewBag.NameRUFilter,
+                        NameENFilter = ViewBag.NameENFilter
+                    });
+            }
+            return View(layer);
+        }
 
-        //// POST: Layers/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(int id)
-        //{
-        //    var layer = await _context.Layer.FindAsync(id);
-        //    _context.Layer.Remove(layer);
-        //    await _context.SaveChangesAsync();
-        //    return RedirectToAction(nameof(Index));
-        //}
+        // GET: Layers/Delete/5
+        public async Task<IActionResult> Delete(int? id,
+            string SortOrder,
+            string GeoServerNameFilter,
+            string NameKKFilter,
+            string NameRUFilter,
+            string NameENFilter,
+            int? PageSize,
+            int? PageNumber)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageSize = PageSize;
+            ViewBag.PageNumber = PageNumber;
+            ViewBag.GeoServerNameFilter = GeoServerNameFilter;
+            ViewBag.NameKKFilter = NameKKFilter;
+            ViewBag.NameRUFilter = NameRUFilter;
+            ViewBag.NameENFilter = NameENFilter;
+            if (id == null)
+            {
+                return NotFound();
+            }
 
-        //private bool LayerExists(int id)
-        //{
-        //    return _context.Layer.Any(e => e.Id == id);
-        //}
+            Layer layer = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Layers/{id.ToString()}");
+            if (response.IsSuccessStatusCode)
+            {
+                layer = await response.Content.ReadAsAsync<Layer>();
+            }
+            if (layer == null)
+            {
+                return NotFound();
+            }
+
+            return View(layer);
+        }
+
+        // POST: Layers/Delete/5
+        [HttpPost, ActionName("Delete")]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> DeleteConfirmed(int id,
+            string SortOrder,
+            string GeoServerNameFilter,
+            string NameKKFilter,
+            string NameRUFilter,
+            string NameENFilter,
+            int? PageSize,
+            int? PageNumber)
+        {
+            ViewBag.SortOrder = SortOrder;
+            ViewBag.PageSize = PageSize;
+            ViewBag.PageNumber = PageNumber;
+            ViewBag.GeoServerNameFilter = GeoServerNameFilter;
+            ViewBag.NameKKFilter = NameKKFilter;
+            ViewBag.NameRUFilter = NameRUFilter;
+            ViewBag.NameENFilter = NameENFilter;
+            HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
+                $"api/Layers/{id}");
+            return RedirectToAction(nameof(Index),
+                    new
+                    {
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        GeoServerNameFilter = ViewBag.GeoServerNameFilter,
+                        NameKKFilter = ViewBag.NameKKFilter,
+                        NameRUFilter = ViewBag.NameRUFilter,
+                        NameENFilter = ViewBag.NameENFilter
+                    });
+        }
 
         [HttpPost]
         public async Task<Layer[]> GetLayers()

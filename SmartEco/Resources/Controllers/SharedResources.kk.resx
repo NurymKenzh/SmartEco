@@ -177,8 +177,17 @@
   <data name="Find" xml:space="preserve">
     <value>Табу</value>
   </data>
+  <data name="GeoServerName" xml:space="preserve">
+    <value>GeoServer-дағы атау</value>
+  </data>
+  <data name="GeoServerWorkspace" xml:space="preserve">
+    <value>GeoServer жұмыс кеңістігі</value>
+  </data>
   <data name="History" xml:space="preserve">
     <value>Тарих</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Сағат</value>
   </data>
   <data name="KATO" xml:space="preserve">
     <value>КАТО</value>
@@ -200,6 +209,12 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Тіл</value>
+  </data>
+  <data name="Layer" xml:space="preserve">
+    <value>Қабат</value>
+  </data>
+  <data name="Layers" xml:space="preserve">
+    <value>Қабаттар</value>
   </data>
   <data name="Level" xml:space="preserve">
     <value>Деңгейі</value>
@@ -284,6 +299,9 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сақтау</value>
+  </data>
+  <data name="Season" xml:space="preserve">
+    <value>Маусым</value>
   </data>
   <data name="Value" xml:space="preserve">
     <value>Мағынасы</value>

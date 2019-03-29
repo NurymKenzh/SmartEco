@@ -243,9 +243,36 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string GeoServerName {
+            get {
+                return ResourceManager.GetString("GeoServerName", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string GeoServerWorkspace {
+            get {
+                return ResourceManager.GetString("GeoServerWorkspace", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string History {
             get {
                 return ResourceManager.GetString("History", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Hour {
+            get {
+                return ResourceManager.GetString("Hour", resourceCulture);
             }
         }
         
@@ -309,6 +336,24 @@ namespace SmartEco.Resources.Controllers {
         public static string Language {
             get {
                 return ResourceManager.GetString("Language", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Layer {
+            get {
+                return ResourceManager.GetString("Layer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Layers {
+            get {
+                return ResourceManager.GetString("Layers", resourceCulture);
             }
         }
         
@@ -561,6 +606,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Season {
+            get {
+                return ResourceManager.GetString("Season", resourceCulture);
             }
         }
         

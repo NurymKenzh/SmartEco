@@ -177,8 +177,17 @@
   <data name="Find" xml:space="preserve">
     <value>Find</value>
   </data>
+  <data name="GeoServerName" xml:space="preserve">
+    <value>GeoServer name</value>
+  </data>
+  <data name="GeoServerWorkspace" xml:space="preserve">
+    <value>GeoServer workspace</value>
+  </data>
   <data name="History" xml:space="preserve">
     <value>History</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Hour</value>
   </data>
   <data name="KATO" xml:space="preserve">
     <value>KATO</value>
@@ -200,6 +209,12 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Language</value>
+  </data>
+  <data name="Layer" xml:space="preserve">
+    <value>Layer</value>
+  </data>
+  <data name="Layers" xml:space="preserve">
+    <value>Layers</value>
   </data>
   <data name="Level" xml:space="preserve">
     <value>Level</value>
@@ -284,6 +299,9 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
+  </data>
+  <data name="Season" xml:space="preserve">
+    <value>Season</value>
   </data>
   <data name="Value" xml:space="preserve">
     <value>Value</value>

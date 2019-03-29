@@ -177,8 +177,17 @@
   <data name="Find" xml:space="preserve">
     <value>Найти</value>
   </data>
+  <data name="GeoServerName" xml:space="preserve">
+    <value>Название в GeoServer</value>
+  </data>
+  <data name="GeoServerWorkspace" xml:space="preserve">
+    <value>Рабочая область GeoServer</value>
+  </data>
   <data name="History" xml:space="preserve">
     <value>История</value>
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value>Час</value>
   </data>
   <data name="KATO" xml:space="preserve">
     <value>КАТО</value>
@@ -200,6 +209,12 @@
   </data>
   <data name="Language" xml:space="preserve">
     <value>Язык</value>
+  </data>
+  <data name="Layer" xml:space="preserve">
+    <value>Слой</value>
+  </data>
+  <data name="Layers" xml:space="preserve">
+    <value>Слои</value>
   </data>
   <data name="Level" xml:space="preserve">
     <value>Уровень</value>
@@ -284,6 +299,9 @@
   </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
+  </data>
+  <data name="Season" xml:space="preserve">
+    <value>Сезон</value>
   </data>
   <data name="Value" xml:space="preserve">
     <value>Значение</value>
