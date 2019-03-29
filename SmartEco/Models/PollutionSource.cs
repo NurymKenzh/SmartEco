@@ -12,5 +12,8 @@ namespace SmartEco.Models
 
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Name")]
         public string Name { get; set; }
+
+        public decimal NorthLatitude { get; set; }
+        public decimal EastLongitude { get; set; }
     }
 }
