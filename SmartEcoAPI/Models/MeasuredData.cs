@@ -29,5 +29,8 @@ namespace SmartEcoAPI.Models
 
         public int? MonitoringPostId { get; set; }
         public MonitoringPost MonitoringPost { get; set; }
+
+        public int? PollutionSourceId { get; set; }
+        public PollutionSource PollutionSource { get; set; }
     }
 }
