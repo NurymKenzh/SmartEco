@@ -29,12 +29,14 @@ namespace SmartEcoAPI.Controllers
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
             int? MonitoringPostId,
+            int? PollutionSourceId,
             int? PageSize,
             int? PageNumber)
         {
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
                 .Include(m => m.MonitoringPost)
+                .Include(m => m.PollutionSource)
                 .Where(m => true);
 
             if (MeasuredParameterId != null)
@@ -57,6 +59,10 @@ namespace SmartEcoAPI.Controllers
             if (MonitoringPostId != null)
             {
                 measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
+            }
+            if (PollutionSourceId != null)
+            {
+                measuredDatas = measuredDatas.Where(m => m.PollutionSourceId == PollutionSourceId);
             }
 
             switch (SortOrder)
@@ -100,6 +106,18 @@ namespace SmartEcoAPI.Controllers
                         m.DateTime :
                         (m.Year != null && m.Month == null ? new DateTime((int)m.Year, 1, 1) : new DateTime((int)m.Year, (int)m.Month, 1, 0, 0, 1)));
                     break;
+                case "MonitoringPost":
+                    measuredDatas = measuredDatas.OrderBy(k => k.MonitoringPost);
+                    break;
+                case "MonitoringPostDesc":
+                    measuredDatas = measuredDatas.OrderByDescending(k => k.MonitoringPost);
+                    break;
+                case "PollutionSource":
+                    measuredDatas = measuredDatas.OrderBy(k => k.PollutionSource);
+                    break;
+                case "PollutionSourceDesc":
+                    measuredDatas = measuredDatas.OrderByDescending(k => k.PollutionSource);
+                    break;
                 default:
                     measuredDatas = measuredDatas.OrderBy(m => m.Id);
                     break;
@@ -121,6 +139,7 @@ namespace SmartEcoAPI.Controllers
             var measuredData = await _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
                 .Include(m => m.MonitoringPost)
+                .Include(m => m.PollutionSource)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (measuredData == null)
@@ -179,6 +198,7 @@ namespace SmartEcoAPI.Controllers
             var measuredData = await _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
                 .Include(m => m.MonitoringPost)
+                .Include(m => m.PollutionSource)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (measuredData == null)
             {
@@ -201,7 +221,8 @@ namespace SmartEcoAPI.Controllers
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredDatasCount(int? MeasuredParameterId,
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
-            int? MonitoringPostId)
+            int? MonitoringPostId,
+            int? PollutionSourceId)
         {
             var measuredDatas = _context.MeasuredData
                  .Where(m => true);
@@ -227,6 +248,10 @@ namespace SmartEcoAPI.Controllers
             if (MonitoringPostId != null)
             {
                 measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
+            }
+            if (PollutionSourceId != null)
+            {
+                measuredDatas = measuredDatas.Where(m => m.PollutionSourceId == PollutionSourceId);
             }
 
             int count = await measuredDatas.CountAsync();

@@ -29,6 +29,7 @@ namespace SmartEco.Controllers
             DateTime? DateTimeFromFilter,
             DateTime? DateTimeToFilter,
             int? MonitoringPostIdFilter,
+            int? PollutionSourceIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -38,9 +39,12 @@ namespace SmartEco.Controllers
             ViewBag.DateTimeFromFilter = (DateTimeFromFilter)?.ToString("yyyy-MM-dd");
             ViewBag.DateTimeToFilter = (DateTimeToFilter)?.ToString("yyyy-MM-dd");
             ViewBag.MonitoringPostIdFilter = MonitoringPostIdFilter;
+            ViewBag.PollutionSourceIdFilter = PollutionSourceIdFilter;
 
             ViewBag.MeasuredParameterSort = SortOrder == "MeasuredParameter" ? "MeasuredParameterDesc" : "MeasuredParameter";
             ViewBag.DateTimeSort = SortOrder == "DateTime" ? "DateTimeDesc" : "DateTime";
+            ViewBag.MonitoringPostSort = SortOrder == "MonitoringPost" ? "MonitoringPostDesc" : "MonitoringPost";
+            ViewBag.PollutionSourceSort = SortOrder == "PollutionSource" ? "PollutionSourceDesc" : "PollutionSource";
 
             string url = "api/MeasuredDatas",
                 route = "",
@@ -85,6 +89,13 @@ namespace SmartEco.Controllers
                 route += $"MonitoringPostId={MonitoringPostIdFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"MonitoringPostId={MonitoringPostIdFilter}";
+            }
+            if (PollutionSourceIdFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"PollutionSourceId={PollutionSourceIdFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"PollutionSourceId={PollutionSourceIdFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -186,6 +197,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.MonitoringPosts = new SelectList(monitoringPosts.OrderBy(m => m.Name), "Id", "Name");
 
+            List<PollutionSource> pollutionSources = new List<PollutionSource>();
+            string urlPollutionSources = "api/PollutionSources",
+                routePollutionSources = "";
+            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources + routePollutionSources);
+            if (responsePollutionSources.IsSuccessStatusCode)
+            {
+                pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
+            }
+            ViewBag.PollutionSources = new SelectList(pollutionSources.OrderBy(m => m.Name), "Id", "Name");
+
             return View(measuredDatas);
         }
 
@@ -196,6 +217,7 @@ namespace SmartEco.Controllers
             DateTime? DateTimeFromFilter,
             DateTime? DateTimeToFilter,
             int? MonitoringPostIdFilter,
+            int? PollutionSourceIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -206,6 +228,7 @@ namespace SmartEco.Controllers
             ViewBag.DateTimeFromFilter = DateTimeFromFilter;
             ViewBag.DateTimeToFilter = DateTimeToFilter;
             ViewBag.MonitoringPostIdFilter = MonitoringPostIdFilter;
+            ViewBag.PollutionSourceIdFilter = PollutionSourceIdFilter;
             if (id == null)
             {
                 return NotFound();

@@ -174,7 +174,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] PollutionSource pollutionSource,
+        public async Task<IActionResult> Create([Bind("Id,Name,NorthLatitude,EastLongitude")] PollutionSource pollutionSource,
             string SortOrder,
             string NameFilter,
             int? PageSize,
@@ -186,6 +186,28 @@ namespace SmartEco.Controllers
             ViewBag.NameFilter = NameFilter;
             if (ModelState.IsValid)
             {
+                //int logNumber = pollutionSource.Number;
+                //decimal logNorthLatitude = pollutionSource.NorthLatitude;
+                //decimal logEastLongitude = pollutionSource.EastLongitude;
+                //DateTime logDateTimeStart = DateTime.Now;
+
+                //string url = "api/Logs/AddNote",
+                //route = "";
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"Number={logNumber.ToString()}";
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"NorthLatitude={logNorthLatitude.ToString()}".Replace(',', '.');
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"EastLongitude={logEastLongitude.ToString()}".Replace(',', '.');
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"DateTimeStart={logDateTimeStart.ToString()}";
+
+                //HttpResponseMessage responseLog = await _HttpApiClient.PostAsync(url + route, null);
+
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
                     "api/PollutionSources", pollutionSource);
 
@@ -242,7 +264,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] PollutionSource pollutionSource,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,NorthLatitude,EastLongitude")] PollutionSource pollutionSource,
             string SortOrder,
             string NameFilter,
             int? PageSize,
@@ -254,10 +276,31 @@ namespace SmartEco.Controllers
             ViewBag.NameFilter = NameFilter;
             if (id != pollutionSource.Id)
             {
-                return NotFound();
             }
             if (ModelState.IsValid)
             {
+                //int logNumber = pollutionSource.Number;
+                //decimal logNorthLatitude = pollutionSource.NorthLatitude;
+                //decimal logEastLongitude = pollutionSource.EastLongitude;
+                //DateTime logDateTimeStart = DateTime.Now;
+
+                //string url = "api/Logs/EditNote",
+                //route = "";
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"Number={logNumber.ToString()}";
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"NorthLatitude={logNorthLatitude.ToString()}".Replace(',', '.');
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"EastLongitude={logEastLongitude.ToString()}".Replace(',', '.');
+
+                //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                //route += $"DateTimeStart={logDateTimeStart.ToString()}";
+
+                //HttpResponseMessage responseLog = await _HttpApiClient.PostAsync(url + route, null);
+
                 HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
                     $"api/PollutionSources/{pollutionSource.Id}", pollutionSource);
 

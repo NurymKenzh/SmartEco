@@ -66,7 +66,9 @@ namespace SmartEco.Models
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MonitoringPost")]
         public MonitoringPost MonitoringPost { get; set; }
 
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "PollutionSource")]
         public int? PollutionSourceId { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "PollutionSource")]
         public PollutionSource PollutionSource { get; set; }
     }
 }
