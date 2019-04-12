@@ -297,6 +297,9 @@
   <data name="PollutionSources" xml:space="preserve">
     <value>Ластану көздері</value>
   </data>
+  <data name="SanitaryZone" xml:space="preserve">
+    <value>Санитарлық аймақ</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Сақтау</value>
   </data>

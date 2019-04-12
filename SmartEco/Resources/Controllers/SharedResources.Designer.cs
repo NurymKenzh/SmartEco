@@ -603,6 +603,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string SanitaryZone {
+            get {
+                return ResourceManager.GetString("SanitaryZone", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Save {
             get {
                 return ResourceManager.GetString("Save", resourceCulture);

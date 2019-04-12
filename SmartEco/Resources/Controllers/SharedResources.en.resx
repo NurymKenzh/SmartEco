@@ -297,6 +297,9 @@
   <data name="PollutionSources" xml:space="preserve">
     <value>Pollution Sources</value>
   </data>
+  <data name="SanitaryZone" xml:space="preserve">
+    <value>Sanitary zone</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Save</value>
   </data>

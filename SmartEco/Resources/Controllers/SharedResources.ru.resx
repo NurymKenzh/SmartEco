@@ -297,6 +297,9 @@
   <data name="PollutionSources" xml:space="preserve">
     <value>Источники выделения загрязнения</value>
   </data>
+  <data name="SanitaryZone" xml:space="preserve">
+    <value>Санитарная зона</value>
+  </data>
   <data name="Save" xml:space="preserve">
     <value>Сохранить</value>
   </data>

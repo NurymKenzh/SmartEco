@@ -1,10 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;
 using SmartEco.Models;
 
@@ -12,10 +16,12 @@ namespace SmartEco.Controllers
 {
     public class MapsController : Controller
     {
+        private readonly IHostingEnvironment _appEnvironment;
         private readonly HttpApiClientController _HttpApiClient;
 
-        public MapsController(HttpApiClientController HttpApiClient)
+        public MapsController(IHostingEnvironment appEnvironment, HttpApiClientController HttpApiClient)
         {
+            _appEnvironment = appEnvironment;
             _HttpApiClient = HttpApiClient;
         }
 
@@ -140,7 +146,215 @@ namespace SmartEco.Controllers
             });
             ViewBag.KazHydrometSoilPostsLayerJson = objectKazHydrometSoilPosts.ToString();
 
+            string urlPollutionSources = "api/PollutionSources";
+            List<PollutionSource> pollutionSources = new List<PollutionSource>();
+            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
+            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
+            JObject objectPollutionSources = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from pollutionSource in pollutionSources
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = pollutionSource.Id,
+                                   Name = pollutionSource.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                            {
+                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                            },
+                               }
+                           }
+            });
+            ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
+
+            string urlMeasuredDatas = "api/MeasuredDatas";
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            double temperature = Convert.ToDouble(measuredDatas.Where(m => m.MonitoringPostId == 3).LastOrDefault(t => t.MeasuredParameterId == 4).Value);
+            double speedWind = Convert.ToDouble(measuredDatas.Where(m => m.MonitoringPostId == 3).LastOrDefault(t => t.MeasuredParameterId == 5).Value);
+            double directionWind = Convert.ToDouble(measuredDatas.Where(m => m.MonitoringPostId == 3).LastOrDefault(t => t.MeasuredParameterId == 6).Value);
+            ViewBag.MeasuredData = measuredDatas;
+            ViewBag.Temperature = temperature;
+            ViewBag.SpeedWind = speedWind;
+            ViewBag.DirectionWind = directionWind;
+
+            List<SelectListItem> pollutants = new List<SelectListItem>();
+            pollutants.Add(new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12"  });
+            pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
+            pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
+            pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
+            ViewBag.Pollutants = pollutants;
+
             return View();
         }
+
+        [HttpPost]
+        public async Task<ActionResult> CalculateDissipation(float temperature,
+            float windSpeed,
+            float startSpeed,
+            float endSpeed,
+            float stepSpeed,
+            float windDirection,
+            float startDirection,
+            float endDirection,
+            float stepDirection,
+            float uSpeed,
+            int pollutants)
+        {
+            int code = 0301;
+            if (pollutants == 12)
+            {
+                code = 0301;
+            }
+            if (pollutants == 13)
+            {
+                code = 0304;
+            }
+            if (pollutants == 16)
+            {
+                code = 0330;
+            }
+            if (pollutants == 17)
+            {
+                code = 0337;
+            }
+
+            string temperatureString = Convert.ToString(temperature, CultureInfo.InvariantCulture);
+            string windSpeedString = Convert.ToString(windSpeed, CultureInfo.InvariantCulture);
+            string startSpeedString = Convert.ToString(startSpeed, CultureInfo.InvariantCulture);
+            string endSpeedString = Convert.ToString(endSpeed, CultureInfo.InvariantCulture);
+            string stepSpeedString = Convert.ToString(stepSpeed, CultureInfo.InvariantCulture);
+            string windDirectionString = Convert.ToString(windDirection, CultureInfo.InvariantCulture);
+            string startDirectionString = Convert.ToString(startDirection, CultureInfo.InvariantCulture);
+            string endDirectionString = Convert.ToString(endDirection, CultureInfo.InvariantCulture);
+            string stepDirectionString = Convert.ToString(stepDirection, CultureInfo.InvariantCulture);
+            string uSpeedString = Convert.ToString(uSpeed, CultureInfo.InvariantCulture);
+
+            string urlMeasuredDatas = "api/MeasuredDatas";
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            List<double> pollutantsValue = new List<double>();
+            pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
+            List<string> pollutantsValueString = new List<string>();
+            foreach (double pollutantValue in pollutantsValue)
+            {
+                pollutantsValueString.Add(Convert.ToString(pollutantValue, CultureInfo.InvariantCulture));
+            }
+
+            //List<string> longitude = new List<string> { "76.89392209053041", "76.89093410968779" };
+            //List<string> latitude = new List<string> { "43.25245478496336", "43.252024999269906" };
+            List<string> longitude = new List<string> { "77.00667", "76.89093410968779" };
+            List<string> latitude = new List<string> { "43.42417", "43.252024999269906" };
+            List<string> height = new List<string> { "20", "4" };
+            List<string> diameter = new List<string> { "0.5", "0.25" };
+            List<string> flow_temperature = new List<string> { "24", "20" };
+            List<string> flow_speed = new List<string> { "1", "8.5" };
+
+            string content = "";
+            string airPollutionSources = "air_pollution_sources\": [ ";
+
+            for (int i = 0; i < pollutantsValueString.Count; i++)
+            {
+                airPollutionSources += "{ \"id\": " + i + ", \"is_organized\": true, \"methodical\": 1, \"background_relation\": 3, " +
+                    "\"configuration\": { \"type\": 1, \"height\": " + height[i] + ", \"diameter\": " + diameter[i] + ", \"flow_temperature\": " + flow_temperature[i] + ", \"flow_speed\": " + flow_speed[i] + ", " +
+                    "\"point_1\": { \"x\": " + longitude[i] + ", \"y\": " + latitude[i] + ", \"z\": 0 }, \"relief_coefficient\": 1 }, \"emissions\": [";
+                airPollutionSources += "{ \"pollutant_code\": "+ code + ", \"power\": " + pollutantsValueString[i] + ", \"coefficient\": 2 }";
+                airPollutionSources += " ] }";
+                if (i < pollutantsValueString.Count - 1)
+                {
+                    airPollutionSources += ", ";
+                }
+            }
+            airPollutionSources += " ], ";
+
+            content = "{ \"threshold_pdk\": 0, \"locality\": { \"square\": 0, \"relief_coefficient\": 1, \"stratification_coefficient\": 200 }, \"meteo\": " +
+                "{ \"temperature\": " + temperatureString + ", \"wind_speed_settings\": { \"mode\": 1, \"speed\": " + windSpeedString + ", \"start_speed\": " + startSpeedString + ", \"end_speed\": " + endSpeedString + ", \"step_speed\": " + stepSpeedString + " }, " +
+                "\"wind_direction_settings\": { \"mode\": 1, \"direction\": " + windDirectionString + ", \"start_direction\": " + startDirectionString + ", \"end_direction\": " + endDirectionString + ", \"step_direction\": "+ stepDirectionString + " }, \"u_speed\": " + uSpeedString + " }" +
+                ", \"background\": { \"mode\": 0 }, \"method\": 1, \"contributor_count\": 2, \"use_summation_groups\": false, \"";
+            content += airPollutionSources;
+            content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
+
+            string calculate = "-X POST \"http://185.125.44.116:50006/calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
+            Process process = CurlExecute(calculate);
+            string answer = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            var jObject = JObject.Parse(answer);
+            int id = (int)jObject["id"];
+
+            string statusQuery = "-X GET \"http://185.125.44.116:50006/calculation/status?id=" + id + "\" -H \"accept: application/json\"";
+            process = CurlExecute(statusQuery);
+            answer = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            jObject = JObject.Parse(answer);
+            string status = (string)jObject["status"];
+
+            while (status != "ready")
+            {
+                process = CurlExecute(statusQuery);
+                answer = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+                jObject = JObject.Parse(answer);
+                status = (string)jObject["status"];
+            }
+            string resultEmissions = "-X GET \"http://185.125.44.116:50006/result-emissions?jobId=" + id + "&containerType=rectangle&containerId=0&pollutantCode=" + code + "\" -H \"accept: application/json\"";
+            process = CurlExecute(resultEmissions);
+            answer = process.StandardOutput.ReadToEnd();
+            process.WaitForExit();
+
+            return Json(new
+            {
+                answer
+            });
+        }
+
+        private Process CurlExecute(string Arguments)
+        {
+            Process process = new Process();
+            try
+            {
+                process.StartInfo.UseShellExecute = false;
+                process.StartInfo.RedirectStandardOutput = true;
+                process.StartInfo.RedirectStandardError = true;
+                process.StartInfo.FileName = Startup.Configuration["CurlFullPath"];
+                process.StartInfo.Arguments = Arguments;
+                process.Start();
+            }
+            catch (Exception exception)
+            {
+                throw new Exception(exception.ToString(), exception.InnerException);
+            }
+            return process;
+        }
+
+        //public async Task<List<double>> MeasuredDataList(int pollutants)
+        //{
+        //    string urlMeasuredDatas = "api/MeasuredDatas";
+        //    List<MeasuredData> measuredDatas = new List<MeasuredData>();
+        //    HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas);
+        //    measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+        //    List<double> pollutantsValue = new List<double>();
+        //    pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 12).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
+        //    return pollutantsValue;
+        //}
     }
 }
