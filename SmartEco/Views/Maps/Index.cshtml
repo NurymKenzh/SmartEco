@@ -52,6 +52,12 @@
     }
 </div>
 <div class="form-group">
+    <select id="layerBaseType" class="form-control form-control-sm" onchange="ChangeLayers()">
+        <option value="OSM">OpenStreetMap</option>
+        <option value="BingAerialWithLabels">Bing Aerial</option>
+    </select>
+</div>
+<div class="form-group">
     <div id="map" style="height: 400px; width: 100%;"></div>
 </div>
 <div>
@@ -110,10 +116,17 @@
     });
 
     var layers = [];
+
+    var Source_OSM = new ol.source.OSM(),
+        Source_BingAerialWithLabels = new ol.source.BingMaps({
+            key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+            imagerySet: 'AerialWithLabels',
+        });
+
     layers.push(new ol.layer.Tile({
-        source: new ol.source.OSM()
+        source: Source_OSM
     }));
-    layers[0].set('name', 'OSM');
+    layers[0].set('name', 'Base');
 
     var EcomonsStyle = new ol.style.Style({
         image: new ol.style.Icon(({
@@ -276,6 +289,9 @@
     //layers.push(Layer_allsum201702_avg);
 
     var map = new ol.Map({
+        controls: new ol.control.defaults().extend([
+            new ol.control.ScaleLine()
+        ]),
         target: 'map',
         layers: layers,
         view: new ol.View({
@@ -358,6 +374,21 @@
             if (document.getElementById("SanitaryZone").checked == false) {
                 Layer_SanitaryZone.setVisible(false);
             }
+        map.getLayers().forEach(function (layer) {
+            if (layer.get('name') == 'Base') {
+                var nameSource = "";
+                if ($('#layerBaseType').val() == 'OSM') {
+                    layer.setSource(Source_OSM);
+                    nameSource = "Source_OSM";
+                    ChangeRaster(nameSource);
+                }
+                else if ($('#layerBaseType').val() == 'BingAerialWithLabels') {
+                    layer.setSource(Source_BingAerialWithLabels);
+                    nameSource = "Source_BingAerialWithLabels";
+                    ChangeRaster(nameSource);
+                }
+            }
+        })
         //})
     }
 
@@ -374,7 +405,7 @@
         var uSpeed = $('#uSpeed').val();
         var pollutants = $('#Pollutants').val();
 
-        const COUNT_STEPS = 15;
+        const COUNT_STEPS = 60;
 
         $.ajax({
             url: '@Url.Action("CalculateDissipation")',
@@ -427,17 +458,30 @@
                 console.log(lines);
                 //isolinesLayer.getSource().addFeatures(format.readFeatures(lines));
                 //isolinesLayer.setVisible(true);
-                var marker = format.readFeatures(lines, {
-                    dataProjection: 'EPSG:4326',
-                    featureProjection: 'EPSG:3857'
-                });
-                //marker.transform('EPSG:4326', 'EPSG:3857');
+                //var marker = format.readFeatures(lines, {
+                //    dataProjection: 'EPSG:4326',
+                //    featureProjection: 'EPSG:3857'
+                //});
+                var marker = format.readFeatures(lines);
+                isolinesLayer.getSource().clear(true);
                 isolinesLayer.getSource().addFeatures(marker);
                 isolinesLayer.setVisible(true);
             },
             error: function () {
             }
         });
+    }
+
+    function ChangeRaster(nameSource) {
+        map.getLayers().forEach(function (layer) {
+            if (layer.get('name') == 'raster') {
+                if (nameSource == 'Source_OSM') {
+                    layer.setSource(Source_OSM);
+                } else if (nameSource == 'Source_BingAerialWithLabels') {
+                    layer.setSource(Source_BingAerialWithLabels);
+                }
+            }
+        })
     }
 </script>
 

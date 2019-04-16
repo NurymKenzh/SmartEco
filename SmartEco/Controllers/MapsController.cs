@@ -261,8 +261,10 @@ namespace SmartEco.Controllers
 
             //List<string> longitude = new List<string> { "76.89392209053041", "76.89093410968779" };
             //List<string> latitude = new List<string> { "43.25245478496336", "43.252024999269906" };
-            List<string> longitude = new List<string> { "77.00667", "76.89093410968779" };
-            List<string> latitude = new List<string> { "43.42417", "43.252024999269906" };
+            //List<string> longitude = new List<string> { "77.00667", "76.89093410968779" };
+            //List<string> latitude = new List<string> { "43.42417", "43.252024999269906" };
+            List<string> longitude = new List<string> { "8572343.29", "8559459.64" };
+            List<string> latitude = new List<string> { "5376759.33", "5350411.64" };
             List<string> height = new List<string> { "20", "4" };
             List<string> diameter = new List<string> { "0.5", "0.25" };
             List<string> flow_temperature = new List<string> { "24", "20" };
@@ -285,12 +287,13 @@ namespace SmartEco.Controllers
             }
             airPollutionSources += " ], ";
 
-            content = "{ \"threshold_pdk\": 0, \"locality\": { \"square\": 0, \"relief_coefficient\": 1, \"stratification_coefficient\": 200 }, \"meteo\": " +
+            content = "{ \"threshold_pdk\": 0, \"locality\": { \"square\": 682, \"relief_coefficient\": 1, \"stratification_coefficient\": 200 }, \"meteo\": " +
                 "{ \"temperature\": " + temperatureString + ", \"wind_speed_settings\": { \"mode\": 1, \"speed\": " + windSpeedString + ", \"start_speed\": " + startSpeedString + ", \"end_speed\": " + endSpeedString + ", \"step_speed\": " + stepSpeedString + " }, " +
-                "\"wind_direction_settings\": { \"mode\": 1, \"direction\": " + windDirectionString + ", \"start_direction\": " + startDirectionString + ", \"end_direction\": " + endDirectionString + ", \"step_direction\": "+ stepDirectionString + " }, \"u_speed\": " + uSpeedString + " }" +
-                ", \"background\": { \"mode\": 0 }, \"method\": 1, \"contributor_count\": 2, \"use_summation_groups\": false, \"";
+                "\"wind_direction_settings\": { \"mode\": 1, \"direction\": " + windDirectionString + ", \"start_direction\": " + startDirectionString + ", \"end_direction\": " + endDirectionString + ", \"step_direction\": "+ stepDirectionString + " }, \"rose_of_wind\": { \"north\": 1.2, \"northeast\": 1.7, \"northwest\": 1.4, \"south\": 2.6, \"southeast\": 1.5, \"southwest\": 1.55, \"west\": 1.75, \"east\": 1.0 }, \"u_speed\": " + uSpeedString + " }" +
+                ", \"background\": { \"mode\": 0 }, \"method\": 1, \"contributor_count\": " + pollutantsValueString.Count + ", \"use_summation_groups\": false, \"";
             content += airPollutionSources;
-            content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
+            //content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
+            content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 5376759.33, \"x\": 8572343.29, \"z\": 0 }, \"width\": 4000, \"length\": 4000, \"height\": 1, \"step_by_width\": 100, \"step_by_length\": 100 }], \"points\": [], \"lines\": [] }}";
 
             string calculate = "-X POST \"http://185.125.44.116:50006/calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
             Process process = CurlExecute(calculate);
@@ -345,16 +348,5 @@ namespace SmartEco.Controllers
             }
             return process;
         }
-
-        //public async Task<List<double>> MeasuredDataList(int pollutants)
-        //{
-        //    string urlMeasuredDatas = "api/MeasuredDatas";
-        //    List<MeasuredData> measuredDatas = new List<MeasuredData>();
-        //    HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas);
-        //    measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-        //    List<double> pollutantsValue = new List<double>();
-        //    pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 12).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
-        //    return pollutantsValue;
-        //}
     }
 }
