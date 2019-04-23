@@ -33,7 +33,7 @@ namespace EcomonDownloader
         public MeasuredParameter MeasuredParameter { get; set; }
         public DateTime DateTime { get; set; }
         public decimal Value { get; set; }
-        public int? EcomonMonitoringPointId { get; set; }
+        public int? MonitoringPostId { get; set; }
         public EcomonMonitoringPoint EcomonMonitoringPoint { get; set; }
         public long? Ecomontimestamp_ms { get; set; }
     }
@@ -57,21 +57,24 @@ namespace EcomonDownloader
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
-                        var startDB = connection.Query<long?>("SELECT \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\" ORDER BY \"Ecomontimestamp_ms\" DESC LIMIT 1;");
+                        var startDB = connection.Query<long?>("SELECT \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\" WHERE \"MonitoringPostId\" = 3 ORDER BY \"Ecomontimestamp_ms\" DESC LIMIT 1;");
                         if (startDB.Count() != 0)
                         {
                             start = (long)startDB.FirstOrDefault() / 1000;
                         }
-                        if (start == 0)
+
+                        DateTime DateTimeStart = new DateTime(1970, 1, 1, 6, 0, 0, 0).AddSeconds(start);
+
+                        if ((start == 0) || ((DateTime.Now - DateTimeStart).Days > 58))
                         {
-                            start = Convert.ToInt64((DateTime.Now.AddDays(-14) - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
+                            start = Convert.ToInt64((DateTime.Now.AddDays(-58) - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
                         }
 
                         var measuredParametersDB = connection.Query<MeasuredParameter>("SELECT \"Id\", \"NameKK\", \"NameRU\", \"NameEN\", \"EcomonCode\" FROM public.\"MeasuredParameter\";");
                         measuredParameters = measuredParametersDB.Where(m => m.EcomonCode != null).ToList();
                         var ecomonMonitoringPointsDB = connection.Query<EcomonMonitoringPoint>("SELECT \"Id\", \"Number\" FROM public.\"EcomonMonitoringPoint\";");
                         ecomonMonitoringPoints = ecomonMonitoringPointsDB.ToList();
-                        var measuredDatasDB = connection.Query<MeasuredData>("SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"EcomonMonitoringPointId\", \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\"");
+                        var measuredDatasDB = connection.Query<MeasuredData>("SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\"");
                         foreach (MeasuredParameter measuredParameter in measuredParameters)
                         {
                             DownloadOne(measuredDatasDB.ToList(), measuredParameter, ecomonMonitoringPoints.FirstOrDefault(), token, start, finish);
@@ -93,10 +96,14 @@ namespace EcomonDownloader
             var content = new FormUrlEncodedContent(new Dictionary<string, string> { });
             Token = $"Bearer {Token}";
             client.DefaultRequestHeaders.Add("authorization", Token);
-            var response = await client.GetAsync($"https://central.demo.svc.urusit.com/meters/{MeasuredParameter.EcomonCode.ToString()}/readings?from={Start.ToString()}&to={Finish.ToString()}");
+            var response = await client.GetAsync($"https://ecomon-api.urus.city/meters/{MeasuredParameter.EcomonCode.ToString()}/readings?from={Start.ToString()}&to={Finish.ToString()}");
             var responseString = response.Content.ReadAsStringAsync();
             dynamic json = JsonConvert.DeserializeObject(responseString.Result);
             var inner = json["readings"];
+            if(inner==null)
+            {
+                return;
+            }
             JArray a = JArray.Parse(JsonConvert.SerializeObject(inner));
             foreach (JObject o in a.Children<JObject>())
             {
@@ -121,11 +128,11 @@ namespace EcomonDownloader
                         }
                         DateTime DateTime = new DateTime(1970, 1, 1, 6, 0, 0, 0);
                         measuredData.DateTime = DateTime.AddSeconds((double)measuredData.Ecomontimestamp_ms / 1000);
-                        measuredData.EcomonMonitoringPointId = EcomonMonitoringPoint.Id;
+                        measuredData.MonitoringPostId = 3;// EcomonMonitoringPoint.Id;
                         measuredData.MeasuredParameterId = MeasuredParameter.Id;
                         // save
                         if(MeasuredDatas.Count(m => m.Ecomontimestamp_ms == measuredData.Ecomontimestamp_ms &&
-                            m.EcomonMonitoringPointId == measuredData.EcomonMonitoringPointId &&
+                            m.MonitoringPostId == 3/*measuredData.MonitoringPostId*/ &&
                             m.MeasuredParameterId == measuredData.MeasuredParameterId) == 0)
                         {
                             measuredDatas.Add(measuredData);
@@ -143,7 +150,7 @@ namespace EcomonDownloader
                         $"\"MeasuredParameterId\", " +
                         $"\"DateTime\", " +
                         $"\"Value\", " +
-                        $"\"EcomonMonitoringPointId\", " +
+                        $"\"MonitoringPostId\", " +
                         $"\"Ecomontimestamp_ms\")" +
                         $"VALUES ({measuredData.MeasuredParameterId.ToString()}, " +
                         $"make_timestamptz(" +
@@ -154,7 +161,7 @@ namespace EcomonDownloader
                             $"{measuredData.DateTime.Minute.ToString()}, " +
                             $"{measuredData.DateTime.Second.ToString()}), " +
                         $"{measuredData.Value.ToString()}, " +
-                        $"{measuredData.EcomonMonitoringPointId.ToString()}, " +
+                        $"{measuredData.MonitoringPostId.ToString()}, " +
                         $"{measuredData.Ecomontimestamp_ms.ToString()});";
                     connection.Execute(execute);
                 }
