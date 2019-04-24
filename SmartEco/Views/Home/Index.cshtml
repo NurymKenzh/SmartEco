@@ -1,10 +1,147 @@
 ﻿@using Microsoft.AspNetCore.Mvc.Localization
 @inject IViewLocalizer Localizer
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = Localizer["Home"];
 }
 
+<style>
+    .container {
+        margin: 0;
+        padding: 0;
+    }
+
+    .navbar {
+        margin-bottom: 0;
+        margin-right: 0;
+    }
+
+    .mb-3, my-3 {
+        margin-bottom: 0 !important;
+    }
+
+    .pb-3, py-3 {
+        padding-bottom: 0rem !important;
+        height: 400px;
+    }
+
+    .text-center {
+        height: 79.6vh;
+        width: 100vw;
+    }
+
+
+
+    .image {
+        height: 100%;
+        width: 100%;
+        background: url(/images/SmartEcoLogo.png) no-repeat;
+        background-position: center center;
+        position: relative;
+    }
+
+    .footer {
+        height: 70px;
+        padding-left: 10px;
+    }
+
+    /* Вертикальное выпадающее меню*/
+    /*блок меню*/
+    ul.gav {
+        margin: 0;
+        padding: 0;
+        position: absolute;
+    }
+
+        ul.gav li {
+            background: #B3B3FF;
+            border: 1px solid #FFFFFF;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            list-style: none;
+            width: 180px; /*ширина блока меню*/
+            /*background: #91AF5E;*/
+            background: #8bc466;
+        }
+
+            ul.gav li a {
+                text-decoration: none;
+                display: block;
+                padding: 5px 5px 5px 15px;
+                color: #fff;
+                font-weight: 600;
+            }
+
+        ul.gav li ul {
+            display: none; /*скрываем вложенные пункты*/
+        }
+
+            /*Выпадающее меню*/
+
+            ul.gav li:hover {
+                /* позиционирование вложенных элементов
+   * будет расчитыватьться относительно
+   * родительского элемента
+   */
+                position: relative;
+                background: #68964b;
+            }
+
+        ul.gav li:hover > ul {
+            display: block;
+        }
+
+        ul.gav li:hover ul {
+            position: absolute;
+            top: 0; /*Задаём координаты для вложенных пунктов*/
+            left: 140px; /*меню раскрывается вправо*/
+        }
+        ul.gav li:hover ul li {
+            width: 300px;
+            margin-bottom: 2px;
+        }
+
+        ul.rght {
+            right: 1px;
+        }
+
+        ul.rght li {
+            width: 240px;
+        }
+</style>
+
 <div class="text-center">
+    <div class="image">
+        @*<img src="/images/SmartEcoLogo.png" alt="SmartEco" />*@
+
+        <ul class="gav">
+            <li>
+                <a href="#">@SharedLocalizer["Posts"]</a>
+                <ul>
+                    <li><a asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a></li>
+                    <li><a asp-controller="EcomonMonitoringPoints" asp-action="Index">@SharedLocalizer["EcomonMonitoringPoints"]</a></li>
+                    <li><a asp-controller="KazHydrometAirPosts" asp-action="Index">@SharedLocalizer["KazHydrometAirPosts"]</a></li>
+                    <li><a asp-controller="KazHydrometSoilPosts" asp-action="Index">@SharedLocalizer["KazHydrometSoilPosts"]</a></li>
+                </ul>
+            </li>
+            <li><a asp-controller="DataProviders" asp-action="Index">@SharedLocalizer["DataProviders"]</a></li>
+            <li><a asp-controller="Logs" asp-action="Index">@SharedLocalizer["History"]</a></li>
+            <li><a asp-controller="KATOes" asp-action="Index">@SharedLocalizer["KATOes"]</a></li>
+            <li><a asp-controller="Maps" asp-action="Index">@SharedLocalizer["Map"]</a></li>
+            <li><a asp-controller="Layers" asp-action="Index">@SharedLocalizer["Layers"]</a></li>
+        </ul>
+
+        <ul class="gav rght">
+            <li><a asp-controller="MeasuredParameters" asp-action="Index">@SharedLocalizer["MeasuredParameters"]</a></li>
+            <li><a asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a></li>
+            <li><a asp-controller="Pollutants" asp-action="Index">@SharedLocalizer["Pollutants"]</a></li>
+            <li><a asp-controller="PollutionSources" asp-action="Index">@SharedLocalizer["PollutionSources"]</a></li>
+            <li><a asp-controller="PollutionSourceDatas" asp-action="Index">@SharedLocalizer["PollutionSourceDatas"]</a></li>
+            <li><a asp-controller="PollutionEnvironments" asp-action="Index">@SharedLocalizer["PollutionEnvironments"]</a></li>
+        </ul>
+    </div>
     @*<h1 class="display-4">Welcome</h1>
         <p>Learn about <a href="https://docs.microsoft.com/aspnet/core">building Web apps with ASP.NET Core</a>.</p>*@
 </div>

@@ -216,7 +216,9 @@ namespace SmartEco.Controllers
             float endDirection,
             float stepDirection,
             float uSpeed,
-            int pollutants)
+            int pollutants,
+            float width,
+            float length)
         {
             int code = 0301;
             if (pollutants == 12)
@@ -246,6 +248,8 @@ namespace SmartEco.Controllers
             string endDirectionString = Convert.ToString(endDirection, CultureInfo.InvariantCulture);
             string stepDirectionString = Convert.ToString(stepDirection, CultureInfo.InvariantCulture);
             string uSpeedString = Convert.ToString(uSpeed, CultureInfo.InvariantCulture);
+            string widthString = Convert.ToString(width, CultureInfo.InvariantCulture);
+            string lengthString = Convert.ToString(length, CultureInfo.InvariantCulture);
 
             string urlMeasuredDatas = "api/MeasuredDatas";
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
@@ -253,6 +257,7 @@ namespace SmartEco.Controllers
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
             List<double> pollutantsValue = new List<double>();
             pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
+            pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 4).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
             List<string> pollutantsValueString = new List<string>();
             foreach (double pollutantValue in pollutantsValue)
             {
@@ -263,8 +268,8 @@ namespace SmartEco.Controllers
             //List<string> latitude = new List<string> { "43.25245478496336", "43.252024999269906" };
             //List<string> longitude = new List<string> { "77.00667", "76.89093410968779" };
             //List<string> latitude = new List<string> { "43.42417", "43.252024999269906" };
-            List<string> longitude = new List<string> { "8572343.29", "8559459.64" };
-            List<string> latitude = new List<string> { "5376759.33", "5350411.64" };
+            List<string> longitude = new List<string> { "8572102.20", "8572696.97" };
+            List<string> latitude = new List<string> { "5376224.66", "5376683.28" };
             List<string> height = new List<string> { "20", "4" };
             List<string> diameter = new List<string> { "0.5", "0.25" };
             List<string> flow_temperature = new List<string> { "24", "20" };
@@ -293,7 +298,7 @@ namespace SmartEco.Controllers
                 ", \"background\": { \"mode\": 0 }, \"method\": 1, \"contributor_count\": " + pollutantsValueString.Count + ", \"use_summation_groups\": false, \"";
             content += airPollutionSources;
             //content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
-            content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 5376759.33, \"x\": 8572343.29, \"z\": 0 }, \"width\": 4000, \"length\": 4000, \"height\": 1, \"step_by_width\": 100, \"step_by_length\": 100 }], \"points\": [], \"lines\": [] }}";
+            content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 5376759.33, \"x\": 8572343.29, \"z\": 0 }, \"width\": " + widthString + ", \"length\": " + lengthString + ", \"height\": 1, \"step_by_width\": 100, \"step_by_length\": 100 }], \"points\": [], \"lines\": [] }}";
 
             string calculate = "-X POST \"http://185.125.44.116:50006/calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
             Process process = CurlExecute(calculate);

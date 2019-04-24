@@ -163,10 +163,10 @@
     <value>East longitude</value>
   </data>
   <data name="EcomonMonitoringPoint" xml:space="preserve">
-    <value>Ecomon monitoring point</value>
+    <value>Post monitoring Ecoservice-S</value>
   </data>
   <data name="EcomonMonitoringPoints" xml:space="preserve">
-    <value>Ecomon monitoring points</value>
+    <value>Posts monitoring Ecoservice-S</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Edit</value>
@@ -296,6 +296,9 @@
   </data>
   <data name="PollutionSources" xml:space="preserve">
     <value>Pollution Sources</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Posts</value>
   </data>
   <data name="SanitaryZone" xml:space="preserve">
     <value>Sanitary zone</value>
