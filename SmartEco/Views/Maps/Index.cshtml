@@ -278,7 +278,7 @@
                 {
                     <div class="checkbox">
                         <input type="checkbox" id="@layer.GeoServerName" value="@layer.GeoServerName" onchange="ChangeLayers()" />
-                        <label for="Layers">@layer.Name</label>
+                        <label for="@layer.GeoServerName">@layer.Name</label>
                     </div>
                 }
             }
@@ -528,40 +528,41 @@
 
     format = new ol.format.GeoJSON();
 
-    var SanitaryZoneStyle = new ol.style.Style({
-        image: new ol.style.Icon(({
-            //src: '/images/SanitaryZone.png'
-            src: '/images/KazHydrometSoilPosts.png'
-        }))
+    //var SanitaryZoneStyle = new ol.style.Style({
+    //    image: new ol.style.Icon(({
+    //        //src: '/images/SanitaryZone.png'
+    //        src: '/images/KazHydrometSoilPosts.png'
+    //    }))
+    //});
+    //var SanitaryZoneLayerJson = $("#SanitaryZoneLayerJson").val();
+
+    //var Source_SanitaryZone = new ol.source.Vector({
+    //    features: (new ol.format.GeoJSON())
+    //});
+    //var Layer_SanitaryZone = new ol.layer.Vector({
+    //    source: Source_SanitaryZone,
+    //    style: SanitaryZoneStyle,
+    //    renderBuffer: 200
+    //});
+    //Layer_SanitaryZone.set('name', 'SanitaryZone');
+    //Layer_SanitaryZone.setVisible(false);
+    //Layer_SanitaryZone.setOpacity(1);
+    //layers.push(Layer_SanitaryZone);
+
+    var Source_SanitaryZone = new ol.source.ImageWMS({
+        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/SmartEco/wms?',
+        params: {
+            'LAYERS': 'SmartEco:SanitaryZone'
+        },
+        serverType: 'geoserver'
     });
-    var SanitaryZoneLayerJson = $("#SanitaryZoneLayerJson").val();
-    var Source_SanitaryZone = new ol.source.Vector({
-        features: (new ol.format.GeoJSON())
-    });
-    var Layer_SanitaryZone = new ol.layer.Vector({
-        source: Source_SanitaryZone,
-        style: SanitaryZoneStyle,
-        renderBuffer: 200
+    var Layer_SanitaryZone = new ol.layer.Image({
+        source: Source_SanitaryZone
     });
     Layer_SanitaryZone.set('name', 'SanitaryZone');
     Layer_SanitaryZone.setVisible(false);
-    Layer_SanitaryZone.setOpacity(1);
+    Layer_SanitaryZone.setOpacity(0.8);
     layers.push(Layer_SanitaryZone);
-
-    //var Source_allsum201702_avg = new ol.source.ImageWMS({
-    //    url: 'http://' + 'localhost' + ':' + '8080' + '/geoserver/SmartEco/wms?',
-    //    params: {
-    //        'LAYERS': 'SmartEco:allsum201702_avg'
-    //    },
-    //    serverType: 'geoserver'
-    //});
-    //var Layer_allsum201702_avg = new ol.layer.Image({
-    //    source: Source_allsum201702_avg
-    //});
-    //Layer_allsum201702_avg.set('name', 'allsum201702_avg');
-    ////Layer_allsum201702_avg.setVisible(false);
-    //Layer_allsum201702_avg.setOpacity(0.8);
-    //layers.push(Layer_allsum201702_avg);
 
     var map = new ol.Map({
         controls: new ol.control.defaults().extend([
