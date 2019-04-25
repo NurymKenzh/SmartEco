@@ -12,7 +12,9 @@ namespace SmartEco.Controllers
     {
         public HttpApiClientController()
         {
-            BaseAddress = new Uri(Startup.Configuration["APIUrl"]);
+            bool server = Convert.ToBoolean(Startup.Configuration["Server"]);
+            string APIUrl = server ? Startup.Configuration["APIUrlServer"] : Startup.Configuration["APIUrlDebug"];
+            BaseAddress = new Uri(APIUrl);
             DefaultRequestHeaders.Accept.Clear();
             DefaultRequestHeaders.Accept.Add(
                 new MediaTypeWithQualityHeaderValue("application/json"));

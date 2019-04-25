@@ -300,8 +300,11 @@ namespace SmartEco.Controllers
             //content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
             content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 5376759.33, \"x\": 8572343.29, \"z\": 0 }, \"width\": " + widthString + ", \"length\": " + lengthString + ", \"height\": 1, \"step_by_width\": 100, \"step_by_length\": 100 }], \"points\": [], \"lines\": [] }}";
 
+            bool server = Convert.ToBoolean(Startup.Configuration["Server"]);
+            string URPZAUrl = server ? Startup.Configuration["URPZAUrlServer"] : Startup.Configuration["URPZAUrlDebug"];
+
             //string calculate = "-X POST \"http://185.125.44.116:50006/calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
-            string calculate = "-X POST \"http://192.168.1.8/calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
+            string calculate = "-X POST \"" + URPZAUrl + "calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
             Process process = CurlExecute(calculate);
             string answer = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
@@ -310,7 +313,7 @@ namespace SmartEco.Controllers
             int id = (int)jObject["id"];
 
             //string statusQuery = "-X GET \"http://185.125.44.116:50006/calculation/status?id=" + id + "\" -H \"accept: application/json\"";
-            string statusQuery = "-X GET \"http://192.168.1.8/calculation/status?id=" + id + "\" -H \"accept: application/json\"";
+            string statusQuery = "-X GET \"" + URPZAUrl + "calculation/status?id=" + id + "\" -H \"accept: application/json\"";
             process = CurlExecute(statusQuery);
             answer = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
@@ -327,7 +330,7 @@ namespace SmartEco.Controllers
                 status = (string)jObject["status"];
             }
             //string resultEmissions = "-X GET \"http://185.125.44.116:50006/result-emissions?jobId=" + id + "&containerType=rectangle&containerId=0&pollutantCode=" + code + "\" -H \"accept: application/json\"";
-            string resultEmissions = "-X GET \"http://192.168.1.8/result-emissions?jobId=" + id + "&containerType=rectangle&containerId=0&pollutantCode=" + code + "\" -H \"accept: application/json\"";
+            string resultEmissions = "-X GET \"" + URPZAUrl + "result-emissions?jobId=" + id + "&containerType=rectangle&containerId=0&pollutantCode=" + code + "\" -H \"accept: application/json\"";
             process = CurlExecute(resultEmissions);
             answer = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
