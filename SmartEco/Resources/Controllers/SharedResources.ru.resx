@@ -163,10 +163,10 @@
     <value>Восточная долгота</value>
   </data>
   <data name="EcomonMonitoringPoint" xml:space="preserve">
-    <value>Точка мониторинга Экомон</value>
+    <value>Пост мониторинга Экосервис-С</value>
   </data>
   <data name="EcomonMonitoringPoints" xml:space="preserve">
-    <value>Точки мониторинга Экомон</value>
+    <value>Посты мониторинга Экосервис-С</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Редактировать</value>
@@ -296,6 +296,9 @@
   </data>
   <data name="PollutionSources" xml:space="preserve">
     <value>Источники выделения загрязнения</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Посты</value>
   </data>
   <data name="SanitaryZone" xml:space="preserve">
     <value>Санитарная зона</value>

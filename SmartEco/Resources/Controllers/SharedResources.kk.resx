@@ -163,10 +163,10 @@
     <value>Шығыс бойлық</value>
   </data>
   <data name="EcomonMonitoringPoint" xml:space="preserve">
-    <value>Экомон бақылау нүктесі</value>
+    <value>Экосервис-С-дан кейінгі мониторинг</value>
   </data>
   <data name="EcomonMonitoringPoints" xml:space="preserve">
-    <value>Экомон бақылау нүктелері</value>
+    <value>Экосервис-С бақылау станциялары</value>
   </data>
   <data name="Edit" xml:space="preserve">
     <value>Өңдеу</value>
@@ -296,6 +296,9 @@
   </data>
   <data name="PollutionSources" xml:space="preserve">
     <value>Ластану көздері</value>
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value>Посттары</value>
   </data>
   <data name="SanitaryZone" xml:space="preserve">
     <value>Санитарлық аймақ</value>

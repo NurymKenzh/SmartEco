@@ -153,7 +153,7 @@
     }
 
     .sidepanel-right {
-        width: 380px;
+        width: 400px;
         padding: 0;
         background: rgba(225, 222, 239, 0.9);
         position: absolute;
@@ -175,7 +175,7 @@
     }
 
     .left-section-contentLeft {
-        margin: 10px 0 0 10px;
+        margin: 5px 0 5px 10px;
     }
 
     .left-section-contentRight {
@@ -299,7 +299,7 @@
         @*<h5>Расчёт рассеивания</h5>*@
         <div class="left-section-contentLeft">
             <label for="Temperature" class="control-label">Температура</label>
-            <input type="text" id="Temperature" class="form-control" value=@ViewBag.Temperature />
+            <input type="text" id="Temperature" class="form-control" step=",01" value=@ViewBag.Temperature />
         </div>
         <div class="left-section-contentLeft">
             <label for="WindSpeed" class="control-label">Скорость ветра</label>
@@ -321,16 +321,16 @@
             <label for="WindDirection" class="control-label">Направление ветра</label>
             <input type="text" id="WindDirection" class="form-control" value=@ViewBag.DirectionWind />
         </div>
-    </div>
-    <div class="right-section">
-        <div class="left-section-contentRight">
+        <div class="left-section-contentLeft">
             <label for="StartDirection" class="control-label">Начальное направление</label>
-            <input type="text" id="StartDirection" class="form-control" value="0" />  
+            <input type="text" id="StartDirection" class="form-control" value="0" />
         </div>
-        <div class="left-section-contentRight">
+        <div class="left-section-contentLeft">
             <label for="EndDirection" class="control-label">Конечное направление</label>
             <input type="text" id="EndDirection" class="form-control" value="360" />
         </div>
+    </div>
+    <div class="right-section">
         <div class="left-section-contentRight">
             <label for="StepDirection" class="control-label">Шаг направления</label>
             <input type="text" id="StepDirection" class="form-control" value="1" />
@@ -342,6 +342,18 @@
         <div class="left-section-contentRight">
             <label class="control-label">Загрязняющее вещество</label>
             @Html.DropDownList("Pollutants", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control", @id = "Pollutants" })
+        </div>
+        <div class="left-section-contentRight">
+            <label for="Width" class="control-label">Ширина области</label>
+            <input type="text" id="Width" class="form-control" value="4000" />
+        </div>
+        <div class="left-section-contentRight">
+            <label for="Length" class="control-label">Длина области</label>
+            <input type="text" id="Length" class="form-control" value="4000" />
+        </div>
+        <div class="left-section-contentRight">
+            <label for="Step" class="control-label">Шаг рассеивания</label>
+            <input type="text" id="Step" class="form-control" value="20" />
         </div>
         <div class="left-section-contentRight">
             <input type="button" class="btn btn-default" id="ToCalculate" value="Расчитать рассеивание" onclick="CalculateDissipation();">
@@ -484,16 +496,29 @@
         features: (new ol.format.GeoJSON())
     });
 
-    var IsolinesStyle = new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: [255, 100, 25, 1],
-            width: 2
-        })
-    });
+    //var IsolinesStyle = new ol.style.Style({
+    //    stroke: new ol.style.Stroke({
+    //        color: [255, 100, 25, 1],
+    //        width: 2
+    //    })
+    //});
 
     var isolinesLayer = new ol.layer.Vector({
         source: Source_Isolines,
-        style: IsolinesStyle
+        //style: IsolinesStyle
+        style: (feature, resolution) => {
+            const color = perc2colorForIsolines(
+                parseFloat(feature.get('c_pdk')),
+                1
+            );
+            return new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: color,
+                    width: 2
+                }),
+                text: createTextStyle(feature, resolution, linesProperties)
+            });
+        }
     });
 
     isolinesLayer.set('name', 'Isolines');
@@ -642,6 +667,32 @@
         //})
     }
 
+    var maxPdkForIsolines,
+        minPdkForIsolines,
+        COUNT_STEPS;
+
+    var linesProperties = {
+        text: 'wrap',
+        align: '',
+        baseline: 'middle',
+        rotation: '0',
+        font: '\'Courier New\'',
+        weight: 'normal',
+        placement: 'point',
+        maxangle: '0.1',
+        overflow: 'false',
+        size: '8px',
+        offsetX: '0',
+        offsetY: '0',
+        color: 'green',
+        outline: '#ffffff',
+        outlineWidth: '3',
+        maxreso: '20',
+        getPropertyFunction: function (feature) {
+            return (Math.round(+feature.get('c_pdk') * 100) / 100).toString();
+        }
+    };
+
     function CalculateDissipation() {
         var temperature = $('#Temperature').val();
         var windSpeed = $('#WindSpeed').val();
@@ -654,8 +705,10 @@
         var stepDirection = $('#StepDirection').val();
         var uSpeed = $('#uSpeed').val();
         var pollutants = $('#Pollutants').val();
+        var width = $('#Width').val();
+        var length = $('#Length').val();
 
-        const COUNT_STEPS = 60;
+        COUNT_STEPS = $('#Step').val();
 
         $.ajax({
             url: '@Url.Action("CalculateDissipation")',
@@ -670,12 +723,13 @@
                 endDirection: endDirection,
                 stepDirection: stepDirection,
                 uSpeed: uSpeed,
-                pollutants: pollutants
+                pollutants: pollutants,
+                width: width,
+                length: length
             },
             type: 'POST',
             success: function (data) {
                 var turfFeatureCollection = JSON.parse(data.answer);
-                console.log(turfFeatureCollection);
                 const minAndMax = turfFeatureCollection.features.reduce(
                     (values, feature) => {
                         const c = feature.properties['c_pdk'];
@@ -693,6 +747,8 @@
                     { min: Number.MAX_SAFE_INTEGER, max: 0 }
                 );
                 const step = (minAndMax.max - minAndMax.min) / COUNT_STEPS;
+                maxPdkForIsolines = minAndMax.max;
+                minPdkForIsolines = minAndMax.min;
 
                 const breaks = [];
                 breaks.push(0);
@@ -705,7 +761,6 @@
                 }
                 breaks.push(minAndMax.max);
                 const lines = turf.isolines(turfFeatureCollection, breaks, { zProperty: 'c_pdk' });
-                console.log(lines);
                 //isolinesLayer.getSource().addFeatures(format.readFeatures(lines));
                 //isolinesLayer.setVisible(true);
                 //var marker = format.readFeatures(lines, {
@@ -722,6 +777,77 @@
         });
     }
 
+    function perc2colorForIsolines(pdk, opacity) {
+        let color;
+        if (maxPdkForIsolines === minPdkForIsolines) {
+            color = pdk > maxPdkForIsolines ? 255 : 0;
+        } else {
+            color = (
+                (pdk - minPdkForIsolines) /
+                ((maxPdkForIsolines - minPdkForIsolines) / (COUNT_STEPS + 2))
+            ) * (255 / COUNT_STEPS);
+        }
+        return 'rgba(' + (255 - color) + ',' + (255 - color) + ',' + (255 - color) + ', ' + opacity + ')';
+    }
+
+    var createTextStyle = function (feature, resolution, dom) {
+        var align = dom.align;
+        var baseline = dom.baseline;
+        var size = dom.size;
+        var offsetX = parseInt(dom.offsetX, 10);
+        var offsetY = parseInt(dom.offsetY, 10);
+        var weight = dom.weight;
+        var placement = dom.placement ? dom.placement : undefined;
+        var maxAngle = dom.maxangle ? parseFloat(dom.maxangle) : undefined;
+        var overflow = dom.overflow ? (dom.overflow.value === 'true') : undefined;
+        var rotation = parseFloat(dom.rotation);
+        var font = weight + ' ' + size + ' ' + dom.font;
+        var fillColor = dom.color;
+        var outlineColor = dom.outline;
+        var outlineWidth = parseInt(dom.outlineWidth, 10);
+
+        return new ol.style.Text({
+            textAlign: align === '' ? undefined : align,
+            textBaseline: baseline,
+            font: font,
+            text: getText(feature, resolution, dom),
+            fill: new ol.style.Fill({ color: fillColor }),
+            stroke: new ol.style.Stroke({ color: outlineColor, width: outlineWidth }),
+            offsetX: offsetX,
+            offsetY: offsetY,
+            placement: placement,
+            maxAngle: true,
+            overflow: overflow,
+            rotation: rotation
+        });
+    };
+
+    function getText(feature, resolution, dom) {
+        var text = dom.getPropertyFunction(feature);
+
+        return stringDivider(text, 16, '\n');
+    }
+
+    function stringDivider(str, width, spaceReplacer) {
+        if (str.length > width) {
+            let p = width;
+            while (p > 0 && (str[p] !== ' ' && str[p] !== '-')) {
+                p--;
+            }
+            if (p > 0) {
+                let left;
+                if (str.substring(p, p + 1) === '-') {
+                    left = str.substring(0, p + 1);
+                } else {
+                    left = str.substring(0, p);
+                }
+                const right = str.substring(p + 1);
+                return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+            }
+        }
+        return str;
+    }
+
     function ChangeRaster(nameSource) {
         map.getLayers().forEach(function (layer) {
             if (layer.get('name') == 'raster') {
@@ -733,6 +859,12 @@
             }
         })
     }
+
+
+
+    var temp = parseFloat(document.getElementById('Temperature').value.replace(',', '.'));
+    temp = temp.toFixed(2).replace('.', ',');
+    $("#Temperature").val(temp);
 </script>
 
 <script>
