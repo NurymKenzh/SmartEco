@@ -77,7 +77,8 @@ namespace EcomonDownloader
                         var measuredDatasDB = connection.Query<MeasuredData>("SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\"");
                         foreach (MeasuredParameter measuredParameter in measuredParameters)
                         {
-                            DownloadOne(measuredDatasDB.ToList(), measuredParameter, ecomonMonitoringPoints.FirstOrDefault(), token, start, finish);
+                            if(measuredParameter.Id == 1)
+                                DownloadOne(measuredDatasDB.ToList(), measuredParameter, ecomonMonitoringPoints.FirstOrDefault(), token, start, finish);
                         }
                     }
                 }
