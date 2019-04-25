@@ -57,18 +57,7 @@ namespace EcomonDownloader
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
-                        var startDB = connection.Query<long?>("SELECT \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\" WHERE \"MonitoringPostId\" = 3 ORDER BY \"Ecomontimestamp_ms\" DESC LIMIT 1;");
-                        if (startDB.Count() != 0)
-                        {
-                            start = (long)startDB.FirstOrDefault() / 1000;
-                        }
-
-                        DateTime DateTimeStart = new DateTime(1970, 1, 1, 6, 0, 0, 0).AddSeconds(start);
-
-                        if ((start == 0) || ((DateTime.Now - DateTimeStart).Days > 58))
-                        {
-                            start = Convert.ToInt64((DateTime.Now.AddDays(-58) - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
-                        }
+                        
 
                         var measuredParametersDB = connection.Query<MeasuredParameter>("SELECT \"Id\", \"NameKK\", \"NameRU\", \"NameEN\", \"EcomonCode\" FROM public.\"MeasuredParameter\";");
                         measuredParameters = measuredParametersDB.Where(m => m.EcomonCode != null).ToList();
@@ -77,8 +66,22 @@ namespace EcomonDownloader
                         var measuredDatasDB = connection.Query<MeasuredData>("SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\"");
                         foreach (MeasuredParameter measuredParameter in measuredParameters)
                         {
-                            if(measuredParameter.Id == 1)
-                                DownloadOne(measuredDatasDB.ToList(), measuredParameter, ecomonMonitoringPoints.FirstOrDefault(), token, start, finish);
+                            var startDB = connection.Query<long?>("SELECT \"Ecomontimestamp_ms\" FROM public.\"MeasuredData\" WHERE \"MonitoringPostId\" = 3 AND \"MeasuredParameterId\" = "
+                            + measuredParameter.Id.ToString()
+                            + " ORDER BY \"Ecomontimestamp_ms\" DESC LIMIT 1;");
+                            if (startDB.Count() != 0)
+                            {
+                                start = (long)startDB.FirstOrDefault() / 1000;
+                            }
+
+                            DateTime DateTimeStart = new DateTime(1970, 1, 1, 6, 0, 0, 0).AddSeconds(start);
+
+                            if ((start == 0) || ((DateTime.Now - DateTimeStart).Days > 58))
+                            {
+                                start = Convert.ToInt64((DateTime.Now.AddDays(-58) - new DateTime(1970, 1, 1, 6, 0, 0, 0)).TotalSeconds);
+                            }
+
+                            DownloadOne(measuredDatasDB.ToList(), measuredParameter, ecomonMonitoringPoints.FirstOrDefault(), token, start, finish);
                         }
                     }
                 }
