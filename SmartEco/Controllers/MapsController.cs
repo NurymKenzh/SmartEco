@@ -268,8 +268,12 @@ namespace SmartEco.Controllers
             //List<string> latitude = new List<string> { "43.25245478496336", "43.252024999269906" };
             //List<string> longitude = new List<string> { "77.00667", "76.89093410968779" };
             //List<string> latitude = new List<string> { "43.42417", "43.252024999269906" };
-            List<string> longitude = new List<string> { "8572102.20", "8572696.97" };
-            List<string> latitude = new List<string> { "5376224.66", "5376683.28" };
+
+            //List<string> longitude = new List<string> { "8572102.20", "8572696.97" };
+            //List<string> latitude = new List<string> { "5376224.66", "5376683.28" };
+            List<string> longitude = new List<string> { "8572410", "8572371" };
+            List<string> latitude = new List<string> { "5376722", "5376650" };
+
             List<string> height = new List<string> { "20", "4" };
             List<string> diameter = new List<string> { "0.5", "0.25" };
             List<string> flow_temperature = new List<string> { "24", "20" };
