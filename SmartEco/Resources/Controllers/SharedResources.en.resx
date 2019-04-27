@@ -252,6 +252,9 @@
   <data name="MonitoringPosts" xml:space="preserve">
     <value>Monitoring posts</value>
   </data>
+  <data name="MPC" xml:space="preserve">
+    <value>MPC</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Name</value>
   </data>

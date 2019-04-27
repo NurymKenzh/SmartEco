@@ -41,5 +41,7 @@ namespace SmartEco.Models
 
         [Display(Name = "EcomonCode")]
         public int? EcomonCode { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPC")]
+        public decimal? MPC { get; set; } // maximum permissible concentration
     }
 }

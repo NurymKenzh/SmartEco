@@ -12,5 +12,6 @@ namespace SmartEcoAPI.Models
         public string NameRU { get; set; }
         public string NameEN { get; set; }
         public int? EcomonCode { get; set; }
+        public decimal? MPC { get; set; } // maximum permissible concentration
     }
 }

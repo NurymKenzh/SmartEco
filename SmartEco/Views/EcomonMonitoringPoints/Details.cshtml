@@ -64,6 +64,7 @@
 </div>
 <div hidden="hidden">
     <input id="Value" value="@SharedLocalizer["Value"]" />
+    <input id="MPC" value="@SharedLocalizer["MPC"]" />
 </div>
 <script>
     function GetMeasuredDatas() {
@@ -91,26 +92,46 @@
             ChartMeasuredDatas.destroy();
         }
         var ctx1 = document.getElementById("chartMeasuredDatas").getContext('2d');
-        var data1 = [];
+        var data1 = [],
+            data2 = [];
         for (var i = 0; i < data.measureddatas.length; i++) {
             data1.push({
                 'x': moment(data.measureddatas[i].dateTime),
                 'y': data.measureddatas[i].value
             });
+            data2.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': data.measureddatas[i].measuredParameter.mpc
+            });
+        }
+        //alert(data2);
+        var datasets = [];
+        datasets.push({
+            label: $("#MeasuredParameterId option:selected").text(),
+            data: data1,
+            backgroundColor: 'rgba(85,255,0,1)',
+            borderColor: 'rgba(85,255,0,1)',
+            borderWidth: 3,
+            fill: false,
+            showLine: true,
+            lineTension: 0
+        });
+        if (data.measureddatas[0].measuredParameter.mpc != null) {
+            datasets.push({
+                label: $("#MPC").val(),
+                data: data2,
+                backgroundColor: 'rgba(255,0,0,1)',
+                borderColor: 'rgba(255,100,100,1)',
+                borderWidth: 3,
+                fill: false,
+                showLine: true,
+                lineTension: 0
+            });
         }
         ChartMeasuredDatas = new Chart(ctx1, {
             type: 'scatter',
             data: {
-                datasets: [{
-                    label: $("#MeasuredParameterId option:selected").text(),
-                    data: data1,
-                    backgroundColor: 'rgba(85,255,0,1)',
-                    borderColor: 'rgba(85,255,0,1)',
-                    borderWidth: 3,
-                    fill: false,
-                    showLine: true,
-                    lineTension: 0
-                }]
+                datasets: datasets
             },
             options: {
                 spanGaps: true,

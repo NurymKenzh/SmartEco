@@ -252,6 +252,9 @@
   <data name="MonitoringPosts" xml:space="preserve">
     <value>Посты мониторинга</value>
   </data>
+  <data name="MPC" xml:space="preserve">
+    <value>ПДК</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Название</value>
   </data>

@@ -201,7 +201,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN,EcomonCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN,MPC,EcomonCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -277,7 +277,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,EcomonCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,MPC,EcomonCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,

@@ -149,7 +149,7 @@ namespace SmartEco.Controllers
                 measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
             }
 
-            ViewBag.MeasuredParameters = new SelectList(measuredParameters.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => m.EcomonCode != null).OrderBy(m => m.Name), "Id", "Name");
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
             ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
             ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");

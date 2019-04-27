@@ -252,6 +252,9 @@
   <data name="MonitoringPosts" xml:space="preserve">
     <value>Мониторинг посттары</value>
   </data>
+  <data name="MPC" xml:space="preserve">
+    <value>ЕРЕК</value>
+  </data>
   <data name="Name" xml:space="preserve">
     <value>Атауы</value>
   </data>
