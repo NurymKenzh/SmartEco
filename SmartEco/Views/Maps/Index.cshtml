@@ -243,7 +243,7 @@
     <div>
         <div class="left-content">
             <div class="checkbox">
-                <input type="checkbox" id="EcomonPoints" value="ecomonPoints" onchange="ChangeLayers()" />
+                <input type="checkbox" id="EcomonPoints" value="ecomonPoints" onchange="ChangeLayers(); ZoomToEcomon();" />
                 <label for="EcomonPoints">@SharedLocalizer["EcomonMonitoringPoints"]</label>
             </div>
         </div>
@@ -561,7 +561,7 @@
     });
     Layer_SanitaryZone.set('name', 'SanitaryZone');
     Layer_SanitaryZone.setVisible(false);
-    Layer_SanitaryZone.setOpacity(0.8);
+    Layer_SanitaryZone.setOpacity(0.5);
     layers.push(Layer_SanitaryZone);
 
     var map = new ol.Map({
@@ -608,6 +608,23 @@
         error: function () {
         }
     });
+
+    function ZoomToFeature() {
+        var extent = [5684945.2, 5403966.6, 5706349.9, 5415343.7];
+        map.getView().fit(extent, {
+            duration: 1500
+        });
+    }
+
+    function ZoomToEcomon() {
+    if (document.getElementById("EcomonPoints").checked == true) {
+            //map.getView().fit(Layer_Lakes_v.getSource().getExtent(), { duration: 1500 });
+            //setTimeout(ZoomToFeature, 1500, polyFeature);
+
+            map.getView().fit([3481673.6, 3753477.2, 11858399.2, 8205877.6], { duration: 1500 });
+            setTimeout(ZoomToFeature, 1500);
+        }
+    }
 
     function ChangeLayers() {
         //alert(gslayersdata[0].geoServerName);
