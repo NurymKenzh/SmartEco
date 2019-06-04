@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredParameters
         [HttpGet]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<MeasuredParameter>>> GetMeasuredParameter(string SortOrder,
             string NameKK,
             string NameRU,
@@ -92,6 +94,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredParameters/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<MeasuredParameter>> GetMeasuredParameter(int id)
         {
             var measuredParameter = await _context.MeasuredParameter.FindAsync(id);
@@ -106,6 +109,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/MeasuredParameters/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<IActionResult> PutMeasuredParameter(int id, MeasuredParameter measuredParameter)
         {
             if (id != measuredParameter.Id)
@@ -136,6 +140,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/MeasuredParameters
         [HttpPost]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<MeasuredParameter>> PostMeasuredParameter(MeasuredParameter measuredParameter)
         {
             _context.MeasuredParameter.Add(measuredParameter);
@@ -146,6 +151,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/MeasuredParameters/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<MeasuredParameter>> DeleteMeasuredParameter(int id)
         {
             var measuredParameter = await _context.MeasuredParameter.FindAsync(id);
@@ -167,6 +173,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredParameters/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin")]
         public async Task<ActionResult<IEnumerable<MeasuredParameter>>> GetMeasuredParameterCount(string NameKK,
             string NameRU,
             string NameEN,

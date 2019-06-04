@@ -1,26 +1,60 @@
 @using Microsoft.AspNetCore.Identity
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-
 <ul class="navbar-nav">
-@if (SignInManager.IsSignedIn(User))
-{
-    <li class="nav-item">
-        <a  class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Manage/Index" title="Manage">Hello @User.Identity.Name!</a>
+    <li class="nav-item user" style="display: none;">
+        <a id="usera" class="nav-link text-dark">User</a>
     </li>
-    <li class="nav-item">
-        <form  class="form-inline" asp-area="Identity" asp-page="/Account/Logout" asp-route-returnUrl="@Url.Action("Index", "Home", new { area = "" })">
-            <button  type="submit" class="nav-link btn btn-link text-dark">Logout</button>
-        </form>
+    <li class="nav-item user" style="display: none;">
+        <button id="logOut" class="nav-link btn btn-link text-dark">@SharedLocalizer["LogOut"]</button>
     </li>
-}
-else
-{
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Register">Register</a>
+
+    <li class="nav-item login" style="display: none;">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">@SharedLocalizer["Register"]</a>
     </li>
-    <li class="nav-item">
-        <a class="nav-link text-dark" asp-area="Identity" asp-page="/Account/Login">Login</a>
+    <li class="nav-item login" style="display: none;">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">@SharedLocalizer["Login"]</a>
     </li>
-}
 </ul>
+@{
+    bool server = Convert.ToBoolean(Startup.Configuration["Server"]);
+    string APIUrl = server ? Startup.Configuration["APIUrlServerGlobal"] : Startup.Configuration["APIUrlDebug"];
+}
+<script>
+    var tokenKey = "accessToken";
+    $(document).ready(function() {
+        $.ajax({
+            type: 'GET',
+            url: '@APIUrl' + 'api/Account/GetEmail',
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (data) {
+                if (data != null) {
+                    $('#usera').html(data);
+                    $('.user').show();
+                    $('.login').hide();
+                }
+                else {
+                    $('.login').show();
+                    $('.user').remove();
+                }
+            },
+            fail: function (data) {
+                $('.login').show();
+                $('.user').hide();
+            }
+        });
+    });
+
+    $('#logOut').click(function (e) {
+        e.preventDefault();
+        $('.login').show();
+        $('.user').hide();
+        sessionStorage.removeItem(tokenKey);
+    });
+</script>

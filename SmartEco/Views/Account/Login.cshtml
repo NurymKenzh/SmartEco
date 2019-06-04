@@ -1,0 +1,130 @@
+﻿@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@model Person
+@{
+    ViewData["Title"] = SharedLocalizer["Login"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h1>Login</h1>*@
+
+@*<div class="userInfo" style="display:none;">
+        <p>Вы вошли как: <span class="userEmail"></span></p>
+        <input type="button" value="Выйти" id="logOut" />
+    </div>
+    <div class="loginForm">
+        <h3>Вход на сайт</h3>
+        <label>Введите email</label><br />
+        <input type="email" id="emailLogin" /> <br /><br />
+        <label>Введите пароль</label><br />
+        <input type="password" id="passwordLogin" /><br /><br />
+        <input type="submit" id="submitLogin" value="Логин" />
+    </div>
+    <div>
+        <input type="submit" id="getDataByLogin" value="Данные по логину" />
+    </div>
+    <div>
+        <input type="submit" id="getDataByRole" value="Данные по роли" />
+    </div>*@
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+<h2 class="loginForm">@ViewData["Title"]</h2>
+<div class="row">
+    <div class="col-md-4">
+        <section>
+            <hr />
+            <span id="message" class="text-danger"></span>
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group loginForm">
+                <label asp-for="Email"></label>
+                <input id="emailLogin" asp-for="Email" class="form-control" />
+            </div>
+            <div class="form-group loginForm">
+                <label asp-for="Password"></label>
+                <input id="passwordLogin" asp-for="Password" class="form-control" />
+            </div>
+            <div class="form-group loginForm">
+                <input type="submit" class="btn btn-default" id="submitLogin" value="@SharedLocalizer["Login"]" />
+            </div>
+        </section>
+    </div>
+</div>
+@{
+    bool server = Convert.ToBoolean(Startup.Configuration["Server"]);
+    string APIUrl = server ? Startup.Configuration["APIUrlServerGlobal"] : Startup.Configuration["APIUrlDebug"];
+}
+<script>
+        var tokenKey = "accessToken";
+        $('#submitLogin').click(function (e) {
+            e.preventDefault();
+            var loginData = {
+                grant_type: 'password',
+                email: $('#emailLogin').val(),
+                password: $('#passwordLogin').val()
+            };
+            $.ajax({
+                type: 'POST',
+                url: '@APIUrl' + 'api/Account/GetToken',
+                data: loginData
+            }).success(function (data) {
+                //$('.userEmail').text(data.email);
+                //$('.userInfo').css('display', 'block');
+                $('.loginForm').css('display', 'none');
+                sessionStorage.setItem(tokenKey, data.access_token);
+                $.ajax({
+                    type: 'POST',
+                    url: '@Url.Action("SetToken")',
+                    data: {
+                        Token: data.access_token
+                    }
+                }).success(function (datat) {
+                    window.location.href = "/";
+                }).fail(function (datat) {
+                });
+            }).fail(function (data) {
+                $('#message').text(data.responseJSON.error);
+            });
+        });
+
+        @*$('#logOut').click(function (e) {
+            e.preventDefault();
+            $('.loginForm').css('display', 'block');
+            $('.userInfo').css('display', 'none');
+            sessionStorage.removeItem(tokenKey);
+        });
+
+        $('#getDataByLogin').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'GET',
+                url: '@APIUrl' + 'api/Account/GetEmail',
+                beforeSend: function (xhr) {
+                    var token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                },
+                success: function (data) {
+                    alert(data);
+                },
+                fail: function (data) {
+                    console.log(data);
+                }
+            });
+        });
+        $('#getDataByRole').click(function (e) {
+            e.preventDefault();
+            $.ajax({
+                type: 'GET',
+                url: '@APIUrl' + 'api/Account/GetRole',
+                beforeSend: function (xhr) {
+                    var token = sessionStorage.getItem(tokenKey);
+                    xhr.setRequestHeader("Authorization", "Bearer " + token);
+                },
+                success: function (data) {
+                    alert(data);
+                },
+                fail: function (data) {
+                    console.log(data);
+                }
+            });
+        });*@
+</script>

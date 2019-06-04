@@ -315,4 +315,13 @@
   <data name="Value" xml:space="preserve">
     <value>Мағынасы</value>
   </data>
+  <data name="Register" xml:space="preserve">
+    <value>Тіркеу</value>
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value>Кіру</value>
+  </data>
+  <data name="LogOut" xml:space="preserve">
+    <value>Шығу</value>
+  </data>
 </root>

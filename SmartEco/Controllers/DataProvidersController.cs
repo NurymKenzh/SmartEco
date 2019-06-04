@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -16,10 +17,18 @@ namespace SmartEco.Controllers
     public class DataProvidersController : Controller
     {
         private readonly HttpApiClientController _HttpApiClient;
+        //private readonly IHttpContextAccessor _HttpContextAccessor;
 
-        public DataProvidersController(HttpApiClientController HttpApiClient)
+        public DataProvidersController(HttpApiClientController HttpApiClient
+            //,
+            //IHttpContextAccessor HttpContextAccessor
+            )
         {
             _HttpApiClient = HttpApiClient;
+
+            //_HttpContextAccessor = HttpContextAccessor;
+            //string token = _HttpContextAccessor.HttpContext.Session.GetString("Token");
+            //_HttpApiClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
         }
 
         // GET: DataProviders
@@ -28,6 +37,9 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
+            
+            //string token = HttpContext.Session.GetString("Token");
+
             List<DataProvider> dataProviders = new List<DataProvider>();
 
             ViewBag.NameFilter = NameFilter;
@@ -78,6 +90,9 @@ namespace SmartEco.Controllers
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"PageNumber={PageNumber.ToString()}";
             }
+
+            //_HttpApiClient.DefaultRequestHeaders.Add("Authorization", "Bearer " + token);
+
             HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route),
                 responseCount = await _HttpApiClient.GetAsync(url + "/count" + routeCount);
             if (response.IsSuccessStatusCode)

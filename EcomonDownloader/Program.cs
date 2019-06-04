@@ -44,7 +44,7 @@ namespace EcomonDownloader
 
         static void Main(string[] args)
         {
-            int sleepSeconds = 10;
+            int sleepSeconds = 60;
             while(true)
             {
                 try
