@@ -1,6 +1,6 @@
 ﻿@using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
-@using Microsoft.AspNetCore.Http;
+@using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["Data"];
@@ -11,6 +11,12 @@
 @if (!string.IsNullOrEmpty(Role))
 {
     <a class="btn btn-default" asp-controller="MeasuredParameters" asp-action="Index">@SharedLocalizer["MeasuredParameters"]</a>
+
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
     <a class="btn btn-default" asp-controller="EcomonMonitoringPoints" asp-action="Index">@SharedLocalizer["EcomonMonitoringPoints"]</a>
     <a class="btn btn-default" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
     <a class="btn btn-default" asp-controller="Logs" asp-action="Index">@SharedLocalizer["History"]</a>
