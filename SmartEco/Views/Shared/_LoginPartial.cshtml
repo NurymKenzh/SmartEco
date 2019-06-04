@@ -4,9 +4,9 @@
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @inject SignInManager<IdentityUser> SignInManager
 @inject UserManager<IdentityUser> UserManager
-<ul class="navbar-nav">
+<ul class="nav navbar-nav navbar-right">
     <li class="nav-item user" style="display: none;">
-        <a id="usera" class="nav-link text-dark">User</a>
+        <a id="usera" class="nav-link text-dark"></a>
     </li>
     <li class="nav-item user" style="display: none;">
         <button id="logOut" class="nav-link btn btn-link text-dark">@SharedLocalizer["LogOut"]</button>
@@ -56,5 +56,18 @@
         $('.login').show();
         $('.user').hide();
         sessionStorage.removeItem(tokenKey);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SetToken", "Account")',
+            data: {
+                Token: "",
+                Role: ""
+            },
+            success: function (data) {
+                window.location.href = "/";
+            },
+            error: function () {
+            }
+        })
     });
 </script>

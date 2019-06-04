@@ -61,13 +61,14 @@ namespace SmartEcoAPI.Controllers
                 var response = new
                 {
                     access_token = encodedJwt,
-                    email = identity.Name
+                    email = identity.Name,
+                    role = _context.Person.FirstOrDefault(p => p.Email == identity.Name)?.Role
                 };
 
                 // сериализация ответа
                 Response.ContentType = "application/json";
                 await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
-            }            
+            }
         }
 
         private ClaimsIdentity GetIdentity(string Email, string Password)
@@ -105,7 +106,7 @@ namespace SmartEcoAPI.Controllers
             {
                 return $"{person.Email} is not a valid email.";
             }
-            if (_context.Person.FirstOrDefault(p => p.Email == person.Email) !=null)
+            if (_context.Person.FirstOrDefault(p => p.Email == person.Email) != null)
             {
                 return $"User with {person.Email} email already exist.";
             }
@@ -178,7 +179,7 @@ namespace SmartEcoAPI.Controllers
             //return Ok("Ваша роль: администратор");
             Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
             string result = "";
-            if(person!=null)
+            if (person != null)
             {
                 result = person.Role;
             }

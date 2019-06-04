@@ -54,77 +54,78 @@
     string APIUrl = server ? Startup.Configuration["APIUrlServerGlobal"] : Startup.Configuration["APIUrlDebug"];
 }
 <script>
-        var tokenKey = "accessToken";
-        $('#submitLogin').click(function (e) {
-            e.preventDefault();
-            var loginData = {
-                grant_type: 'password',
-                email: $('#emailLogin').val(),
-                password: $('#passwordLogin').val()
-            };
+    var tokenKey = "accessToken";
+    $('#submitLogin').click(function (e) {
+        e.preventDefault();
+        var loginData = {
+            grant_type: 'password',
+            email: $('#emailLogin').val(),
+            password: $('#passwordLogin').val()
+        };
+        $.ajax({
+            type: 'POST',
+            url: '@APIUrl' + 'api/Account/GetToken',
+            data: loginData
+        }).success(function (data) {
+            //$('.userEmail').text(data.email);
+            //$('.userInfo').css('display', 'block');
+            $('.loginForm').css('display', 'none');
+            sessionStorage.setItem(tokenKey, data.access_token);
             $.ajax({
                 type: 'POST',
-                url: '@APIUrl' + 'api/Account/GetToken',
-                data: loginData
-            }).success(function (data) {
-                //$('.userEmail').text(data.email);
-                //$('.userInfo').css('display', 'block');
-                $('.loginForm').css('display', 'none');
-                sessionStorage.setItem(tokenKey, data.access_token);
-                $.ajax({
-                    type: 'POST',
-                    url: '@Url.Action("SetToken")',
-                    data: {
-                        Token: data.access_token
-                    }
-                }).success(function (datat) {
-                    window.location.href = "/";
-                }).fail(function (datat) {
-                });
-            }).fail(function (data) {
-                $('#message').text(data.responseJSON.error);
-            });
-        });
-
-        @*$('#logOut').click(function (e) {
-            e.preventDefault();
-            $('.loginForm').css('display', 'block');
-            $('.userInfo').css('display', 'none');
-            sessionStorage.removeItem(tokenKey);
-        });
-
-        $('#getDataByLogin').click(function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'GET',
-                url: '@APIUrl' + 'api/Account/GetEmail',
-                beforeSend: function (xhr) {
-                    var token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function (data) {
-                    alert(data);
-                },
-                fail: function (data) {
-                    console.log(data);
+                url: '@Url.Action("SetToken")',
+                data: {
+                    Token: data.access_token,
+                    Role: data.role
                 }
+            }).success(function (datat) {
+                window.location.href = "/";
+            }).fail(function (datat) {
             });
+        }).fail(function (data) {
+            $('#message').text(data.responseJSON.error);
         });
-        $('#getDataByRole').click(function (e) {
-            e.preventDefault();
-            $.ajax({
-                type: 'GET',
-                url: '@APIUrl' + 'api/Account/GetRole',
-                beforeSend: function (xhr) {
-                    var token = sessionStorage.getItem(tokenKey);
-                    xhr.setRequestHeader("Authorization", "Bearer " + token);
-                },
-                success: function (data) {
-                    alert(data);
-                },
-                fail: function (data) {
-                    console.log(data);
-                }
-            });
-        });*@
+    });
+
+    @*$('#logOut').click(function (e) {
+        e.preventDefault();
+        $('.loginForm').css('display', 'block');
+        $('.userInfo').css('display', 'none');
+        sessionStorage.removeItem(tokenKey);
+    });
+
+    $('#getDataByLogin').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'GET',
+            url: '@APIUrl' + 'api/Account/GetEmail',
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (data) {
+                alert(data);
+            },
+            fail: function (data) {
+                console.log(data);
+            }
+        });
+    });
+    $('#getDataByRole').click(function (e) {
+        e.preventDefault();
+        $.ajax({
+            type: 'GET',
+            url: '@APIUrl' + 'api/Account/GetRole',
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (data) {
+                alert(data);
+            },
+            fail: function (data) {
+                console.log(data);
+            }
+        });
+    });*@
 </script>

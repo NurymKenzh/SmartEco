@@ -25,9 +25,24 @@ namespace SmartEco.Controllers
         }
 
         [HttpPost]
-        public async Task<IActionResult> SetToken(string Token)
+        public async Task<IActionResult> SetToken(string Token, string Role)
         {
-            HttpContext.Session.SetString("Token", Token);
+            if(string.IsNullOrEmpty(Token))
+            {
+                HttpContext.Session.Remove("Token");
+            }
+            else
+            {
+                HttpContext.Session.SetString("Token", Token);
+            }
+            if (string.IsNullOrEmpty(Role))
+            {
+                HttpContext.Session.Remove("Role");
+            }
+            else
+            {
+                HttpContext.Session.SetString("Role", Role);
+            }
             string message = "OK";
             return Json(new
             {

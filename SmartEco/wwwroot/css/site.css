@@ -167,3 +167,18 @@ body {
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
 }
+
+/* custom style
+-------------------------------------------------- */
+.container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.footer {
+    padding-right: 10px;
+}
+
+.nav-link {
+    border-width: 0px;
+}
