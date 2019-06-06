@@ -21,6 +21,51 @@ namespace SmartEcoAPI.Models
         public int? Year { get; set; }
         public int? Month { get; set; }
 
+        public int? DateYear
+        {
+            get
+            {
+                if (DateTime != null)
+                {
+                    return DateTime.Value.Year;
+                }
+                else
+                {
+                    return Year;
+                }
+            }
+        }
+
+        public int? DateMonth
+        {
+            get
+            {
+                if (DateTime != null)
+                {
+                    return DateTime.Value.Month;
+                }
+                else
+                {
+                    return Month;
+                }
+            }
+        }
+
+        public int? DateDay
+        {
+            get
+            {
+                if (DateTime != null)
+                {
+                    return DateTime.Value.Day;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public int? MaxValueMonth { get; set; } // per year
         public int? MaxValueDay { get; set; } // per month
 

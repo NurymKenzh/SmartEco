@@ -98,15 +98,27 @@ namespace SmartEcoAPI.Controllers
                     }
                     break;
                 case "DateTime":
-                    measuredDatas = measuredDatas.OrderBy(m => m.DateTime != null ?
-                        m.DateTime :
-                        (m.Year != null && m.Month == null ? new DateTime((int)m.Year, 1, 1) : new DateTime((int)m.Year, (int)m.Month, 1, 0, 0, 1)));
+                    //measuredDatas = measuredDatas.OrderBy(m => m.DateTime != null ?
+                    //    m.DateTime :
+                    //    (m.Year != null && m.Month == null ? new DateTime((int)m.Year, 1, 1) : new DateTime((int)m.Year, (int)m.Month, 1, 0, 0, 1)));
+
+                    //measuredDatas = measuredDatas.OrderBy(m => m.DateTime);
+
+                    measuredDatas = measuredDatas.OrderBy(m => m.DateYear)
+                        .ThenBy(m => m.DateMonth)
+                        .ThenBy(m => m.DateDay);
                     break;
                 case "DateTimeDesc":
                     //measuredDatas = measuredDatas.OrderByDescending(m => m.DateTime);
-                    measuredDatas = measuredDatas.OrderByDescending(m => m.DateTime != null ?
-                        m.DateTime :
-                        (m.Year != null && m.Month == null ? new DateTime((int)m.Year, 1, 1) : new DateTime((int)m.Year, (int)m.Month, 1, 0, 0, 1)));
+                    //measuredDatas = measuredDatas.OrderByDescending(m => m.DateTime != null ?
+                    //    m.DateTime :
+                    //    (m.Year != null && m.Month == null ? new DateTime((int)m.Year, 1, 1) : new DateTime((int)m.Year, (int)m.Month, 1, 0, 0, 1)));
+
+                    //measuredDatas = measuredDatas.OrderByDescending(m => m.DateTime);
+
+                    measuredDatas = measuredDatas.OrderByDescending(m => m.DateYear)
+                        .ThenByDescending(m => m.DateMonth)
+                        .ThenByDescending(m => m.DateDay);
                     break;
                 case "MonitoringPost":
                     measuredDatas = measuredDatas.OrderBy(k => k.MonitoringPost);
