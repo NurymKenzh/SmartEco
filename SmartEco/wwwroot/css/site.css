@@ -182,3 +182,20 @@ body {
 .nav-link {
     border-width: 0px;
 }
+
+.text-center {
+    height: 79.6vh;
+}
+
+.image {
+    height: 100%;
+    width: 100%;
+    background: url(/images/SmartEcoLogo.png) no-repeat;
+    background-position: center center;
+    position: relative;
+}
+
+.footer {
+    height: 70px;
+    padding-left: 10px;
+}
