@@ -2,6 +2,7 @@
 @using System.Net
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["MonitoringPosts"];
@@ -9,10 +10,15 @@
 }
 
 <h1>@SharedLocalizer["MonitoringPosts"]</h1>
-
-<p>
-    @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
-</p>
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@if (Role == "admin" || Role == "moderator")
+{
+    <p>
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+    </p>
+}
 @using (Html.BeginForm("Index", "MonitoringPosts", new { SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter }, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
@@ -94,31 +100,40 @@
         <tbody>
             @foreach (var item in Model)
             {
-                <tr>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Number)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.NorthLatitude)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.EastLongitude)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.DataProvider.Name)
-                    </td>
-                    <td>
-                        @Html.DisplayFor(modelItem => item.PollutionEnvironment.Name)
-                    </td>
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Number)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.NorthLatitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.EastLongitude)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.DataProvider.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.PollutionEnvironment.Name)
+                </td>
+                @if (Role == "admin" || Role == "moderator")
+                {
                     <td>
                         @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter }) |
                         @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter }) |
                         @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
                     </td>
-                </tr>
+                }
+                else
+                {
+                    <td>
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                    </td>
+                }
+            </tr>
             }
         </tbody>
     </table>

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -174,6 +175,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts
         [HttpGet]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPost(string SortOrder,
             int? Number,
             string Name,
@@ -245,6 +247,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
         public async Task<ActionResult<MonitoringPost>> GetMonitoringPost(long id)
         {
             //var monitoringPost = await _context.MonitoringPost.FindAsync(id);
@@ -263,6 +266,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/MonitoringPosts/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutMonitoringPost(int id, MonitoringPost monitoringPost)
         {
             if (id != monitoringPost.Id)
@@ -293,6 +297,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/MonitoringPosts
         [HttpPost]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<MonitoringPost>> PostMonitoringPost(MonitoringPost monitoringPost)
         {
             _context.MonitoringPost.Add(monitoringPost);
@@ -303,6 +308,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/MonitoringPosts/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<MonitoringPost>> DeleteMonitoringPost(int id)
         {
             //var monitoringPost = await _context.MonitoringPost.FindAsync(id);
@@ -328,6 +334,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPostsCount(int? Number,
             string Name,
             int? DataProviderId,

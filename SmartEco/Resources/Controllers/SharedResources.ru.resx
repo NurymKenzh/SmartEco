@@ -324,4 +324,7 @@
   <data name="LogOut" xml:space="preserve">
     <value>Выйти</value>
   </data>
+  <data name="Directories" xml:space="preserve">
+    <value>Справочники</value>
+  </data>
 </root>

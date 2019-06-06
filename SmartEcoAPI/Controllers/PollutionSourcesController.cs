@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionSources
         [HttpGet]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<PollutionSource>>> GetPollutionSource(string SortOrder,
             string Name,
             int? PageSize,
@@ -59,6 +61,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionSources/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<PollutionSource>> GetPollutionSource(int id)
         {
             var pollutionSource = await _context.PollutionSource.FindAsync(id);
@@ -73,6 +76,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/PollutionSources/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutPollutionSource(int id, PollutionSource pollutionSource)
         {
             if (id != pollutionSource.Id)
@@ -103,6 +107,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/PollutionSources
         [HttpPost]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<PollutionSource>> PostPollutionSource(PollutionSource pollutionSource)
         {
             _context.PollutionSource.Add(pollutionSource);
@@ -113,6 +118,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/PollutionSources/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<PollutionSource>> DeletePollutionSource(int id)
         {
             var pollutionSource = await _context.PollutionSource.FindAsync(id);
@@ -134,6 +140,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionSources/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<PollutionSource>>> GetPollutionSourceCount(string Name)
         {
             var pollutionSources = _context.PollutionSource

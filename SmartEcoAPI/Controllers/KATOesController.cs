@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -161,6 +162,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/KATOes
         [HttpGet]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<KATO>>> GetKATO(string SortOrder,
             string Code,
             int? Level,
@@ -235,6 +237,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/KATOes/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<KATO>> GetKATO(int id)
         {
             var KATO = await _context.KATO.FindAsync(id);
@@ -249,6 +252,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/KATOes/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutKATO(int id, KATO KATO)
         {
             if (id != KATO.Id)
@@ -279,6 +283,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/KATOes
         [HttpPost]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<KATO>> PostKATO(KATO KATO)
         {
             _context.KATO.Add(KATO);
@@ -289,6 +294,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/KATOes/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<KATO>> DeleteKATO(int id)
         {
             var KATO = await _context.KATO.FindAsync(id);
@@ -310,6 +316,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/KATOes/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<KATO>>> GetKATOCount(string Code,
             int? Level,
             string NameKK,

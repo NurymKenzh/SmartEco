@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Layers
         [HttpGet]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<Layer>>> GetLayer(string SortOrder,
             string GeoServerName,
             string NameKK,
@@ -95,6 +97,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Layers/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Layer>> GetLayer(int id)
         {
             var layer = await _context.Layer
@@ -114,6 +117,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/Layers/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutLayer(int id, Layer layer)
         {
             if (id != layer.Id)
@@ -144,6 +148,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/Layers
         [HttpPost]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Layer>> PostLayer(Layer layer)
         {
             _context.Layer.Add(layer);
@@ -154,6 +159,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/Layers/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Layer>> DeleteLayer(int id)
         {
             var layer = await _context.Layer
@@ -179,6 +185,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Layers/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<Layer>>> GetLayersCount(string GeoServerName,
             string NameKK,
             string NameRU,

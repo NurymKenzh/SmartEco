@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionEnvironments
         [HttpGet]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<PollutionEnvironment>>> GetPollutionEnvironment(string SortOrder,
             string NameKK,
             string NameRU,
@@ -81,6 +83,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionEnvironments/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
         public async Task<ActionResult<PollutionEnvironment>> GetPollutionEnvironment(int id)
         {
             var pollutionEnvironment = await _context.PollutionEnvironment.FindAsync(id);
@@ -95,6 +98,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/PollutionEnvironments/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutPollutionEnvironment(int id, PollutionEnvironment pollutionEnvironment)
         {
             if (id != pollutionEnvironment.Id)
@@ -125,6 +129,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/PollutionEnvironments
         [HttpPost]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<PollutionEnvironment>> PostPollutionEnvironment(PollutionEnvironment pollutionEnvironment)
         {
             _context.PollutionEnvironment.Add(pollutionEnvironment);
@@ -135,6 +140,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/PollutionEnvironments/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<PollutionEnvironment>> DeletePollutionEnvironment(int id)
         {
             var pollutionEnvironment = await _context.PollutionEnvironment.FindAsync(id);
@@ -156,6 +162,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionEnvironments/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<PollutionEnvironment>>> GetPollutionEnvironmentCount(string NameKK,
             string NameRU,
             string NameEN)

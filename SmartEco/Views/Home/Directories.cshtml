@@ -1,0 +1,28 @@
+﻿@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Directories"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@if (Role == "admin" || Role == "moderator")
+{
+    <a class="btn btn-default" asp-controller="KATOes" asp-action="Index">@SharedLocalizer["KATOes"]</a>
+    <hr />
+    <a class="btn btn-default" asp-controller="PollutionEnvironments" asp-action="Index">@SharedLocalizer["PollutionEnvironments"]</a>
+    <a class="btn btn-default" asp-controller="MeasuredParameters" asp-action="Index">@SharedLocalizer["MeasuredParameters"]</a>
+    <a class="btn btn-default" asp-controller="DataProviders" asp-action="Index">@SharedLocalizer["DataProviders"]</a>
+    <br />
+    <br />
+    // убрать со временем EcomonMonitoringPoint
+    <a class="btn btn-default" asp-controller="EcomonMonitoringPoints" asp-action="Index">@SharedLocalizer["EcomonMonitoringPoints"]</a>
+    <a class="btn btn-default" asp-controller="PollutionSources" asp-action="Index">@SharedLocalizer["PollutionSources"]</a>
+    <a class="btn btn-default" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+}
+else if (Role == "KaragandaRegion")
+{
+    <a class="btn btn-default" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+}

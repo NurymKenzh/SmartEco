@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -23,6 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/EcomonMonitoringPoints
         [HttpGet]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<EcomonMonitoringPoint>>> GetEcomonMonitoringPoint(string SortOrder,
             int? Number,
             int? PageSize,
@@ -59,6 +61,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/EcomonMonitoringPoints/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<EcomonMonitoringPoint>> GetEcomonMonitoringPoint(int id)
         {
             var ecomonMonitoringPoint = await _context.EcomonMonitoringPoint.FindAsync(id);
@@ -73,6 +76,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/EcomonMonitoringPoints/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutEcomonMonitoringPoint(int id, EcomonMonitoringPoint ecomonMonitoringPoint)
         {
             if (id != ecomonMonitoringPoint.Id)
@@ -103,6 +107,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/EcomonMonitoringPoints
         [HttpPost]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<EcomonMonitoringPoint>> PostEcomonMonitoringPoint(EcomonMonitoringPoint ecomonMonitoringPoint)
         {
             _context.EcomonMonitoringPoint.Add(ecomonMonitoringPoint);
@@ -113,6 +118,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/EcomonMonitoringPoints/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<EcomonMonitoringPoint>> DeleteEcomonMonitoringPoint(int id)
         {
             var ecomonMonitoringPoint = await _context.EcomonMonitoringPoint.FindAsync(id);
@@ -134,6 +140,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/EcomonMonitoringPoints/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<EcomonMonitoringPoint>>> GetEcomonMonitoringPointCount(int? Number)
         {
             var ecomonMonitoringPoints = _context.EcomonMonitoringPoint

@@ -24,6 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/DataProviders
         [HttpGet]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<DataProvider>>> GetDataProvider(string SortOrder,
             string Name,
             int? PageSize,
@@ -60,6 +61,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/DataProviders/5
         [HttpGet("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<DataProvider>> GetDataProvider(int id)
         {
             var dataProvider = await _context.DataProvider.FindAsync(id);
@@ -74,6 +76,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/DataProviders/5
         [HttpPut("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutDataProvider(int id, DataProvider dataProvider)
         {
             if (id != dataProvider.Id)
@@ -104,6 +107,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/DataProviders
         [HttpPost]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<DataProvider>> PostDataProvider(DataProvider dataProvider)
         {
             _context.DataProvider.Add(dataProvider);
@@ -114,6 +118,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/DataProviders/5
         [HttpDelete("{id}")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<DataProvider>> DeleteDataProvider(int id)
         {
             var dataProvider = await _context.DataProvider.FindAsync(id);
@@ -135,6 +140,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/DataProviders/Count
         [HttpGet("count")]
+        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<IEnumerable<DataProvider>>> GetDataProviderCount(string Name)
         {
             var dataProviders = _context.DataProvider

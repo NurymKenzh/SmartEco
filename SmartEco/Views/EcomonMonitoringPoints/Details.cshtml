@@ -1,6 +1,7 @@
 ﻿@model SmartEco.Models.EcomonMonitoringPoint
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["Details"];
@@ -11,7 +12,9 @@
 <script src="~/lib/moment.js/moment.js"></script>
 <script src="~/lib/chart.js/dist/Chart.js"></script>
 <h1>@SharedLocalizer["Details"]</h1>
-
+@{
+    string Role = Context.Session.GetString("Role");
+}
 <div>
     <h4 id="EcomonMonitoringPoint">@SharedLocalizer["EcomonMonitoringPoint"]</h4>
     <hr />
@@ -58,10 +61,20 @@
         </dd>
     </dl>
 </div>
-<div>
-    @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter }) |
-    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter })
-</div>
+@if (Role == "admin" || Role == "moderator")
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter }) |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter })
+    </div>
+}
+else
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter })
+    </div>
+}
+
 <div hidden="hidden">
     <input id="Value" value="@SharedLocalizer["Value"]" />
     <input id="MPC" value="@SharedLocalizer["MPC"]" />
