@@ -72,6 +72,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Aktau {
+            get {
+                return ResourceManager.GetString("Aktau", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string AreaType {
             get {
                 return ResourceManager.GetString("AreaType", resourceCulture);
@@ -288,6 +297,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string KaragandaRegion {
+            get {
+                return ResourceManager.GetString("KaragandaRegion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string KATO {
             get {
                 return ResourceManager.GetString("KATO", resourceCulture);
@@ -399,6 +417,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Map {
             get {
                 return ResourceManager.GetString("Map", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Maps {
+            get {
+                return ResourceManager.GetString("Maps", resourceCulture);
             }
         }
         

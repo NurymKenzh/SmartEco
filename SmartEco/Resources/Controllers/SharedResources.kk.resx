@@ -327,4 +327,13 @@
   <data name="Directories" xml:space="preserve">
     <value>Анықтамалар</value>
   </data>
+  <data name="Aktau" xml:space="preserve">
+    <value>Ақтау</value>
+  </data>
+  <data name="KaragandaRegion" xml:space="preserve">
+    <value>Қарағанды облысы</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>Карталар</value>
+  </data>
 </root>

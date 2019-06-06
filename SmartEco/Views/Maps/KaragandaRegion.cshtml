@@ -1,0 +1,43 @@
+﻿@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["KaragandaRegion"];
+}
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+
+<style>
+    .map {
+        height: calc(100vh - 159px);
+    }
+</style>
+
+<div id="map" class="map"></div>
+
+<script>
+    var layers = [];
+
+    var Source_OSM = new ol.source.OSM(),
+        Source_BingAerialWithLabels = new ol.source.BingMaps({
+            key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+            imagerySet: 'AerialWithLabels',
+        });
+    layers.push(new ol.layer.Tile({
+        source: Source_OSM
+    }));
+    layers[0].set('name', 'Base');
+
+    var map = new ol.Map({
+        controls: new ol.control.defaults().extend([
+            new ol.control.ScaleLine()
+        ]),
+        target: 'map',
+        layers: layers,
+        view: new ol.View({
+            center: ol.proj.fromLonLat([70.98, 48.70]),
+            zoom: 7
+        })
+    });
+</script>

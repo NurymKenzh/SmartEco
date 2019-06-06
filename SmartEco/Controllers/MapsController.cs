@@ -27,6 +27,11 @@ namespace SmartEco.Controllers
 
         public async Task<IActionResult> Index()
         {
+            return View();
+        }
+
+        public async Task<IActionResult> Aktau()
+        {
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
             string urlLayers = "api/Layers";
@@ -196,12 +201,16 @@ namespace SmartEco.Controllers
             ViewBag.DirectionWind = directionWind;
 
             List<SelectListItem> pollutants = new List<SelectListItem>();
-            pollutants.Add(new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12"  });
+            pollutants.Add(new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12" });
             pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
             pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
             pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
             ViewBag.Pollutants = pollutants;
 
+            return View();
+        }
+        public async Task<IActionResult> KaragandaRegion()
+        {
             return View();
         }
 

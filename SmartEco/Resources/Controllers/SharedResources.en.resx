@@ -327,4 +327,13 @@
   <data name="Directories" xml:space="preserve">
     <value>Directories</value>
   </data>
+  <data name="Aktau" xml:space="preserve">
+    <value>Aktau</value>
+  </data>
+  <data name="KaragandaRegion" xml:space="preserve">
+    <value>Karaganda region</value>
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value>Maps</value>
+  </data>
 </root>
