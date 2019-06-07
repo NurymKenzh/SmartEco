@@ -7,6 +7,7 @@ using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json.Linq;
@@ -32,6 +33,13 @@ namespace SmartEco.Controllers
 
         public async Task<IActionResult> Aktau()
         {
+            string role = HttpContext.Session.GetString("Role");
+
+            if (!(role == "admin" || role == "moderator" || role == "KaragandaRegion"))
+            {
+                return View();
+            }
+
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
             string urlLayers = "api/Layers";

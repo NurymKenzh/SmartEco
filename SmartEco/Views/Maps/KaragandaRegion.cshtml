@@ -1,90 +1,97 @@
 ﻿@using System.Net
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["KaragandaRegion"];
 }
-<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
-<script src="~/lib/openlayers/ol.js"></script>
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@if (Role == "admin" || Role == "moderator" || Role == "KaragandaRegion")
+{
+    <link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+    <script src="~/lib/openlayers/ol.js"></script>
 
-<style>
-    .map {
-        height: calc(100vh - 159px);
-    }
-</style>
-<style>
-    .ol-custom-overviewmap,
-    .ol-custom-overviewmap.ol-uncollapsible {
-        bottom: auto;
-        left: auto;
-        right: 0;
-        top: 0;
-    }
+    <style>
+        .map {
+            height: calc(100vh - 159px);
+        }
+    </style>
+    <style>
+        .ol-custom-overviewmap,
+        .ol-custom-overviewmap.ol-uncollapsible {
+            bottom: auto;
+            left: auto;
+            right: 0;
+            top: 0;
+        }
 
-    .ol-custom-overviewmap:not(.ol-collapsed) {
-        border: 1px solid black;
-    }
+            .ol-custom-overviewmap:not(.ol-collapsed) {
+                border: 1px solid black;
+            }
 
-    .ol-custom-overviewmap .ol-overviewmap-map {
-        border: none;
-        width: 300px;
-    }
+            .ol-custom-overviewmap .ol-overviewmap-map {
+                border: none;
+                width: 300px;
+            }
 
-    .ol-custom-overviewmap .ol-overviewmap-box {
-        border: 2px solid red;
-    }
+            .ol-custom-overviewmap .ol-overviewmap-box {
+                border: 2px solid red;
+            }
 
-    .ol-custom-overviewmap:not(.ol-collapsed) button {
-        bottom: auto;
-        left: auto;
-        right: 1px;
-        top: 1px;
-    }
+            .ol-custom-overviewmap:not(.ol-collapsed) button {
+                bottom: auto;
+                left: auto;
+                right: 1px;
+                top: 1px;
+            }
 
-    .ol-rotate {
-        top: 170px;
-        right: 0;
-    }
-</style>
+        .ol-rotate {
+            top: 170px;
+            right: 0;
+        }
+    </style>
 
-<div id="map" class="map"></div>
+    <div id="map" class="map"></div>
 
-<script>
-    var layers = [];
+    <script>
+        var layers = [];
 
-    var Source_OSM = new ol.source.OSM(),
-        Source_BingAerialWithLabels = new ol.source.BingMaps({
-            key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
-            imagerySet: 'AerialWithLabels',
-        });
-    layers.push(new ol.layer.Tile({
-        source: Source_OSM
-    }));
-    layers[0].set('name', 'Base');
-
-    var overviewMapControl = new ol.control.OverviewMap({
-        className: 'ol-overviewmap ol-custom-overviewmap',
-        layers: [
-          new ol.layer.Tile({
+        var Source_OSM = new ol.source.OSM(),
+            Source_BingAerialWithLabels = new ol.source.BingMaps({
+                key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+                imagerySet: 'AerialWithLabels',
+            });
+        layers.push(new ol.layer.Tile({
             source: Source_OSM
-          })
-        ],
-        collapseLabel: '\u00BB',
-        label: '\u00AB',
-        collapsed: false
-      });
+        }));
+        layers[0].set('name', 'Base');
 
-    var map = new ol.Map({
-        controls: new ol.control.defaults().extend([
-            new ol.control.ScaleLine(),
-            overviewMapControl
-        ]),
-        target: 'map',
-        layers: layers,
-        view: new ol.View({
-            center: ol.proj.fromLonLat([70.98, 48.70]),
-            zoom: 7
-        })
-    });
-</script>
+        var overviewMapControl = new ol.control.OverviewMap({
+            className: 'ol-overviewmap ol-custom-overviewmap',
+            layers: [
+                new ol.layer.Tile({
+                    source: Source_OSM
+                })
+            ],
+            collapseLabel: '\u00BB',
+            label: '\u00AB',
+            collapsed: false
+        });
+
+        var map = new ol.Map({
+            controls: new ol.control.defaults().extend([
+                new ol.control.ScaleLine(),
+                overviewMapControl
+            ]),
+            target: 'map',
+            layers: layers,
+            view: new ol.View({
+                center: ol.proj.fromLonLat([70.98, 48.70]),
+                zoom: 7
+            })
+        });
+    </script>
+}
