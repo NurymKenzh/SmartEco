@@ -107,7 +107,6 @@
         }
     </style>
 
-    @*<div id="map" class="map"></div>*@
     <div id="fullscreen" class="fullscreen">
         <div id="map" class="map"></div>
         <div class="sidepanel">
@@ -115,65 +114,170 @@
             <select id="layerBaseType" class="form-control form-control-sm" onchange="ChangeLayers()">
                 <option value="OSM">OpenStreetMap</option>
                 <option value="BingAerialWithLabels">Bing Aerial</option>
+                <option value="BingRoadStatic">Bing Road (static)</option>
+                <option value="BingRoadDynamic">Bing Road (dynamic)</option>
+                <option value="HERENormalDay">HERE Normal Day</option>
+                <option value="HERENormalDayTransit">HERE Normal Day Transit</option>
+                <option value="HERETerrainDay">HERE Terrain Day</option>
+                <option value="HEREHybridDay">HERE Hybrid Day</option>
             </select>
         </div>
     </div>
 
     <script>
-        var layers = [];
+    var layers = [];
 
-        var Source_OSM = new ol.source.OSM(),
-            Source_BingAerialWithLabels = new ol.source.BingMaps({
-                key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
-                imagerySet: 'AerialWithLabels',
-            });
-        layers.push(new ol.layer.Tile({
-            source: Source_OSM
-        }));
-        layers[0].set('name', 'Base');
+    var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
+    var HEREappCode = 'D9-h9iVhjgUB_9eUlFETXA';
 
-        var overviewMapControl = new ol.control.OverviewMap({
-            className: 'ol-overviewmap ol-custom-overviewmap',
-            layers: [
-                new ol.layer.Tile({
-                    source: Source_OSM
-                })
-            ],
-            collapseLabel: '\u00BB',
-            label: '\u00AB',
-            collapsed: false
-        });
+    var Source_OSM = new ol.source.OSM();
+    layers.push(new ol.layer.Tile({
+        source: Source_OSM
+    }));
+    layers[0].set('name', 'Base');
 
-        var map = new ol.Map({
-            controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
-                new ol.control.ScaleLine(),
-                overviewMapControl,
-                new ol.control.FullScreen({
-                    source: 'fullscreen'
-                })
-            ]),
-            //controls: ol.control.defaults({ attributionOptions: { collapsible: true } }),
-            target: 'map',
-            layers: layers,
-            view: new ol.View({
-                center: ol.proj.fromLonLat([70.98, 48.70]),
-                zoom: 7
+    Source_BingAerialWithLabels = new ol.source.BingMaps({
+        key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+        imagerySet: 'AerialWithLabels',
+    });
+    Source_BingRoadStatic = new ol.source.BingMaps({
+        key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+        imagerySet: 'Road',
+    });
+    Source_BingRoadDynamic = new ol.source.BingMaps({
+        key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+        imagerySet: 'RoadOnDemand',
+    });
+
+    var urlTpl = 'https://{1-4}.{base}.maps.cit.api.here.com' +
+        '/{type}/2.1/maptile/newest/{scheme}/{z}/{x}/{y}/256/png' +
+        '?app_id={app_id}&app_code={app_code}';
+    function HEREcreateUrl(tpl, HERElayerDesc) {
+        return tpl
+          .replace('{base}', HERElayerDesc.base)
+          .replace('{type}', HERElayerDesc.type)
+          .replace('{scheme}', HERElayerDesc.scheme)
+          .replace('{app_id}', HERElayerDesc.app_id)
+          .replace('{app_code}', HERElayerDesc.app_code);
+    };
+
+    var HERElayerDescNormalDay = {
+        base: 'base',
+        type: 'maptile',
+        scheme: 'normal.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERENormalDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescNormalDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescNormalDayTransit = {
+        base: 'base',
+        type: 'maptile',
+        scheme: 'normal.day.transit',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERENormalDayTransit = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescNormalDayTransit),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescTerrainDay = {
+        base: 'aerial',
+        type: 'maptile',
+        scheme: 'terrain.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERETerrainDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescTerrainDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescHybridDay = {
+        base: 'aerial',
+        type: 'maptile',
+        scheme: 'hybrid.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HEREHybridDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescHybridDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var overviewMapControl = new ol.control.OverviewMap({
+        className: 'ol-overviewmap ol-custom-overviewmap',
+        layers: [
+            new ol.layer.Tile({
+                source: Source_OSM
             })
-        });
+        ],
+        collapseLabel: '\u00BB',
+        label: '\u00AB',
+        collapsed: false
+    });
 
-        function ChangeLayers() {
-            map.getLayers().forEach(function (layer) {
-                if (layer.get('name') == 'Base') {
-                    if ($('#layerBaseType').val() == 'OSM') {
-                        layer.setSource(Source_OSM);
-                        nameSource = "Source_OSM";
-                    }
-                    else if ($('#layerBaseType').val() == 'BingAerialWithLabels') {
-                        layer.setSource(Source_BingAerialWithLabels);
-                        nameSource = "Source_BingAerialWithLabels";
-                    }
+    var map = new ol.Map({
+        controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
+            new ol.control.ScaleLine(),
+            overviewMapControl,
+            new ol.control.FullScreen({
+                source: 'fullscreen'
+            })
+        ]),
+        target: 'map',
+        layers: layers,
+        view: new ol.View({
+            center: ol.proj.fromLonLat([70.98, 48.70]),
+            zoom: 7
+        })
+    });
+
+    function ChangeLayers() {
+        map.getLayers().forEach(function (layer) {
+            if (layer.get('name') == 'Base') {
+                if ($('#layerBaseType').val() == 'OSM') {
+                    layer.setSource(Source_OSM);
+                    nameSource = "Source_OSM";
                 }
-            })
-        }
+                else if ($('#layerBaseType').val() == 'BingAerialWithLabels') {
+                    layer.setSource(Source_BingAerialWithLabels);
+                    nameSource = "Source_BingAerialWithLabels";
+                }
+                else if ($('#layerBaseType').val() == 'BingRoadStatic') {
+                    layer.setSource(Source_BingRoadStatic);
+                    nameSource = "Source_BingRoadStatic";
+                }
+                else if ($('#layerBaseType').val() == 'BingRoadDynamic') {
+                    layer.setSource(Source_BingRoadDynamic);
+                    nameSource = "Source_BingRoadDynamic";
+                }
+                else if ($('#layerBaseType').val() == 'HERENormalDay') {
+                    layer.setSource(Source_HERENormalDay);
+                    nameSource = "Source_HERENormalDay";
+                }
+                else if ($('#layerBaseType').val() == 'HERENormalDayTransit') {
+                    layer.setSource(Source_HERENormalDayTransit);
+                    nameSource = "Source_HERENormalDayTransit";
+                }
+                else if ($('#layerBaseType').val() == 'HERETerrainDay') {
+                    layer.setSource(Source_HERETerrainDay);
+                    nameSource = "Source_HERETerrainDay";
+                }
+                else if ($('#layerBaseType').val() == 'HEREHybridDay') {
+                    layer.setSource(Source_HEREHybridDay);
+                    nameSource = "Source_HEREHybridDay";
+                }
+            }
+        })
+    }
     </script>
 }
