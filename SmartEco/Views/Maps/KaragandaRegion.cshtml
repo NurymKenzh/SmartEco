@@ -13,6 +13,40 @@
         height: calc(100vh - 159px);
     }
 </style>
+<style>
+    .ol-custom-overviewmap,
+    .ol-custom-overviewmap.ol-uncollapsible {
+        bottom: auto;
+        left: auto;
+        right: 0;
+        top: 0;
+    }
+
+    .ol-custom-overviewmap:not(.ol-collapsed) {
+        border: 1px solid black;
+    }
+
+    .ol-custom-overviewmap .ol-overviewmap-map {
+        border: none;
+        width: 300px;
+    }
+
+    .ol-custom-overviewmap .ol-overviewmap-box {
+        border: 2px solid red;
+    }
+
+    .ol-custom-overviewmap:not(.ol-collapsed) button {
+        bottom: auto;
+        left: auto;
+        right: 1px;
+        top: 1px;
+    }
+
+    .ol-rotate {
+        top: 170px;
+        right: 0;
+    }
+</style>
 
 <div id="map" class="map"></div>
 
@@ -29,9 +63,22 @@
     }));
     layers[0].set('name', 'Base');
 
+    var overviewMapControl = new ol.control.OverviewMap({
+        className: 'ol-overviewmap ol-custom-overviewmap',
+        layers: [
+          new ol.layer.Tile({
+            source: Source_OSM
+          })
+        ],
+        collapseLabel: '\u00BB',
+        label: '\u00AB',
+        collapsed: false
+      });
+
     var map = new ol.Map({
         controls: new ol.control.defaults().extend([
-            new ol.control.ScaleLine()
+            new ol.control.ScaleLine(),
+            overviewMapControl
         ]),
         target: 'map',
         layers: layers,
