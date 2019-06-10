@@ -123,6 +123,16 @@
                 <option value="StamenWatercolor">Stamen Watercolor</option>
                 <option value="StamenTerrain">Stamen Terrain</option>
                 <option value="StamenToner">Stamen Toner</option>
+                <option value="ArcGIS">ArcGIS</option>
+                <option value="ThunderforestOpenCycleMap">Thunderforest OpenCycleMap</option>
+                <option value="ThunderforestTransport">Thunderforest Transport</option>
+                <option value="ThunderforestLandscape">Thunderforest Landscape</option>
+                <option value="ThunderforestOutdoors">Thunderforest Outdoors</option>
+                <option value="ThunderforestTransportDark">Thunderforest Transport Dark</option>
+                <option value="ThunderforestSpinalMap">Thunderforest Spinal Map</option>
+                <option value="ThunderforestPioneer">Thunderforest Pioneer</option>
+                <option value="ThunderforestMobileAtlas">Thunderforest Mobile Atlas</option>
+                <option value="ThunderforestNeighbourhood">Thunderforest Neighbourhood</option>
             </select>
         </div>
     </div>
@@ -228,6 +238,58 @@
         layer: 'toner'
     });
 
+    var Source_ArcGIS = new ol.source.XYZ({
+        attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+            'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+            'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+    });
+
+    var Source_ThunderforestOpenCycleMap = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestTransport = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/transport/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestLandscape = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestOutdoors = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestTransportDark = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestSpinalMap = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestPioneer = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/pioneer/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestMobileAtlas = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestNeighbourhood = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
     var overviewMapControl = new ol.control.OverviewMap({
         className: 'ol-overviewmap ol-custom-overviewmap',
         layers: [
@@ -291,6 +353,36 @@
                 }
                 else if ($('#layerBaseType').val() == 'StamenToner') {
                     layer.setSource(Source_StamenToner);
+                }
+                else if ($('#layerBaseType').val() == 'ArcGIS') {
+                    layer.setSource(Source_ArcGIS);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestOpenCycleMap') {
+                    layer.setSource(Source_ThunderforestOpenCycleMap);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestTransport') {
+                    layer.setSource(Source_ThunderforestTransport);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestLandscape') {
+                    layer.setSource(Source_ThunderforestLandscape);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestOutdoors') {
+                    layer.setSource(Source_ThunderforestOutdoors);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestTransportDark') {
+                    layer.setSource(Source_ThunderforestTransportDark);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestSpinalMap') {
+                    layer.setSource(Source_ThunderforestSpinalMap);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestPioneer') {
+                    layer.setSource(Source_ThunderforestPioneer);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestMobileAtlas') {
+                    layer.setSource(Source_ThunderforestMobileAtlas);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestNeighbourhood') {
+                    layer.setSource(Source_ThunderforestNeighbourhood);
                 }
             }
         })
