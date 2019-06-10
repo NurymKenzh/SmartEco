@@ -106,7 +106,10 @@ namespace SmartEcoAPI.Controllers
 
                     measuredDatas = measuredDatas.OrderBy(m => m.DateYear)
                         .ThenBy(m => m.DateMonth)
-                        .ThenBy(m => m.DateDay);
+                        .ThenBy(m => m.DateDay)
+                        .ThenBy(m => m.DateHour)
+                        .ThenBy(m => m.DateMinute)
+                        .ThenBy(m => m.DateSecond);
                     break;
                 case "DateTimeDesc":
                     //measuredDatas = measuredDatas.OrderByDescending(m => m.DateTime);
@@ -118,7 +121,10 @@ namespace SmartEcoAPI.Controllers
 
                     measuredDatas = measuredDatas.OrderByDescending(m => m.DateYear)
                         .ThenByDescending(m => m.DateMonth)
-                        .ThenByDescending(m => m.DateDay);
+                        .ThenByDescending(m => m.DateDay)
+                        .ThenByDescending(m => m.DateHour)
+                        .ThenByDescending(m => m.DateMinute)
+                        .ThenByDescending(m => m.DateSecond);
                     break;
                 case "MonitoringPost":
                     measuredDatas = measuredDatas.OrderBy(k => k.MonitoringPost);

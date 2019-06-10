@@ -66,6 +66,51 @@ namespace SmartEcoAPI.Models
             }
         }
 
+        public int? DateHour
+        {
+            get
+            {
+                if (DateTime != null)
+                {
+                    return DateTime.Value.Hour;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public int? DateMinute
+        {
+            get
+            {
+                if (DateTime != null)
+                {
+                    return DateTime.Value.Minute;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        public int? DateSecond
+        {
+            get
+            {
+                if (DateTime != null)
+                {
+                    return DateTime.Value.Second;
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
         public int? MaxValueMonth { get; set; } // per year
         public int? MaxValueDay { get; set; } // per month
 
