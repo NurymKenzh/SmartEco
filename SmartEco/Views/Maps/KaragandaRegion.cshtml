@@ -120,6 +120,9 @@
                 <option value="HERENormalDayTransit">HERE Normal Day Transit</option>
                 <option value="HERETerrainDay">HERE Terrain Day</option>
                 <option value="HEREHybridDay">HERE Hybrid Day</option>
+                <option value="StamenWatercolor">Stamen Watercolor</option>
+                <option value="StamenTerrain">Stamen Terrain</option>
+                <option value="StamenToner">Stamen Toner</option>
             </select>
         </div>
     </div>
@@ -213,6 +216,18 @@
             '<a href="http://developer.here.com">HERE</a>'
     });
 
+    var Source_StamenWatercolor = new ol.source.Stamen({
+        layer: 'watercolor'
+    });
+
+    var Source_StamenTerrain = new ol.source.Stamen({
+        layer: 'terrain'
+    });
+
+    var Source_StamenToner = new ol.source.Stamen({
+        layer: 'toner'
+    });
+
     var overviewMapControl = new ol.control.OverviewMap({
         className: 'ol-overviewmap ol-custom-overviewmap',
         layers: [
@@ -246,35 +261,36 @@
             if (layer.get('name') == 'Base') {
                 if ($('#layerBaseType').val() == 'OSM') {
                     layer.setSource(Source_OSM);
-                    nameSource = "Source_OSM";
                 }
                 else if ($('#layerBaseType').val() == 'BingAerialWithLabels') {
                     layer.setSource(Source_BingAerialWithLabels);
-                    nameSource = "Source_BingAerialWithLabels";
                 }
                 else if ($('#layerBaseType').val() == 'BingRoadStatic') {
                     layer.setSource(Source_BingRoadStatic);
-                    nameSource = "Source_BingRoadStatic";
                 }
                 else if ($('#layerBaseType').val() == 'BingRoadDynamic') {
                     layer.setSource(Source_BingRoadDynamic);
-                    nameSource = "Source_BingRoadDynamic";
                 }
                 else if ($('#layerBaseType').val() == 'HERENormalDay') {
                     layer.setSource(Source_HERENormalDay);
-                    nameSource = "Source_HERENormalDay";
                 }
                 else if ($('#layerBaseType').val() == 'HERENormalDayTransit') {
                     layer.setSource(Source_HERENormalDayTransit);
-                    nameSource = "Source_HERENormalDayTransit";
                 }
                 else if ($('#layerBaseType').val() == 'HERETerrainDay') {
                     layer.setSource(Source_HERETerrainDay);
-                    nameSource = "Source_HERETerrainDay";
                 }
                 else if ($('#layerBaseType').val() == 'HEREHybridDay') {
                     layer.setSource(Source_HEREHybridDay);
-                    nameSource = "Source_HEREHybridDay";
+                }
+                else if ($('#layerBaseType').val() == 'StamenWatercolor') {
+                    layer.setSource(Source_StamenWatercolor);
+                }
+                else if ($('#layerBaseType').val() == 'StamenTerrain') {
+                    layer.setSource(Source_StamenTerrain);
+                }
+                else if ($('#layerBaseType').val() == 'StamenToner') {
+                    layer.setSource(Source_StamenToner);
                 }
             }
         })
