@@ -523,6 +523,8 @@ namespace SmartEco.Controllers
             }
             ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
 
+            monitoringPost.AdditionalInformation = monitoringPost.AdditionalInformation.Replace("\r\n", "\r");
+
             return View(monitoringPost);
         }
 
