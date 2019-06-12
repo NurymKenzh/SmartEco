@@ -336,4 +336,19 @@
   <data name="Maps" xml:space="preserve">
     <value>Карты</value>
   </data>
+  <data name="BaseLayer" xml:space="preserve">
+    <value>Базовый слой</value>
+  </data>
+  <data name="EcoserviceAirPost" xml:space="preserve">
+    <value>Пост мониторинга атмосферного воздуха Экосервис-С</value>
+  </data>
+  <data name="EcoserviceAirPosts" xml:space="preserve">
+    <value>Посты мониторинга атмосферного воздуха Экосервис-С</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Информация</value>
+  </data>
+  <data name="Table" xml:space="preserve">
+    <value>Таблица</value>
+  </data>
 </root>

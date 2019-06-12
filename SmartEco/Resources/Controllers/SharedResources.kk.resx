@@ -336,4 +336,19 @@
   <data name="Maps" xml:space="preserve">
     <value>Карталар</value>
   </data>
+  <data name="BaseLayer" xml:space="preserve">
+    <value>Негізгі қабат</value>
+  </data>
+  <data name="EcoserviceAirPost" xml:space="preserve">
+    <value>Экосервис-С атмосфералық ауаны бақылау қызметі</value>
+  </data>
+  <data name="EcoserviceAirPosts" xml:space="preserve">
+    <value>Экосервис-С атмосфералық ауаны бақылау қызметі</value>
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value>Ақпарат</value>
+  </data>
+  <data name="Table" xml:space="preserve">
+    <value>Кесте</value>
+  </data>
 </root>

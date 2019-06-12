@@ -199,3 +199,69 @@ body {
     height: 70px;
     padding-left: 10px;
 }
+
+.map {
+    width: 80%;
+    height: 100%;
+    float: left;
+}
+
+.sidepanel {
+    background: rgba(0, 0, 0, .05);
+    width: 20%;
+    height: 100%;
+    /*height: calc(100vh - 159px);*/
+    float: left;
+    padding: 10px;
+}
+
+.sidepanel-title {
+    width: 100%;
+    /*font-size: 3em;*/
+    /*color: #ffffff;*/
+    display: block;
+    /*text-align: center;*/
+}
+
+.sidepanel hr {
+    margin: 0;
+}
+
+.sidepanel input[type='checkbox'] {
+    margin-right: 5px;
+}
+
+.sidepanel input[type='range'] {
+    width: 100%;
+}
+
+.info-input {
+    max-width: 150px;
+    display: inline;
+}
+
+.info-input-select {
+    max-width: 623px;
+}
+
+.dialog-info-content {
+    width: 100%;
+    height: 100%;
+}
+
+.dialog-info-tab-div {
+    width: 100%;
+    height: calc(100% - 44px);
+    overflow:auto;
+}
+
+.dialog-info-table {
+    width: 100%;
+    height: 100%;
+}
+
+.dialog-info-tab-table {
+    width: 100%;
+    height: calc(100% - 104px);
+    margin-top: 10px;
+}

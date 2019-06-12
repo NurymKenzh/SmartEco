@@ -27,6 +27,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -36,11 +37,13 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
 
             ViewBag.NameKKSort = SortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
             ViewBag.NameRUSort = SortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
             ViewBag.NameENSort = SortOrder == "NameEN" ? "NameENDesc" : "NameEN";
             ViewBag.EcomonCodeSort = SortOrder == "EcomonCode" ? "EcomonCodeDesc" : "EcomonCode";
+            ViewBag.OceanusCodeSort = SortOrder == "OceanusCode" ? "OceanusCodeDesc" : "OceanusCode";
 
             string url = "api/MeasuredParameters",
                 route = "",
@@ -77,6 +80,13 @@ namespace SmartEco.Controllers
                 route += $"EcomonCode={EcomonCodeFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"EcomonCode={EcomonCodeFilter}";
+            }
+            if (OceanusCodeFilter!=null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"OceanusCode={OceanusCodeFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"OceanusCode={OceanusCodeFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -148,6 +158,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -158,6 +169,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             if (id == null)
             {
                 return NotFound();
@@ -183,6 +195,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -193,6 +206,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             return View();
         }
 
@@ -201,12 +215,13 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN,MPC,EcomonCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -217,6 +232,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
@@ -240,7 +256,14 @@ namespace SmartEco.Controllers
 
                 return RedirectToAction(nameof(Index),
                     new {
-                        SortOrder = ViewBag.SortOrder, PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        NameKKFilter = ViewBag.NameKKFilter,
+                        NameRUFilter = ViewBag.NameRUFilter,
+                        NameENFilter = ViewBag.NameENFilter,
+                        EcomonCodeFilter = ViewBag.EcomonCodeFilter,
+                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
                     });
             }
             return View(measuredParameter);
@@ -253,6 +276,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -263,6 +287,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             MeasuredParameter measuredParameter = null;
             HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
             if (response.IsSuccessStatusCode)
@@ -277,12 +302,13 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,MPC,EcomonCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -293,6 +319,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             if (id != measuredParameter.Id)
             {
                 return NotFound();
@@ -321,7 +348,14 @@ namespace SmartEco.Controllers
                 measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
                 return RedirectToAction(nameof(Index),
                     new {
-                        SortOrder = ViewBag.SortOrder, PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        NameKKFilter = ViewBag.NameKKFilter,
+                        NameRUFilter = ViewBag.NameRUFilter,
+                        NameENFilter = ViewBag.NameENFilter,
+                        EcomonCodeFilter = ViewBag.EcomonCodeFilter,
+                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
                     });
             }
             return View(measuredParameter);
@@ -334,6 +368,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -344,6 +379,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             if (id == null)
             {
                 return NotFound();
@@ -372,6 +408,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
+            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -382,11 +419,19 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
+            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
                 $"api/MeasuredParameters/{id}");
             return RedirectToAction(nameof(Index),
                     new {
-                        SortOrder = ViewBag.SortOrder, PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter
+                        SortOrder = ViewBag.SortOrder,
+                        PageSize = ViewBag.PageSize,
+                        PageNumber = ViewBag.PageNumber,
+                        NameKKFilter = ViewBag.NameKKFilter,
+                        NameRUFilter = ViewBag.NameRUFilter,
+                        NameENFilter = ViewBag.NameENFilter,
+                        EcomonCodeFilter = ViewBag.EcomonCodeFilter,
+                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
                     });
         }
 

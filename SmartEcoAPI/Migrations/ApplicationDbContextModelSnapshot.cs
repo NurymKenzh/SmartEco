@@ -222,6 +222,8 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<string>("NameRU");
 
+                    b.Property<string>("OceanusCode");
+
                     b.HasKey("Id");
 
                     b.ToTable("MeasuredParameter");

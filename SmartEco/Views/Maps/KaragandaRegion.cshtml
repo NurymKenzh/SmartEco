@@ -9,135 +9,255 @@
 @{
     string Role = Context.Session.GetString("Role");
 }
-@if (Role == "admin" || Role == "moderator" || Role == "KaragandaRegion")
-{
-    <link href="~/lib/openlayers/ol.css" rel="stylesheet" />
-    <script src="~/lib/openlayers/ol.js"></script>
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
+<script src="~/lib/chart.js/dist/Chart.js"></script>
+<script src="~/lib/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js"></script>
 
-    <style>
-        /*.map {
-            height: calc(100vh - 159px);
-        }*/
-    </style>
-    <style>
-        .ol-custom-overviewmap,
-        .ol-custom-overviewmap.ol-uncollapsible {
+<style>
+    /*.map {
+        height: calc(100vh - 159px);
+    }*/
+
+    .ol-custom-overviewmap,
+    .ol-custom-overviewmap.ol-uncollapsible {
+        bottom: auto;
+        left: auto;
+        right: 0.5em;
+        top: 2.5em;
+    }
+
+        .ol-custom-overviewmap:not(.ol-collapsed) {
+            border: 1px solid black;
+        }
+
+        .ol-custom-overviewmap .ol-overviewmap-map {
+            border: none;
+            width: 300px;
+        }
+
+        .ol-custom-overviewmap .ol-overviewmap-box {
+            border: 2px solid red;
+        }
+
+        .ol-custom-overviewmap:not(.ol-collapsed) button {
             bottom: auto;
             left: auto;
-            right: 0.5em;
-            top: 2.5em;
+            right: 1px;
+            top: 1px;
         }
 
-            .ol-custom-overviewmap:not(.ol-collapsed) {
-                border: 1px solid black;
-            }
-
-            .ol-custom-overviewmap .ol-overviewmap-map {
-                border: none;
-                width: 300px;
-            }
-
-            .ol-custom-overviewmap .ol-overviewmap-box {
-                border: 2px solid red;
-            }
-
-            .ol-custom-overviewmap:not(.ol-collapsed) button {
-                bottom: auto;
-                left: auto;
-                right: 1px;
-                top: 1px;
-            }
-
-        /*.ol-rotate {
-              top: 170px;
-              right: 0;
-          }*/
-
-        .fullscreen:-moz-full-screen {
-            /*height: 100%;*/
-            height: calc(100vh - 159px);
-        }
-
-        .fullscreen:-webkit-full-screen {
-            /*height: 100%;*/
-            height: calc(100vh - 159px);
-        }
-
-        .fullscreen:-ms-fullscreen {
-            /*height: 100%;*/
-            height: calc(100vh - 159px);
-        }
-
-        .fullscreen:fullscreen {
-            /*height: 100%;*/
-            height: calc(100vh - 159px);
-        }
-
-        .fullscreen {
-            margin-bottom: 10px;
-            width: 100%;
-            /*height: 400px;*/
-            height: calc(100vh - 159px);
-        }
-
-        /*.ol-rotate {
-          top: 3em;
+    /*.ol-rotate {
+            top: 170px;
+            right: 0;
         }*/
 
-        .map {
-            width: 80%;
-            height: 100%;
-            float: left;
-        }
+    .fullscreen:-moz-full-screen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
 
-        .sidepanel {
-            background: #1F6B75;
-            width: 20%;
-            height: 100%;
-            /*height: calc(100vh - 159px);*/
-            float: left;
-        }
+    .fullscreen:-webkit-full-screen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
 
-        .sidepanel-title {
-            width: 100%;
-            /*font-size: 3em;*/
-            /*color: #ffffff;*/
-            display: block;
-            /*text-align: center;*/
-        }
-    </style>
+    .fullscreen:-ms-fullscreen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
 
-    <div id="fullscreen" class="fullscreen">
-        <div id="map" class="map"></div>
-        <div class="sidepanel">
-            <span class="sidepanel-title">Side Panel</span>
-            <select id="layerBaseType" class="form-control form-control-sm" onchange="ChangeLayers()">
-                <option value="OSM">OpenStreetMap</option>
-                <option value="BingAerialWithLabels">Bing Aerial</option>
-                <option value="BingRoadStatic">Bing Road (static)</option>
-                <option value="BingRoadDynamic">Bing Road (dynamic)</option>
-                <option value="HERENormalDay">HERE Normal Day</option>
-                <option value="HERENormalDayTransit">HERE Normal Day Transit</option>
-                <option value="HERETerrainDay">HERE Terrain Day</option>
-                <option value="HEREHybridDay">HERE Hybrid Day</option>
-                <option value="StamenWatercolor">Stamen Watercolor</option>
-                <option value="StamenTerrain">Stamen Terrain</option>
-                <option value="StamenToner">Stamen Toner</option>
-                <option value="ArcGIS">ArcGIS</option>
-                <option value="ThunderforestOpenCycleMap">Thunderforest OpenCycleMap</option>
-                <option value="ThunderforestTransport">Thunderforest Transport</option>
-                <option value="ThunderforestLandscape">Thunderforest Landscape</option>
-                <option value="ThunderforestOutdoors">Thunderforest Outdoors</option>
-                <option value="ThunderforestTransportDark">Thunderforest Transport Dark</option>
-                <option value="ThunderforestSpinalMap">Thunderforest Spinal Map</option>
-                <option value="ThunderforestPioneer">Thunderforest Pioneer</option>
-                <option value="ThunderforestMobileAtlas">Thunderforest Mobile Atlas</option>
-                <option value="ThunderforestNeighbourhood">Thunderforest Neighbourhood</option>
-            </select>
+    .fullscreen:fullscreen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
+
+    .fullscreen {
+        margin-bottom: 10px;
+        width: 100%;
+        /*height: 400px;*/
+        height: calc(100vh - 159px);
+    }
+
+    /*.ol-rotate {
+        top: 3em;
+    }*/
+</style>
+
+<div hidden="hidden">
+    <input id="KazHydrometAirMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsLayerJson" />
+    <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
+    <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
+    <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
+    <input id="MPC" type="text" value="@SharedLocalizer["MPC"]" />
+    <input id="KazHydrometAirPost" type="text" value="@SharedLocalizer["KazHydrometAirPost"]" />
+    <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
+    <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPost"]" />
+    <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirPosts"]" />
+</div>
+
+<div id="fullscreen" class="fullscreen">
+    <div id="map" class="map"></div>
+    <div class="sidepanel">
+        <label>
+            <input type="checkbox" id="layerEcoserviceAirMonitoringPostsShow" onchange="ChangeLayers()" checked="checked">
+            @SharedLocalizer["EcoserviceAirPosts"]
+            <img src="~/images/EcoserviceAirMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerEcoserviceAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()" checked="checked">
+            @SharedLocalizer["KazHydrometAirPosts"]
+            <img src="~/images/KazHydrometAirMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
+        <br />
+        <input id="layerBaseOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <select id="layerBaseType" class="form-control form-control-sm" onchange="ChangeLayers()">
+            <option value="OSM">OpenStreetMap</option>
+            <option value="BingAerialWithLabels">Bing Aerial</option>
+            <option value="BingRoadStatic">Bing Road (static)</option>
+            <option value="BingRoadDynamic">Bing Road (dynamic)</option>
+            <option value="HERENormalDay">HERE Normal Day</option>
+            <option value="HERENormalDayTransit">HERE Normal Day Transit</option>
+            <option value="HERETerrainDay">HERE Terrain Day</option>
+            <option value="HEREHybridDay">HERE Hybrid Day</option>
+            <option value="StamenWatercolor">Stamen Watercolor</option>
+            <option value="StamenTerrain">Stamen Terrain</option>
+            <option value="StamenToner">Stamen Toner</option>
+            <option value="ArcGIS">ArcGIS</option>
+            <option value="ThunderforestOpenCycleMap">Thunderforest OpenCycleMap</option>
+            <option value="ThunderforestTransport">Thunderforest Transport</option>
+            <option value="ThunderforestLandscape">Thunderforest Landscape</option>
+            <option value="ThunderforestOutdoors">Thunderforest Outdoors</option>
+            <option value="ThunderforestTransportDark">Thunderforest Transport Dark</option>
+            <option value="ThunderforestSpinalMap">Thunderforest Spinal Map</option>
+            <option value="ThunderforestPioneer">Thunderforest Pioneer</option>
+            <option value="ThunderforestMobileAtlas">Thunderforest Mobile Atlas</option>
+            <option value="ThunderforestNeighbourhood">Thunderforest Neighbourhood</option>
+        </select>
+    </div>
+</div>
+
+<div hidden="hidden">
+    <div id="dialogMonitoringPostInfo" title="">
+        <table id="tableKazHydrometAirMonitoringPost" class="table-bordered dialog-info-content">
+            <tr>
+                <td>
+                    @SharedLocalizer["DataProvider"]
+                </td>
+                <td id="KazHydrometAirMonitoringPostDataProviderName"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["PollutionEnvironment"]
+                </td>
+                <td id="KazHydrometAirMonitoringPostPollutionEnvironmentName"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["Number"]
+                </td>
+                <td id="KazHydrometAirMonitoringPostNumber"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["Name"]
+                </td>
+                <td id="KazHydrometAirMonitoringPostName"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["AdditionalInformation"]
+                </td>
+                <td id="KazHydrometAirMonitoringPostAdditionalInformation"></td>
+            </tr>
+        </table>
+        <div id="divEcoserviceAirPost" class="dialog-info-content">
+            <ul>
+                <li><a href="#divEcoserviceAirPostInfo">@SharedLocalizer["Info"]</a></li>
+                <li><a href="#divEcoserviceAirPostChart">@SharedLocalizer["Chart"]</a></li>
+                <li><a href="#divEcoserviceAirPostTable">@SharedLocalizer["Table"]</a></li>
+            </ul>
+            <div id="divEcoserviceAirPostInfo" class="dialog-info-tab-div">
+                <input id="EcoserviceAirMonitoringMonitoringPostId" type="hidden" />
+                <table class="table-bordered dialog-info-table">
+                    <tr>
+                        <td>
+                            @SharedLocalizer["DataProvider"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostDataProviderName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["PollutionEnvironment"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostPollutionEnvironmentName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["Number"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostNumber"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["Name"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["AdditionalInformation"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostAdditionalInformation"></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="divEcoserviceAirPostChart" class="dialog-info-tab-div">
+                @Html.DropDownList("ChartMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMeasuredParameterId", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "ChartDateFrom", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "ChartTimeFrom", @onchange = "ChartGetMeasuredDatas()" })
+                -
+                @Html.TextBox("ChartDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "ChartDateTo", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "ChartTimeTo", @onchange = "ChartGetMeasuredDatas()" })
+                <canvas id="chartMeasuredDatas"></canvas>
+            </div>
+            <div id="divEcoserviceAirPostTable" class="dialog-info-tab-div">
+                @Html.DropDownList("TableMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "TableMeasuredParameterId", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "TableDateFrom", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "TableTimeFrom", @onchange = "TableGetMeasuredDatas()" })
+                -
+                @Html.TextBox("TableDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "TableDateTo", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "TableTimeTo", @onchange = "TableGetMeasuredDatas()" })
+                <table id="tableMeasuredDatas" class="table-bordered dialog-info-tab-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @SharedLocalizer["DateTime"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["Value"]
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
         </div>
     </div>
+</div>
 
-    <script>
+@*layers*@
+<script>
     var layers = [];
 
     var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
@@ -167,11 +287,11 @@
         '?app_id={app_id}&app_code={app_code}';
     function HEREcreateUrl(tpl, HERElayerDesc) {
         return tpl
-          .replace('{base}', HERElayerDesc.base)
-          .replace('{type}', HERElayerDesc.type)
-          .replace('{scheme}', HERElayerDesc.scheme)
-          .replace('{app_id}', HERElayerDesc.app_id)
-          .replace('{app_code}', HERElayerDesc.app_code);
+            .replace('{base}', HERElayerDesc.base)
+            .replace('{type}', HERElayerDesc.type)
+            .replace('{scheme}', HERElayerDesc.scheme)
+            .replace('{app_id}', HERElayerDesc.app_id)
+            .replace('{app_code}', HERElayerDesc.app_code);
     };
 
     var HERElayerDescNormalDay = {
@@ -222,8 +342,7 @@
     };
     var Source_HEREHybridDay = new ol.source.XYZ({
         url: HEREcreateUrl(urlTpl, HERElayerDescHybridDay),
-        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
-            '<a href="http://developer.here.com">HERE</a>'
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' + '<a href="http://developer.here.com">HERE</a>'
     });
 
     var Source_StamenWatercolor = new ol.source.Stamen({
@@ -290,37 +409,61 @@
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
 
-    var overviewMapControl = new ol.control.OverviewMap({
-        className: 'ol-overviewmap ol-custom-overviewmap',
-        //layers: [
-        //    new ol.layer.Tile({
-        //        source: Source_OSM
-        //    })
-        //],
-        collapseLabel: '\u00BB',
-        label: '\u00AB',
-        collapsed: false
+    var KazHydrometAirMonitoringPostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/KazHydrometAirMonitoringPost.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            scale: 0.0625
+        }))
     });
+    var KazHydrometAirMonitoringPostsLayerJson = $("#KazHydrometAirMonitoringPostsLayerJson").val();
+    var Source_KazHydrometAirMonitoringPosts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsLayerJson, {
 
-    var map = new ol.Map({
-        controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
-            new ol.control.ScaleLine(),
-            overviewMapControl,
-            new ol.control.FullScreen({
-                source: 'fullscreen'
-            })
-        ]),
-        target: 'map',
-        layers: layers,
-        view: new ol.View({
-            center: ol.proj.fromLonLat([70.98, 48.70]),
-            zoom: 7
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
         })
     });
+    var Layer_KazHydrometAirMonitoringPosts = new ol.layer.Vector({
+        source: Source_KazHydrometAirMonitoringPosts,
+        style: KazHydrometAirMonitoringPostsStyle,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometAirMonitoringPosts.set('name', 'KazHydrometAirMonitoringPosts');
+    layers.push(Layer_KazHydrometAirMonitoringPosts);
+
+    var EcoserviceAirMonitoringPostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/EcoserviceAirMonitoringPost.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            scale: 0.0625
+        }))
+    });
+    var EcoserviceAirMonitoringPostsLayerJson = $("#EcoserviceAirMonitoringPostsLayerJson").val();
+    var Source_EcoserviceAirMonitoringPosts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(EcoserviceAirMonitoringPostsLayerJson, {
+
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_EcoserviceAirMonitoringPosts = new ol.layer.Vector({
+        source: Source_EcoserviceAirMonitoringPosts,
+        style: EcoserviceAirMonitoringPostsStyle,
+        renderBuffer: 200
+    });
+    Layer_EcoserviceAirMonitoringPosts.set('name', 'EcoserviceAirMonitoringPosts');
+    layers.push(Layer_EcoserviceAirMonitoringPosts);
 
     function ChangeLayers() {
         map.getLayers().forEach(function (layer) {
             if (layer.get('name') == 'Base') {
+                layer.setVisible(document.getElementById("layerBaseShow").checked);
+                layer.setOpacity($('#layerBaseOpacity').val() / 100)
                 if ($('#layerBaseType').val() == 'OSM') {
                     layer.setSource(Source_OSM);
                 }
@@ -385,7 +528,242 @@
                     layer.setSource(Source_ThunderforestNeighbourhood);
                 }
             }
+            if (layer.get('name') == 'KazHydrometAirMonitoringPosts') {
+                layer.setVisible(document.getElementById("layerKazHydrometAirMonitoringPostsShow").checked);
+                layer.setOpacity($('#layerKazHydrometAirMonitoringPostsOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'EcoserviceAirMonitoringPosts') {
+                layer.setVisible(document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked);
+                layer.setOpacity($('#layerEcoserviceAirMonitoringPostsOpacity').val() / 100)
+            }
         })
     }
-    </script>
-}
+</script>
+
+@*map*@
+<script>
+    var overviewMapControl = new ol.control.OverviewMap({
+        className: 'ol-overviewmap ol-custom-overviewmap',
+        collapseLabel: '\u00BB',
+        label: '\u00AB',
+        collapsed: false
+    });
+
+    var map = new ol.Map({
+        controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
+            new ol.control.ScaleLine(),
+            overviewMapControl,
+            new ol.control.FullScreen({
+                source: 'fullscreen'
+            })
+        ]),
+        target: document.getElementById('map'),//'map',
+        layers: layers,
+        view: new ol.View({
+            center: ol.proj.fromLonLat([70.98, 48.70]),
+            zoom: 7
+        })
+    });
+
+    map.on('click', function (evt) {
+        var layerName = '';
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+            layerName = layer.get('name');
+            if (layer.get('name') == 'KazHydrometAirMonitoringPosts'
+                || layer.get('name') == 'EcoserviceAirMonitoringPosts') {
+                return feature;
+            }
+        });
+        if (feature) {
+            $('.dialog-info-content').hide();
+            if (layerName == 'KazHydrometAirMonitoringPosts') {
+                $('#KazHydrometAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+                $('#KazHydrometAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+                $('#KazHydrometAirMonitoringPostNumber').text(feature.get('Number'));
+                $('#KazHydrometAirMonitoringPostName').text(feature.get('Name'));
+                $('#KazHydrometAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+                $('#tableKazHydrometAirMonitoringPost').show();
+                $("#dialogMonitoringPostInfo").dialog({
+                    resize: DialogResize,
+                    title: $('#KazHydrometAirPost').val(),
+                    minHeight: 100,
+                    minWidth: 100
+                });
+            }
+            if (layerName == 'EcoserviceAirMonitoringPosts') {
+                $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
+                $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+                $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+                $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
+                $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+                $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+                $('#divEcoserviceAirPost').show();
+                $("#divEcoserviceAirPost").tabs();
+                $("#dialogMonitoringPostInfo").dialog({
+                    resize: DialogResize,
+                    title: $('#EcoserviceAirPost').val(),
+                    minHeight: 100,
+                    minWidth: 100,
+                    width: 750,
+                    maxHeight: window.innerHeight
+                });
+                ChartGetMeasuredDatas();
+                TableGetMeasuredDatas();
+            }
+        } else {
+        }
+    });
+
+    function DialogResize(event, ui) {
+        var heightPadding = parseInt($(this).css('padding-top'), 0) + parseInt($(this).css('padding-bottom'), 0),
+            widthPadding = parseInt($(this).css('padding-left'), 0) + parseInt($(this).css('padding-right'), 0),
+            titlebarMargin = parseInt($(this).prev('.ui-dialog-titlebar').css('margin-bottom'), 0);
+        $(this).height($(this).parent().height() - $(this).prev('.ui-dialog-titlebar').outerHeight(true) - heightPadding - titlebarMargin);
+        $(this).width($(this).prev('.ui-dialog-titlebar').outerWidth(true) - widthPadding);
+    }
+</script>
+
+@* ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
+<script>
+    function ChartGetMeasuredDatas() {
+        $("#chartMeasuredDatas").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetMeasuredDatas", "MeasuredDatas")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#ChartMeasuredParameterId').val(),
+                DateFrom: $('#ChartDateFrom').val(),
+                TimeFrom: $('#ChartTimeFrom').val(),
+                DateTo: $('#ChartDateTo').val(),
+                TimeTo: $('#ChartTimeTo').val(),
+            },
+            type: 'POST',
+            success: function (data) {
+                ChangeChart(data);
+            },
+            error: function () {
+                $("#chartMeasuredDatas").LoadingOverlay("hide");
+            }
+        })
+    };
+
+    var ChartMeasuredDatas = null;
+    function ChangeChart(data) {
+        if (ChartMeasuredDatas != null) {
+            ChartMeasuredDatas.destroy();
+        }
+        var ctx1 = document.getElementById("chartMeasuredDatas").getContext('2d');
+        var data1 = [],
+            data2 = [];
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            data1.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': data.measureddatas[i].value
+            });
+            data2.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': data.measureddatas[i].measuredParameter.mpc
+            });
+        }
+        var datasets = [];
+        datasets.push({
+            label: $("#ChartMeasuredParameterId option:selected").text(),
+            data: data1,
+            backgroundColor: 'rgba(85,255,0,1)',
+            borderColor: 'rgba(85,255,0,1)',
+            borderWidth: 3,
+            fill: false,
+            showLine: true,
+            lineTension: 0
+        });
+        if (data.measureddatas.length > 0) {
+            if (data.measureddatas[0].measuredParameter.mpc != null) {
+                datasets.push({
+                    label: $("#MPC").val(),
+                    data: data2,
+                    backgroundColor: 'rgba(255,0,0,1)',
+                    borderColor: 'rgba(255,100,100,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                });
+            }
+        }
+        ChartMeasuredDatas = new Chart(ctx1, {
+            type: 'scatter',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                spanGaps: true,
+                title: {
+                    display: true,
+                    text: $("#EcoserviceAirPost").text()
+                },
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        time: {
+                            displayFormats: {
+                                second: 'lll',
+                                minute: 'lll',
+                                hour: 'lll',
+                                day: 'lll',
+                                week: 'lll',
+                                month: 'lll',
+                                quarter: 'lll',
+                                year: 'lll',
+                            }
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#DateTime").val()
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#Value").val()
+                        }
+                    }]
+                }
+            }
+        });
+        $("#chartMeasuredDatas").LoadingOverlay("hide");
+        }
+
+    function TableGetMeasuredDatas() {
+        $("#tableMeasuredDatas").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetMeasuredDatas", "MeasuredDatas")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#TableMeasuredParameterId').val(),
+                DateFrom: $('#TableDateFrom').val(),
+                TimeFrom: $('#TableTimeFrom').val(),
+                DateTo: $('#TableDateTo').val(),
+                TimeTo: $('#TableTimeTo').val(),
+            },
+            type: 'POST',
+            success: function (data) {
+                ChangeTable(data);
+            },
+            error: function () {
+                $("#tableMeasuredDatas").LoadingOverlay("hide");
+            }
+        })
+    };
+
+    function ChangeTable(data) {
+        $("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        var tablehtml = '';
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + data.measureddatas[i].value + '</td></tr>';
+        }
+        $('#tableMeasuredDatas tbody').append(tablehtml);
+        $("#tableMeasuredDatas").LoadingOverlay("hide");
+    };
+</script>

@@ -120,4 +120,7 @@
   <data name="EcomonCode" xml:space="preserve">
     <value>Ecomon code</value>
   </data>
+  <data name="OceanusCode" xml:space="preserve">
+    <value>Oceanus code</value>
+  </data>
 </root>

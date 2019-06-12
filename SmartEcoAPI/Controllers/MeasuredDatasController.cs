@@ -35,6 +35,8 @@ namespace SmartEcoAPI.Controllers
             int? PageSize,
             int? PageNumber)
         {
+            //PopulateEcoserviceData();
+
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
                 .Include(m => m.MonitoringPost)
@@ -282,6 +284,112 @@ namespace SmartEcoAPI.Controllers
             int count = await measuredDatas.CountAsync();
 
             return Ok(count);
+        }
+
+        private void PopulateEcoserviceData()
+        {
+            Random rnd = new Random();
+            DateTime start = new DateTime(2019, 06, 01);
+
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
+            {
+                decimal? previousValue = 0;
+                if (measuredDatas.Count > 0)
+                {
+                    previousValue = measuredDatas.Last().Value;
+                }
+                decimal? newValue = -1;
+                while (newValue < 0 || newValue > 400)
+                {
+                    newValue = previousValue + rnd.Next(-20, 20);
+                }
+                MeasuredData measuredData = new MeasuredData()
+                {
+                    DateTime = dateTime,
+                    MeasuredParameterId = 2,
+                    MonitoringPostId = 39,
+                    Value = newValue
+                };
+                measuredDatas.Add(measuredData);
+            }
+            _context.MeasuredData.AddRange(measuredDatas);
+            _context.SaveChanges();
+
+            measuredDatas = new List<MeasuredData>();
+            for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
+            {
+                decimal? previousValue = 0;
+                if (measuredDatas.Count > 0)
+                {
+                    previousValue = measuredDatas.Last().Value;
+                }
+                decimal? newValue = -1;
+                while (newValue < 0 || newValue > 400)
+                {
+                    newValue = previousValue + rnd.Next(-20, 20);
+                }
+                MeasuredData measuredData = new MeasuredData()
+                {
+                    DateTime = dateTime,
+                    MeasuredParameterId = 2,
+                    MonitoringPostId = 40,
+                    Value = newValue
+                };
+                measuredDatas.Add(measuredData);
+            }
+            _context.MeasuredData.AddRange(measuredDatas);
+            _context.SaveChanges();
+
+            measuredDatas = new List<MeasuredData>();
+            for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
+            {
+                decimal? previousValue = 0;
+                if (measuredDatas.Count > 0)
+                {
+                    previousValue = measuredDatas.Last().Value;
+                }
+                decimal? newValue = -1;
+                while (newValue < 0 || newValue > 200)
+                {
+                    newValue = previousValue + rnd.Next(-12, 12);
+                }
+                MeasuredData measuredData = new MeasuredData()
+                {
+                    DateTime = dateTime,
+                    MeasuredParameterId = 3,
+                    MonitoringPostId = 39,
+                    Value = newValue
+                };
+                measuredDatas.Add(measuredData);
+            }
+            _context.MeasuredData.AddRange(measuredDatas);
+            _context.SaveChanges();
+
+            measuredDatas = new List<MeasuredData>();
+            for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
+            {
+                decimal? previousValue = 0;
+                if (measuredDatas.Count > 0)
+                {
+                    previousValue = measuredDatas.Last().Value;
+                }
+                decimal? newValue = -1;
+                while (newValue < 0 || newValue > 200)
+                {
+                    newValue = previousValue + rnd.Next(-12, 12);
+                }
+                MeasuredData measuredData = new MeasuredData()
+                {
+                    DateTime = dateTime,
+                    MeasuredParameterId = 3,
+                    MonitoringPostId = 40,
+                    Value = newValue
+                };
+                measuredDatas.Add(measuredData);
+            }
+            _context.MeasuredData.AddRange(measuredDatas);
+            _context.SaveChanges();
         }
     }
 }

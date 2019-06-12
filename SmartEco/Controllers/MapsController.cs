@@ -33,13 +33,6 @@ namespace SmartEco.Controllers
 
         public async Task<IActionResult> Aktau()
         {
-            string role = HttpContext.Session.GetString("Role");
-
-            if (!(role == "admin" || role == "moderator" || role == "KaragandaRegion"))
-            {
-                return View();
-            }
-
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
             string urlLayers = "api/Layers";
@@ -219,6 +212,113 @@ namespace SmartEco.Controllers
         }
         public async Task<IActionResult> KaragandaRegion()
         {
+            string role = HttpContext.Session.GetString("Role");
+            if (!(role == "admin" || role == "moderator" || role == "KaragandaRegion"))
+            {
+                return Redirect("/");
+            }
+
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+
+            ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = (DateTime.Now).ToString("HH:mm:ss");
+
+            string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            string urlMonitoringPosts = "api/MonitoringPosts";
+            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
+            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+
+            List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
+                .Where(m => m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString())
+                .ToList();
+            JObject kazHydrometAirMonitoringPostsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometAirMonitoringPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                               },
+                               geometry = new
+                               {
+                                    type = "Point",
+                                    coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.KazHydrometAirMonitoringPostsLayerJson = kazHydrometAirMonitoringPostsObject.ToString();
+
+            List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
+                .Where(m => m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
+                .ToList();
+            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in ecoserviceAirMonitoringPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
             return View();
         }
 

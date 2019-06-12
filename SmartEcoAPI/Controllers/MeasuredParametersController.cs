@@ -30,6 +30,7 @@ namespace SmartEcoAPI.Controllers
             string NameRU,
             string NameEN,
             int? EcomonCode,
+            string OceanusCode,
             int? PageSize,
             int? PageNumber)
         {
@@ -51,6 +52,10 @@ namespace SmartEcoAPI.Controllers
             if (EcomonCode!=null)
             {
                 measuredParameters = measuredParameters.Where(m => m.EcomonCode == EcomonCode);
+            }
+            if (!string.IsNullOrEmpty(OceanusCode))
+            {
+                measuredParameters = measuredParameters.Where(m => m.OceanusCode.ToLower().Contains(OceanusCode.ToLower()));
             }
 
             switch (SortOrder)
@@ -78,6 +83,12 @@ namespace SmartEcoAPI.Controllers
                     break;
                 case "EcomonCodeDesc":
                     measuredParameters = measuredParameters.OrderByDescending(m => m.EcomonCode);
+                    break;
+                case "OceanusCode":
+                    measuredParameters = measuredParameters.OrderBy(m => m.OceanusCode);
+                    break;
+                case "OceanusCodeDesc":
+                    measuredParameters = measuredParameters.OrderByDescending(m => m.OceanusCode);
                     break;
                 default:
                     measuredParameters = measuredParameters.OrderBy(m => m.Id);
@@ -177,7 +188,8 @@ namespace SmartEcoAPI.Controllers
         public async Task<ActionResult<IEnumerable<MeasuredParameter>>> GetMeasuredParameterCount(string NameKK,
             string NameRU,
             string NameEN,
-            int? EcomonCode)
+            int? EcomonCode,
+            string OceanusCode)
         {
             var measuredParameters = _context.MeasuredParameter
                 .Where(m => true);
@@ -197,6 +209,10 @@ namespace SmartEcoAPI.Controllers
             if (EcomonCode != null)
             {
                 measuredParameters = measuredParameters.Where(m => m.EcomonCode == EcomonCode);
+            }
+            if (!string.IsNullOrEmpty(OceanusCode))
+            {
+                measuredParameters = measuredParameters.Where(m => m.OceanusCode.ToLower().Contains(OceanusCode.ToLower()));
             }
 
             int count = await measuredParameters.CountAsync();

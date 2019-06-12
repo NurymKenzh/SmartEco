@@ -435,5 +435,59 @@ namespace SmartEco.Controllers
         //{
         //    return _context.MeasuredData.Any(e => e.Id == id);
         //}
+
+        [HttpPost]
+        public async Task<IActionResult> GetMeasuredDatas(
+            int MonitoringPostId,
+            int MeasuredParameterId,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo)
+        {
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            MeasuredData[] measureddatas = null;
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            string url = "api/MeasuredDatas",
+                route = "";
+            // SortOrder=DateTime
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"SortOrder=DateTime";
+            }
+            // MonitoringPostId
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MonitoringPostId={MonitoringPostId}";
+            }
+            // MeasuredParameterId
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MeasuredParameterId={MeasuredParameterId}";
+            }
+            // dateTimeFrom
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+            }
+            // dateTimeTo
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+            }
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            if (response.IsSuccessStatusCode)
+            {
+                measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+            }
+            measureddatas = measuredDatas.ToArray();
+            return Json(new
+            {
+                measureddatas
+            });
+        }
     }
 }
