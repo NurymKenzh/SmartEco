@@ -16,6 +16,7 @@
 <script src="~/lib/moment.js/moment.js"></script>
 <script src="~/lib/chart.js/dist/Chart.js"></script>
 <script src="~/lib/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
 
 <style>
     /*.map {
@@ -706,15 +707,16 @@
                         type: "time",
                         time: {
                             displayFormats: {
-                                second: 'lll',
-                                minute: 'lll',
-                                hour: 'lll',
-                                day: 'lll',
-                                week: 'lll',
-                                month: 'lll',
-                                quarter: 'lll',
-                                year: 'lll',
-                            }
+                                second: 'gggg-MM-DD HH:mm:ss',
+                                minute: 'gggg-MM-DD HH:mm:ss',
+                                hour: 'gggg-MM-DD HH:mm:ss',
+                                day: 'gggg-MM-DD HH:mm:ss',
+                                week: 'gggg-MM-DD HH:mm:ss',
+                                month: 'gggg-MM-DD HH:mm:ss',
+                                quarter: 'gggg-MM-DD HH:mm:ss',
+                                year: 'gggg-MM-DD HH:mm:ss',
+                            },
+                            tooltipFormat: 'gggg-MM-DD HH:mm:ss'
                         },
                         display: true,
                         scaleLabel: {
@@ -803,7 +805,7 @@
         }
         map.render();
     }
-    
+
     function FlashExceedPosts() {
         window.setInterval(function () {
             var source = Layer_EcoserviceAirMonitoringPosts.getSource();
