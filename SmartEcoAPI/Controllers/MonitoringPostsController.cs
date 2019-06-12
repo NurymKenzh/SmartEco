@@ -364,5 +364,36 @@ namespace SmartEcoAPI.Controllers
 
             return Ok(count);
         }
+
+        // GET: api/MonitoringPosts/Exceed
+        [HttpGet("exceed")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsExceed(int MPCExceedPastMinutes,
+            int? DataProviderId)
+        {
+            DateTime minExceedDateTime = DateTime.Now.AddMinutes(-MPCExceedPastMinutes);
+
+            var monitoringPosts = _context.MonitoringPost
+                .Include(m => m.DataProvider)
+                .Include(m => m.PollutionEnvironment)
+                .Where(m => (m.DataProviderId == (int)DataProviderId) || DataProviderId == null);
+
+            foreach (MonitoringPost monitoringPost in monitoringPosts)
+            {
+                bool exceed = _context.MeasuredData
+                    .Where(m => m.MonitoringPostId == monitoringPost.Id
+                        && m.DateTime >= minExceedDateTime)
+                    .Include(m => m.MeasuredParameter)
+                    .Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
+                    .FirstOrDefault() != null;
+                if (!exceed)
+                {
+                    monitoringPosts = monitoringPosts
+                        .Where(m => m.Id != monitoringPost.Id);
+                }
+            }
+
+            return await monitoringPosts.ToListAsync();
+        }
     }
 }

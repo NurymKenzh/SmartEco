@@ -767,3 +767,80 @@
         $("#tableMeasuredDatas").LoadingOverlay("hide");
     };
 </script>
+
+@* FlashFeature, FlashExceedPosts, GetExceedPosts *@
+<script>
+    var duration = 3000;
+    function FlashFeature(feature) {
+        var start = new Date().getTime();
+        var listenerKey = map.on('postcompose', animate);
+
+        function animate(event) {
+            var vectorContext = event.vectorContext;
+            var frameState = event.frameState;
+            var flashGeom = feature.getGeometry().clone();
+            var elapsed = frameState.time - start;
+            var elapsedRatio = elapsed / duration;
+            // radius will be 5 at start and 30 at end.
+            var radius = ol.easing.easeOut(elapsedRatio) * 25 + 5;
+            var opacity = ol.easing.easeOut(1 - elapsedRatio);
+            var style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: radius,
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(255, 0, 0, ' + opacity + ')',
+                        width: 3.25 + opacity
+                    })
+                })
+            });
+            vectorContext.setStyle(style);
+            vectorContext.drawGeometry(flashGeom);
+            if (elapsed > duration) {
+                ol.Observable.unByKey(listenerKey);
+                return;
+            }
+            map.render();
+        }
+        map.render();
+    }
+    
+    function FlashExceedPosts() {
+        window.setInterval(function () {
+            var source = Layer_EcoserviceAirMonitoringPosts.getSource();
+            var features = source.getFeatures();
+            for (var i in features) {
+                var feature = features[i];
+                if (jQuery.inArray(feature.get('Id'), exceedPosts)>=0) {
+                    FlashFeature(feature);
+                }
+            }
+        }, 3000);
+    }
+
+    var exceedPosts = [];
+    function GetExceedPosts() {
+        function getExceedPosts() {
+            $.ajax({
+                url: '@Url.Action("GetMPCExceedEcoservicePosts", "MonitoringPosts")',
+                type: 'POST',
+                success: function (data) {
+                    exceedPosts = data.ids;
+                },
+                error: function () {
+                }
+            })
+        }
+        getExceedPosts();
+        window.setInterval(function () {
+            getExceedPosts();
+        }, 30000);
+    }
+</script>
+
+@* window.onload *@
+<script>
+    window.onload = function start() {
+        FlashExceedPosts();
+        GetExceedPosts();
+    }
+</script>
