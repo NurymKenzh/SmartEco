@@ -371,6 +371,10 @@ namespace SmartEcoAPI.Controllers
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsExceed(int MPCExceedPastMinutes,
             int? DataProviderId)
         {
+            // populate data (delete)
+            MeasuredDatasController measuredDatasController = new MeasuredDatasController(_context);
+            measuredDatasController.PopulateEcoserviceData();
+
             DateTime minExceedDateTime = DateTime.Now.AddMinutes(-MPCExceedPastMinutes);
 
             var monitoringPosts = _context.MonitoringPost

@@ -35,7 +35,7 @@ namespace SmartEcoAPI.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            //PopulateEcoserviceData();
+            PopulateEcoserviceData();
 
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
@@ -286,15 +286,21 @@ namespace SmartEcoAPI.Controllers
             return Ok(count);
         }
 
-        private void PopulateEcoserviceData()
+        public void PopulateEcoserviceData()
         {
             Random rnd = new Random();
-            DateTime start = new DateTime(2019, 06, 01);
+            DateTime start = (DateTime) _context.MeasuredData
+                .Where(m => m.MonitoringPostId == 39)
+                .Max(m => m.DateTime);
 
+            decimal? previousValue = _context.MeasuredData
+                .Where(m => m.MonitoringPostId == 39 && m.MeasuredParameterId == 2)
+                .OrderByDescending(m => m.DateTime)
+                .FirstOrDefault()
+                .Value;
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
             {
-                decimal? previousValue = 0;
                 if (measuredDatas.Count > 0)
                 {
                     previousValue = measuredDatas.Last().Value;
@@ -316,10 +322,14 @@ namespace SmartEcoAPI.Controllers
             _context.MeasuredData.AddRange(measuredDatas);
             _context.SaveChanges();
 
+            previousValue = _context.MeasuredData
+                .Where(m => m.MonitoringPostId == 40 && m.MeasuredParameterId == 2)
+                .OrderByDescending(m => m.DateTime)
+                .FirstOrDefault()
+                .Value;
             measuredDatas = new List<MeasuredData>();
             for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
             {
-                decimal? previousValue = 0;
                 if (measuredDatas.Count > 0)
                 {
                     previousValue = measuredDatas.Last().Value;
@@ -341,10 +351,14 @@ namespace SmartEcoAPI.Controllers
             _context.MeasuredData.AddRange(measuredDatas);
             _context.SaveChanges();
 
+            previousValue = _context.MeasuredData
+                .Where(m => m.MonitoringPostId == 39 && m.MeasuredParameterId == 3)
+                .OrderByDescending(m => m.DateTime)
+                .FirstOrDefault()
+                .Value;
             measuredDatas = new List<MeasuredData>();
             for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
             {
-                decimal? previousValue = 0;
                 if (measuredDatas.Count > 0)
                 {
                     previousValue = measuredDatas.Last().Value;
@@ -366,10 +380,14 @@ namespace SmartEcoAPI.Controllers
             _context.MeasuredData.AddRange(measuredDatas);
             _context.SaveChanges();
 
+            previousValue = _context.MeasuredData
+                .Where(m => m.MonitoringPostId == 40 && m.MeasuredParameterId == 3)
+                .OrderByDescending(m => m.DateTime)
+                .FirstOrDefault()
+                .Value;
             measuredDatas = new List<MeasuredData>();
             for (DateTime dateTime = start; dateTime < DateTime.Now; dateTime = dateTime.AddMinutes(1))
             {
-                decimal? previousValue = 0;
                 if (measuredDatas.Count > 0)
                 {
                     previousValue = measuredDatas.Last().Value;
