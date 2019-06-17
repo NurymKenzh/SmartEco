@@ -62,11 +62,11 @@ namespace TCPListener
                         + " >> "
                         + Encoding.ASCII.GetString(buffer, 0, bytesRead)
                         + Environment.NewLine;
-                    Console.WriteLine("Received : " + dataReceived);
-                    dataReceived += Environment.NewLine;
+                    Console.WriteLine("Received : " + dataReceivedLog);
+                    dataReceivedLog += Environment.NewLine;
                     client.Close();
                     listener.Stop();
-                    File.AppendAllText("log.txt", dataReceived);
+                    File.AppendAllText("log.txt", dataReceivedLog);
 
                     //string dataReceived = "##0265ST=27;CN=2011;QN=20400101191000000;PW=123456;MN=ESBEIJINAQI002;Flag=5;CP=&&DataTime=20400101191000;o31104-Rtd=0;a21004-Rtd=0;a21026-Rtd=0;a21005-Rtd=0;a34004-Rtd=0;a34002-Rtd=0;a34001-Rtd=0;a01001-Rtd=0;a01002-Rtd=0;LA-Rtd=0;a01006-Rtd=0;a01007-Rtd=0;a01008-Rtd=0&&2700";
 
