@@ -27,6 +27,8 @@ namespace SmartEco.Models
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "AdditionalInformation")]
         public string AdditionalInformation { get; set; }
 
+        public string MN { get; set; }
+
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "DataProvider")]
         public DataProvider DataProvider { get; set; }
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "DataProvider")]

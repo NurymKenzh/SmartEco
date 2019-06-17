@@ -405,7 +405,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Number,Name,NorthLatitude,EastLongitude,AdditionalInformation,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
+        public async Task<IActionResult> Create([Bind("Id,Number,Name,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,
@@ -533,7 +533,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Name,NorthLatitude,EastLongitude,AdditionalInformation,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Name,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,

@@ -14,6 +14,8 @@ namespace SmartEcoAPI.Models
         public decimal EastLongitude { get; set; }
         public string AdditionalInformation { get; set; }
 
+        public string MN { get; set; }
+
         public DataProvider DataProvider { get; set; }
         public int DataProviderId { get; set; }
 
