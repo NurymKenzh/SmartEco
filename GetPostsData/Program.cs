@@ -38,7 +38,7 @@ namespace GetPostsData
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("Copy data from posts to database every 100 seconds!");
+            Console.WriteLine("Copy data from posts to database every 10 seconds!");
             while (true)
             {
                 List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
@@ -148,7 +148,7 @@ namespace GetPostsData
                     }
                 }
                 
-                Thread.Sleep(100000);
+                Thread.Sleep(10000);
             }
         }
     }
