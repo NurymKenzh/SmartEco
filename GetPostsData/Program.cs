@@ -77,9 +77,18 @@ namespace GetPostsData
                                 {
                                     try
                                     {
+                                        bool adequateDateTimePost = true;
+                                        if(postData.DateTimePost == null)
+                                        {
+                                            adequateDateTimePost = false;
+                                        }
+                                        else if((postData.DateTimePost.Value - postData.DateTimeServer).Days > 3)
+                                        {
+                                            adequateDateTimePost = false;
+                                        }
                                         measuredDatas.Add(new MeasuredData()
                                         {
-                                            DateTime = postData.DateTimePost != null ? postData.DateTimePost : postData.DateTimeServer,
+                                            DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
                                             MeasuredParameterId = (int)MeasuredParameterId,
                                             MonitoringPostId = (int)MonitoringPostId,
                                             Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0])
