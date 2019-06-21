@@ -1,16 +1,27 @@
-﻿using System;
+﻿using Dapper;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
+using Npgsql;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models;
 
 namespace SmartEcoAPI.Controllers
 {
+    public class PostData
+    {
+        public string Data { get; set; }
+        public DateTime DateTimeServer { get; set; }
+        public DateTime? DateTimePost { get; set; }
+        public string MN { get; set; }
+        public string IP { get; set; }
+        public bool? Taken { get; set; }
+    }
+
     [Route("api/[controller]")]
     [ApiController]
     public class MeasuredDatasController : ControllerBase
@@ -36,6 +47,7 @@ namespace SmartEcoAPI.Controllers
             int? PageNumber)
         {
             PopulateEcoserviceData();
+            //GetPostsData();
 
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
@@ -409,5 +421,55 @@ namespace SmartEcoAPI.Controllers
             _context.MeasuredData.AddRange(measuredDatas);
             _context.SaveChanges();
         }
+
+        //public void GetPostsData()
+        //{
+        //    List<MeasuredParameter> measuredParameters = _context.MeasuredParameter.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).ToList();
+        //    List<MonitoringPost> monitoringPosts = _context.MonitoringPost.Where(m => !string.IsNullOrEmpty(m.MN)).ToList();
+        //    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+        //    {
+        //        connection.Open();
+        //        connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;");
+        //        var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;");
+        //        try
+        //        {
+        //            // Data -> DB
+        //            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+        //            foreach (PostData postData in postDatas)
+        //            {
+        //                foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
+        //                {
+        //                    int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
+        //                        MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
+        //                    if (MeasuredParameterId != null && MonitoringPostId != null)
+        //                    {
+        //                        try
+        //                        {
+        //                            measuredDatas.Add(new MeasuredData()
+        //                            {
+        //                                DateTime = postData.DateTimePost != null ? postData.DateTimePost : postData.DateTimeServer,
+        //                                MeasuredParameterId = (int)MeasuredParameterId,
+        //                                MonitoringPostId = (int)MonitoringPostId,
+        //                                Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0])
+        //                            });
+        //                        }
+        //                        catch (Exception ex)
+        //                        {
+
+        //                        }
+
+        //                    }
+        //                }
+        //            }
+        //            _context.AddRange(measuredDatas);
+        //            _context.SaveChanges();
+        //            connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;");
+        //        }
+        //        catch (Exception ex)
+        //        {
+        //            connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;");
+        //        }
+        //    }
+        //}
     }
 }

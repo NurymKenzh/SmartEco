@@ -374,6 +374,7 @@ namespace SmartEcoAPI.Controllers
             // populate data (delete)
             MeasuredDatasController measuredDatasController = new MeasuredDatasController(_context);
             measuredDatasController.PopulateEcoserviceData();
+            //measuredDatasController.GetPostsData();
 
             DateTime minExceedDateTime = DateTime.Now.AddMinutes(-MPCExceedPastMinutes);
 
