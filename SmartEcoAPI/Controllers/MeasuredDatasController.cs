@@ -44,10 +44,17 @@ namespace SmartEcoAPI.Controllers
             int? MonitoringPostId,
             int? PollutionSourceId,
             int? PageSize,
-            int? PageNumber)
+            int? PageNumber,
+            bool? Averaged = true)
         {
             PopulateEcoserviceData();
             //GetPostsData();
+
+            Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
+            if (!(new string[]{ "admin", "moderator" }).Contains(person.Role))
+            {
+                Averaged = true;
+            }
 
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
@@ -79,6 +86,14 @@ namespace SmartEcoAPI.Controllers
             if (PollutionSourceId != null)
             {
                 measuredDatas = measuredDatas.Where(m => m.PollutionSourceId == PollutionSourceId);
+            }
+            if(Averaged == true)
+            {
+                measuredDatas = measuredDatas.Where(m => m.Averaged == Averaged);
+            }
+            else
+            {
+                measuredDatas = measuredDatas.Where(m => m.Averaged == null || m.Averaged == false);
             }
 
             switch (SortOrder)
@@ -261,8 +276,15 @@ namespace SmartEcoAPI.Controllers
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
             int? MonitoringPostId,
-            int? PollutionSourceId)
+            int? PollutionSourceId,
+            bool? Averaged = true)
         {
+            Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
+            if (!(new string[] { "admin", "moderator" }).Contains(person.Role))
+            {
+                Averaged = true;
+            }
+
             var measuredDatas = _context.MeasuredData
                  .Where(m => true);
 
@@ -291,6 +313,14 @@ namespace SmartEcoAPI.Controllers
             if (PollutionSourceId != null)
             {
                 measuredDatas = measuredDatas.Where(m => m.PollutionSourceId == PollutionSourceId);
+            }
+            if (Averaged == true)
+            {
+                measuredDatas = measuredDatas.Where(m => m.Averaged == Averaged);
+            }
+            else
+            {
+                measuredDatas = measuredDatas.Where(m => m.Averaged == null || m.Averaged == false);
             }
 
             int count = await measuredDatas.CountAsync();

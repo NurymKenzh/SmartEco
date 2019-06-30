@@ -30,6 +30,7 @@ namespace SmartEco.Controllers
             DateTime? DateTimeToFilter,
             int? MonitoringPostIdFilter,
             int? PollutionSourceIdFilter,
+            bool? AveragedFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -40,6 +41,7 @@ namespace SmartEco.Controllers
             ViewBag.DateTimeToFilter = (DateTimeToFilter)?.ToString("yyyy-MM-dd");
             ViewBag.MonitoringPostIdFilter = MonitoringPostIdFilter;
             ViewBag.PollutionSourceIdFilter = PollutionSourceIdFilter;
+            ViewBag.AveragedFilter = AveragedFilter;
 
             ViewBag.MeasuredParameterSort = SortOrder == "MeasuredParameter" ? "MeasuredParameterDesc" : "MeasuredParameter";
             ViewBag.DateTimeSort = SortOrder == "DateTime" ? "DateTimeDesc" : "DateTime";
@@ -96,6 +98,13 @@ namespace SmartEco.Controllers
                 route += $"PollutionSourceId={PollutionSourceIdFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"PollutionSourceId={PollutionSourceIdFilter}";
+            }
+            if (AveragedFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"Averaged={AveragedFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"Averaged={AveragedFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -218,6 +227,7 @@ namespace SmartEco.Controllers
             DateTime? DateTimeToFilter,
             int? MonitoringPostIdFilter,
             int? PollutionSourceIdFilter,
+            bool? AveragedFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -229,6 +239,7 @@ namespace SmartEco.Controllers
             ViewBag.DateTimeToFilter = DateTimeToFilter;
             ViewBag.MonitoringPostIdFilter = MonitoringPostIdFilter;
             ViewBag.PollutionSourceIdFilter = PollutionSourceIdFilter;
+            ViewBag.AveragedFilter = AveragedFilter;
             if (id == null)
             {
                 return NotFound();
@@ -440,6 +451,7 @@ namespace SmartEco.Controllers
         public async Task<IActionResult> GetMeasuredDatas(
             int MonitoringPostId,
             int MeasuredParameterId,
+            bool? Averaged,
             DateTime DateFrom,
             DateTime TimeFrom,
             DateTime DateTo,
@@ -465,6 +477,11 @@ namespace SmartEco.Controllers
             {
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"MeasuredParameterId={MeasuredParameterId}";
+            }
+            // AveragedFilter
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"Averaged={Averaged}";
             }
             // dateTimeFrom
             {

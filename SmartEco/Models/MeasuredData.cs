@@ -70,5 +70,8 @@ namespace SmartEco.Models
         public int? PollutionSourceId { get; set; }
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "PollutionSource")]
         public PollutionSource PollutionSource { get; set; }
+
+        [Display(Name = "Averaged")]
+        public bool? Averaged { get; set; }
     }
 }

@@ -230,6 +230,10 @@
                 -
                 @Html.TextBox("ChartDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "ChartDateTo", @onchange = "ChartGetMeasuredDatas()" })
                 @Html.TextBox("ChartTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "ChartTimeTo", @onchange = "ChartGetMeasuredDatas()" })
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    @Html.CheckBox("ChartAveraged", true, new { @id = "ChartAveraged", @onchange = "ChartGetMeasuredDatas()" })
+                }
                 <canvas id="chartMeasuredDatas"></canvas>
             </div>
             <div id="divEcoserviceAirPostTable" class="dialog-info-tab-div">
@@ -239,6 +243,10 @@
                 -
                 @Html.TextBox("TableDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "TableDateTo", @onchange = "TableGetMeasuredDatas()" })
                 @Html.TextBox("TableTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "TableTimeTo", @onchange = "TableGetMeasuredDatas()" })
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    @Html.CheckBox("TableAveraged", true, new { @id = "TableAveraged", @onchange = "TableGetMeasuredDatas()" })
+                }
                 <table id="tableMeasuredDatas" class="table-bordered dialog-info-tab-table">
                     <thead>
                         <tr>
@@ -637,6 +645,7 @@
                 TimeFrom: $('#ChartTimeFrom').val(),
                 DateTo: $('#ChartDateTo').val(),
                 TimeTo: $('#ChartTimeTo').val(),
+                Averaged: $('#ChartAveraged').is(':checked'),
             },
             type: 'POST',
             success: function (data) {
@@ -748,6 +757,7 @@
                 TimeFrom: $('#TableTimeFrom').val(),
                 DateTo: $('#TableDateTo').val(),
                 TimeTo: $('#TableTimeTo').val(),
+                Averaged: $('#TableAveraged').is(':checked'),
             },
             type: 'POST',
             success: function (data) {

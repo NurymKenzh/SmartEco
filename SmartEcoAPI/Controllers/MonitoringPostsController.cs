@@ -387,7 +387,8 @@ namespace SmartEcoAPI.Controllers
             {
                 bool exceed = _context.MeasuredData
                     .Where(m => m.MonitoringPostId == monitoringPost.Id
-                        && m.DateTime >= minExceedDateTime)
+                        && m.DateTime >= minExceedDateTime
+                        && m.Averaged == true)
                     .Include(m => m.MeasuredParameter)
                     .Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
                     .FirstOrDefault() != null;

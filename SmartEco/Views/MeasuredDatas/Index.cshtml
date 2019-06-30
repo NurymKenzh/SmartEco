@@ -2,6 +2,7 @@
 @using System.Net
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["MeasuredDatas"];
@@ -11,10 +12,12 @@
 <h1>@SharedLocalizer["MeasuredDatas"]</h1>
 
 @*<p>
-        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
     </p>*@
-
-@using (Html.BeginForm("Index", "MeasuredDatas", new { SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter }, FormMethod.Get))
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@using (Html.BeginForm("Index", "MeasuredDatas", new { SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter }, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
     @if (ViewBag.EndPage > 1)
@@ -24,11 +27,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
             }
 
@@ -36,7 +39,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
             }
 
@@ -44,11 +47,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
             }
         </ul>
@@ -66,6 +69,14 @@
                     <br />
                     @Html.DropDownList("PollutionSourceIdFilter", (IEnumerable<SelectListItem>)ViewBag.PollutionSources, "", htmlAttributes: new { @class = "form-control" })
                 </th>
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    <th>
+                        @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().Averaged)
+                        <br />
+                        @Html.CheckBox("AveragedFilter")
+                    </th>
+                }
             </tr>
         </thead>
     </table>
@@ -109,9 +120,9 @@
                         @Html.DisplayFor(modelItem => item.Value)
                     </td>
                     <td>
-                        @*@Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter }) |*@
-                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter }) @*|
-                            @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })*@
+                        @*@Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter }) |*@
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter }) @*|
+                            @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })*@
                     </td>
                 </tr>
             }
@@ -124,11 +135,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
             }
 
@@ -136,7 +147,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
             }
 
@@ -144,11 +155,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter, PollutionSourceIdFilter = ViewBag.PollutionSourceIdFilter, AveragedFilter = ViewBag.AveragedFilter })
                 </li>
             }
         </ul>
