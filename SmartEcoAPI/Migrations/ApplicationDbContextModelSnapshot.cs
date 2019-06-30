@@ -16,7 +16,7 @@ namespace SmartEcoAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.2.2-servicing-10034")
+                .HasAnnotation("ProductVersion", "2.2.1-servicing-10028")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
@@ -171,6 +171,8 @@ namespace SmartEcoAPI.Migrations
                 {
                     b.Property<long>("Id")
                         .ValueGeneratedOnAdd();
+
+                    b.Property<bool?>("Averaged");
 
                     b.Property<DateTime?>("DateTime");
 

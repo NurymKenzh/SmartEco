@@ -122,5 +122,7 @@ namespace SmartEcoAPI.Models
 
         public int? PollutionSourceId { get; set; }
         public PollutionSource PollutionSource { get; set; }
+
+        public bool? Averaged { get; set; }
     }
 }
