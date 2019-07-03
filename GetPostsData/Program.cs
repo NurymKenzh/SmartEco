@@ -21,6 +21,7 @@ namespace GetPostsData
         }
         public class PostData
         {
+            public long Id { get; set; }
             public string Data { get; set; }
             public DateTime DateTimeServer { get; set; }
             public DateTime? DateTimePost { get; set; }
@@ -158,7 +159,7 @@ namespace GetPostsData
                 {
                     connection.Open();
                     connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = false WHERE \"Averaged\" is null;");
-                    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Averaged\" FROM public.\"Data\" WHERE \"Averaged\" = false;");
+                    var postDatas = connection.Query<PostData>("SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Averaged\" FROM public.\"Data\" WHERE \"Averaged\" = false;");
                     try
                     {
                         foreach (PostData postData in postDatas)
@@ -182,6 +183,7 @@ namespace GetPostsData
                                         }
                                         measuredDatas.Add(new MeasuredData()
                                         {
+                                            Id = postData.Id,
                                             DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
                                             MeasuredParameterId = (int)MeasuredParameterId,
                                             MonitoringPostId = (int)MonitoringPostId,
@@ -207,6 +209,7 @@ namespace GetPostsData
                 }
 
                 // Average data
+                List<long> averagedPostsDatas = new List<long>();
                 if(measuredDatas.Count()>0)
                 {
                     DateTime? dateTimeMin = measuredDatas.Min(m => m.DateTime),
@@ -242,11 +245,13 @@ namespace GetPostsData
                                         Value = measuredDatasCurrent.Average(m => m.Value),
                                         Averaged = true
                                     });
+                                    averagedPostsDatas.AddRange(measuredDatasCurrent.Select(m => m.Id));
                                 }
                             }
                         }
                     }
-                }                
+                }
+                averagedPostsDatas = averagedPostsDatas.Distinct().ToList();
 
                 // Insert measuredDatasAveraged into SmartEcoAPI
                 try
@@ -274,7 +279,11 @@ namespace GetPostsData
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
-                        connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Averaged\" = false;");
+                        //connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Averaged\" = false;");
+                        foreach(long id in averagedPostsDatas)
+                        {
+                            connection.Execute($"UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Id\" = {id.ToString()};");
+                        }
                     }
                 }
                 catch (Exception ex)
