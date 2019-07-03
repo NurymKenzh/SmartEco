@@ -351,4 +351,7 @@
   <data name="Table" xml:space="preserve">
     <value>Кесте</value>
   </data>
+  <data name="Averaged" xml:space="preserve">
+    <value>Орташа</value>
+  </data>
 </root>

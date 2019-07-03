@@ -351,4 +351,7 @@
   <data name="Table" xml:space="preserve">
     <value>Table</value>
   </data>
+  <data name="Averaged" xml:space="preserve">
+    <value>Averaged</value>
+  </data>
 </root>

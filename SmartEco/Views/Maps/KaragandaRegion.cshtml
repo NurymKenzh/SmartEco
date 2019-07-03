@@ -232,7 +232,10 @@
                 @Html.TextBox("ChartTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "ChartTimeTo", @onchange = "ChartGetMeasuredDatas()" })
                 @if (Role == "admin" || Role == "moderator")
                 {
-                    @Html.CheckBox("ChartAveraged", true, new { @id = "ChartAveraged", @onchange = "ChartGetMeasuredDatas()" })
+                    <label>
+                        @Html.CheckBox("ChartAveraged", true, new { @id = "ChartAveraged", @onchange = "ChartGetMeasuredDatas()" })
+                        @SharedLocalizer["Averaged"]
+                    </label>
                 }
                 <canvas id="chartMeasuredDatas"></canvas>
             </div>
@@ -245,7 +248,10 @@
                 @Html.TextBox("TableTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "TableTimeTo", @onchange = "TableGetMeasuredDatas()" })
                 @if (Role == "admin" || Role == "moderator")
                 {
-                    @Html.CheckBox("TableAveraged", true, new { @id = "TableAveraged", @onchange = "TableGetMeasuredDatas()" })
+                    <label>
+                        @Html.CheckBox("TableAveraged", true, new { @id = "TableAveraged", @onchange = "TableGetMeasuredDatas()" })
+                        @SharedLocalizer["Averaged"]
+                    </label>
                 }
                 <table id="tableMeasuredDatas" class="table-bordered dialog-info-tab-table">
                     <thead>

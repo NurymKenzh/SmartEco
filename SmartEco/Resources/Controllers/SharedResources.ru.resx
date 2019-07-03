@@ -351,4 +351,7 @@
   <data name="Table" xml:space="preserve">
     <value>Таблица</value>
   </data>
+  <data name="Averaged" xml:space="preserve">
+    <value>Усредненное</value>
+  </data>
 </root>

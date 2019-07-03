@@ -117,9 +117,6 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
-  <data name="Averaged" xml:space="preserve">
-    <value>Averaged</value>
-  </data>
   <data name="Ecomontimestamp_ms" xml:space="preserve">
     <value>Milliseconds (Ecomon)</value>
   </data>
