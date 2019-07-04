@@ -718,6 +718,42 @@ namespace SmartEco.Controllers
             });
         }
 
+        [HttpPost]
+        public async Task<ActionResult> GetInactiveEcoservicePosts()
+        {
+            int InactivePastMinutes = Startup.Configuration.GetValue<int>("InactivePastMinutes");
+            int? dataProviderId = null;
+
+            string urlDataProviders = "api/DataProviders",
+                routeDataProviders = "";
+            routeDataProviders += string.IsNullOrEmpty(routeDataProviders) ? "?" : "&";
+            routeDataProviders += $"Name={Startup.Configuration["EcoserviceName"].ToString()}";
+            HttpResponseMessage responseDataProviders = await _HttpApiClient.GetAsync(urlDataProviders + routeDataProviders);
+            if (responseDataProviders.IsSuccessStatusCode)
+            {
+                dataProviderId = (await responseDataProviders.Content.ReadAsAsync<List<DataProvider>>()).FirstOrDefault()?.Id;
+            }
+
+            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+            string urlGetEcoserviceMonitoringPostsExceed = "api/MonitoringPosts/inactive",
+                routeGetEcoserviceMonitoringPostsExceed = "";
+            routeGetEcoserviceMonitoringPostsExceed += string.IsNullOrEmpty(routeGetEcoserviceMonitoringPostsExceed) ? "?" : "&";
+            routeGetEcoserviceMonitoringPostsExceed += $"InactivePastMinutes={InactivePastMinutes.ToString()}";
+            routeGetEcoserviceMonitoringPostsExceed += string.IsNullOrEmpty(routeGetEcoserviceMonitoringPostsExceed) ? "?" : "&";
+            routeGetEcoserviceMonitoringPostsExceed += $"DataProviderId={dataProviderId.ToString()}";
+            HttpResponseMessage responseGetEcoserviceMonitoringPostsExceed = await _HttpApiClient.GetAsync(urlGetEcoserviceMonitoringPostsExceed + routeGetEcoserviceMonitoringPostsExceed);
+            if (responseGetEcoserviceMonitoringPostsExceed.IsSuccessStatusCode)
+            {
+                monitoringPosts = await responseGetEcoserviceMonitoringPostsExceed.Content.ReadAsAsync<List<MonitoringPost>>();
+            }
+
+            int[] ids = monitoringPosts.Select(m => m.Id).ToArray();
+            return Json(new
+            {
+                ids
+            });
+        }
+
         //private bool MonitoringPostExists(int id)
         //{
         //    return _context.MonitoringPost.Any(e => e.Id == id);

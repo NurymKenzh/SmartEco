@@ -399,7 +399,8 @@ namespace SmartEcoAPI.Controllers
                 bool exceed = _context.MeasuredData
                     .Where(m => m.MonitoringPostId == monitoringPost.Id
                         && m.DateTime >= minExceedDateTime
-                        && m.Averaged == true)
+                        && m.Averaged == true
+                        )
                     .Include(m => m.MeasuredParameter)
                     .Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
                     .FirstOrDefault() != null;
@@ -411,6 +412,39 @@ namespace SmartEcoAPI.Controllers
             }
 
             return await monitoringPosts.ToListAsync();
+        }
+
+        // GET: api/MonitoringPosts/Exceed
+        [HttpGet("inactive")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsInactive(int InactivePastMinutes,
+            int? DataProviderId)
+        {
+            MeasuredDatasController measuredDatasController = new MeasuredDatasController(_context);
+
+            DateTime minExceedDateTime = DateTime.Now.AddMinutes(-InactivePastMinutes);
+
+            var monitoringPosts = _context.MonitoringPost
+                .Include(m => m.DataProvider)
+                .Include(m => m.PollutionEnvironment)
+                .Where(m => (m.DataProviderId == (int)DataProviderId) || DataProviderId == null);
+            List<MonitoringPost> monitoringPostsInactive = new List<MonitoringPost>();
+
+            foreach (MonitoringPost monitoringPost in monitoringPosts)
+            {
+                bool active = _context.MeasuredData
+                    .Where(m => m.MonitoringPostId == monitoringPost.Id
+                        && m.DateTime >= minExceedDateTime)
+                    .Include(m => m.MeasuredParameter)
+                    .Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
+                    .FirstOrDefault() != null;
+                if (!active)
+                {
+                    monitoringPostsInactive.Add(monitoringPost);
+                }
+            }
+
+            return monitoringPostsInactive.ToList();
         }
     }
 }

@@ -458,17 +458,57 @@
             scale: 0.0625
         }))
     });
+    //var EcoserviceAirMonitoringPostsLayerJson = $("#EcoserviceAirMonitoringPostsLayerJson").val();
+    //var Source_EcoserviceAirMonitoringPosts = new ol.source.Vector({
+    //    features: (new ol.format.GeoJSON()).readFeatures(EcoserviceAirMonitoringPostsLayerJson, {
+
+    //        dataProjection: 'EPSG:4326',
+    //        featureProjection: 'EPSG:3857'
+    //    })
+    //});
+    //var Layer_EcoserviceAirMonitoringPosts = new ol.layer.Vector({
+    //    source: Source_EcoserviceAirMonitoringPosts,
+    //    style: EcoserviceAirMonitoringPostsStyle,
+    //    renderBuffer: 200
+    //});
+    var EcoserviceAirMonitoringPostsStyle = {
+        active: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPost.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.0625
+            }))
+        }),
+        inactive: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostInactive.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.0625
+            }))
+        }),
+    };
+    function EcoserviceAirMonitoringPostsStyleFunction(feature) {
+        if (inactivePosts.includes(feature.get('Id'))) {
+            return EcoserviceAirMonitoringPostsStyle.inactive;
+        }
+        else {
+            return EcoserviceAirMonitoringPostsStyle.active;
+        }
+    }
     var EcoserviceAirMonitoringPostsLayerJson = $("#EcoserviceAirMonitoringPostsLayerJson").val();
     var Source_EcoserviceAirMonitoringPosts = new ol.source.Vector({
         features: (new ol.format.GeoJSON()).readFeatures(EcoserviceAirMonitoringPostsLayerJson, {
-
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857'
         })
     });
     var Layer_EcoserviceAirMonitoringPosts = new ol.layer.Vector({
         source: Source_EcoserviceAirMonitoringPosts,
-        style: EcoserviceAirMonitoringPostsStyle,
+        style: EcoserviceAirMonitoringPostsStyleFunction,
         renderBuffer: 200
     });
     Layer_EcoserviceAirMonitoringPosts.set('name', 'EcoserviceAirMonitoringPosts');
@@ -788,7 +828,7 @@
 
 @* FlashFeature, FlashExceedPosts, GetExceedPosts *@
 <script>
-    var duration = 3000;
+    var durationExceed = 3000;
     function FlashFeature(feature) {
         var start = new Date().getTime();
         var listenerKey = map.on('postcompose', animate);
@@ -798,7 +838,7 @@
             var frameState = event.frameState;
             var flashGeom = feature.getGeometry().clone();
             var elapsed = frameState.time - start;
-            var elapsedRatio = elapsed / duration;
+            var elapsedRatio = elapsed / durationExceed;
             // radius will be 5 at start and 30 at end.
             var radius = ol.easing.easeOut(elapsedRatio) * 25 + 5;
             var opacity = ol.easing.easeOut(1 - elapsedRatio);
@@ -813,7 +853,7 @@
             });
             vectorContext.setStyle(style);
             vectorContext.drawGeometry(flashGeom);
-            if (elapsed > duration) {
+            if (elapsed > durationExceed) {
                 ol.Observable.unByKey(listenerKey);
                 return;
             }
@@ -832,7 +872,7 @@
                     FlashFeature(feature);
                 }
             }
-        }, 3000);
+        }, durationExceed);
     }
 
     var exceedPosts = [];
@@ -851,7 +891,33 @@
         getExceedPosts();
         window.setInterval(function () {
             getExceedPosts();
-        }, 30000);
+        }, durationExceed * 10);
+    }
+</script>
+
+@* GetInactivePosts *@
+<script>
+    var durationInactive = 3000;
+    var inactivePosts = [];
+    function GetInactivePosts() {
+        function getInactivePosts() {
+            $.ajax({
+                url: '@Url.Action("GetInactiveEcoservicePosts", "MonitoringPosts")',
+                type: 'POST',
+                success: function (data) {
+                    inactivePosts = data.ids;
+                    //Layer_EcoserviceAirMonitoringPosts.refresh({force:true});
+                    //Layer_EcoserviceAirMonitoringPosts.redraw();
+                    Layer_EcoserviceAirMonitoringPosts.getSource().changed();
+                },
+                error: function () {
+                }
+            })
+        }
+        getInactivePosts();
+        window.setInterval(function () {
+            getInactivePosts();
+        }, durationInactive * 10);
     }
 </script>
 
@@ -860,5 +926,17 @@
     window.onload = function start() {
         FlashExceedPosts();
         GetExceedPosts();
+        GetInactivePosts();
+    }
+</script>
+
+<input type="button" onclick="Test()" value="TestValue" name="TestName"/>
+
+<script>
+    function Test() {
+        //Layer_EcoserviceAirMonitoringPosts.refresh();
+        //Layer_EcoserviceAirMonitoringPosts.refresh({force:true});
+        //Layer_EcoserviceAirMonitoringPosts.redraw();
+        Layer_EcoserviceAirMonitoringPosts.getSource().changed();
     }
 </script>
