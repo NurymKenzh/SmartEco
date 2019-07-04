@@ -321,8 +321,19 @@ namespace SmartEcoAPI.Controllers
                 return NotFound();
             }
 
-            _context.MonitoringPost.Remove(monitoringPost);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.MeasuredData.RemoveRange(_context.MeasuredData.Where(m => m.MonitoringPostId == id));
+                await _context.SaveChangesAsync();
+
+                _context.MonitoringPost.Remove(monitoringPost);
+                await _context.SaveChangesAsync();
+            }
+            catch(Exception ex)
+            {
+
+            }
+            
 
             return monitoringPost;
         }
@@ -373,7 +384,7 @@ namespace SmartEcoAPI.Controllers
         {
             // populate data (delete)
             MeasuredDatasController measuredDatasController = new MeasuredDatasController(_context);
-            measuredDatasController.PopulateEcoserviceData();
+            //measuredDatasController.PopulateEcoserviceData();
             //measuredDatasController.GetPostsData();
 
             DateTime minExceedDateTime = DateTime.Now.AddMinutes(-MPCExceedPastMinutes);

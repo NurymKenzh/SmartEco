@@ -47,7 +47,7 @@ namespace SmartEcoAPI.Controllers
             int? PageNumber,
             bool? Averaged = true)
         {
-            PopulateEcoserviceData();
+            //PopulateEcoserviceData();
             //GetPostsData();
 
             Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);

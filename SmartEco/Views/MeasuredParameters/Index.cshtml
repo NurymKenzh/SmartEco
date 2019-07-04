@@ -89,7 +89,7 @@
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().OceanusCode).ToString(), "Index",
                         new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.OceanusCodeSort, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter })
                     <br />
-                    @Html.Editor("OceanusCode", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                    @Html.Editor("OceanusCodeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
                     @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
