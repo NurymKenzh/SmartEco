@@ -35,7 +35,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredDatas
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredData(string SortOrder,
             string Language,
             int? MeasuredParameterId,
@@ -271,7 +271,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredDatas/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredDatasCount(int? MeasuredParameterId,
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
