@@ -906,6 +906,7 @@
                 type: 'POST',
                 success: function (data) {
                     inactivePosts = data.ids;
+                    $('#Test').val(data.ids);
                     //Layer_EcoserviceAirMonitoringPosts.refresh({force:true});
                     //Layer_EcoserviceAirMonitoringPosts.redraw();
                     Layer_EcoserviceAirMonitoringPosts.getSource().changed();
@@ -930,13 +931,10 @@
     }
 </script>
 
-<input type="button" onclick="Test()" value="TestValue" name="TestName"/>
+<input id="Test" type="text" value="TestValue" name="TestName"/>
 
-<script>
+@*<script>
     function Test() {
-        //Layer_EcoserviceAirMonitoringPosts.refresh();
-        //Layer_EcoserviceAirMonitoringPosts.refresh({force:true});
-        //Layer_EcoserviceAirMonitoringPosts.redraw();
         Layer_EcoserviceAirMonitoringPosts.getSource().changed();
     }
-</script>
+</script>*@

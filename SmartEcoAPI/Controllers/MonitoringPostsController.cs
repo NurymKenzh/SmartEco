@@ -436,7 +436,7 @@ namespace SmartEcoAPI.Controllers
                     .Where(m => m.MonitoringPostId == monitoringPost.Id
                         && m.DateTime >= minExceedDateTime)
                     .Include(m => m.MeasuredParameter)
-                    .Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
+                    //.Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
                     .FirstOrDefault() != null;
                 if (!active)
                 {
