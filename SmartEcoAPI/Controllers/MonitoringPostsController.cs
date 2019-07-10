@@ -175,7 +175,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPost(string SortOrder,
             int? Number,
             string Name,
@@ -247,7 +247,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<MonitoringPost>> GetMonitoringPost(long id)
         {
             //var monitoringPost = await _context.MonitoringPost.FindAsync(id);
@@ -345,7 +345,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPostsCount(int? Number,
             string Name,
             int? DataProviderId,
@@ -378,7 +378,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Exceed
         [HttpGet("exceed")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsExceed(int MPCExceedPastMinutes,
             int? DataProviderId)
         {
@@ -416,7 +416,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Exceed
         [HttpGet("inactive")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsInactive(int InactivePastMinutes,
             int? DataProviderId)
         {

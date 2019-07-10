@@ -8,12 +8,12 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 @{
-    ViewData["Title"] = SharedLocalizer["KaragandaRegion"];
+    ViewData["Title"] = SharedLocalizer["Aktau"];
 }
 @{
     string Role = Context.Session.GetString("Role");
 }
-@if (Role == "admin" || Role == "moderator" || Role == "KaragandaRegion")
+@if (Role == "admin" || Role == "moderator")
 {
     <script src="~/lib/jquery/dist/jquery.js"></script>
     <link href="~/lib/openlayers/ol.css" rel="stylesheet" />

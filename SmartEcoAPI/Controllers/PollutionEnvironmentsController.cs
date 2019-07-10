@@ -24,7 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionEnvironments
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<IEnumerable<PollutionEnvironment>>> GetPollutionEnvironment(string SortOrder,
             string NameKK,
             string NameRU,
@@ -83,7 +83,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionEnvironments/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<PollutionEnvironment>> GetPollutionEnvironment(int id)
         {
             var pollutionEnvironment = await _context.PollutionEnvironment.FindAsync(id);
@@ -162,7 +162,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionEnvironments/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<IEnumerable<PollutionEnvironment>>> GetPollutionEnvironmentCount(string NameKK,
             string NameRU,
             string NameEN)

@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
-    ViewData["Title"] = SharedLocalizer["KaragandaRegion"];
+    ViewData["Title"] = SharedLocalizer["Arys"];
 }
 @{
     string Role = Context.Session.GetString("Role");
@@ -111,14 +111,14 @@
         <br />
         <input id="layerEcoserviceAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
         <hr />
-        <label>
+        @*<label>
             <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()" checked="checked">
             @SharedLocalizer["KazHydrometAirPosts"]
             <img src="~/images/KazHydrometAirMonitoringPost.png" style="width:16px;height:16px;" />
         </label>
         <br />
         <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-        <hr />
+        <hr />*@
         <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
         <br />
         <input id="layerBaseOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -424,30 +424,30 @@
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
 
-    var KazHydrometAirMonitoringPostsStyle = new ol.style.Style({
-        image: new ol.style.Icon(({
-            src: '/images/KazHydrometAirMonitoringPost.png',
-            anchor: [0.5, 0.5],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'fraction',
-            scale: 0.0625
-        }))
-    });
-    var KazHydrometAirMonitoringPostsLayerJson = $("#KazHydrometAirMonitoringPostsLayerJson").val();
-    var Source_KazHydrometAirMonitoringPosts = new ol.source.Vector({
-        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsLayerJson, {
+    //var KazHydrometAirMonitoringPostsStyle = new ol.style.Style({
+    //    image: new ol.style.Icon(({
+    //        src: '/images/KazHydrometAirMonitoringPost.png',
+    //        anchor: [0.5, 0.5],
+    //        anchorXUnits: 'fraction',
+    //        anchorYUnits: 'fraction',
+    //        scale: 0.0625
+    //    }))
+    //});
+    //var KazHydrometAirMonitoringPostsLayerJson = $("#KazHydrometAirMonitoringPostsLayerJson").val();
+    //var Source_KazHydrometAirMonitoringPosts = new ol.source.Vector({
+    //    features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsLayerJson, {
 
-            dataProjection: 'EPSG:4326',
-            featureProjection: 'EPSG:3857'
-        })
-    });
-    var Layer_KazHydrometAirMonitoringPosts = new ol.layer.Vector({
-        source: Source_KazHydrometAirMonitoringPosts,
-        style: KazHydrometAirMonitoringPostsStyle,
-        renderBuffer: 200
-    });
-    Layer_KazHydrometAirMonitoringPosts.set('name', 'KazHydrometAirMonitoringPosts');
-    layers.push(Layer_KazHydrometAirMonitoringPosts);
+    //        dataProjection: 'EPSG:4326',
+    //        featureProjection: 'EPSG:3857'
+    //    })
+    //});
+    //var Layer_KazHydrometAirMonitoringPosts = new ol.layer.Vector({
+    //    source: Source_KazHydrometAirMonitoringPosts,
+    //    style: KazHydrometAirMonitoringPostsStyle,
+    //    renderBuffer: 200
+    //});
+    //Layer_KazHydrometAirMonitoringPosts.set('name', 'KazHydrometAirMonitoringPosts');
+    //layers.push(Layer_KazHydrometAirMonitoringPosts);
 
     var EcoserviceAirMonitoringPostsStyle = new ol.style.Style({
         image: new ol.style.Icon(({
@@ -615,8 +615,8 @@
         target: document.getElementById('map'),//'map',
         layers: layers,
         view: new ol.View({
-            center: ol.proj.fromLonLat([70.98, 48.70]),
-            zoom: 7
+            center: ol.proj.fromLonLat([68.8, 42.43]),
+            zoom: 12
         })
     });
 
