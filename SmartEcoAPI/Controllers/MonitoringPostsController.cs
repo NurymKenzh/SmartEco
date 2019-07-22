@@ -402,7 +402,8 @@ namespace SmartEcoAPI.Controllers
                         && m.Averaged == true
                         )
                     .Include(m => m.MeasuredParameter)
-                    .Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
+                    .Where(m => (m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null && m.MeasuredParameterId != 7)
+                    || (m.Value / measuredDatasController.COMPCDivide > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null && m.MeasuredParameterId == 7))
                     .FirstOrDefault() != null;
                 if (!exceed)
                 {

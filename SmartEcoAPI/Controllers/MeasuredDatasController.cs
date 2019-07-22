@@ -27,6 +27,7 @@ namespace SmartEcoAPI.Controllers
     public class MeasuredDatasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        public int COMPCDivide = 10;
 
         public MeasuredDatasController(ApplicationDbContext context)
         {
@@ -177,7 +178,12 @@ namespace SmartEcoAPI.Controllers
                 measuredDatas = measuredDatas.Skip(((int)PageNumber - 1) * (int)PageSize).Take((int)PageSize);
             }
 
-            return await measuredDatas.ToListAsync();
+            List<MeasuredData> measuredDatasR = measuredDatas.ToList();
+            measuredDatasR = measuredDatasR
+                .Select(m => { m.Value = m.MeasuredParameterId == 7 ? m.Value / COMPCDivide : m.Value; return m; })
+                .ToList();
+
+            return measuredDatasR;
         }
 
         // GET: api/MeasuredDatas/5
@@ -195,6 +201,11 @@ namespace SmartEcoAPI.Controllers
             if (measuredData == null)
             {
                 return NotFound();
+            }
+
+            if(measuredData.MeasuredParameterId == 7)
+            {
+                measuredData.Value = measuredData.Value / COMPCDivide;
             }
 
             return measuredData;
@@ -260,6 +271,11 @@ namespace SmartEcoAPI.Controllers
 
             _context.MeasuredData.Remove(measuredData);
             await _context.SaveChangesAsync();
+
+            if (measuredData.MeasuredParameterId == 7)
+            {
+                measuredData.Value = measuredData.Value / COMPCDivide;
+            }
 
             return measuredData;
         }
