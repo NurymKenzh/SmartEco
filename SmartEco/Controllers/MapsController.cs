@@ -319,6 +319,7 @@ namespace SmartEco.Controllers
                            }
             });
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+            ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
             return View();
         }
 

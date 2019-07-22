@@ -213,6 +213,7 @@ body {
     /*height: calc(100vh - 159px);*/
     float: left;
     padding: 10px;
+    overflow-y: auto;
 }
 
 .sidepanel-title {
@@ -264,4 +265,8 @@ body {
     width: 100%;
     height: calc(100% - 104px);
     margin-top: 10px;
+}
+
+.btn-link-post{
+    padding: 0px;
 }
