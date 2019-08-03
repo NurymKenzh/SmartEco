@@ -243,11 +243,11 @@
             </div>
             <div id="divEcoserviceAirPostChart" class="dialog-info-tab-div">
                 @Html.DropDownList("ChartMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMeasuredParameterId", @onchange = "ChartGetMeasuredDatas()" })
-                @Html.TextBox("ChartDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "ChartDateFrom", @onchange = "ChartGetMeasuredDatas()" })
                 @Html.TextBox("ChartTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "ChartTimeFrom", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "ChartDateFrom", @onchange = "ChartGetMeasuredDatas()" })
                 -
-                @Html.TextBox("ChartDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "ChartDateTo", @onchange = "ChartGetMeasuredDatas()" })
                 @Html.TextBox("ChartTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "ChartTimeTo", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "ChartDateTo", @onchange = "ChartGetMeasuredDatas()" })
                 @if (Role == "admin" || Role == "moderator")
                 {
                     <label>
@@ -259,11 +259,11 @@
             </div>
             <div id="divEcoserviceAirPostTable" class="dialog-info-tab-div">
                 @Html.DropDownList("TableMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "TableMeasuredParameterId", @onchange = "TableGetMeasuredDatas()" })
-                @Html.TextBox("TableDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "TableDateFrom", @onchange = "TableGetMeasuredDatas()" })
                 @Html.TextBox("TableTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "TableTimeFrom", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "TableDateFrom", @onchange = "TableGetMeasuredDatas()" })
                 -
-                @Html.TextBox("TableDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "TableDateTo", @onchange = "TableGetMeasuredDatas()" })
                 @Html.TextBox("TableTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "TableTimeTo", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "TableDateTo", @onchange = "TableGetMeasuredDatas()" })
                 @if (Role == "admin" || Role == "moderator")
                 {
                     <label>

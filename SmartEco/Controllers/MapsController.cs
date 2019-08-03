@@ -231,7 +231,7 @@ namespace SmartEco.Controllers
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
             ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
             ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
-            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 59).ToString("HH:mm:ss");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
 
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
