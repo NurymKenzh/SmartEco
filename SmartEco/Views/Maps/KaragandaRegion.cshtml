@@ -733,11 +733,11 @@
         for (var i = 0; i < data.measureddatas.length; i++) {
             data1.push({
                 'x': moment(data.measureddatas[i].dateTime),
-                'y': data.measureddatas[i].value
+                'y': parseFloat(data.measureddatas[i].value).toFixed(2)
             });
             data2.push({
                 'x': moment(data.measureddatas[i].dateTime),
-                'y': data.measureddatas[i].measuredParameter.mpc
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2)
             });
         }
         var datasets = [];
@@ -838,7 +838,7 @@
         $("#tableMeasuredDatas").find("tr:gt(0)").remove();
         var tablehtml = '';
         for (var i = 0; i < data.measureddatas.length; i++) {
-            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + data.measureddatas[i].value + '</td></tr>';
+            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + parseFloat(data.measureddatas[i].value).toFixed(2) + '</td></tr>';
         }
         $('#tableMeasuredDatas tbody').append(tablehtml);
         $("#tableMeasuredDatas").LoadingOverlay("hide");
