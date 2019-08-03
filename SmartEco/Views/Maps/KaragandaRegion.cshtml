@@ -154,11 +154,11 @@
             @{ 
                 MonitoringPost[] ecoserviceAirMonitoringPosts = ViewBag.EcoserviceAirMonitoringPosts;
             }
-            @foreach(MonitoringPost monitoringPost in ecoserviceAirMonitoringPosts)
+            @foreach(MonitoringPost monitoringPost in ecoserviceAirMonitoringPosts.OrderBy(m => m.Name))
             {
                 <tr>
                     <td>
-                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name</button>
+                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name - @monitoringPost.AdditionalInformation</button>
                     </td>
                 </tr>
             }
