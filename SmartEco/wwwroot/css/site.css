@@ -270,3 +270,7 @@ body {
 .btn-link-post{
     padding: 0px;
 }
+
+.table-analytics {
+    text-align: right;
+}

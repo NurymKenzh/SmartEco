@@ -1,0 +1,19 @@
+﻿@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Analytics"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@if (Role == "admin" || Role == "moderator")
+{
+    <a class="btn btn-default" asp-controller="Analytics" asp-action="EcoserviceMonitoringPosts">@SharedLocalizer["EcoserviceMonitoringPosts"]</a>
+}
+else if (Role == "KaragandaRegion")
+{
+    <a class="btn btn-default" asp-controller="Analytics" asp-action="EcoserviceMonitoringPosts">@SharedLocalizer["EcoserviceMonitoringPosts"]</a>
+}

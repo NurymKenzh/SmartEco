@@ -449,13 +449,13 @@ namespace SmartEco.Controllers
 
         [HttpPost]
         public async Task<IActionResult> GetMeasuredDatas(
-            int MonitoringPostId,
-            int MeasuredParameterId,
-            bool? Averaged,
+            int? MonitoringPostId,
+            int? MeasuredParameterId,
             DateTime DateFrom,
             DateTime TimeFrom,
             DateTime DateTo,
-            DateTime TimeTo)
+            DateTime TimeTo,
+            bool? Averaged = true)
         {
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             MeasuredData[] measureddatas = null;
@@ -469,11 +469,13 @@ namespace SmartEco.Controllers
                 route += $"SortOrder=DateTime";
             }
             // MonitoringPostId
+            if (MonitoringPostId != null)
             {
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"MonitoringPostId={MonitoringPostId}";
             }
             // MeasuredParameterId
+            if (MeasuredParameterId != null)
             {
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"MeasuredParameterId={MeasuredParameterId}";
@@ -500,7 +502,7 @@ namespace SmartEco.Controllers
             {
                 measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
             }
-            measureddatas = measuredDatas.ToArray();
+            measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToArray();
             return Json(new
             {
                 measureddatas

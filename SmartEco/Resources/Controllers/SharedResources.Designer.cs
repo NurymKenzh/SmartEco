@@ -79,6 +79,15 @@ namespace SmartEco.Resources.Controllers {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to Analytics.
+        /// </summary>
+        public static string Analytics {
+            get {
+                return ResourceManager.GetString("Analytics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
         public static string AreaType {
@@ -273,6 +282,15 @@ namespace SmartEco.Resources.Controllers {
         public static string EcoserviceAirPosts {
             get {
                 return ResourceManager.GetString("EcoserviceAirPosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to Ecoservice-S Monitoring Posts.
+        /// </summary>
+        public static string EcoserviceMonitoringPosts {
+            get {
+                return ResourceManager.GetString("EcoserviceMonitoringPosts", resourceCulture);
             }
         }
         

@@ -357,4 +357,10 @@
   <data name="Arys" xml:space="preserve">
     <value />
   </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Analytics</value>
+  </data>
+  <data name="EcoserviceMonitoringPosts" xml:space="preserve">
+    <value>Ecoservice-S Monitoring Posts</value>
+  </data>
 </root>

@@ -357,4 +357,10 @@
   <data name="Arys" xml:space="preserve">
     <value>Арысь</value>
   </data>
+  <data name="Analytics" xml:space="preserve">
+    <value>Аналитика</value>
+  </data>
+  <data name="EcoserviceMonitoringPosts" xml:space="preserve">
+    <value>Посты мониторинга Экосервис-С</value>
+  </data>
 </root>
