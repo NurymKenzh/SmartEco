@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
+using Newtonsoft.Json;
 using SmartEco.Data;
 using SmartEco.Models;
 
@@ -140,6 +141,17 @@ namespace SmartEco.Controllers
             if (response.IsSuccessStatusCode)
             {
                 measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+
+                string csv = "";
+                foreach(MeasuredData measuredData in measuredDatas)
+                {
+                    csv += measuredData.MonitoringPost.NorthLatitude + ";" + 
+                        measuredData.MonitoringPost.EastLongitude + ";" +
+                        measuredData.Value + ";" + 
+                        measuredData.DateTime.ToString() + 
+                        Environment.NewLine;
+                }
+
             }
             int measuredDatasCount = 0;
             if (responseCount.IsSuccessStatusCode)
