@@ -281,7 +281,8 @@ namespace SmartEco.Controllers
             ViewBag.KazHydrometAirMonitoringPostsLayerJson = kazHydrometAirMonitoringPostsObject.ToString();
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
-                .Where(m => m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
+                .Where(m => m.NorthLatitude >= 46.00M && m.NorthLatitude <= 51.00M 
+                && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
                 .ToList();
             JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
             {
