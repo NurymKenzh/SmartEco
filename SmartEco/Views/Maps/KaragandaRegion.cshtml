@@ -891,7 +891,8 @@
             var features = source.getFeatures();
             for (var i in features) {
                 var feature = features[i];
-                if (jQuery.inArray(feature.get('Id'), exceedPosts)>=0) {
+                console.log(exceedPosts);
+                if (jQuery.inArray(feature.get('Id'), exceedPosts) >= 0 && (document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked == true)) {
                     FlashFeature(feature);
                 }
             }
