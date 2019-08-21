@@ -101,6 +101,26 @@
 </div>
 
 <div id="fullscreen" class="fullscreen">
+    <div class="sidepanel">
+        <label>
+            @SharedLocalizer["EcoserviceAirPosts"]
+        </label>
+        <table>
+            @{
+                MonitoringPost[] ecoserviceAirMonitoringPosts = ViewBag.EcoserviceAirMonitoringPosts;
+            }
+            @foreach (MonitoringPost monitoringPost in ecoserviceAirMonitoringPosts.OrderBy(m => m.Name))
+            {
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name - @monitoringPost.AdditionalInformation</button>
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+        <hr />
+    </div>
     <div id="map" class="map"></div>
     <div class="sidepanel">
         <label>
@@ -112,7 +132,7 @@
         <input id="layerEcoserviceAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
         <hr />
         <label>
-            <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()" >
+            <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()">
             @SharedLocalizer["KazHydrometAirPosts"]
             <img src="~/images/KazHydrometAirMonitoringPost.png" style="width:16px;height:16px;" />
         </label>
@@ -147,22 +167,6 @@
         </select>
         <br />
         <hr />
-        <label>
-            @SharedLocalizer["EcoserviceAirPosts"]
-        </label>
-        <table>
-            @{ 
-                MonitoringPost[] ecoserviceAirMonitoringPosts = ViewBag.EcoserviceAirMonitoringPosts;
-            }
-            @foreach(MonitoringPost monitoringPost in ecoserviceAirMonitoringPosts.OrderBy(m => m.Name))
-            {
-                <tr>
-                    <td>
-                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name - @monitoringPost.AdditionalInformation</button>
-                    </td>
-                </tr>
-            }
-        </table>
     </div>
 </div>
 
