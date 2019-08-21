@@ -688,8 +688,7 @@ namespace SmartEco.Controllers
         [HttpPost]
         public async Task<ActionResult> GetMPCExceedEcoservicePosts()
         {
-            //int MPCExceedPastMinutes = Startup.Configuration.GetValue<int>("MPCExceedPastMinutes");
-            int MPCExceedPastMinutes = 10000;
+            int MPCExceedPastMinutes = Startup.Configuration.GetValue<int>("MPCExceedPastMinutes");
             int? dataProviderId = null;
 
             string urlDataProviders = "api/DataProviders",
