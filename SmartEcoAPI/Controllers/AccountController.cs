@@ -185,5 +185,11 @@ namespace SmartEcoAPI.Controllers
             }
             return Ok(result);
         }
+
+        [Route("GetAuthenticated")]
+        public bool Authenticated()
+        {
+            return User.Identity.IsAuthenticated;
+        }
     }
 }

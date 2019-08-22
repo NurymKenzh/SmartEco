@@ -15,9 +15,26 @@ namespace SmartEco.Controllers
 {
     public class HomeController : Controller
     {
-        public IActionResult Index()
+        private readonly HttpApiClientController _HttpApiClient;
+
+        public HomeController(HttpApiClientController HttpApiClient)
         {
-            return View();
+            _HttpApiClient = HttpApiClient;
+        }
+
+        public async Task<IActionResult> Index()
+        {
+            HttpResponseMessage response = await _HttpApiClient.GetAsync("api/Account/GetAuthenticated");
+            string OutputViewText = await response.Content.ReadAsStringAsync();
+            OutputViewText = OutputViewText.Replace("\"", "");
+            if (Convert.ToBoolean(OutputViewText) == true)
+            {
+                return View();
+            }
+            else
+            {
+                return RedirectToAction("Login", "Account");
+            }
         }
 
         public IActionResult Privacy()
