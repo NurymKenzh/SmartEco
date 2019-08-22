@@ -68,10 +68,16 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Data">@SharedLocalizer["Data"]</a>
                             </li>
                         }
-                        @if (!string.IsNullOrEmpty(Role))
+                        @if (!string.IsNullOrEmpty(Role) && Role != "KaragandaRegion")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Index">@SharedLocalizer["Maps"]</a>
+                            </li>
+                        }
+                        @if (Role == "KaragandaRegion")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["Map"]</a>
                             </li>
                         }
                         @if (Role == "admin" || Role == "moderator" || Role == "KaragandaRegion")
