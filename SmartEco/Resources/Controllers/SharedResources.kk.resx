@@ -363,4 +363,10 @@
   <data name="EcoserviceMonitoringPosts" xml:space="preserve">
     <value>Экосервис-С бақылау бекеттері</value>
   </data>
+  <data name="ShowHideLeftPanelText" xml:space="preserve">
+    <value>Сол жақ тақтаны көрсету/жасыру</value>
+  </data>
+  <data name="ShowHideRightPanelText" xml:space="preserve">
+    <value>Оң жақ тақтаны көрсету/жасыру</value>
+  </data>
 </root>

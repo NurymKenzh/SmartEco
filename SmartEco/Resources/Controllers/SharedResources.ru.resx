@@ -363,4 +363,10 @@
   <data name="EcoserviceMonitoringPosts" xml:space="preserve">
     <value>Посты мониторинга Экосервис-С</value>
   </data>
+  <data name="ShowHideLeftPanelText" xml:space="preserve">
+    <value>Показать/скрыть левую панель</value>
+  </data>
+  <data name="ShowHideRightPanelText" xml:space="preserve">
+    <value>Показать/скрыть правую панель</value>
+  </data>
 </root>

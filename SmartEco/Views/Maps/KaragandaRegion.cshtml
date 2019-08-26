@@ -83,6 +83,16 @@
         height: calc(100vh - 159px);
     }
 
+    .sidepanelRight-hide {
+        top: 4.5em;
+        right: .5em;
+    }
+
+    .sidepanelLeft-hide {
+        top: 4.5em;
+        left: .5em;
+    }
+
     /*.ol-rotate {
         top: 3em;
     }*/
@@ -98,10 +108,12 @@
     <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
     <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPost"]" />
     <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirPosts"]" />
+    <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
+    <input id="ShowHideRightPanelText" type="text" value="@SharedLocalizer["ShowHideRightPanelText"]" />
 </div>
 
 <div id="fullscreen" class="fullscreen">
-    <div class="sidepanel">
+    <div id="sidepanelLeft" class="sidepanel">
         <label>
             @SharedLocalizer["EcoserviceAirPosts"]
         </label>
@@ -122,7 +134,7 @@
         <hr />
     </div>
     <div id="map" class="map"></div>
-    <div class="sidepanel">
+    <div id="sidepanelRight" class="sidepanel">
         <label>
             <input type="checkbox" id="layerEcoserviceAirMonitoringPostsShow" onchange="ChangeLayers()" checked="checked">
             @SharedLocalizer["EcoserviceAirPosts"]
@@ -618,6 +630,126 @@
     }
 </script>
 
+    
+<script>
+    // левая панель
+    window.app = {};
+    var app = window.app;
+    app.ShowHideSidePanelLeft = function (opt_options) {
+        var options = opt_options || {};
+        var button = document.createElement('button');
+        button.id = "sidepanelleftshowhide";
+        button.innerHTML = '»';
+        button.title = $("#ShowHideLeftPanelText").val();
+        var this_ = this;
+        var handleShowHideSidePanelLeft = function () {
+            if (document.getElementById("sidepanelLeft").offsetWidth == 0) {
+                if (document.getElementById("sidepanelRight").offsetWidth != 0) {
+                    $('#sidepanelLeft').addClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "60%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelLeft').addClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+            }
+            else {
+                if (document.getElementById("sidepanelRight").offsetWidth != 0) {
+                    $('#sidepanelLeft').removeClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelLeft').removeClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "100%");
+                    map.updateSize();
+                }
+            }
+        };
+        button.addEventListener('click', handleShowHideSidePanelLeft, false);
+        var element = document.createElement('div');
+        element.className = 'sidepanelLeft-hide ol-unselectable ol-control';
+        element.appendChild(button);
+        ol.control.Control.call(this, {
+            element: element,
+            target: options.target
+        });
+    }
+    ol.inherits(app.ShowHideSidePanelLeft, ol.control.Control);
+
+    // правая панель
+    app.ShowHideSidePanelRight = function (opt_options) {
+        var options = opt_options || {};
+        var button = document.createElement('button');
+        button.id = "sidepanelrightshowhide";
+        button.innerHTML = '«';
+        button.title = $("#ShowHideRightPanelText").val();
+        var this_ = this;
+        var handleShowHideSidePanelRight = function () {
+            if (document.getElementById("sidepanelRight").offsetWidth == 0) {
+                if (document.getElementById("sidepanelLeft").offsetWidth != 0) {
+                    $('#sidepanelRight').addClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "60%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelRight').addClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+            }
+            else {
+                if (document.getElementById("sidepanelLeft").offsetWidth != 0) {
+                    $('#sidepanelRight').removeClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelRight').removeClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "100%");
+                    map.updateSize();
+                }
+            }
+        };
+        button.addEventListener('click', handleShowHideSidePanelRight, false);
+        var element = document.createElement('div');
+        element.className = 'sidepanelRight-hide ol-unselectable ol-control';
+        element.appendChild(button);
+        ol.control.Control.call(this, {
+            element: element,
+            target: options.target
+        });
+    }
+    ol.inherits(app.ShowHideSidePanelRight, ol.control.Control);
+
+    $(document).ready(function (e) {
+        map.updateSize();
+        $('#sidepanelRight').addClass("d-none");
+        $('#sidepanelLeft').addClass("d-none");
+        window.addEventListener('resize', function (event) {
+            // скрыть правую панель
+            $('#sidepanelRight').addClass("d-none");
+            var button = document.getElementById('sidepanelrightshowhide');
+            button.innerHTML = '«';
+            // скрыть левую панель
+            $('#sidepanelLeft').addClass("d-none");
+            var button = document.getElementById('sidepanelleftshowhide');
+            button.innerHTML = '»';
+            map.updateSize();
+        });
+    });
+</script>
+
 @*map*@
 <script>
     var overviewMapControl = new ol.control.OverviewMap({
@@ -631,6 +763,8 @@
         controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
             new ol.control.ScaleLine(),
             overviewMapControl,
+            new app.ShowHideSidePanelRight(),
+            new app.ShowHideSidePanelLeft(),
             new ol.control.FullScreen({
                 source: 'fullscreen'
             })
@@ -978,6 +1112,7 @@
         }
     }
 </script>
+
 
 @* window.onload *@
 <script>
