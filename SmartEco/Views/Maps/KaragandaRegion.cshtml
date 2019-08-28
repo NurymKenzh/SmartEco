@@ -630,7 +630,7 @@
     }
 </script>
 
-    
+
 <script>
     // левая панель
     window.app = {};
@@ -833,6 +833,11 @@
         $(this).height($(this).parent().height() - $(this).prev('.ui-dialog-titlebar').outerHeight(true) - heightPadding - titlebarMargin);
         $(this).width($(this).prev('.ui-dialog-titlebar').outerWidth(true) - widthPadding);
     }
+
+    document.cookie = "zoom=" + map.getView().getZoom();
+    var coords = map.getView().getCenter();
+    coords = ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
+    document.cookie = "coords=" + coords;
 </script>
 
 @* ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
@@ -1113,6 +1118,33 @@
     }
 </script>
 
+@* window.setInterval *@
+<script>
+    window.setInterval(function () {
+        var zoom = map.getView().getZoom();
+        var coords = map.getView().getCenter();
+        coords = ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326').toString();
+        if (Number.parseFloat(zoom) != Number.parseFloat(GetCookie("zoom"))) {
+            document.cookie = "zoom=" + zoom;
+        }
+        var coordsArray = coords.split(',');
+        var coordsArrayCookie = GetCookie("coords").split(',');
+        if (Number.parseFloat(coordsArray[0]) != Number.parseFloat(coordsArrayCookie[0]) || Number.parseFloat(coordsArray[1]) != Number.parseFloat(coordsArrayCookie[1])) {
+            document.cookie = "coords=" + coords;
+        }
+    }, 1000);
+
+    function GetCookie(cookieName) {
+        var results = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
+        if (results) {
+            return (unescape(results[2]));
+        }
+        else {
+            return null;
+        }
+    }
+</script>
+
 
 @* window.onload *@
 <script>
@@ -1126,7 +1158,7 @@
 @*<input id="Test" type="text" value="TestValue" name="TestName"/>*@
 
 @*<script>
-    function Test() {
-        Layer_EcoserviceAirMonitoringPosts.getSource().changed();
-    }
-</script>*@
+        function Test() {
+            Layer_EcoserviceAirMonitoringPosts.getSource().changed();
+        }
+    </script>*@
