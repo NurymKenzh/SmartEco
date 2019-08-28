@@ -752,6 +752,35 @@
 
 @*map*@
 <script>
+    function GetCookie(cookieName) {
+        var results = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
+        if (results) {
+            return (unescape(results[2]));
+        }
+        else {
+            return null;
+        }
+    }
+
+    var getCoords, getZoom;
+    if (GetCookie("zoom") == null) {
+        getZoom = 7;
+        document.cookie = "zoom=" + getZoom;
+    }
+    else {
+        getZoom = Number.parseFloat(GetCookie("zoom"));
+    }
+    if (GetCookie("coords") == null) {
+        getCoords = [70.98, 48.70];
+        document.cookie = "coords=" + getCoords;
+        console.log(getCoords);
+    }
+    else {
+        var coordsStringArr = GetCookie("coords").split(',');
+        getCoords = [Number.parseFloat(coordsStringArr[0]), Number.parseFloat(coordsStringArr[1])];
+        console.log(getCoords);
+    }
+
     var overviewMapControl = new ol.control.OverviewMap({
         className: 'ol-overviewmap ol-custom-overviewmap',
         collapseLabel: '\u00BB',
@@ -772,8 +801,8 @@
         target: document.getElementById('map'),//'map',
         layers: layers,
         view: new ol.View({
-            center: ol.proj.fromLonLat([70.98, 48.70]),
-            zoom: 7
+            center: ol.proj.fromLonLat(getCoords),
+            zoom: getZoom
         })
     });
 
@@ -833,11 +862,6 @@
         $(this).height($(this).parent().height() - $(this).prev('.ui-dialog-titlebar').outerHeight(true) - heightPadding - titlebarMargin);
         $(this).width($(this).prev('.ui-dialog-titlebar').outerWidth(true) - widthPadding);
     }
-
-    document.cookie = "zoom=" + map.getView().getZoom();
-    var coords = map.getView().getCenter();
-    coords = ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326');
-    document.cookie = "coords=" + coords;
 </script>
 
 @* ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
@@ -1133,16 +1157,6 @@
             document.cookie = "coords=" + coords;
         }
     }, 1000);
-
-    function GetCookie(cookieName) {
-        var results = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
-        if (results) {
-            return (unescape(results[2]));
-        }
-        else {
-            return null;
-        }
-    }
 </script>
 
 
