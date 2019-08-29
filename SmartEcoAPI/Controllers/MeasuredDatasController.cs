@@ -28,6 +28,7 @@ namespace SmartEcoAPI.Controllers
     {
         private readonly ApplicationDbContext _context;
         public int COMPCDivide = 10;
+        public decimal? PValueMultiply = 0.750063755419211m;
 
         public MeasuredDatasController(ApplicationDbContext context)
         {
@@ -180,7 +181,8 @@ namespace SmartEcoAPI.Controllers
 
             List<MeasuredData> measuredDatasR = measuredDatas.ToList();
             measuredDatasR = measuredDatasR
-                .Select(m => { m.Value = m.MeasuredParameterId == 7 ? m.Value / COMPCDivide : m.Value; return m; })
+                .Select(m => { m.Value = m.MeasuredParameterId == 7 ? m.Value / COMPCDivide : m.MeasuredParameterId == 1 ? 
+                    m.Value * PValueMultiply : m.Value; return m; })
                 .ToList();
 
             return measuredDatasR;
@@ -206,6 +208,11 @@ namespace SmartEcoAPI.Controllers
             if(measuredData.MeasuredParameterId == 7)
             {
                 measuredData.Value = measuredData.Value / COMPCDivide;
+            }
+
+            if (measuredData.MeasuredParameterId == 1)
+            {
+                measuredData.Value = measuredData.Value * PValueMultiply;
             }
 
             return measuredData;
@@ -275,6 +282,11 @@ namespace SmartEcoAPI.Controllers
             if (measuredData.MeasuredParameterId == 7)
             {
                 measuredData.Value = measuredData.Value / COMPCDivide;
+            }
+
+            if (measuredData.MeasuredParameterId == 1)
+            {
+                measuredData.Value = measuredData.Value * PValueMultiply;
             }
 
             return measuredData;

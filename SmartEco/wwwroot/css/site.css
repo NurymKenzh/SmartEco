@@ -236,6 +236,16 @@ body {
     width: 100%;
 }
 
+.sidepanelRight-hide {
+    top: 4.5em;
+    right: .5em;
+}
+
+.sidepanelLeft-hide {
+    top: 4.5em;
+    left: .5em;
+}
+
 .info-input {
     max-width: 150px;
     display: inline;

@@ -83,16 +83,6 @@
         height: calc(100vh - 159px);
     }
 
-    .sidepanelRight-hide {
-        top: 4.5em;
-        right: .5em;
-    }
-
-    .sidepanelLeft-hide {
-        top: 4.5em;
-        left: .5em;
-    }
-
     /*.ol-rotate {
         top: 3em;
     }*/
@@ -773,12 +763,10 @@
     if (GetCookie("coords") == null) {
         getCoords = [70.98, 48.70];
         document.cookie = "coords=" + getCoords;
-        console.log(getCoords);
     }
     else {
         var coordsStringArr = GetCookie("coords").split(',');
         getCoords = [Number.parseFloat(coordsStringArr[0]), Number.parseFloat(coordsStringArr[1])];
-        console.log(getCoords);
     }
 
     var overviewMapControl = new ol.control.OverviewMap({
