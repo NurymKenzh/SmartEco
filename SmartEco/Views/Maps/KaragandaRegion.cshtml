@@ -122,6 +122,12 @@
         </table>
         <br />
         <hr />
+        <br />
+        <div>
+            <input type="button" value="Карта по-умолчанию" class="btn btn-default" onclick="DefaultMap()">
+        </div>
+        <br />
+        <hr />
     </div>
     <div id="map" class="map"></div>
     <div id="sidepanelRight" class="sidepanel">
@@ -851,6 +857,13 @@
             titlebarMargin = parseInt($(this).prev('.ui-dialog-titlebar').css('margin-bottom'), 0);
         $(this).height($(this).parent().height() - $(this).prev('.ui-dialog-titlebar').outerHeight(true) - heightPadding - titlebarMargin);
         $(this).width($(this).prev('.ui-dialog-titlebar').outerWidth(true) - widthPadding);
+    }
+
+    function DefaultMap() {
+        map.getView().setZoom(7);
+        map.getView().setCenter([7900344.26, 6224110.13]);
+        document.cookie = "zoom=" + 7;
+        document.cookie = "coords=" + [70.98, 48.70];
     }
 </script>
 
