@@ -206,6 +206,10 @@ body {
     float: left;
 }
 
+:-webkit-full-screen::backdrop {
+    background-color: #fff;
+}
+
 .sidepanel {
     background: rgba(0, 0, 0, .05);
     width: 20%;
