@@ -201,9 +201,13 @@ body {
 }
 
 .map {
-    width: 100%;
+    width: 60%;
     height: 100%;
     float: left;
+}
+
+:-webkit-full-screen::backdrop {
+    background-color: #fff;
 }
 
 .sidepanel {
@@ -234,6 +238,16 @@ body {
 
 .sidepanel input[type='range'] {
     width: 100%;
+}
+
+.sidepanelRight-hide {
+    top: 4.5em;
+    right: .5em;
+}
+
+.sidepanelLeft-hide {
+    top: 4.5em;
+    left: .5em;
 }
 
 .info-input {

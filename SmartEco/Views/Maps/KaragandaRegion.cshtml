@@ -83,16 +83,6 @@
         height: calc(100vh - 159px);
     }
 
-    .sidepanelRight-hide {
-        top: 4.5em;
-        right: .5em;
-    }
-
-    .sidepanelLeft-hide {
-        top: 4.5em;
-        left: .5em;
-    }
-
     /*.ol-rotate {
         top: 3em;
     }*/
@@ -133,6 +123,12 @@
                 </tr>
             }
         </table>
+        <br />
+        <hr />
+        <br />
+        <div>
+            <input type="button" value="Карта по-умолчанию" class="btn btn-default" onclick="DefaultMap()">
+        </div>
         <br />
         <hr />
     </div>
@@ -658,7 +654,7 @@
         var options = opt_options || {};
         var button = document.createElement('button');
         button.id = "sidepanelleftshowhide";
-        button.innerHTML = '»';
+        button.innerHTML = '«';
         button.title = $("#ShowHideLeftPanelText").val();
         var this_ = this;
         var handleShowHideSidePanelLeft = function () {
@@ -707,7 +703,7 @@
         var options = opt_options || {};
         var button = document.createElement('button');
         button.id = "sidepanelrightshowhide";
-        button.innerHTML = '«';
+        button.innerHTML = '»';
         button.title = $("#ShowHideRightPanelText").val();
         var this_ = this;
         var handleShowHideSidePanelRight = function () {
@@ -753,15 +749,17 @@
 
     $(document).ready(function (e) {
         map.updateSize();
-        $('#sidepanelRight').addClass("d-none");
-        $('#sidepanelLeft').addClass("d-none");
+        $('#sidepanelRight').addClass("d-none d-block");
+        $('#sidepanelLeft').addClass("d-none d-block");
         window.addEventListener('resize', function (event) {
-            // скрыть правую панель
-            $('#sidepanelRight').addClass("d-none");
+            $('#map').css("width", "100%");
+            map.updateSize();
+            // показать правую панель
+            $('#sidepanelRight').removeClass("d-block");
             var button = document.getElementById('sidepanelrightshowhide');
             button.innerHTML = '«';
-            // скрыть левую панель
-            $('#sidepanelLeft').addClass("d-none");
+            // показать левую панель
+            $('#sidepanelLeft').removeClass("d-block");
             var button = document.getElementById('sidepanelleftshowhide');
             button.innerHTML = '»';
             map.updateSize();
@@ -792,12 +790,10 @@
     if (GetCookie("coords") == null) {
         getCoords = [70.98, 48.70];
         document.cookie = "coords=" + getCoords;
-        console.log(getCoords);
     }
     else {
         var coordsStringArr = GetCookie("coords").split(',');
         getCoords = [Number.parseFloat(coordsStringArr[0]), Number.parseFloat(coordsStringArr[1])];
-        console.log(getCoords);
     }
 
     var overviewMapControl = new ol.control.OverviewMap({
@@ -880,6 +876,13 @@
             titlebarMargin = parseInt($(this).prev('.ui-dialog-titlebar').css('margin-bottom'), 0);
         $(this).height($(this).parent().height() - $(this).prev('.ui-dialog-titlebar').outerHeight(true) - heightPadding - titlebarMargin);
         $(this).width($(this).prev('.ui-dialog-titlebar').outerWidth(true) - widthPadding);
+    }
+
+    function DefaultMap() {
+        map.getView().setZoom(7);
+        map.getView().setCenter([7900344.26, 6224110.13]);
+        document.cookie = "zoom=" + 7;
+        document.cookie = "coords=" + [70.98, 48.70];
     }
 </script>
 
