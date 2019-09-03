@@ -369,4 +369,10 @@
   <data name="ShowHideRightPanelText" xml:space="preserve">
     <value>Show/hide right panel</value>
   </data>
+  <data name="PollutantSpread" xml:space="preserve">
+    <value>Scattering</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Time</value>
+  </data>
 </root>

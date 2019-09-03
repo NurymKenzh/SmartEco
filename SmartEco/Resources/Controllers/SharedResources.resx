@@ -358,15 +358,21 @@
     <value />
   </data>
   <data name="Analytics" xml:space="preserve">
-    <value>Analytics</value>
+    <value />
   </data>
   <data name="EcoserviceMonitoringPosts" xml:space="preserve">
-    <value>Ecoservice-S Monitoring Posts</value>
+    <value />
   </data>
   <data name="ShowHideLeftPanelText" xml:space="preserve">
     <value />
   </data>
   <data name="ShowHideRightPanelText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutantSpread" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Time" xml:space="preserve">
     <value />
   </data>
 </root>

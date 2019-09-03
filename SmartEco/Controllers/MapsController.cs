@@ -227,7 +227,15 @@ namespace SmartEco.Controllers
                 measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
             }
 
+            ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
+            ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
+            if (!Convert.ToBoolean(Startup.Configuration["Server"]))
+            {
+                ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
+            }
+            ViewBag.GeoServerPort = Startup.Configuration["GeoServerPort"].ToString();
             ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.Pollutants = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode) && m.MPC != null).OrderBy(m => m.Name), "Id", "Name");
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
             ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
             ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
@@ -269,8 +277,8 @@ namespace SmartEco.Controllers
                                },
                                geometry = new
                                {
-                                    type = "Point",
-                                    coordinates = new List<decimal>
+                                   type = "Point",
+                                   coordinates = new List<decimal>
                                     {
                                         Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
                                         Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
@@ -281,7 +289,7 @@ namespace SmartEco.Controllers
             ViewBag.KazHydrometAirMonitoringPostsLayerJson = kazHydrometAirMonitoringPostsObject.ToString();
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
-                .Where(m => m.NorthLatitude >= 46.00M && m.NorthLatitude <= 51.00M 
+                .Where(m => m.NorthLatitude >= 46.00M && m.NorthLatitude <= 51.00M
                 && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
                 .ToList();
             JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
@@ -480,7 +488,7 @@ namespace SmartEco.Controllers
                 airPollutionSources += "{ \"id\": " + i + ", \"is_organized\": true, \"methodical\": 1, \"background_relation\": 3, " +
                     "\"configuration\": { \"type\": 1, \"height\": " + height[i] + ", \"diameter\": " + diameter[i] + ", \"flow_temperature\": " + flow_temperature[i] + ", \"flow_speed\": " + flow_speed[i] + ", " +
                     "\"point_1\": { \"x\": " + longitude[i] + ", \"y\": " + latitude[i] + ", \"z\": 0 }, \"relief_coefficient\": 1 }, \"emissions\": [";
-                airPollutionSources += "{ \"pollutant_code\": "+ code + ", \"power\": " + pollutantsValueString[i] + ", \"coefficient\": 2 }";
+                airPollutionSources += "{ \"pollutant_code\": " + code + ", \"power\": " + pollutantsValueString[i] + ", \"coefficient\": 2 }";
                 airPollutionSources += " ] }";
                 if (i < pollutantsValueString.Count - 1)
                 {
@@ -491,7 +499,7 @@ namespace SmartEco.Controllers
 
             content = "{ \"threshold_pdk\": 0, \"locality\": { \"square\": 682, \"relief_coefficient\": 1, \"stratification_coefficient\": 200 }, \"meteo\": " +
                 "{ \"temperature\": " + temperatureString + ", \"wind_speed_settings\": { \"mode\": 1, \"speed\": " + windSpeedString + ", \"start_speed\": " + startSpeedString + ", \"end_speed\": " + endSpeedString + ", \"step_speed\": " + stepSpeedString + " }, " +
-                "\"wind_direction_settings\": { \"mode\": 1, \"direction\": " + windDirectionString + ", \"start_direction\": " + startDirectionString + ", \"end_direction\": " + endDirectionString + ", \"step_direction\": "+ stepDirectionString + " }, \"rose_of_wind\": { \"north\": 1.2, \"northeast\": 1.7, \"northwest\": 1.4, \"south\": 2.6, \"southeast\": 1.5, \"southwest\": 1.55, \"west\": 1.75, \"east\": 1.0 }, \"u_speed\": " + uSpeedString + " }" +
+                "\"wind_direction_settings\": { \"mode\": 1, \"direction\": " + windDirectionString + ", \"start_direction\": " + startDirectionString + ", \"end_direction\": " + endDirectionString + ", \"step_direction\": " + stepDirectionString + " }, \"rose_of_wind\": { \"north\": 1.2, \"northeast\": 1.7, \"northwest\": 1.4, \"south\": 2.6, \"southeast\": 1.5, \"southwest\": 1.55, \"west\": 1.75, \"east\": 1.0 }, \"u_speed\": " + uSpeedString + " }" +
                 ", \"background\": { \"mode\": 0 }, \"method\": 1, \"contributor_count\": " + pollutantsValueString.Count + ", \"use_summation_groups\": false, \"";
             content += airPollutionSources;
             //content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
@@ -555,6 +563,62 @@ namespace SmartEco.Controllers
                 throw new Exception(exception.ToString(), exception.InnerException);
             }
             return process;
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetTodayTimes20()
+        {
+            List<DateTime> times20l = new List<DateTime>();
+            for (DateTime i = DateTime.Today; i <= DateTime.Now; i = i.AddMinutes(20))
+            {
+                times20l.Add(i);
+            }
+            DateTime[] times20 = times20l.ToArray();
+            return Json(new
+            {
+                times20
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetLayersCount(
+            string LayerBaseName)
+        {
+            string GSUser = Startup.Configuration["GeoServerUser"].ToString(),
+                GSPassword = Startup.Configuration["GeoServerPassword"].ToString(),
+                GSAddress = Startup.Configuration["GeoServerAddressServer"].ToString(),
+                GSPort = Startup.Configuration["GeoServerPort"].ToString(),
+                GSWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
+            if (!Convert.ToBoolean(Startup.Configuration["Server"]))
+            {
+                GSAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
+            }
+            int count = 0;
+            while (true)
+            {
+                string Layer = LayerBaseName + "_" + (count + 1).ToString();
+                Process process = CurlExecute($" -u " +
+                    $"{GSUser}:" +
+                    $"{GSPassword}" +
+                    $" -XGET" +
+                    $" http://{GSAddress}:" +
+                    $"{GSPort}/geoserver/rest/layers/{GSWorkspace}:{Layer}.json");
+                string json = process.StandardOutput.ReadToEnd();
+                process.WaitForExit();
+
+                if (json.Contains("No such layer"))
+                {
+                    break;
+                }
+                else
+                {
+                    count++;
+                }
+            }
+            return Json(new
+            {
+                count
+            });
         }
     }
 }

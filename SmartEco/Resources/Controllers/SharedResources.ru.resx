@@ -369,4 +369,10 @@
   <data name="ShowHideRightPanelText" xml:space="preserve">
     <value>Показать/скрыть правую панель</value>
   </data>
+  <data name="PollutantSpread" xml:space="preserve">
+    <value>Рассеивание</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Время</value>
+  </data>
 </root>

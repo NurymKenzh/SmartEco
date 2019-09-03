@@ -99,6 +99,9 @@
 </style>
 
 <div hidden="hidden">
+    <input id="GeoServerWorkspace" type="text" value="@ViewBag.GeoServerWorkspace" />
+    <input id="GeoServerAddress" type="text" value="@ViewBag.GeoServerAddress" />
+    <input id="GeoServerPort" type="text" value="@ViewBag.GeoServerPort" />
     <input id="KazHydrometAirMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsLayerJson" />
     <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
@@ -179,6 +182,18 @@
         </select>
         <br />
         <hr />
+        <label>
+            <input type="checkbox" id="layerPollutantSpreadShow" onchange="ChangeLayers()">
+            @SharedLocalizer["PollutantSpread"]
+        </label>
+        <br />
+        <input id="layerPollutantSpreadOpacity" type="range" min="0" max="100" value="80" oninput="ChangeLayers()" />
+        <br />
+        <label>@SharedLocalizer["Time"]</label>: <label id="time20Label"></label>
+        <input id="time20" type="range" min="0" value="0" max="0" step="1">
+        <label>@SharedLocalizer["MeasuredParameter"]</label>
+        <br />
+        @Html.DropDownList("PollutantSpreadMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control info-input-select", @id = "PollutantSpreadMeasuredParameterId", @onchange = "PollutantSpreadChange()" })
     </div>
 </div>
 
@@ -305,7 +320,7 @@
     </div>
 </div>
 
-@*layers*@
+@* layers *@
 <script>
     var layers = [];
 
@@ -626,11 +641,15 @@
                 layer.setVisible(document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked);
                 layer.setOpacity($('#layerEcoserviceAirMonitoringPostsOpacity').val() / 100)
             }
+            if (layer.get('name') == 'KaragandaRegionPollutantSpread') {
+                layer.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
+                layer.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
+            }
         })
     }
 </script>
 
-
+@* Panels *@
 <script>
     // левая панель
     window.app = {};
@@ -750,7 +769,7 @@
     });
 </script>
 
-@*map*@
+@* map *@
 <script>
     function GetCookie(cookieName) {
         var results = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
@@ -1092,7 +1111,6 @@
                 type: 'POST',
                 success: function (data) {
                     inactivePosts = data.ids;
-                    $('#Test').val(data.ids);
                     //Layer_EcoserviceAirMonitoringPosts.refresh({force:true});
                     //Layer_EcoserviceAirMonitoringPosts.redraw();
                     Layer_EcoserviceAirMonitoringPosts.getSource().changed();
@@ -1159,6 +1177,94 @@
     }, 1000);
 </script>
 
+@* PollutantSpreadChange *@
+<script>
+    var geoserverWorkspace = $('#GeoServerWorkspace').val(),
+        geoserverAddress = $('#GeoServerAddress').val(),
+        geoserverPort = $('#GeoServerPort').val();
+
+    var times20 = [];
+
+    $.ajax({
+        url: '@Url.Action("GetTodayTimes20")',
+        type: 'POST',
+        success: function (data) {
+            times20 = data.times20;
+            $("#time20").attr({
+                "max": times20.length - 1,
+                "value": times20.length - 1
+            });
+            $("#time20Label").text(moment(times20[times20.length - 1]).format('HH:mm'));
+            PollutantSpreadChange();
+        },
+        error: function () {
+        }
+    })
+
+    var input = document.getElementById('time20'),
+        output = document.getElementById('time20Label');
+    input.oninput = function () {
+        output.innerHTML = moment(times20[this.value]).format('HH:mm');
+        PollutantSpreadChange();
+    };
+    input.oninput();
+
+    function PollutantSpreadChange() {
+        // remove old layers
+        map.getLayers().forEach(function (layer) {
+            if (layer != null) {
+                if (layer.get('name') == 'KaragandaRegionPollutantSpread') {
+                    map.removeLayer(layer);
+                }
+            }
+        })
+        // add new layers
+        var layer_name = 'KaragandaRegionPollutantSpread_' + $('#PollutantSpreadMeasuredParameterId').val() + '_' +
+            (new Date($.now())).getFullYear() +
+            ('0' + ((new Date($.now())).getMonth() + 1)).slice(-2) +
+            ('0' + (new Date($.now())).getDate()).slice(-2) +
+            $('#time20Label').text().replace(":", "") + '00';
+        $.ajax({
+            url: '@Url.Action("GetLayersCount")',
+            type: 'POST',
+            data: {
+                LayerBaseName: layer_name
+            },
+            success: function (data) {
+                // remove old layers
+                map.getLayers().forEach(function (layer) {
+                    if (layer != null) {
+                        if (layer.get('name') == 'KaragandaRegionPollutantSpread') {
+                            map.removeLayer(layer);
+                        }
+                    }
+                })
+                for (i = 1; i <= data.count; i++) {
+                    var layer_name_current = layer_name + '_' + i.toString();
+                    var Source_KaragandaRegionPollutantSpread = new ol.source.TileWMS({
+                        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/' + geoserverWorkspace + '/wms?',
+                        params: {
+                            'LAYERS': geoserverWorkspace + ':' + layer_name_current,
+                            'VERSION': '1.1.0',
+                            'FORMAT': 'image/png',
+                            'TILED': true
+                        },
+                        serverType: 'geoserver'
+                    });
+                    var Layer_KaragandaRegionPollutantSpread = new ol.layer.Tile({
+                        source: Source_KaragandaRegionPollutantSpread
+                    });
+                    Layer_KaragandaRegionPollutantSpread.set('name', 'KaragandaRegionPollutantSpread');
+                    Layer_KaragandaRegionPollutantSpread.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
+                    Layer_KaragandaRegionPollutantSpread.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
+                    map.getLayers().insertAt(1, Layer_KaragandaRegionPollutantSpread);
+                } 
+            },
+            error: function () {
+            }
+        })
+    };
+</script>
 
 @* window.onload *@
 <script>
@@ -1170,9 +1276,15 @@
 </script>
 
 @*<input id="Test" type="text" value="TestValue" name="TestName"/>*@
+@*<input id="Test" type="button" value="TestValue" name="TestName" onclick="Test()" />
 
-@*<script>
-        function Test() {
-            Layer_EcoserviceAirMonitoringPosts.getSource().changed();
-        }
-    </script>*@
+<script>
+    function Test() {
+        var layers_count = 0;
+        map.getLayers().forEach(function (layer) {
+            console.log(layer.get('name'));
+            layers_count++;
+        })
+        console.log('layers_count: ' + layers_count);
+    }
+</script>*@

@@ -369,4 +369,10 @@
   <data name="ShowHideRightPanelText" xml:space="preserve">
     <value>Оң жақ тақтаны көрсету/жасыру</value>
   </data>
+  <data name="PollutantSpread" xml:space="preserve">
+    <value>Шашырау</value>
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value>Уақыт</value>
+  </data>
 </root>
