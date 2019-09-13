@@ -397,6 +397,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
 
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            ViewBag.MeasuredParameters = measuredParameters;
+
             return View();
         }
 
@@ -406,6 +416,9 @@ namespace SmartEco.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Number,Name,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
+            int?[] Sensors,
+            string[] Minimum,
+            string[] Maximum,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,
@@ -453,6 +466,49 @@ namespace SmartEco.Controllers
                 try
                 {
                     response.EnsureSuccessStatusCode();
+                    int id = Convert.ToInt32(OutputViewText.Substring(OutputViewText.IndexOf(':') + 1, OutputViewText.IndexOf(',') - (OutputViewText.IndexOf(':') + 1)));
+
+                    url = "api/MonitoringPosts/monitoringPostMeasuredParameter";
+                    route = "";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MonitoringPostId={id.ToString()}";
+
+                    foreach (var sensor in Sensors)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"MeasuredParametersId={sensor.ToString()}".Replace(',', '.');
+                    }
+
+                    foreach (var min in Minimum)
+                    {
+                        if (min == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Min=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Min={min.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    foreach (var max in Maximum)
+                    {
+                        if (max == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Max=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Max={max.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url + route, null);
                 }
                 catch
                 {
@@ -528,6 +584,28 @@ namespace SmartEco.Controllers
                 monitoringPost.AdditionalInformation = monitoringPost.AdditionalInformation.Replace("\r\n", "\r");
             }
 
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            ViewBag.MeasuredParameters = measuredParameters;
+
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();
+            string urlMonitoringPostMeasuredParameters = "api/MonitoringPosts/getMonitoringPostMeasuredParameters";
+            string routeMonitoringPostMeasuredParameters = "";
+            routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
+            routeMonitoringPostMeasuredParameters += $"MonitoringPostId={id.ToString()}";
+            HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(urlMonitoringPostMeasuredParameters + routeMonitoringPostMeasuredParameters, null);
+            if (responseMPMP.IsSuccessStatusCode)
+            {
+                monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
+            }
+            ViewBag.MonitoringPostMeasuredParameters = monitoringPostMeasuredParameters;
+
             return View(monitoringPost);
         }
 
@@ -537,6 +615,9 @@ namespace SmartEco.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Name,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
+            int?[] Sensors,
+            string[] Minimum,
+            string[] Maximum,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,
@@ -588,6 +669,48 @@ namespace SmartEco.Controllers
                 try
                 {
                     response.EnsureSuccessStatusCode();
+
+                    url = "api/MonitoringPosts/editMonitoringPostMeasuredParameter";
+                    route = "";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MonitoringPostId={id.ToString()}";
+
+                    foreach (var sensor in Sensors)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"MeasuredParametersId={sensor.ToString()}".Replace(',', '.');
+                    }
+
+                    foreach (var min in Minimum)
+                    {
+                        if (min == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Min=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Min={min.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    foreach (var max in Maximum)
+                    {
+                        if (max == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Max=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Max={max.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url + route, null);
                 }
                 catch
                 {

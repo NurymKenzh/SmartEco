@@ -60,6 +60,43 @@
                 <label asp-for="PollutionEnvironmentId" class="control-label"></label>
                 <select asp-for="PollutionEnvironmentId" class="form-control" asp-items="ViewBag.PollutionEnvironments"></select>
             </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @SharedLocalizer["Sensors"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["MeasuredParameters"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["Minimum"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["Maximum"]
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (MeasuredParameter item in ViewBag.MeasuredParameters)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="Sensors" class="form-control" value="@item.Id">
+                            </td>
+                            <td>
+                                @item.Name
+                            </td>
+                            <td>
+                                <input type="text" name="Minimum" class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="Maximum" class="form-control">
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
             <div hidden="hidden">
                 @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
                 @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })

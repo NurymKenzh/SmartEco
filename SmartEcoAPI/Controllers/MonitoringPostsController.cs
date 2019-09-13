@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -446,6 +447,223 @@ namespace SmartEcoAPI.Controllers
             }
 
             return monitoringPostsInactive.ToList();
+        }
+
+        // POST: api/MonitoringPosts/MonitoringPostMeasuredParameter
+        [HttpPost("monitoringPostMeasuredParameter")]
+        [Authorize(Roles = "admin,moderator")]
+        public void PostMonitoringPostMeasuredParameter(
+            int MonitoringPostId,
+            [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
+            [FromQuery(Name = "Min")] List<string> Min,
+            [FromQuery(Name = "Max")] List<string> Max)
+        {
+            List<int> idMeasuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).Select(m => m.Id).ToList();
+            for (int i = 0; i < idMeasuredParameters.Count; i++)
+            {
+                foreach (var id in MeasuredParametersId)
+                {
+                    if (idMeasuredParameters[i] == id)
+                    {
+                        if (Min[i] == "null" && Max[i] != "null")
+                        {
+                            MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        }
+                        else if (Max[i] == "null" && Min[i] != "null")
+                        {
+                            MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+                        }
+                        else if (Max[i] == "null" && Min[i] == "null")
+                        {
+                            MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+                        }
+                        else
+                        {
+                            MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        }
+                    }
+                }
+            }
+        }
+
+        public void MonitoringPostMeasuredParameter(int MonitoringPostId,
+            int MeasuredParameterId,
+            decimal? Min,
+            decimal? Max)
+        {
+            MonitoringPostMeasuredParameters monitoringPostMeasuredParameters = new MonitoringPostMeasuredParameters
+            {
+                MonitoringPostId = MonitoringPostId,
+                MeasuredParameterId = MeasuredParameterId,
+                Min = Min,
+                Max = Max
+            };
+
+            _context.MonitoringPostMeasuredParameters.Add(monitoringPostMeasuredParameters);
+            _context.SaveChanges();
+        }
+
+        // POST: api/MonitoringPosts/EditMonitoringPostMeasuredParameter
+        [HttpPost("editMonitoringPostMeasuredParameter")]
+        [Authorize(Roles = "admin,moderator")]
+        public void EditMonitoringPostMeasuredParameter(
+            int MonitoringPostId,
+            [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
+            [FromQuery(Name = "Min")] List<string> Min,
+            [FromQuery(Name = "Max")] List<string> Max)
+        {
+            List<int> idMeasuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).Select(m => m.Id).ToList();
+            List<int> idMonitoringPostMeasuredParametersId = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).OrderBy(m => m.MeasuredParameterId).Select(m => m.MeasuredParameterId).ToList();
+            for (int i = 0; i < idMeasuredParameters.Count; i++)
+            {
+                foreach (var id in MeasuredParametersId)
+                {
+                    if (idMeasuredParameters[i] == id)
+                    {
+                        if (Min[i] == "null" && Max[i] != "null")
+                        {
+                            try
+                            {
+                                PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                            }
+                            catch
+                            {
+                                MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                            }
+                        }
+                        else if (Max[i] == "null" && Min[i] != "null")
+                        {
+                            try
+                            {
+                                PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+                            }
+                            catch
+                            {
+                                MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+                            }
+                        }
+                        else if (Max[i] == "null" && Min[i] == "null")
+                        {
+                            try
+                            {
+                                PutMonitoringPostMeasuredParameter( MonitoringPostId, id, null, null);
+                            }
+                            catch
+                            {
+                                MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+                            }
+                        }
+                        else
+                        {
+                            try
+                            {
+                                PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                            }
+                            catch
+                            {
+                                MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                            }
+                        }
+                    }
+                }
+            }
+            if (MeasuredParametersId.Count < idMonitoringPostMeasuredParametersId.Count)
+            {
+                bool check = false;
+                foreach (var idAll in idMonitoringPostMeasuredParametersId)
+                {
+                    foreach (var id in MeasuredParametersId)
+                    {
+                        if (idAll == id)
+                        {
+                            check = true;
+                            break;
+                        }
+                        else
+                        {
+                            check = false;
+                        }
+                    }
+                    if (!check)
+                    {
+                        var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == idAll && m.MonitoringPostId == MonitoringPostId).First();
+                        DeleteMonitoringPostMeasuredParameter(monitoringPostMeasuredParameters);
+                    }
+                }
+            }
+        }
+
+        public void PutMonitoringPostMeasuredParameter(
+            int MonitoringPostId,
+            int MeasuredParameterId,
+            decimal? Min,
+            decimal? Max)
+        {
+            var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId && m.MonitoringPostId == MonitoringPostId).First();
+            monitoringPostMeasuredParameters.MonitoringPostId = MonitoringPostId;
+            monitoringPostMeasuredParameters.MeasuredParameterId = MeasuredParameterId;
+            monitoringPostMeasuredParameters.Min = Min;
+            monitoringPostMeasuredParameters.Max = Max;
+            _context.SaveChangesAsync();
+        }
+
+        public void DeleteMonitoringPostMeasuredParameter(
+            MonitoringPostMeasuredParameters monitoringPostMeasuredParameters)
+        {
+            _context.MonitoringPostMeasuredParameters.Remove(monitoringPostMeasuredParameters);
+            _context.SaveChangesAsync();
+        }
+
+        // GET: api/MonitoringPosts/GetMonitoringPostMeasuredParameter
+        [HttpPost("getMonitoringPostMeasuredParameters")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParameters(int MonitoringPostId)
+        {
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).OrderBy(m => m.MonitoringPostId).ToList();
+            List<MeasuredParameter> measuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).ToList();
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameterWithNull = new List<MonitoringPostMeasuredParameters>();
+            bool check = false;
+            for (int i = 0; i < measuredParameters.Count; i++)
+            {
+                foreach (var id in monitoringPostMeasuredParameter)
+                {
+                    if (measuredParameters[i].Id == id.MeasuredParameterId)
+                    {
+                        var item = new MonitoringPostMeasuredParameters
+                        {
+                            Id = measuredParameters[i].Id,
+                            MonitoringPostId = id.MonitoringPostId,
+                            MeasuredParameterId =  id.MeasuredParameterId,
+                            MeasuredParameterNameRU = measuredParameters[i].NameRU,
+                            MeasuredParameterNameKK = measuredParameters[i].NameKK,
+                            MeasuredParameterNameEN = measuredParameters[i].NameEN,
+                            Min = id.Min,
+                            Max = id.Max,
+                            Sensor = true
+                        };
+                        monitoringPostMeasuredParameterWithNull.Add(item);
+                        check = true;
+                    }
+                }
+                if (!check)
+                {
+                    var item = new MonitoringPostMeasuredParameters
+                    {
+                        Id = measuredParameters[i].Id,
+                        MonitoringPostId = -1,
+                        MeasuredParameterId = -1,
+                        MeasuredParameterNameRU = measuredParameters[i].NameRU,
+                        MeasuredParameterNameKK = measuredParameters[i].NameKK,
+                        MeasuredParameterNameEN = measuredParameters[i].NameEN,
+                        Min = null,
+                        Max = null,
+                        Sensor = false
+                    };
+                    monitoringPostMeasuredParameterWithNull.Add(item);
+                }
+                check = false;
+            }
+            return monitoringPostMeasuredParameterWithNull;
         }
     }
 }

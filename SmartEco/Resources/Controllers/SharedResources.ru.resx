@@ -375,4 +375,13 @@
   <data name="Time" xml:space="preserve">
     <value>Время</value>
   </data>
+  <data name="Maximum" xml:space="preserve">
+    <value>Максимум</value>
+  </data>
+  <data name="Minimum" xml:space="preserve">
+    <value>Минимум</value>
+  </data>
+  <data name="Sensors" xml:space="preserve">
+    <value>Датчики</value>
+  </data>
 </root>
