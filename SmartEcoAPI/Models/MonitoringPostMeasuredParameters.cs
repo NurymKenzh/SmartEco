@@ -10,9 +10,11 @@ namespace SmartEcoAPI.Models
     {
         public int Id { get; set; }
         public int MonitoringPostId { get; set; }
+        public MonitoringPost MonitoringPost { get; set; }
         [NotMapped]
         public bool Sensor { get; set; }
         public int MeasuredParameterId { get; set; }
+        public MeasuredParameter MeasuredParameter { get; set; }
         [NotMapped]
         public string MeasuredParameterNameRU { get; set; }
         [NotMapped]

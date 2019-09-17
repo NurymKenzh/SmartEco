@@ -619,7 +619,12 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParameters(int MonitoringPostId)
         {
-            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).OrderBy(m => m.MonitoringPostId).ToList();
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters
+                .Where(m => m.MonitoringPostId == MonitoringPostId)
+                .Include(m => m.MeasuredParameter)
+                .Include(m => m.MonitoringPost)
+                .OrderBy(m => m.MonitoringPostId)
+                .ToList();
             List<MeasuredParameter> measuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).ToList();
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameterWithNull = new List<MonitoringPostMeasuredParameters>();
             bool check = false;
@@ -634,6 +639,7 @@ namespace SmartEcoAPI.Controllers
                             Id = measuredParameters[i].Id,
                             MonitoringPostId = id.MonitoringPostId,
                             MeasuredParameterId =  id.MeasuredParameterId,
+                            MeasuredParameter = measuredParameters[i],
                             MeasuredParameterNameRU = measuredParameters[i].NameRU,
                             MeasuredParameterNameKK = measuredParameters[i].NameKK,
                             MeasuredParameterNameEN = measuredParameters[i].NameEN,
@@ -651,7 +657,10 @@ namespace SmartEcoAPI.Controllers
                     {
                         Id = measuredParameters[i].Id,
                         MonitoringPostId = -1,
-                        MeasuredParameterId = -1,
+                        //MeasuredParameterId = -1,
+                        MeasuredParameterId = measuredParameters[i].Id,
+                        MeasuredParameter = measuredParameters[i],
+
                         MeasuredParameterNameRU = measuredParameters[i].NameRU,
                         MeasuredParameterNameKK = measuredParameters[i].NameKK,
                         MeasuredParameterNameEN = measuredParameters[i].NameEN,

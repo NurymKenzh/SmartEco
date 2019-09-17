@@ -16,7 +16,7 @@ namespace SmartEcoAPI.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
-                .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
+                .HasAnnotation("ProductVersion", "2.2.6-servicing-10079")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
@@ -276,6 +276,10 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasKey("Id");
 
+                    b.HasIndex("MeasuredParameterId");
+
+                    b.HasIndex("MonitoringPostId");
+
                     b.ToTable("MonitoringPostMeasuredParameters");
                 });
 
@@ -406,6 +410,19 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.PollutionEnvironment", "PollutionEnvironment")
                         .WithMany()
                         .HasForeignKey("PollutionEnvironmentId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("SmartEcoAPI.Models.MonitoringPostMeasuredParameters", b =>
+                {
+                    b.HasOne("SmartEcoAPI.Models.MeasuredParameter", "MeasuredParameter")
+                        .WithMany()
+                        .HasForeignKey("MeasuredParameterId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("SmartEcoAPI.Models.MonitoringPost", "MonitoringPost")
+                        .WithMany()
+                        .HasForeignKey("MonitoringPostId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

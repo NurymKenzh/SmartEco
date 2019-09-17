@@ -89,7 +89,7 @@
                                 <input type="checkbox" name="Sensors" class="form-control" value="@item.Id" checked=@item.Sensor>
                             </td>
                             <td>
-                                @item.MeasuredParameterName
+                                @item.MeasuredParameter?.Name
                             </td>
                             <td>
                                 <input type="text" name="Minimum" value=@item.Min class="form-control">
