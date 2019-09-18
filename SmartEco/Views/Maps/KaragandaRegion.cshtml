@@ -1086,7 +1086,7 @@
     var exceedPosts = [];
     function GetExceedPosts() {
         function getExceedPosts() {
-            $.ajax({
+            @*$.ajax({
                 url: '@Url.Action("GetMPCExceedEcoservicePosts", "MonitoringPosts")',
                 type: 'POST',
                 success: function (data) {
@@ -1094,7 +1094,7 @@
                 },
                 error: function () {
                 }
-            })
+            })*@
         }
         getExceedPosts();
         window.setInterval(function () {
