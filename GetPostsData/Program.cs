@@ -40,7 +40,7 @@ namespace GetPostsData
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("Copy data from posts to database and average every 10 seconds!");
+            Console.WriteLine("Copy data from posts to database and average every 30 seconds!");
             while (true)
             {
                 List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
@@ -92,7 +92,8 @@ namespace GetPostsData
                                         }
                                         measuredDatas.Add(new MeasuredData()
                                         {
-                                            DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                            //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                            DateTime = postData.DateTimeServer,
                                             MeasuredParameterId = (int)MeasuredParameterId,
                                             MonitoringPostId = (int)MonitoringPostId,
                                             Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0])
@@ -294,8 +295,8 @@ namespace GetPostsData
                         connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = null WHERE \"Averaged\" = false;");
                     }
                 }
-
-                Thread.Sleep(10000);
+                Console.WriteLine("Finished!");
+                Thread.Sleep(30000);
             }
         }
     }
