@@ -103,6 +103,7 @@
     <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirPosts"]" />
     <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
     <input id="ShowHideRightPanelText" type="text" value="@SharedLocalizer["ShowHideRightPanelText"]" />
+    <input id="MonitoringPostMeasuredParameters2" type="text" value="@ViewBag.MonitoringPostMeasuredParameters2" />
 </div>
 
 <div id="fullscreen" class="fullscreen">
@@ -269,7 +270,7 @@
                 </table>
             </div>
             <div id="divEcoserviceAirPostChart" class="dialog-info-tab-div">
-                @Html.DropDownList("ChartMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMeasuredParameterId", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.DropDownList("ChartMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MonitoringPostMeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMeasuredParameterId", @onchange = "ChartGetMeasuredDatas()" })
                 @Html.TextBox("ChartTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "ChartTimeFrom", @onchange = "ChartGetMeasuredDatas()" })
                 @Html.TextBox("ChartDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "ChartDateFrom", @onchange = "ChartGetMeasuredDatas()" })
                 -
@@ -285,7 +286,7 @@
                 <canvas id="chartMeasuredDatas"></canvas>
             </div>
             <div id="divEcoserviceAirPostTable" class="dialog-info-tab-div">
-                @Html.DropDownList("TableMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "TableMeasuredParameterId", @onchange = "TableGetMeasuredDatas()" })
+                @Html.DropDownList("TableMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MonitoringPostMeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "TableMeasuredParameterId", @onchange = "TableGetMeasuredDatas()" })
                 @Html.TextBox("TableTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "TableTimeFrom", @onchange = "TableGetMeasuredDatas()" })
                 @Html.TextBox("TableDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "TableDateFrom", @onchange = "TableGetMeasuredDatas()" })
                 -
@@ -863,6 +864,7 @@
                     width: 750,
                     maxHeight: window.innerHeight
                 });
+                GetMeasuredParameters();
                 ChartGetMeasuredDatas();
                 TableGetMeasuredDatas();
             }
@@ -888,6 +890,32 @@
 
 @* ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
 <script>
+    function GetMeasuredParameters() {
+        $.ajax({
+            url: '@Url.Action("GetMeasuredParameters", "Maps")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    var text = "";
+                    optionhtml += '<option value="' + data[i].measuredParameter.id + '"' +
+                        '>' + data[i].measuredParameter.name +
+                        '</option>';
+                });
+                $('#TableMeasuredParameterId').empty();
+                $('#TableMeasuredParameterId').append(optionhtml);
+                $('#ChartMeasuredParameterId').empty();
+                $('#ChartMeasuredParameterId').append(optionhtml);
+            },
+            error: function () {
+                //
+            }
+        })
+    };
+
     function ChartGetMeasuredDatas() {
         $("#chartMeasuredDatas").LoadingOverlay("show");
         $.ajax({
@@ -1157,6 +1185,7 @@
                 width: 750,
                 maxHeight: window.innerHeight
             });
+            GetMeasuredParameters();
             ChartGetMeasuredDatas();
             TableGetMeasuredDatas();
         }

@@ -234,7 +234,8 @@ namespace SmartEco.Controllers
                 ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
             }
             ViewBag.GeoServerPort = Startup.Configuration["GeoServerPort"].ToString();
-            ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            //ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.MonitoringPostMeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
             ViewBag.Pollutants = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode) && m.MPC != null).OrderBy(m => m.Name), "Id", "Name");
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
             ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
@@ -619,6 +620,25 @@ namespace SmartEco.Controllers
             {
                 count
             });
+        }
+
+        public async Task<IActionResult> GetMeasuredParameters(int MonitoringPostId)
+        {
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();
+            string urlMonitoringPostMeasuredParameters = "api/MonitoringPosts/getMonitoringPostMeasuredParametersForMap";
+            string routeMonitoringPostMeasuredParameters = "";
+            routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
+            routeMonitoringPostMeasuredParameters += $"MonitoringPostId={MonitoringPostId.ToString()}";
+            HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(urlMonitoringPostMeasuredParameters + routeMonitoringPostMeasuredParameters, null);
+            if (responseMPMP.IsSuccessStatusCode)
+            {
+                monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
+            }
+            var result = monitoringPostMeasuredParameters.OrderBy(m => m.MeasuredParameter.Name);
+
+            return Json(
+                result
+            );
         }
     }
 }

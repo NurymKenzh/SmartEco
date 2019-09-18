@@ -663,5 +663,19 @@ namespace SmartEcoAPI.Controllers
             }
             return monitoringPostMeasuredParameterWithNull;
         }
+
+        // GET: api/MonitoringPosts/GetMonitoringPostMeasuredParameterForMap
+        [HttpPost("getMonitoringPostMeasuredParametersForMap")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParametersForMap(int MonitoringPostId)
+        {
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters
+                .Where(m => m.MonitoringPostId == MonitoringPostId)
+                .Include(m => m.MeasuredParameter)
+                .Include(m => m.MonitoringPost)
+                .OrderBy(m => m.MonitoringPostId)
+                .ToList();
+            return monitoringPostMeasuredParameter;
+        }
     }
 }
