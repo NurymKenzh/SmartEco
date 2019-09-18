@@ -405,7 +405,7 @@ namespace SmartEco.Controllers
             {
                 measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
             }
-            ViewBag.MeasuredParameters = measuredParameters;
+            ViewBag.MeasuredParameters = measuredParameters.Where(m => m.OceanusCode != null);
 
             return View();
         }
@@ -592,7 +592,7 @@ namespace SmartEco.Controllers
             {
                 measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
             }
-            ViewBag.MeasuredParameters = measuredParameters;
+            ViewBag.MeasuredParameters = measuredParameters.Where(m => m.OceanusCode != null);
 
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();
             string urlMonitoringPostMeasuredParameters = "api/MonitoringPosts/getMonitoringPostMeasuredParameters";

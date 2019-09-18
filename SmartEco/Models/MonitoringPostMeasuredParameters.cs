@@ -14,27 +14,7 @@ namespace SmartEco.Models
         public bool Sensor { get; set; }
         public int MeasuredParameterId { get; set; }
         public MeasuredParameter MeasuredParameter { get; set; }
-        public string MeasuredParameterNameRU { get; set; }
-        public string MeasuredParameterNameKK { get; set; }
-        public string MeasuredParameterNameEN { get; set; }
         public decimal? Min { get; set; }
         public decimal? Max { get; set; }
-        public string MeasuredParameterName
-        {
-            get
-            {
-                string language = new RequestLocalizationOptions().DefaultRequestCulture.Culture.Name,
-                    name = MeasuredParameterNameRU;
-                if (language == "kk")
-                {
-                    name = MeasuredParameterNameKK;
-                }
-                if (language == "en")
-                {
-                    name = MeasuredParameterNameEN;
-                }
-                return name;
-            }
-        }
     }
 }

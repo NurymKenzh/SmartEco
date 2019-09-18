@@ -512,7 +512,7 @@ namespace SmartEcoAPI.Controllers
             [FromQuery(Name = "Min")] List<string> Min,
             [FromQuery(Name = "Max")] List<string> Max)
         {
-            List<int> idMeasuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).Select(m => m.Id).ToList();
+            List<int> idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.Id).Select(m => m.Id).ToList();
             List<int> idMonitoringPostMeasuredParametersId = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).OrderBy(m => m.MeasuredParameterId).Select(m => m.MeasuredParameterId).ToList();
             for (int i = 0; i < idMeasuredParameters.Count; i++)
             {
@@ -567,28 +567,25 @@ namespace SmartEcoAPI.Controllers
                     }
                 }
             }
-            if (MeasuredParametersId.Count < idMonitoringPostMeasuredParametersId.Count)
+            bool check = false;
+            foreach (var idAll in idMonitoringPostMeasuredParametersId)
             {
-                bool check = false;
-                foreach (var idAll in idMonitoringPostMeasuredParametersId)
+                foreach (var id in MeasuredParametersId)
                 {
-                    foreach (var id in MeasuredParametersId)
+                    if (idAll == id)
                     {
-                        if (idAll == id)
-                        {
-                            check = true;
-                            break;
-                        }
-                        else
-                        {
-                            check = false;
-                        }
+                        check = true;
+                        break;
                     }
-                    if (!check)
+                    else
                     {
-                        var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == idAll && m.MonitoringPostId == MonitoringPostId).First();
-                        DeleteMonitoringPostMeasuredParameter(monitoringPostMeasuredParameters);
+                        check = false;
                     }
+                }
+                if (!check)
+                {
+                    var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == idAll && m.MonitoringPostId == MonitoringPostId).First();
+                    DeleteMonitoringPostMeasuredParameter(monitoringPostMeasuredParameters);
                 }
             }
         }
@@ -625,7 +622,7 @@ namespace SmartEcoAPI.Controllers
                 .Include(m => m.MonitoringPost)
                 .OrderBy(m => m.MonitoringPostId)
                 .ToList();
-            List<MeasuredParameter> measuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).ToList();
+            List<MeasuredParameter> measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.Id).ToList();
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameterWithNull = new List<MonitoringPostMeasuredParameters>();
             bool check = false;
             for (int i = 0; i < measuredParameters.Count; i++)
@@ -640,9 +637,6 @@ namespace SmartEcoAPI.Controllers
                             MonitoringPostId = id.MonitoringPostId,
                             MeasuredParameterId =  id.MeasuredParameterId,
                             MeasuredParameter = measuredParameters[i],
-                            MeasuredParameterNameRU = measuredParameters[i].NameRU,
-                            MeasuredParameterNameKK = measuredParameters[i].NameKK,
-                            MeasuredParameterNameEN = measuredParameters[i].NameEN,
                             Min = id.Min,
                             Max = id.Max,
                             Sensor = true
@@ -657,13 +651,8 @@ namespace SmartEcoAPI.Controllers
                     {
                         Id = measuredParameters[i].Id,
                         MonitoringPostId = -1,
-                        //MeasuredParameterId = -1,
                         MeasuredParameterId = measuredParameters[i].Id,
                         MeasuredParameter = measuredParameters[i],
-
-                        MeasuredParameterNameRU = measuredParameters[i].NameRU,
-                        MeasuredParameterNameKK = measuredParameters[i].NameKK,
-                        MeasuredParameterNameEN = measuredParameters[i].NameEN,
                         Min = null,
                         Max = null,
                         Sensor = false
