@@ -640,5 +640,30 @@ namespace SmartEco.Controllers
                 result
             );
         }
+
+        public async Task<IActionResult> GetMinMax(
+            int MonitoringPostId,
+            int MeasuredParameterId)
+        {
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();
+            string urlMonitoringPostMeasuredParameters = "api/MonitoringPosts/getMonitoringPostMeasuredParametersForMap";
+            string routeMonitoringPostMeasuredParameters = "";
+            routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
+            routeMonitoringPostMeasuredParameters += $"MonitoringPostId={MonitoringPostId.ToString()}";
+            HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(urlMonitoringPostMeasuredParameters + routeMonitoringPostMeasuredParameters, null);
+            if (responseMPMP.IsSuccessStatusCode)
+            {
+                monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
+            }
+            var min = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Min;
+            var max = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Max;
+
+            return Json(new
+            {
+                min,
+                max
+            }
+            );
+        }
     }
 }
