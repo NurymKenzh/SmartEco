@@ -40,7 +40,7 @@ namespace GetPostsData
         }
         static void Main(string[] args)
         {
-            Console.WriteLine("Copy data from posts to database and average every 30 seconds!");
+            NewLog("Program started!");
             while (true)
             {
                 List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
@@ -63,12 +63,15 @@ namespace GetPostsData
 
                 // Copy data
                 // Get Data from PostsData
+                NewLog("Get. Get Data from PostsData started");
                 List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                int postDatasCount = 0;
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                 {
                     connection.Open();
                     connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;");
                     var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;");
+                    postDatasCount = postDatas.Count();
                     try
                     {
                         foreach (PostData postData in postDatas)
@@ -113,7 +116,9 @@ namespace GetPostsData
                         
                     }
                 }
-
+                NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                    $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
+                NewLog($"Get. Insert data to MeasuredDatas started");
                 // Insert MeasuredDatas into SmartEcoAPI
                 try
                 {
@@ -150,10 +155,11 @@ namespace GetPostsData
                         connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;");
                     }
                 }
-
+                NewLog($"Get. Insert data to MeasuredDatas finished");
                 //=================================================================================================================================================================
                 // Average data
                 // Get Data from PostsData
+                NewLog($"Average. Get Data from PostsData started");
                 measuredDatas = new List<MeasuredData>();
                 List<MeasuredData> measuredDatasAveraged = new List<MeasuredData>();
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
@@ -161,6 +167,7 @@ namespace GetPostsData
                     connection.Open();
                     connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = false WHERE \"Averaged\" is null;");
                     var postDatas = connection.Query<PostData>("SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Averaged\" FROM public.\"Data\" WHERE \"Averaged\" = false;");
+                    postDatasCount = postDatas.Count();
                     try
                     {
                         foreach (PostData postData in postDatas)
@@ -209,7 +216,9 @@ namespace GetPostsData
 
                     }
                 }
-
+                NewLog($"Average. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                    $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
+                NewLog($"Average. Average data started");
                 // Average data
                 List<long> averagedPostsDatas = new List<long>();
                 if(measuredDatas.Count()>0)
@@ -254,7 +263,9 @@ namespace GetPostsData
                     }
                 }
                 averagedPostsDatas = averagedPostsDatas.Distinct().ToList();
-
+                NewLog($"Average. Average data finished. Average data count: {measuredDatasAveraged.Count().ToString()}. " +
+                    $"From {measuredDatasAveraged.Min(m => m.DateTime).ToString()} to {measuredDatasAveraged.Max(m => m.DateTime).ToString()}.");
+                NewLog($"Average. Insert data to MeasuredDatas started");
                 // Insert measuredDatasAveraged into SmartEcoAPI
                 try
                 {
@@ -296,8 +307,32 @@ namespace GetPostsData
                         connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = null WHERE \"Averaged\" = false;");
                     }
                 }
-                Console.WriteLine("Finished!");
+                NewLog($"Average. Insert data to MeasuredDatas finished");
                 Thread.Sleep(30000);
+            }
+        }
+
+        public static void NewLog(string Log)
+        {
+            Console.WriteLine($"{DateTime.Now.ToString()} >> {Log}{Environment.NewLine}");
+            using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+            {
+                connection.Open();
+                DateTime now = DateTime.Now;
+                string execute = $"INSERT INTO public.\"Log\"(" +
+                    $"\"Log\"," +
+                    $"\"DateTime\") " +
+                    $"VALUES ('{Log}'," +
+                    $"make_timestamptz(" +
+                        $"{now.Year.ToString()}, " +
+                        $"{now.Month.ToString()}, " +
+                        $"{now.Day.ToString()}, " +
+                        $"{now.Hour.ToString()}, " +
+                        $"{now.Minute.ToString()}, " +
+                        $"{now.Second.ToString()})" +
+                    $");";
+                connection.Execute(execute);
+                connection.Close();
             }
         }
     }
