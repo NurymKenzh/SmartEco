@@ -185,7 +185,8 @@ namespace GetPostsData
                                         measuredDatas.Add(new MeasuredData()
                                         {
                                             Id = postData.Id,
-                                            DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                            //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                            DateTime = postData.DateTimeServer,
                                             MeasuredParameterId = (int)MeasuredParameterId,
                                             MonitoringPostId = (int)MonitoringPostId,
                                             Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0])
