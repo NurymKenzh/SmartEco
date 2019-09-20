@@ -890,6 +890,31 @@
 
 @* ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
 <script>
+    function ChartGetMinMax(data) {
+        $.ajax({
+            url: '@Url.Action("GetMinMax", "Maps")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#ChartMeasuredParameterId').val()
+            },
+            type: 'POST',
+            success: function (dataMinMax) {
+                var min = -9999999;
+                var max = 9999999;
+                if (dataMinMax.min != null) {
+                    min = parseFloat(dataMinMax.min);
+                }
+                if (dataMinMax.max != null) {
+                    max = parseFloat(dataMinMax.max);
+                }
+                ChangeChart(data, min, max);
+            },
+            error: function () {
+                ChangeChart(data, -9999999, 9999999);
+            }
+        })
+    }
+
     function GetMeasuredParameters() {
         $.ajax({
             url: '@Url.Action("GetMeasuredParameters", "Maps")',
@@ -931,7 +956,7 @@
             },
             type: 'POST',
             success: function (data) {
-                ChangeChart(data);
+                ChartGetMinMax(data);
             },
             error: function () {
                 $("#chartMeasuredDatas").LoadingOverlay("hide");
@@ -940,7 +965,7 @@
     };
 
     var ChartMeasuredDatas = null;
-    function ChangeChart(data) {
+    function ChangeChart(data, min, max) {
         if (ChartMeasuredDatas != null) {
             ChartMeasuredDatas.destroy();
         }
@@ -948,14 +973,16 @@
         var data1 = [],
             data2 = [];
         for (var i = 0; i < data.measureddatas.length; i++) {
-            data1.push({
-                'x': moment(data.measureddatas[i].dateTime),
-                'y': parseFloat(data.measureddatas[i].value).toFixed(2)
-            });
-            data2.push({
-                'x': moment(data.measureddatas[i].dateTime),
-                'y': parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2)
-            });
+            if (parseFloat(data.measureddatas[i].value) > min && parseFloat(data.measureddatas[i].value) < max ) {
+                data1.push({
+                    'x': moment(data.measureddatas[i].dateTime),
+                    'y': parseFloat(data.measureddatas[i].value).toFixed(2)
+                });
+                data2.push({
+                    'x': moment(data.measureddatas[i].dateTime),
+                    'y': parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2)
+                });
+            }
         }
         var datasets = [];
         datasets.push({

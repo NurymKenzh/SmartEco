@@ -601,7 +601,7 @@ namespace SmartEcoAPI.Controllers
             monitoringPostMeasuredParameters.MeasuredParameterId = MeasuredParameterId;
             monitoringPostMeasuredParameters.Min = Min;
             monitoringPostMeasuredParameters.Max = Max;
-            _context.SaveChangesAsync();
+            _context.SaveChanges();
         }
 
         public void DeleteMonitoringPostMeasuredParameter(
