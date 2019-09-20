@@ -82,6 +82,10 @@ namespace LayersCreator
                         {
                             if (!LayerExists(layer))
                             {
+                                if (dateTime >= new DateTime(2019, 9, 20, 21, 0, 0))
+                                {
+
+                                }
                                 // create layer
                                 List<MeasuredData> measuredDatas = new List<MeasuredData>();
                                 using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
@@ -92,7 +96,7 @@ namespace LayersCreator
                                         $" FROM public.\"MeasuredData\"" +
                                         $" WHERE \"MeasuredParameterId\" = {measuredParameter.Id}" +
                                         $" AND \"Averaged\" = true" +
-                                        $" AND \"DateTime\" = '{dateTime.ToString("yyyy-MM-dd hh:mm:ss")}'");
+                                        $" AND \"DateTime\" = '{dateTime.ToString("yyyy-MM-dd HH:mm:ss")}'");
                                     measuredDatas = measuredDatasv.ToList();
                                 }
 
