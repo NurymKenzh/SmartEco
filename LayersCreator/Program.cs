@@ -335,7 +335,7 @@ namespace LayersCreator
                         }
                     }
                 }
-                Thread.Sleep(10000);
+                Thread.Sleep(60000);
             }
         }
 
