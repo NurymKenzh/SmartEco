@@ -18,7 +18,8 @@ namespace LayersCreator
             GSPort = "8080",
             GSUser = "admin",
             GSPassword = "geoserver",
-            GSDataDir = "E:\\Documents\\Google Drive\\Geoserver\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
+            //GSDataDir = "E:\\Documents\\Google Drive\\Geoserver\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
+            GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
             CurlFullPath = "C:\\Windows\\curl.exe",
             LayerNameTemplate = "KaragandaRegionPollutantSpread";
         const decimal MaxDistance = 0.25M;
@@ -51,25 +52,25 @@ namespace LayersCreator
 
         static void Main(string[] args)
         {
-            // Get MeasuredParameters, MonitoringPosts
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
-            using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-            {
-                connection.Open();
-                var measuredParametersv = connection.Query<MeasuredParameter>(
-                    $"SELECT \"Id\", \"OceanusCode\", \"MPC\"" +
-                    $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null and \"MPC\" is not null;");
-                measuredParameters = measuredParametersv.ToList();
-
-                var monitoringPostsv = connection.Query<MonitoringPost>(
-                        $"SELECT \"Id\", \"NorthLatitude\", \"EastLongitude\", \"MN\"" +
-                        $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
-                monitoringPosts = monitoringPostsv.ToList();
-            }
-
             while (true)
             {
+                // Get MeasuredParameters, MonitoringPosts
+                List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+                List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+                using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                {
+                    connection.Open();
+                    var measuredParametersv = connection.Query<MeasuredParameter>(
+                        $"SELECT \"Id\", \"OceanusCode\", \"MPC\"" +
+                        $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null and \"MPC\" is not null;");
+                    measuredParameters = measuredParametersv.ToList();
+
+                    var monitoringPostsv = connection.Query<MonitoringPost>(
+                            $"SELECT \"Id\", \"NorthLatitude\", \"EastLongitude\", \"MN\"" +
+                            $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
+                    monitoringPosts = monitoringPostsv.ToList();
+                }
+
                 //List<DateTime> times20 = new List<DateTime>();
                 for (DateTime dateTime = DateTime.Today; dateTime <= DateTime.Now; dateTime = dateTime.AddMinutes(20))
                 {
@@ -221,6 +222,12 @@ namespace LayersCreator
                                         startInfoSHP.WorkingDirectory = @"CSVTIFF";
                                         startInfoSHP.Arguments = "/c ogr2ogr SHP.shp CSV.vrt";
                                         processSHP.StartInfo = startInfoSHP;
+
+                                        processSHP.StartInfo.UseShellExecute = false;
+                                        processSHP.StartInfo.RedirectStandardOutput = false;
+                                        processSHP.StartInfo.RedirectStandardError = false;
+                                        processSHP.StartInfo.CreateNoWindow = true;
+
                                         processSHP.Start();
                                         processSHP.WaitForExit();
                                         // create tiff
@@ -230,6 +237,12 @@ namespace LayersCreator
                                         startInfoTIFF.WorkingDirectory = @"CSVTIFF";
                                         startInfoTIFF.Arguments = $"/c python invdistgis.py -zfield value SHP.shp {layerName}.tiff";
                                         processTIFF.StartInfo = startInfoTIFF;
+
+                                        processTIFF.StartInfo.UseShellExecute = false;
+                                        processTIFF.StartInfo.RedirectStandardOutput = false;
+                                        processTIFF.StartInfo.RedirectStandardError = false;
+                                        processTIFF.StartInfo.CreateNoWindow = true;
+
                                         processTIFF.Start();
                                         processTIFF.WaitForExit();
                                         // delete csv, shp
@@ -242,7 +255,7 @@ namespace LayersCreator
                                         // copy tiff to GeoServer
                                         File.Move($"CSVTIFF/{layerName}.tiff", $"{GSDataDir}/{layerName}.tiff");
                                         // publish layer
-                                        Process processGS1 = CurlExecuteFalse($" -v -u " +
+                                        Process processGS1 = CurlExecuteFalse($" -u " +
                                             $"{GSUser}:" +
                                             $"{GSPassword}" +
                                             $" -POST -H" +
@@ -253,7 +266,7 @@ namespace LayersCreator
                                             $"{GSPort}/geoserver/rest/workspaces/{GSWorkspace}/coveragestores?configure=all");
                                         processGS1.WaitForExit();
 
-                                        Process processGS2 = CurlExecuteFalse($" -v -u " +
+                                        Process processGS2 = CurlExecuteFalse($" -u " +
                                             $"{GSUser}:" +
                                             $"{GSPassword}" +
                                             $" -PUT -H" +
@@ -262,10 +275,10 @@ namespace LayersCreator
                                             $"<defaultInterpolationMethod><name>nearest neighbor</name></defaultInterpolationMethod></coverage>\"" +
                                             $" http://{GSAddress}:" +
                                             $"{GSPort}/geoserver/rest/workspaces/{GSWorkspace}/coveragestores/{layerName}/coverages?recalculate=nativebbox");
-                                        processGS2.Start();
+                                        //processGS2.Start();
                                         processGS2.WaitForExit();
 
-                                        Process processGS3 = CurlExecuteFalse($" -v -u " +
+                                        Process processGS3 = CurlExecuteFalse($" -u " +
                                             $"{GSUser}:" +
                                             $"{GSPassword}" +
                                             $" -X PUT -H" +
@@ -273,12 +286,13 @@ namespace LayersCreator
                                             $" -d \"<layer><defaultStyle><name>{GSWorkspace}:{GSStyle}</name></defaultStyle></layer>\"" +
                                             $" http://{GSAddress}:" +
                                             $"{GSPort}/geoserver/rest/layers/{GSWorkspace}:{layerName}");
-                                        processGS3.Start();
+                                        //processGS3.Start();
                                         processGS3.WaitForExit();
                                         // Add log
                                         DateTime dateTimeServer = DateTime.Now,
                                             dateTimeLayer = dateTime;
                                         int group = layersCount;
+                                        Console.WriteLine($"{DateTime.Now.ToString()} >> Layer {layerName}.tiff was published! {Environment.NewLine}");
                                         using (var connection = new NpgsqlConnection("Host=localhost;Database=Layers;Username=postgres;Password=postgres"))
                                         {
                                             connection.Open();
@@ -354,7 +368,10 @@ namespace LayersCreator
                 process.StartInfo.RedirectStandardError = false;
                 process.StartInfo.FileName = CurlFullPath;
                 process.StartInfo.Arguments = Arguments;
+                process.StartInfo.CreateNoWindow = true;
+                //process.OutputDataReceived += (s, e) => Test(e.Data);
                 process.Start();
+                //process.BeginOutputReadLine();
             }
             catch (Exception exception)
             {
@@ -363,24 +380,30 @@ namespace LayersCreator
             return process;
         }
 
+        public static void Test(string input)
+        {
+            //input.Dump();
+        }
+
         public static bool LayerExists(string Layer)
         {
             try
             {
-                Process process = CurlExecute($" -u " +
-                    $"{GSUser}:" +
-                    $"{GSPassword}" +
-                    $" -XGET" +
-                    $" http://{GSAddress}:" +
-                    $"{GSPort}/geoserver/rest/layers/{GSWorkspace}:{Layer}.json");
-                string json = process.StandardOutput.ReadToEnd();
-                process.WaitForExit();
+                //Process process = CurlExecute($" -u " +
+                //    $"{GSUser}:" +
+                //    $"{GSPassword}" +
+                //    $" -XGET" +
+                //    $" http://{GSAddress}:" +
+                //    $"{GSPort}/geoserver/rest/layers/{GSWorkspace}:{Layer}.json");
+                //string json = process.StandardOutput.ReadToEnd();
+                //process.WaitForExit();
 
-                if(json.Contains("No such layer"))
-                {
-                    return false;
-                }
-                return true;
+                //if(json.Contains("No such layer"))
+                //{
+                //    return false;
+                //}
+                //return true;
+                return File.Exists(Path.Combine(GSDataDir, Path.ChangeExtension(Layer, ".tiff")));
             }
             catch (Exception exception)
             {
