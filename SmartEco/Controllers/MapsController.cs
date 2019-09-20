@@ -587,13 +587,13 @@ namespace SmartEco.Controllers
         {
             string GSUser = Startup.Configuration["GeoServerUser"].ToString(),
                 GSPassword = Startup.Configuration["GeoServerPassword"].ToString(),
-                GSAddress = Startup.Configuration["GeoServerAddressServer"].ToString(),
+                GSAddress = Startup.Configuration["GeoServerAddressDebug"].ToString(),
                 GSPort = Startup.Configuration["GeoServerPort"].ToString(),
                 GSWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
-            if (!Convert.ToBoolean(Startup.Configuration["Server"]))
-            {
-                GSAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
-            }
+            //if (!Convert.ToBoolean(Startup.Configuration["Server"]))
+            //{
+            //    GSAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
+            //}
             int count = 0;
             while (true)
             {
