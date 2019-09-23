@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -474,6 +475,9 @@ namespace SmartEco.Controllers
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"MonitoringPostId={id.ToString()}";
 
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
+
                     foreach (var sensor in Sensors)
                     {
                         route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -675,6 +679,9 @@ namespace SmartEco.Controllers
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"MonitoringPostId={id.ToString()}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
 
                     foreach (var sensor in Sensors)
                     {

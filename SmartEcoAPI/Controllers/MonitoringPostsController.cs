@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -454,11 +455,24 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator")]
         public void PostMonitoringPostMeasuredParameter(
             int MonitoringPostId,
+            string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
             [FromQuery(Name = "Max")] List<string> Max)
         {
-            List<int> idMeasuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).Select(m => m.Id).ToList();
+            List<int> idMeasuredParameters = new List<int>();
+            if (CultureName == "ru")
+            {
+                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+            }
+            else if (CultureName == "kk")
+            {
+                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+            }
+            else
+            {
+                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+            }
             for (int i = 0; i < idMeasuredParameters.Count; i++)
             {
                 foreach (var id in MeasuredParametersId)
@@ -508,11 +522,24 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator")]
         public void EditMonitoringPostMeasuredParameter(
             int MonitoringPostId,
+            string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
             [FromQuery(Name = "Max")] List<string> Max)
         {
-            List<int> idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.Id).Select(m => m.Id).ToList();
+            List<int> idMeasuredParameters = new List<int>();
+            if (CultureName == "ru")
+            {
+                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+            }
+            else if (CultureName == "kk")
+            {
+                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+            }
+            else
+            {
+                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+            }
             List<int> idMonitoringPostMeasuredParametersId = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).OrderBy(m => m.MeasuredParameterId).Select(m => m.MeasuredParameterId).ToList();
             for (int i = 0; i < idMeasuredParameters.Count; i++)
             {

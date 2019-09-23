@@ -899,8 +899,8 @@
             },
             type: 'POST',
             success: function (dataMinMax) {
-                var min = -9999999;
-                var max = 9999999;
+                var min = null;
+                var max = null;
                 if (dataMinMax.min != null) {
                     min = parseFloat(dataMinMax.min);
                 }
@@ -910,7 +910,7 @@
                 ChangeChart(data, min, max);
             },
             error: function () {
-                ChangeChart(data, -9999999, 9999999);
+                ChangeChart(data, null, null);
             }
         })
     }
@@ -971,18 +971,28 @@
         }
         var ctx1 = document.getElementById("chartMeasuredDatas").getContext('2d');
         var data1 = [],
-            data2 = [];
+            data2 = [],
+            values = [];
         for (var i = 0; i < data.measureddatas.length; i++) {
-            if (parseFloat(data.measureddatas[i].value) > min && parseFloat(data.measureddatas[i].value) < max ) {
-                data1.push({
-                    'x': moment(data.measureddatas[i].dateTime),
-                    'y': parseFloat(data.measureddatas[i].value).toFixed(2)
-                });
-                data2.push({
-                    'x': moment(data.measureddatas[i].dateTime),
-                    'y': parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2)
-                });
-            }
+            values.push(parseFloat(data.measureddatas[i].value).toFixed(2));
+        }
+        if (min == null) {
+            min = Math.floor(Math.min.apply(null, values));
+        }
+        if (max == null) {
+            max = Math.ceil(Math.max.apply(null, values));
+        }
+        console.log(min);
+        console.log(max);
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            data1.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.measureddatas[i].value).toFixed(2)
+            });
+            data2.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2)
+            });
         }
         var datasets = [];
         datasets.push({
@@ -1047,6 +1057,10 @@
                         scaleLabel: {
                             display: true,
                             labelString: $("#Value").val()
+                        },
+                        ticks: {
+                            min: min,
+                            max: max
                         }
                     }]
                 }
