@@ -22,6 +22,9 @@
     <None Update="CSVTIFF\CSV.vrt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>
+    <None Update="CSVTIFF\hull.py">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="CSVTIFF\invdistgis.py">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

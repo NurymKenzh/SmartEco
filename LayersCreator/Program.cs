@@ -18,8 +18,8 @@ namespace LayersCreator
             GSPort = "8080",
             GSUser = "admin",
             GSPassword = "geoserver",
-            //GSDataDir = "E:\\Documents\\Google Drive\\Geoserver\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
-            GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
+            GSDataDir = "E:\\Documents\\Google Drive\\Geoserver\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
+            //GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
             CurlFullPath = "C:\\Windows\\curl.exe",
             LayerNameTemplate = "KaragandaRegionPollutantSpread";
         const decimal MaxDistance = 0.25M;
@@ -249,6 +249,36 @@ namespace LayersCreator
 
                                         processTIFF.Start();
                                         processTIFF.WaitForExit();
+                                        //// create hull
+                                        //Process processHULL = new Process();
+                                        //ProcessStartInfo startInfoHULL = new ProcessStartInfo();
+                                        //startInfoHULL.FileName = "cmd.exe";
+                                        //startInfoHULL.WorkingDirectory = @"CSVTIFF";
+                                        //startInfoHULL.Arguments = $"/c python hull.py";
+                                        //processHULL.StartInfo = startInfoHULL;
+
+                                        //processHULL.StartInfo.UseShellExecute = false;
+                                        //processHULL.StartInfo.RedirectStandardOutput = false;
+                                        //processHULL.StartInfo.RedirectStandardError = false;
+                                        //processHULL.StartInfo.CreateNoWindow = true;
+
+                                        //processHULL.Start();
+                                        //processHULL.WaitForExit();
+                                        //// cut
+                                        //Process processCUT = new Process();
+                                        //ProcessStartInfo startInfoCUT = new ProcessStartInfo();
+                                        //startInfoCUT.FileName = "cmd.exe";
+                                        //startInfoCUT.WorkingDirectory = @"CSVTIFF";
+                                        //startInfoCUT.Arguments = $"/c gdalwarp -cutline MaskExtent.shp -crop_to_cutline -dstalpha {layerName}.tiff OUTPUT.tif";
+                                        //processCUT.StartInfo = startInfoCUT;
+
+                                        //processCUT.StartInfo.UseShellExecute = false;
+                                        //processCUT.StartInfo.RedirectStandardOutput = false;
+                                        //processCUT.StartInfo.RedirectStandardError = false;
+                                        //processCUT.StartInfo.CreateNoWindow = true;
+
+                                        //processCUT.Start();
+                                        //processCUT.WaitForExit();
                                         // delete csv, shp
                                         File.Delete(@"CSVTIFF/CSV.csv");
                                         var dir = new DirectoryInfo("CSVTIFF");
