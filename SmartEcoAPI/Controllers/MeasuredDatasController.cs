@@ -36,8 +36,44 @@ namespace SmartEcoAPI.Controllers
         }
 
         // GET: api/MeasuredDatas
+        /// <summary>
+        /// Получение измеренных данных с постов мониторинга. Работает только для авторизованных пользователей.
+        /// </summary>
+        /// <param name="SortOrder">
+        /// Сортировка данных. Доступные значения: null, "MeasuredParameter", "DateTime", "MonitoringPost", "PollutionSource", "MeasuredParameterDesc", "DateTimeDesc", "MonitoringPostDesc", "PollutionSourceDesc".
+        /// </param>
+        /// <param name="Language">
+        /// Язык возвращаемых данных. Доступные значения: null, "", "kk", "ru", "en".
+        /// </param>
+        /// <param name="MeasuredParameterId">
+        /// Id измеряемого параметра. Может быть пустым. Если задан, то возвращаемые данные будут отфильтрованы по измеряемому параметру.
+        /// </param>
+        /// <param name="DateTimeFrom">
+        /// Начальные дата и время. Поле может быть пустым. Если нет, то все возвращаемые данные будут больше или равны, чем заданные.
+        /// Например, "2019-09-23T00:00:00".
+        /// </param>
+        /// <param name="DateTimeTo">
+        /// Конечные дата и время. Поле может быть пустым. Если нет, то все возвращаемые данные будут меньше или равны, чем заданные.
+        /// Например, "2019-09-23T00:00:00".
+        /// </param>
+        /// <param name="MonitoringPostId">
+        /// Id поста мониторинга. Может быть пустым. Если задан, то возвращаемые данные будут отфильтрованы по посту мониторинга.
+        /// </param>
+        /// <param name="PollutionSourceId">
+        /// Id источника выделения загрязнения. Может быть пустым. Если задан, то возвращаемые данные будут отфильтрованы по источнику выделения загрязнения.
+        /// </param>
+        /// <param name="PageSize">
+        /// Все возвращаемые данные разделены на блоки (страницы). Данный параметр задает размер блока. Если не задан, то размер блока будет равен 10.
+        /// </param>
+        /// <param name="PageNumber">
+        /// Номер возвращаемого блока. Если не задан, то номер блока равер 1.
+        /// </param>
+        /// <param name="Averaged">
+        /// Данный параметр определяет какие данные будут возвращены: усредненные или нет. Если не задан, то будут возвращены усредненные данные.
+        /// </param>
+        /// <returns></returns>
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
+        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredData(string SortOrder,
             string Language,
             int? MeasuredParameterId,
@@ -52,11 +88,11 @@ namespace SmartEcoAPI.Controllers
             //PopulateEcoserviceData();
             //GetPostsData();
 
-            Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
-            if (!(new string[]{ "admin", "moderator" }).Contains(person.Role))
-            {
-                Averaged = true;
-            }
+            //Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
+            //if (!(new string[] { "admin", "moderator" }).Contains(person?.Role))
+            //{
+            //    Averaged = true;
+            //}
 
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
@@ -79,7 +115,7 @@ namespace SmartEcoAPI.Controllers
                 //measuredDatas = measuredDatas.Where(m => m.DateTime <= DateTimeTo);
                 measuredDatas = measuredDatas.Where(m => (m.DateTime != null && m.DateTime <= DateTimeTo) ||
                     (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
-                    (m.Year != null && m.Month != null &&  m.Year<= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
+                    (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
             }
             if (MonitoringPostId != null)
             {
@@ -89,7 +125,7 @@ namespace SmartEcoAPI.Controllers
             {
                 measuredDatas = measuredDatas.Where(m => m.PollutionSourceId == PollutionSourceId);
             }
-            if(Averaged == true)
+            if (Averaged == true)
             {
                 measuredDatas = measuredDatas.Where(m => m.Averaged == Averaged);
             }
@@ -181,8 +217,11 @@ namespace SmartEcoAPI.Controllers
 
             List<MeasuredData> measuredDatasR = measuredDatas.ToList();
             measuredDatasR = measuredDatasR
-                .Select(m => { m.Value = m.MeasuredParameterId == 7 ? m.Value / COMPCDivide : m.MeasuredParameterId == 1 ? 
-                    m.Value * PValueMultiply : m.Value; return m; })
+                .Select(m =>
+                {
+                    m.Value = m.MeasuredParameterId == 7 ? m.Value / COMPCDivide : m.MeasuredParameterId == 1 ?
+         m.Value * PValueMultiply : m.Value; return m;
+                })
                 .ToList();
 
             return measuredDatasR;
@@ -191,6 +230,7 @@ namespace SmartEcoAPI.Controllers
         // GET: api/MeasuredDatas/5
         [HttpGet("{id}")]
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<MeasuredData>> GetMeasuredData(long id)
         {
             //var measuredData = await _context.MeasuredData.FindAsync(id);
@@ -205,80 +245,6 @@ namespace SmartEcoAPI.Controllers
                 return NotFound();
             }
 
-            if(measuredData.MeasuredParameterId == 7)
-            {
-                measuredData.Value = measuredData.Value / COMPCDivide;
-            }
-
-            if (measuredData.MeasuredParameterId == 1)
-            {
-                measuredData.Value = measuredData.Value * PValueMultiply;
-            }
-
-            return measuredData;
-        }
-
-        // PUT: api/MeasuredDatas/5
-        [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator")]
-        public async Task<IActionResult> PutMeasuredData(int id, MeasuredData measuredData)
-        {
-            if (id != measuredData.Id)
-            {
-                return BadRequest();
-            }
-
-            _context.Entry(measuredData).State = EntityState.Modified;
-
-            try
-            {
-                await _context.SaveChangesAsync();
-            }
-            catch (DbUpdateConcurrencyException)
-            {
-                if (!MeasuredDataExists(id))
-                {
-                    return NotFound();
-                }
-                else
-                {
-                    throw;
-                }
-            }
-
-            return NoContent();
-        }
-
-        // POST: api/MeasuredDatas
-        [HttpPost]
-        [Authorize(Roles = "admin,moderator")]
-        public async Task<ActionResult<MeasuredData>> PostMeasuredData(MeasuredData measuredData)
-        {
-            _context.MeasuredData.Add(measuredData);
-            await _context.SaveChangesAsync();
-
-            return CreatedAtAction("GetMeasuredData", new { id = measuredData.Id }, measuredData);
-        }
-
-        // DELETE: api/MeasuredDatas/5
-        [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator")]
-        public async Task<ActionResult<MeasuredData>> DeleteMeasuredData(int id)
-        {
-            //var measuredData = await _context.MeasuredData.FindAsync(id);
-            var measuredData = await _context.MeasuredData
-                .Include(m => m.MeasuredParameter)
-                .Include(m => m.MonitoringPost)
-                .Include(m => m.PollutionSource)
-                .FirstOrDefaultAsync(m => m.Id == id);
-            if (measuredData == null)
-            {
-                return NotFound();
-            }
-
-            _context.MeasuredData.Remove(measuredData);
-            await _context.SaveChangesAsync();
-
             if (measuredData.MeasuredParameterId == 7)
             {
                 measuredData.Value = measuredData.Value / COMPCDivide;
@@ -292,12 +258,109 @@ namespace SmartEcoAPI.Controllers
             return measuredData;
         }
 
+        //// PUT: api/MeasuredDatas/5
+        //[HttpPut("{id}")]
+        //[Authorize(Roles = "admin,moderator")]
+        //public async Task<IActionResult> PutMeasuredData(int id, MeasuredData measuredData)
+        //{
+        //    if (id != measuredData.Id)
+        //    {
+        //        return BadRequest();
+        //    }
+
+        //    _context.Entry(measuredData).State = EntityState.Modified;
+
+        //    try
+        //    {
+        //        await _context.SaveChangesAsync();
+        //    }
+        //    catch (DbUpdateConcurrencyException)
+        //    {
+        //        if (!MeasuredDataExists(id))
+        //        {
+        //            return NotFound();
+        //        }
+        //        else
+        //        {
+        //            throw;
+        //        }
+        //    }
+
+        //    return NoContent();
+        //}
+
+        //// POST: api/MeasuredDatas
+        //[HttpPost]
+        //[Authorize(Roles = "admin,moderator")]
+        //public async Task<ActionResult<MeasuredData>> PostMeasuredData(MeasuredData measuredData)
+        //{
+        //    _context.MeasuredData.Add(measuredData);
+        //    await _context.SaveChangesAsync();
+
+        //    return CreatedAtAction("GetMeasuredData", new { id = measuredData.Id }, measuredData);
+        //}
+
+        //// DELETE: api/MeasuredDatas/5
+        //[HttpDelete("{id}")]
+        //[Authorize(Roles = "admin,moderator")]
+        //[ApiExplorerSettings(IgnoreApi = true)]
+        //public async Task<ActionResult<MeasuredData>> DeleteMeasuredData(int id)
+        //{
+        //    //var measuredData = await _context.MeasuredData.FindAsync(id);
+        //    var measuredData = await _context.MeasuredData
+        //        .Include(m => m.MeasuredParameter)
+        //        .Include(m => m.MonitoringPost)
+        //        .Include(m => m.PollutionSource)
+        //        .FirstOrDefaultAsync(m => m.Id == id);
+        //    if (measuredData == null)
+        //    {
+        //        return NotFound();
+        //    }
+
+        //    _context.MeasuredData.Remove(measuredData);
+        //    await _context.SaveChangesAsync();
+
+        //    if (measuredData.MeasuredParameterId == 7)
+        //    {
+        //        measuredData.Value = measuredData.Value / COMPCDivide;
+        //    }
+
+        //    if (measuredData.MeasuredParameterId == 1)
+        //    {
+        //        measuredData.Value = measuredData.Value * PValueMultiply;
+        //    }
+
+        //    return measuredData;
+        //}
+
         private bool MeasuredDataExists(int id)
         {
             return _context.MeasuredData.Any(e => e.Id == id);
         }
 
         // GET: api/MeasuredDatas/Count
+        /// <summary>
+        /// Получение количества измеренных данных с постов мониторинга. Работает только для авторизованных пользователей.
+        /// </summary>
+        /// <param name="MeasuredParameterId">
+        /// Id измеряемого параметра. Может быть пустым. Если задан, то количество возвращаемых данных будет отфильтровано по измеряемому параметру.
+        /// </param>
+        /// <param name="DateTimeFrom">
+        /// Начальные дата и время. Поле может быть пустым. Если нет, то количество возвращаемых данных будет отфильтровано: больше или равно, чем заданные.
+        /// Например, "2019-09-23T00:00:00".
+        /// </param>
+        /// <param name="DateTimeTo">
+        /// Конечные дата и время. Поле может быть пустым. Если нет, то количество возвращаемых данных будет отфильтровано: меньше или равно, чем заданные.
+        /// Например, "2019-09-23T00:00:00".
+        /// </param>
+        /// <param name="MonitoringPostId">
+        /// Id поста мониторинга. Может быть пустым. Если задан, то количество возвращаемыех данных будет отфильтровано по посту мониторинга.
+        /// </param>
+        /// <param name="PollutionSourceId">
+        /// Id источника выделения загрязнения. Может быть пустым. Если задан, то количество возвращаемых данных будет отфильтровано по источнику выделения загрязнения.
+        /// </param>
+        /// <param name="Averaged">Данный параметр определяет количество каких данных будет возвращено: усредненных или нет. Если не задан, то будет возвращено количество усредненных данных.</param>
+        /// <returns></returns>
         [HttpGet("count")]
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredDatasCount(int? MeasuredParameterId,
@@ -356,10 +419,11 @@ namespace SmartEcoAPI.Controllers
             return Ok(count);
         }
 
+        [ApiExplorerSettings(IgnoreApi = true)]
         public void PopulateEcoserviceData()
         {
             Random rnd = new Random();
-            DateTime start = (DateTime) _context.MeasuredData
+            DateTime start = (DateTime)_context.MeasuredData
                 .Where(m => m.MonitoringPostId == 39)
                 .Max(m => m.DateTime);
 
@@ -479,55 +543,5 @@ namespace SmartEcoAPI.Controllers
             _context.MeasuredData.AddRange(measuredDatas);
             _context.SaveChanges();
         }
-
-        //public void GetPostsData()
-        //{
-        //    List<MeasuredParameter> measuredParameters = _context.MeasuredParameter.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).ToList();
-        //    List<MonitoringPost> monitoringPosts = _context.MonitoringPost.Where(m => !string.IsNullOrEmpty(m.MN)).ToList();
-        //    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-        //    {
-        //        connection.Open();
-        //        connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;");
-        //        var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;");
-        //        try
-        //        {
-        //            // Data -> DB
-        //            List<MeasuredData> measuredDatas = new List<MeasuredData>();
-        //            foreach (PostData postData in postDatas)
-        //            {
-        //                foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
-        //                {
-        //                    int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
-        //                        MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
-        //                    if (MeasuredParameterId != null && MonitoringPostId != null)
-        //                    {
-        //                        try
-        //                        {
-        //                            measuredDatas.Add(new MeasuredData()
-        //                            {
-        //                                DateTime = postData.DateTimePost != null ? postData.DateTimePost : postData.DateTimeServer,
-        //                                MeasuredParameterId = (int)MeasuredParameterId,
-        //                                MonitoringPostId = (int)MonitoringPostId,
-        //                                Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0])
-        //                            });
-        //                        }
-        //                        catch (Exception ex)
-        //                        {
-
-        //                        }
-
-        //                    }
-        //                }
-        //            }
-        //            _context.AddRange(measuredDatas);
-        //            _context.SaveChanges();
-        //            connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;");
-        //        }
-        //        catch (Exception ex)
-        //        {
-        //            connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;");
-        //        }
-        //    }
-        //}
     }
 }

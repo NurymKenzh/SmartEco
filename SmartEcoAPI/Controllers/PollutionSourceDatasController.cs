@@ -12,6 +12,7 @@ namespace SmartEcoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class PollutionSourceDatasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -231,14 +232,14 @@ namespace SmartEcoAPI.Controllers
             Random random = new Random();
             foreach (PollutionSource pollutionSource in _context.PollutionSource)
             {
-                foreach(Pollutant pollutant in _context.Pollutant)
+                foreach (Pollutant pollutant in _context.Pollutant)
                 {
                     List<PollutionSourceData> pollutionSourceDatas = _context.PollutionSourceData
                         .Where(p => p.PollutionSourceId == pollutionSource.Id && p.PollutantId == pollutant.Id)
                         .ToList();
                     for (DateTime dateTime = new DateTime(2019, 1, 1); dateTime <= DateTime.Now; dateTime = dateTime.AddMinutes(15))
                     {
-                        if(pollutionSourceDatas.Count(p => p.DateTime == dateTime) == 0)
+                        if (pollutionSourceDatas.Count(p => p.DateTime == dateTime) == 0)
                         {
                             PollutionSourceData pollutionSourceData = new PollutionSourceData()
                             {

@@ -13,6 +13,7 @@ namespace SmartEcoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class MeasuredParametersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -49,7 +50,7 @@ namespace SmartEcoAPI.Controllers
             {
                 measuredParameters = measuredParameters.Where(m => m.NameEN.ToLower().Contains(NameEN.ToLower()));
             }
-            if (EcomonCode!=null)
+            if (EcomonCode != null)
             {
                 measuredParameters = measuredParameters.Where(m => m.EcomonCode == EcomonCode);
             }

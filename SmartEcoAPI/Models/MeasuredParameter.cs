@@ -5,14 +5,38 @@ using System.Threading.Tasks;
 
 namespace SmartEcoAPI.Models
 {
+    /// <summary>
+    /// Измеряемый параметр.
+    /// </summary>
     public class MeasuredParameter
     {
+        /// <summary>
+        /// Id измеряемого параметра.
+        /// </summary>
         public int Id { get; set; }
+        /// <summary>
+        /// Название измеряемого параметра на казахском языке.
+        /// </summary>
         public string NameKK { get; set; }
+        /// <summary>
+        /// Название измеряемого параметра на русском языке.
+        /// </summary>
         public string NameRU { get; set; }
+        /// <summary>
+        /// Название измеряемого параметра на английском языке.
+        /// </summary>
         public string NameEN { get; set; }
+        /// <summary>
+        /// Ecomon код измеряемого параметра.
+        /// </summary>
         public int? EcomonCode { get; set; }
+        /// <summary>
+        /// Oceanus код измеряемого параметра.
+        /// </summary>
         public string OceanusCode { get; set; }
+        /// <summary>
+        /// ПДК измеряемого параметра.
+        /// </summary>
         public decimal? MPC { get; set; } // maximum permissible concentration
     }
 }

@@ -13,6 +13,7 @@ namespace SmartEcoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class DataProvidersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

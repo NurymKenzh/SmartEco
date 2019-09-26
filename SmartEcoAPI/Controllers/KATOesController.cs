@@ -13,6 +13,7 @@ namespace SmartEcoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class KATOesController : ControllerBase
     {
         //private readonly ApplicationDbContext _context;
@@ -174,7 +175,7 @@ namespace SmartEcoAPI.Controllers
         {
             var KATOes = _context.KATO
                 .Where(k => true);
-                        
+
             if (!string.IsNullOrEmpty(Code))
             {
                 KATOes = KATOes.Where(m => m.Code.ToLower().Contains(Code.ToLower()));

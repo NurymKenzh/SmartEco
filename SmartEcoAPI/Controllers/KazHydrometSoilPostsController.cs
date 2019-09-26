@@ -12,6 +12,7 @@ namespace SmartEcoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class KazHydrometSoilPostsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

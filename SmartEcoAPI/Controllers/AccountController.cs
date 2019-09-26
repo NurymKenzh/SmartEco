@@ -26,6 +26,10 @@ namespace SmartEcoAPI.Controllers
             _context = context;
         }
 
+        /// <summary>
+        /// Получение токена авторизованного пользователя. Работает только для авторизованных пользователей.
+        /// </summary>
+        /// <returns></returns>
         [HttpPost("GetToken")]
         public async Task GetToken()
         {
@@ -90,8 +94,14 @@ namespace SmartEcoAPI.Controllers
             return null;
         }
 
+        /// <summary>
+        /// Регистрация нового пользователя.
+        /// </summary>
+        /// <param name="person">
+        /// Пользователь.
+        /// </param>
+        /// <returns></returns>
         [HttpPost("Register")]
-        //[ValidateAntiForgeryToken]
         public async Task<string> Register(Person person)
         {
             if (string.IsNullOrEmpty(person.Password))
@@ -111,10 +121,7 @@ namespace SmartEcoAPI.Controllers
                 return $"User with {person.Email} email already exist.";
             }
 
-            if (person.Role == null)
-            {
-                person.Role = "";
-            }
+            person.Role = "";
 
             person.PasswordHash = GetHash(person.Password);
             _context.Person.Add(person);
@@ -166,6 +173,7 @@ namespace SmartEcoAPI.Controllers
 
         //[Authorize]
         [Route("GetEmail")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult GetEmail()
         {
             return Ok(User.Identity.Name);
@@ -174,6 +182,7 @@ namespace SmartEcoAPI.Controllers
         //[Authorize(Roles = "admin")]
         [Authorize]
         [Route("GetRole")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public IActionResult GetRole()
         {
             //return Ok("Ваша роль: администратор");
@@ -187,6 +196,7 @@ namespace SmartEcoAPI.Controllers
         }
 
         [Route("GetAuthenticated")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public bool Authenticated()
         {
             return User.Identity.IsAuthenticated;
