@@ -370,7 +370,7 @@ namespace SmartEcoAPI.Controllers
         // POST: api/MonitoringPosts/EditMonitoringPostMeasuredParameter
         [HttpPost("editMonitoringPostMeasuredParameter")]
         [Authorize(Roles = "admin,moderator")]
-        public void EditMonitoringPostMeasuredParameter(
+        public async Task<ActionResult<MonitoringPostMeasuredParameters>> EditMonitoringPostMeasuredParameter(
             int MonitoringPostId,
             string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
@@ -462,9 +462,12 @@ namespace SmartEcoAPI.Controllers
                 if (!check)
                 {
                     var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == idAll && m.MonitoringPostId == MonitoringPostId).First();
-                    DeleteMonitoringPostMeasuredParameter(monitoringPostMeasuredParameters);
+                    //DeleteMonitoringPostMeasuredParameter(monitoringPostMeasuredParameters);
+                    _context.MonitoringPostMeasuredParameters.Remove(monitoringPostMeasuredParameters);
+                    await _context.SaveChangesAsync();
                 }
             }
+            return Ok(1);
         }
 
         public void PutMonitoringPostMeasuredParameter(
