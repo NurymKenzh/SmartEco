@@ -923,17 +923,35 @@
             },
             type: 'POST',
             success: function (data) {
-                var optionhtml = '';
+                var optionhtmlChart = '';
+                var optionhtmlTable = '';
                 $.each(data, function (i) {
                     var text = "";
-                    optionhtml += '<option value="' + data[i].measuredParameter.id + '"' +
-                        '>' + data[i].measuredParameter.name +
-                        '</option>';
+                    if ($('#ChartMeasuredParameterId').val() == data[i].measuredParameter.id) {
+                        optionhtmlChart += '<option selected value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>'
+                    }
+                    else {
+                        optionhtmlChart += '<option value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>';
+                    }
+                    if ($('#TableMeasuredParameterId').val() == data[i].measuredParameter.id) {
+                        optionhtmlTable += '<option selected value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>'
+                    }
+                    else {
+                        optionhtmlTable += '<option value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>';
+                    }
                 });
                 $('#TableMeasuredParameterId').empty();
-                $('#TableMeasuredParameterId').append(optionhtml);
+                $('#TableMeasuredParameterId').append(optionhtmlTable);
                 $('#ChartMeasuredParameterId').empty();
-                $('#ChartMeasuredParameterId').append(optionhtml);
+                $('#ChartMeasuredParameterId').append(optionhtmlChart);
             },
             error: function () {
                 //
@@ -982,8 +1000,6 @@
         if (max == null) {
             max = Math.ceil(Math.max.apply(null, values));
         }
-        console.log(min);
-        console.log(max);
         for (var i = 0; i < data.measureddatas.length; i++) {
             data1.push({
                 'x': moment(data.measureddatas[i].dateTime),
