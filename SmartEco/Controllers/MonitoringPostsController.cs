@@ -722,9 +722,27 @@ namespace SmartEco.Controllers
                 catch
                 {
                     dynamic errors = JsonConvert.DeserializeObject<dynamic>(OutputViewText);
-                    foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
+                    if(errors!=null)
                     {
-                        ModelState.AddModelError(property.Name, property.Value[0].ToString());
+                        foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
+                        {
+                            ModelState.AddModelError(property.Name, property.Value[0].ToString());
+                        }
+                    }
+                    else
+                    {
+                        monitoringPost = await response.Content.ReadAsAsync<MonitoringPost>();
+                        return RedirectToAction(nameof(Index),
+                            new
+                            {
+                                SortOrder = ViewBag.SortOrder,
+                                PageSize = ViewBag.PageSize,
+                                PageNumber = ViewBag.PageNumber,
+                                NumberFilter = ViewBag.NumberFilter,
+                                NameFilter = ViewBag.NameFilter,
+                                DataProviderIdFilter = ViewBag.DataProviderIdFilter,
+                                PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter
+                            });
                     }
                     return View(monitoringPost);
                 }
