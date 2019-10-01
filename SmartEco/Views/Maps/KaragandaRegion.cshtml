@@ -993,6 +993,9 @@
             values = [];
         for (var i = 0; i < data.measureddatas.length; i++) {
             values.push(parseFloat(data.measureddatas[i].value).toFixed(2));
+            if (data.measureddatas[0].measuredParameter.mpc != null) {
+                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2));
+            }
         }
         if (min == null) {
             min = Math.floor(Math.min.apply(null, values));
