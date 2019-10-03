@@ -865,8 +865,6 @@
                     maxHeight: window.innerHeight
                 });
                 GetMeasuredParameters();
-                ChartGetMeasuredDatas();
-                TableGetMeasuredDatas();
             }
         } else {
         }
@@ -952,6 +950,8 @@
                 $('#TableMeasuredParameterId').append(optionhtmlTable);
                 $('#ChartMeasuredParameterId').empty();
                 $('#ChartMeasuredParameterId').append(optionhtmlChart);
+                ChartGetMeasuredDatas();
+                TableGetMeasuredDatas();
             },
             error: function () {
                 //
