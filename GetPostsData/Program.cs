@@ -4,6 +4,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
+using System.IO;
 
 namespace GetPostsData
 {
@@ -37,10 +38,19 @@ namespace GetPostsData
             public decimal? Value { get; set; }
             public int? MonitoringPostId { get; set; }
             public bool? Averaged { get; set; }
+            public long? Ecomontimestamp_ms { get; set; }
+            public int? Year { get; set; }
+            public int? Month { get; set; }
+            public int? MaxValueMonth { get; set; }
+            public int? MaxValueDay { get; set; }
+            public decimal? MaxValuePerYear { get; set; }
+            public decimal? MaxValuePerMonth { get; set; }
+            public int? PollutionSourceId { get; set; }
         }
         static void Main(string[] args)
         {
             NewLog("Program started!");
+            DateTime lastBackupDateTime = new DateTime(2000, 1, 1);
             while (true)
             {
                 List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
@@ -85,7 +95,7 @@ namespace GetPostsData
                                     try
                                     {
                                         bool adequateDateTimePost = true;
-                                        if(postData.DateTimePost == null)
+                                        if (postData.DateTimePost == null)
                                         {
                                             adequateDateTimePost = false;
                                         }
@@ -113,7 +123,7 @@ namespace GetPostsData
                     }
                     catch (Exception ex)
                     {
-                        
+
                     }
                 }
                 NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
@@ -221,7 +231,7 @@ namespace GetPostsData
                 NewLog($"Average. Average data started");
                 // Average data
                 List<long> averagedPostsDatas = new List<long>();
-                if(measuredDatas.Count()>0)
+                if (measuredDatas.Count() > 0)
                 {
                     DateTime? dateTimeMin = measuredDatas.Min(m => m.DateTime),
                     dateTimeMax = measuredDatas.Max(m => m.DateTime);
@@ -293,7 +303,7 @@ namespace GetPostsData
                     {
                         connection.Open();
                         //connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Averaged\" = false;");
-                        foreach(long id in averagedPostsDatas)
+                        foreach (long id in averagedPostsDatas)
                         {
                             connection.Execute($"UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Id\" = {id.ToString()};");
                         }
@@ -308,6 +318,57 @@ namespace GetPostsData
                     }
                 }
                 NewLog($"Average. Insert data to MeasuredDatas finished");
+                //=================================================================================================================================================================
+                //// Backup data
+                //NewLog($"Backup. Get Data from MeasuredData started");
+                //if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
+                //{
+                //    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
+                //    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //    {
+                //        connection.Open();
+                //        var measuredDatas = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"Ecomontimestamp_ms\", \"MaxValueDay\", \"MaxValueMonth\", \"Month\", \"Year\", \"MaxValuePerMonth\", \"MaxValuePerYear\", \"MonitoringPostId\", \"PollutionSourceId\", \"Averaged\" " +
+                //            $"FROM public.\"MeasuredData\" " +
+                //            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;");
+                //        foreach (MeasuredData measuredData in measuredDatas)
+                //        {
+                //            string fileName = Path.Combine("E:\\Documents\\New", $"MeasuredData {measuredData.DateTime?.ToString("yyyy-MM")}");
+                //            fileName = Path.ChangeExtension(fileName, "csv");
+                //            string data = measuredData.MeasuredParameterId.ToString() + ";" +
+                //                measuredData.DateTime?.ToString("yyyy-MM-dd HH:mm:ss") + ";" +
+                //                measuredData.Value?.ToString() + ";" +
+                //                measuredData.Ecomontimestamp_ms?.ToString() + ";" +
+                //                measuredData.MaxValueDay?.ToString() + ";" +
+                //                measuredData.MaxValueMonth?.ToString() + ";" +
+                //                measuredData.Month?.ToString() + ";" +
+                //                measuredData.Year?.ToString() + ";" +
+                //                measuredData.MaxValuePerMonth?.ToString() + ";" +
+                //                measuredData.MaxValuePerYear?.ToString() + ";" +
+                //                measuredData.MonitoringPostId?.ToString() + ";" +
+                //                measuredData.PollutionSourceId?.ToString() + ";" +
+                //                measuredData.Averaged?.ToString() + Environment.NewLine;
+                //            if (!File.Exists(fileName))
+                //            {
+                //                File.AppendAllText(fileName, $"MeasuredParameterId;DateTime;Value;Ecomontimestamp_ms;MaxValueDay;MaxValueMonth;" +
+                //                    $"Month;Year;MaxValuePerMonth;MaxValuePerYear;MonitoringPostId;PollutionSourceId;Averaged" + Environment.NewLine);
+                //            }
+                //            File.AppendAllText(fileName, data);
+                //        }
+                //        try
+                //        {
+                //            //connection.Execute($"DELETE FROM public.\"MeasuredData\" " +
+                //            //    $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;");
+                //        }
+                //        catch
+                //        {
+                            
+                //        }
+                //    }
+                //    lastBackupDateTime = DateTime.Now;
+                //}
+
+                //=================================================================================================================================================================
+                // Check data
                 Thread.Sleep(30000);
             }
         }
