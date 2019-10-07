@@ -283,6 +283,15 @@
                         @SharedLocalizer["Averaged"]
                     </label>
                 }
+                else
+                {
+                    <div hidden="hidden">
+                        <label>
+                            @Html.CheckBox("ChartAveraged", true, new { @id = "ChartAveraged", @onchange = "ChartGetMeasuredDatas()" })
+                            @SharedLocalizer["Averaged"]
+                        </label>
+                    </div>
+                }
                 <canvas id="chartMeasuredDatas"></canvas>
             </div>
             <div id="divEcoserviceAirPostTable" class="dialog-info-tab-div">
@@ -961,6 +970,7 @@
 
     function ChartGetMeasuredDatas() {
         $("#chartMeasuredDatas").LoadingOverlay("show");
+        console.log($('#ChartAveraged').is(':checked'));
         $.ajax({
             url: '@Url.Action("GetMeasuredDatas", "MeasuredDatas")',
             data: {
