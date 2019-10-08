@@ -970,7 +970,6 @@
 
     function ChartGetMeasuredDatas() {
         $("#chartMeasuredDatas").LoadingOverlay("show");
-        console.log($('#ChartAveraged').is(':checked'));
         $.ajax({
             url: '@Url.Action("GetMeasuredDatas", "MeasuredDatas")',
             data: {
