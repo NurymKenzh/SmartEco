@@ -5,11 +5,21 @@ using System.Collections.Generic;
 using System.Threading;
 using System.Linq;
 using System.IO;
+using System.Threading.Tasks;
+using MimeKit;
+using MailKit.Net.Smtp;
 
 namespace GetPostsData
 {
     class Program
     {
+        const string Heading = "No data!",
+            Theme = "SmartEco",
+            FromEmail = "testmail@gmail.com",
+            Password = "12345678",
+            SMTPServer = "smtp.gmail.com";
+        const int SMTPPort = 465;
+
         public class MeasuredParameter
         {
             public int Id { get; set; }
@@ -47,14 +57,28 @@ namespace GetPostsData
             public decimal? MaxValuePerMonth { get; set; }
             public int? PollutionSourceId { get; set; }
         }
+        public class Person
+        {
+            public int Id { get; set; }
+            public string Email { get; set; }
+        }
+        public class LogSendMail
+        {
+            public DateTime DateTime { get; set; }
+            public int MonitoringPostId { get; set; }
+            public int MeasuredParameterId { get; set; }
+        }
         static void Main(string[] args)
         {
             NewLog("Program started!");
             DateTime lastBackupDateTime = new DateTime(2000, 1, 1);
+            DateTime lastCheckDateTime = new DateTime(2000, 1, 1);
             while (true)
             {
                 List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
                 List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+                List<MeasuredData> measuredDatasCheck = new List<MeasuredData>();
+                List<Person> persons = new List<Person>();
 
                 // Get MeasuredParameters, MonitoringPosts
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
@@ -361,7 +385,7 @@ namespace GetPostsData
                 //        }
                 //        catch
                 //        {
-                            
+
                 //        }
                 //    }
                 //    lastBackupDateTime = DateTime.Now;
@@ -369,6 +393,152 @@ namespace GetPostsData
 
                 //=================================================================================================================================================================
                 // Check data
+                if ((DateTime.Now - lastCheckDateTime) > new TimeSpan(0, 1, 0, 0))
+                {
+                    List<LogSendMail> logSendMails = new List<LogSendMail>();
+                    DateTime dateTimeLast = DateTime.Now.AddMinutes(-20);
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\" " +
+                            $"FROM public.\"MeasuredData\" " +
+                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                            $"ORDER BY \"DateTime\"");
+                        measuredDatasCheck = measuredDatasv.ToList();
+
+                        var measuredParametersv = connection.Query<MeasuredParameter>(
+                            $"SELECT \"Id\", \"OceanusCode\"" +
+                            $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null;");
+                        measuredParameters = measuredParametersv.ToList();
+
+                        var monitoringPostsv = connection.Query<MonitoringPost>(
+                            $"SELECT \"Id\", \"MN\"" +
+                            $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
+                        monitoringPosts = monitoringPostsv.ToList();
+
+                        var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\" " +
+                            $"FROM public.\"Person\" " +
+                            $"WHERE \"Role\" = 'admin' OR \"Role\" = 'moderator' " +
+                            $"ORDER BY \"Id\"");
+                        persons = personsv.ToList();
+                    }
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
+                        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
+                            $"FROM public.\"LogSendMail\" " +
+                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                            $"ORDER BY \"DateTime\"");
+                        logSendMails = logSendMailsv.ToList();
+                    }
+
+                    bool check = true,
+                        checkPost = true,
+                        checkLogSendMail = true;
+                    if (measuredDatasCheck.Count == 0)
+                    {
+                        if (logSendMails.Count != 0)
+                        {
+                            foreach (var logSendMail in logSendMails)
+                            {
+                                if (logSendMail.MonitoringPostId == 0 && logSendMail.MeasuredParameterId == 0)
+                                {
+                                    checkLogSendMail = false;
+                                    break;
+                                }
+                            }
+                            if (checkLogSendMail)
+                            {
+                                string message = "Missing data for all posts";
+                                CreateMail(message, persons);
+                                NewLogSendMail(null, null, message);
+                            }
+                        }
+                        else
+                        {
+                            string message = "Missing data for all posts";
+                            CreateMail(message, persons);
+                            NewLogSendMail(null, null, message);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var monitoringPost in monitoringPosts)
+                        {
+                            foreach (var measuredParameter in measuredParameters)
+                            {
+                                foreach (var measuredData in measuredDatasCheck)
+                                {
+                                    if (measuredData.MonitoringPostId == monitoringPost.Id)
+                                    {
+                                        checkPost = false;
+                                    }
+                                    if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
+                                    {
+                                        check = false;
+                                        break;
+                                    }
+                                }
+                                if (checkPost)
+                                {
+                                    if (logSendMails.Count != 0)
+                                    {
+                                        foreach (var logSendMail in logSendMails)
+                                        {
+                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == 0)
+                                            {
+                                                checkLogSendMail = false;
+                                                break;
+                                            }
+                                        }
+                                        if (checkLogSendMail)
+                                        {
+                                            string message = $"Missing data for post {monitoringPost.MN}";
+                                            CreateMail(message, persons);
+                                            NewLogSendMail(monitoringPost.Id, null, message);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string message = $"Missing data for post {monitoringPost.MN}";
+                                        CreateMail(message, persons);
+                                        NewLogSendMail(monitoringPost.Id, null, message);
+                                    }
+                                }
+                                else if (check)
+                                {
+                                    if (logSendMails.Count != 0)
+                                    {
+                                        foreach (var logSendMail in logSendMails)
+                                        {
+                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == measuredParameter.Id)
+                                            {
+                                                checkLogSendMail = false;
+                                                break;
+                                            }
+                                        }
+                                        if (checkLogSendMail)
+                                        {
+                                            string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
+                                            CreateMail(message, persons);
+                                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
+                                        CreateMail(message, persons);
+                                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                                    }
+                                }
+                                checkPost = check = true;
+                            }
+                        }
+                    }
+                    lastCheckDateTime = DateTime.Now;
+                }
+
                 Thread.Sleep(30000);
             }
         }
@@ -391,6 +561,96 @@ namespace GetPostsData
                         $"{now.Hour.ToString()}, " +
                         $"{now.Minute.ToString()}, " +
                         $"{now.Second.ToString()})" +
+                    $");";
+                connection.Execute(execute);
+                connection.Close();
+            }
+        }
+
+        public static async Task SendEmailAsync(string email, string subject, string message)
+        {
+            var emailMessage = new MimeMessage();
+
+            emailMessage.From.Add(new MailboxAddress(Theme, FromEmail));
+            emailMessage.To.Add(new MailboxAddress("", email));
+            emailMessage.Subject = subject;
+            emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
+            {
+                Text = message
+            };
+
+            using (var client = new SmtpClient())
+            {
+                await client.ConnectAsync(SMTPServer, SMTPPort, true);
+                await client.AuthenticateAsync(FromEmail, Password);
+                await client.SendAsync(emailMessage);
+
+                await client.DisconnectAsync(true);
+            }
+        }
+
+        private static bool IsValidEmail(string email)
+        {
+            try
+            {
+                var addr = new System.Net.Mail.MailAddress(email);
+                return addr.Address == email;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static void CreateMail(
+            string message,
+            List<Person> persons)
+        {
+            foreach (var person in persons)
+            {
+                if (IsValidEmail(person.Email))
+                {
+                    Task.WaitAll(SendEmailAsync(person.Email, Heading, message));
+                }
+            }
+        }
+
+        public static void NewLogSendMail(
+            int? MonitoringPostId,
+            int? MeasuredParameterId,
+            string LogSendMail)
+        {
+            string MonitoringPostIdStr = MonitoringPostId.ToString(),
+                MeasuredParameterIdStr = MeasuredParameterId.ToString();
+            if (MonitoringPostId == null)
+            {
+                MonitoringPostIdStr = "null";
+            }
+            if (MeasuredParameterId == null)
+            {
+                MeasuredParameterIdStr = "null";
+            }
+            Console.WriteLine($"{DateTime.Now.ToString()} >> {LogSendMail}{Environment.NewLine}");
+            using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+            {
+                connection.Open();
+                DateTime now = DateTime.Now;
+                string execute = $"INSERT INTO public.\"LogSendMail\"(" +
+                    $"\"DateTime\"," +
+                    $"\"MonitoringPostId\"," +
+                    $"\"MeasuredParameterId\", " +
+                    $"\"Log\") " +
+                    $"VALUES (" +
+                    $"make_timestamptz(" +
+                        $"{now.Year.ToString()}, " +
+                        $"{now.Month.ToString()}, " +
+                        $"{now.Day.ToString()}, " +
+                        $"{now.Hour.ToString()}, " +
+                        $"{now.Minute.ToString()}, " +
+                        $"{now.Second.ToString()})," +
+                    $"{MonitoringPostIdStr}," +
+                    $"{MeasuredParameterIdStr}," +
+                    $"'{LogSendMail}'" +
                     $");";
                 connection.Execute(execute);
                 connection.Close();
