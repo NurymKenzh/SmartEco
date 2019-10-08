@@ -39,6 +39,12 @@ namespace GetPostsData
             public string MN { get; set; }
             public string IP { get; set; }
             public bool? Taken { get; set; }
+            public bool? Averaged { get; set; }
+        }
+        public class PostLog
+        {
+            public string Log { get; set; }
+            public DateTime DateTime { get; set; }
         }
         public class MeasuredData
         {
@@ -97,13 +103,13 @@ namespace GetPostsData
 
                 // Copy data
                 // Get Data from PostsData
-                NewLog("Get. Get Data from PostsData started");
-                List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                NewLog("Get. Get Data from PostsData started");                
                 int postDatasCount = 0;
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                 {
+                    List<MeasuredData> measuredDatas = new List<MeasuredData>();
                     connection.Open();
-                    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;");
+                    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
                     var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;");
                     postDatasCount = postDatas.Count();
                     try
@@ -149,57 +155,57 @@ namespace GetPostsData
                     {
 
                     }
-                }
-                NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
-                    $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
-                NewLog($"Get. Insert data to MeasuredDatas started");
-                // Insert MeasuredDatas into SmartEcoAPI
-                try
-                {
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                        $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
+                    NewLog($"Get. Insert data to MeasuredDatas started");
+                    // Insert MeasuredDatas into SmartEcoAPI
+                    try
                     {
-                        connection.Open();
-                        foreach (MeasuredData measuredData in measuredDatas)
+                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                         {
-                            string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
-                                $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                $"make_timestamptz(" +
-                                    $"{measuredData.DateTime?.Year.ToString()}, " +
-                                    $"{measuredData.DateTime?.Month.ToString()}, " +
-                                    $"{measuredData.DateTime?.Day.ToString()}, " +
-                                    $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                    $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                    $"{measuredData.DateTime?.Second.ToString()})," +
-                                $"{measuredData.Value.ToString()}," +
-                                $"{measuredData.MonitoringPostId.ToString()});";
-                            connection.Execute(execute);
+                            connection2.Open();
+                            foreach (MeasuredData measuredData in measuredDatas)
+                            {
+                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
+                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                                    $"make_timestamptz(" +
+                                        $"{measuredData.DateTime?.Year.ToString()}, " +
+                                        $"{measuredData.DateTime?.Month.ToString()}, " +
+                                        $"{measuredData.DateTime?.Day.ToString()}, " +
+                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
+                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
+                                        $"{measuredData.DateTime?.Second.ToString()})," +
+                                    $"{measuredData.Value.ToString()}," +
+                                    $"{measuredData.MonitoringPostId.ToString()});";
+                                connection2.Execute(execute);
+                            }
+                        }
+                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                        {
+                            connection2.Open();
+                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;", commandTimeout: 86400);
                         }
                     }
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                    catch (Exception ex)
                     {
-                        connection.Open();
-                        connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;");
+                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                        {
+                            connection2.Open();
+                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;", commandTimeout: 86400);
+                        }
                     }
+                    NewLog($"Get. Insert data to MeasuredDatas finished");
                 }
-                catch (Exception ex)
-                {
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                    {
-                        connection.Open();
-                        connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;");
-                    }
-                }
-                NewLog($"Get. Insert data to MeasuredDatas finished");
                 //=================================================================================================================================================================
                 // Average data
                 // Get Data from PostsData
                 NewLog($"Average. Get Data from PostsData started");
-                measuredDatas = new List<MeasuredData>();
                 List<MeasuredData> measuredDatasAveraged = new List<MeasuredData>();
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                 {
+                    List<MeasuredData>  measuredDatas = new List<MeasuredData>();
                     connection.Open();
-                    connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = false WHERE \"Averaged\" is null;");
+                    connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = false WHERE \"Averaged\" is null;", commandTimeout: 86400);
                     var postDatas = connection.Query<PostData>("SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Averaged\" FROM public.\"Data\" WHERE \"Averaged\" = false;");
                     postDatasCount = postDatas.Count();
                     try
@@ -249,148 +255,284 @@ namespace GetPostsData
                     {
 
                     }
-                }
-                NewLog($"Average. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                    NewLog($"Average. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
                     $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
-                NewLog($"Average. Average data started");
-                // Average data
-                List<long> averagedPostsDatas = new List<long>();
-                if (measuredDatas.Count() > 0)
-                {
-                    DateTime? dateTimeMin = measuredDatas.Min(m => m.DateTime),
-                    dateTimeMax = measuredDatas.Max(m => m.DateTime);
-                    dateTimeMax = dateTimeMax.Value.AddSeconds(-dateTimeMax.Value.Second);
-                    while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMax.Value.Minute))
+                    NewLog($"Average. Average data started");
+                    // Average data
+                    List<long> averagedPostsDatas = new List<long>();
+                    if (measuredDatas.Count() > 0)
                     {
-                        dateTimeMax = dateTimeMax.Value.AddMinutes(-1);
-                    }
-                    dateTimeMin = dateTimeMin.Value.AddSeconds(-dateTimeMin.Value.Second);
-                    while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMin.Value.Minute))
-                    {
-                        dateTimeMin = dateTimeMin.Value.AddMinutes(-1);
-                    }
-                    for (DateTime dateTimeStart = dateTimeMin.Value; dateTimeStart < dateTimeMax.Value; dateTimeStart = dateTimeStart.AddMinutes(20))
-                    {
-                        DateTime dateTimeFinish = dateTimeStart.AddMinutes(20);
-                        List<MeasuredData> measuredDatasCurrentAll = measuredDatas.Where(m => m.DateTime.Value > dateTimeStart && m.DateTime.Value <= dateTimeFinish).ToList();
-                        foreach (MonitoringPost monitoringPost in monitoringPosts)
+                        DateTime? dateTimeMin = measuredDatas.Min(m => m.DateTime),
+                        dateTimeMax = measuredDatas.Max(m => m.DateTime);
+                        dateTimeMax = dateTimeMax.Value.AddSeconds(-dateTimeMax.Value.Second);
+                        while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMax.Value.Minute))
                         {
-                            foreach (MeasuredParameter measuredParameter in measuredParameters)
+                            dateTimeMax = dateTimeMax.Value.AddMinutes(-1);
+                        }
+                        dateTimeMin = dateTimeMin.Value.AddSeconds(-dateTimeMin.Value.Second);
+                        while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMin.Value.Minute))
+                        {
+                            dateTimeMin = dateTimeMin.Value.AddMinutes(-1);
+                        }
+                        for (DateTime dateTimeStart = dateTimeMin.Value; dateTimeStart < dateTimeMax.Value; dateTimeStart = dateTimeStart.AddMinutes(20))
+                        {
+                            DateTime dateTimeFinish = dateTimeStart.AddMinutes(20);
+                            List<MeasuredData> measuredDatasCurrentAll = measuredDatas.Where(m => m.DateTime.Value > dateTimeStart && m.DateTime.Value <= dateTimeFinish).ToList();
+                            foreach (MonitoringPost monitoringPost in monitoringPosts)
                             {
-                                List<MeasuredData> measuredDatasCurrent = measuredDatasCurrentAll
-                                    .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id)
-                                    .ToList();
-                                if (measuredDatasCurrent.Count() > 0)
+                                foreach (MeasuredParameter measuredParameter in measuredParameters)
                                 {
-                                    measuredDatasAveraged.Add(new MeasuredData()
+                                    List<MeasuredData> measuredDatasCurrent = measuredDatasCurrentAll
+                                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id)
+                                        .ToList();
+                                    if (measuredDatasCurrent.Count() > 0)
                                     {
-                                        DateTime = dateTimeFinish,
-                                        MeasuredParameterId = measuredParameter.Id,
-                                        MonitoringPostId = monitoringPost.Id,
-                                        Value = measuredDatasCurrent.Average(m => m.Value),
-                                        Averaged = true
-                                    });
-                                    averagedPostsDatas.AddRange(measuredDatasCurrent.Select(m => m.Id));
+                                        measuredDatasAveraged.Add(new MeasuredData()
+                                        {
+                                            DateTime = dateTimeFinish,
+                                            MeasuredParameterId = measuredParameter.Id,
+                                            MonitoringPostId = monitoringPost.Id,
+                                            Value = measuredDatasCurrent.Average(m => m.Value),
+                                            Averaged = true
+                                        });
+                                        averagedPostsDatas.AddRange(measuredDatasCurrent.Select(m => m.Id));
+                                    }
                                 }
                             }
                         }
                     }
+                    averagedPostsDatas = averagedPostsDatas.Distinct().ToList();
+                    NewLog($"Average. Average data finished. Average data count: {measuredDatasAveraged.Count().ToString()}. " +
+                        $"From {measuredDatasAveraged.Min(m => m.DateTime).ToString()} to {measuredDatasAveraged.Max(m => m.DateTime).ToString()}.");
+                    NewLog($"Average. Insert data to MeasuredDatas started");
+                    // Insert measuredDatasAveraged into SmartEcoAPI
+                    try
+                    {
+                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                        {
+                            connection2.Open();
+                            foreach (MeasuredData measuredData in measuredDatasAveraged)
+                            {
+                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
+                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                                    $"make_timestamptz(" +
+                                        $"{measuredData.DateTime?.Year.ToString()}, " +
+                                        $"{measuredData.DateTime?.Month.ToString()}, " +
+                                        $"{measuredData.DateTime?.Day.ToString()}, " +
+                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
+                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
+                                        $"{measuredData.DateTime?.Second.ToString()})," +
+                                    $"{measuredData.Value.ToString()}," +
+                                    $"{measuredData.MonitoringPostId.ToString()}," +
+                                    $"{measuredData.Averaged.ToString()});";
+                                connection2.Execute(execute);
+                            }
+                        }
+                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                        {
+                            connection2.Open();
+                            //connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Averaged\" = false;");
+                            foreach (long id in averagedPostsDatas)
+                            {
+                                connection2.Execute($"UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Id\" = {id.ToString()};");
+                            }
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                        {
+                            connection2.Open();
+                            connection2.Execute("UPDATE public.\"Data\" SET \"Averaged\" = null WHERE \"Averaged\" = false;", commandTimeout: 86400);
+                        }
+                    }
+                    NewLog($"Average. Insert data to MeasuredDatas finished");
                 }
-                averagedPostsDatas = averagedPostsDatas.Distinct().ToList();
-                NewLog($"Average. Average data finished. Average data count: {measuredDatasAveraged.Count().ToString()}. " +
-                    $"From {measuredDatasAveraged.Min(m => m.DateTime).ToString()} to {measuredDatasAveraged.Max(m => m.DateTime).ToString()}.");
-                NewLog($"Average. Insert data to MeasuredDatas started");
-                // Insert measuredDatasAveraged into SmartEcoAPI
-                try
+                //=================================================================================================================================================================
+                // Backup data
+                NewLog($"Backup. Get Data from MeasuredData (SmartEcoAPI) started");
+                long countBackup = 0;
+                if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
                 {
+                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
-                        foreach (MeasuredData measuredData in measuredDatasAveraged)
+                        var measuredDatasB = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"Ecomontimestamp_ms\", \"MaxValueDay\", \"MaxValueMonth\", \"Month\", \"Year\", \"MaxValuePerMonth\", \"MaxValuePerYear\", \"MonitoringPostId\", \"PollutionSourceId\", \"Averaged\" " +
+                            $"FROM public.\"MeasuredData\" " +
+                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;");
+                        countBackup = measuredDatasB.Count();
+                        foreach (MeasuredData measuredData in measuredDatasB)
                         {
-                            string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
-                                $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                $"make_timestamptz(" +
-                                    $"{measuredData.DateTime?.Year.ToString()}, " +
-                                    $"{measuredData.DateTime?.Month.ToString()}, " +
-                                    $"{measuredData.DateTime?.Day.ToString()}, " +
-                                    $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                    $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                    $"{measuredData.DateTime?.Second.ToString()})," +
-                                $"{measuredData.Value.ToString()}," +
-                                $"{measuredData.MonitoringPostId.ToString()}," +
-                                $"{measuredData.Averaged.ToString()});";
-                            connection.Execute(execute);
+                            string fileName = Path.Combine("E:\\Documents\\New", $"SmartEcoAPI_MeasuredData {measuredData.DateTime?.ToString("yyyy-MM")}");
+                            fileName = Path.ChangeExtension(fileName, "csv");
+                            string data = measuredData.MeasuredParameterId.ToString() + "\t" +
+                                measuredData.DateTime?.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                measuredData.Value?.ToString() + "\t" +
+                                measuredData.Ecomontimestamp_ms?.ToString() + "\t" +
+                                measuredData.MaxValueDay?.ToString() + "\t" +
+                                measuredData.MaxValueMonth?.ToString() + "\t" +
+                                measuredData.Month?.ToString() + "\t" +
+                                measuredData.Year?.ToString() + "\t" +
+                                measuredData.MaxValuePerMonth?.ToString() + "\t" +
+                                measuredData.MaxValuePerYear?.ToString() + "\t" +
+                                measuredData.MonitoringPostId?.ToString() + "\t" +
+                                measuredData.PollutionSourceId?.ToString() + "\t" +
+                                measuredData.Averaged?.ToString() + Environment.NewLine;
+                            if (!File.Exists(fileName))
+                            {
+                                File.AppendAllText(fileName, $"MeasuredParameterId\tDateTime\tValue\tEcomontimestamp_ms\tMaxValueDay\tMaxValueMonth\t" +
+                                    $"Month\tYear\tMaxValuePerMonth\tMaxValuePerYear\tMonitoringPostId\tPollutionSourceId\tAveraged" + Environment.NewLine);
+                            }
+                            File.AppendAllText(fileName, data);
                         }
-                    }
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                    {
-                        connection.Open();
-                        //connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Averaged\" = false;");
-                        foreach (long id in averagedPostsDatas)
+                        try
                         {
-                            connection.Execute($"UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Id\" = {id.ToString()};");
+                            connection.Execute($"DELETE FROM public.\"MeasuredData\" " +
+                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;", commandTimeout: 86400);
+                        }
+                        catch
+                        {
+
+                        }
+                        finally
+                        {
+                            connection.Execute($"VACUUM public.\"MeasuredData\"", commandTimeout: 86400);
                         }
                     }
                 }
-                catch (Exception ex)
+                NewLog($"Backup. Get Data from MeasuredData (SmartEcoAPI) finished. {countBackup.ToString()} rows backed up");
+
+                NewLog($"Backup. Get Data from Data (PostsData) started");
+                countBackup = 0;
+                if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
                 {
+                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
-                        connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = null WHERE \"Averaged\" = false;");
+                        var postDatas = connection.Query<PostData>($"SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\", \"Averaged\" " +
+                            $"FROM public.\"Data\" " +
+                            $"WHERE \"DateTimeServer\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';");
+                        countBackup = postDatas.Count();
+                        foreach (PostData postData in postDatas)
+                        {
+                            string fileName = Path.Combine("E:\\Documents\\New", $"PostsData_Data {postData.DateTimeServer.ToString("yyyy-MM")}");
+                            fileName = Path.ChangeExtension(fileName, "csv");
+                            string data = postData.Data.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
+                                postData.DateTimeServer.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                postData.DateTimePost?.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                postData.MN + "\t" +
+                                postData.IP + "\t" +
+                                postData.Taken?.ToString() + "\t" +
+                                postData.Averaged?.ToString() + Environment.NewLine;
+                            if (!File.Exists(fileName))
+                            {
+                                string s = $"Data\tDateTimeServer\tDateTimePost\tMN\tIP\tTaken\tAveraged";
+                                File.AppendAllText(fileName, $"Data\tDateTimeServer\tDateTimePost\tMN\tIP\tTaken\tAveraged" + Environment.NewLine);
+                            }
+                            File.AppendAllText(fileName, data);
+                        }
+                        try
+                        {
+                            connection.Execute($"DELETE FROM public.\"Data\" " +
+                                $"WHERE \"DateTimeServer\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                        }
+                        catch
+                        {
+
+                        }
+                        finally
+                        {
+                            connection.Execute($"VACUUM public.\"Data\"", commandTimeout: 86400);
+                        }
                     }
                 }
-                NewLog($"Average. Insert data to MeasuredDatas finished");
-                //=================================================================================================================================================================
-                //// Backup data
-                //NewLog($"Backup. Get Data from MeasuredData started");
-                //if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
-                //{
-                //    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
-                //    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                //    {
-                //        connection.Open();
-                //        var measuredDatas = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"Ecomontimestamp_ms\", \"MaxValueDay\", \"MaxValueMonth\", \"Month\", \"Year\", \"MaxValuePerMonth\", \"MaxValuePerYear\", \"MonitoringPostId\", \"PollutionSourceId\", \"Averaged\" " +
-                //            $"FROM public.\"MeasuredData\" " +
-                //            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;");
-                //        foreach (MeasuredData measuredData in measuredDatas)
-                //        {
-                //            string fileName = Path.Combine("E:\\Documents\\New", $"MeasuredData {measuredData.DateTime?.ToString("yyyy-MM")}");
-                //            fileName = Path.ChangeExtension(fileName, "csv");
-                //            string data = measuredData.MeasuredParameterId.ToString() + ";" +
-                //                measuredData.DateTime?.ToString("yyyy-MM-dd HH:mm:ss") + ";" +
-                //                measuredData.Value?.ToString() + ";" +
-                //                measuredData.Ecomontimestamp_ms?.ToString() + ";" +
-                //                measuredData.MaxValueDay?.ToString() + ";" +
-                //                measuredData.MaxValueMonth?.ToString() + ";" +
-                //                measuredData.Month?.ToString() + ";" +
-                //                measuredData.Year?.ToString() + ";" +
-                //                measuredData.MaxValuePerMonth?.ToString() + ";" +
-                //                measuredData.MaxValuePerYear?.ToString() + ";" +
-                //                measuredData.MonitoringPostId?.ToString() + ";" +
-                //                measuredData.PollutionSourceId?.ToString() + ";" +
-                //                measuredData.Averaged?.ToString() + Environment.NewLine;
-                //            if (!File.Exists(fileName))
-                //            {
-                //                File.AppendAllText(fileName, $"MeasuredParameterId;DateTime;Value;Ecomontimestamp_ms;MaxValueDay;MaxValueMonth;" +
-                //                    $"Month;Year;MaxValuePerMonth;MaxValuePerYear;MonitoringPostId;PollutionSourceId;Averaged" + Environment.NewLine);
-                //            }
-                //            File.AppendAllText(fileName, data);
-                //        }
-                //        try
-                //        {
-                //            //connection.Execute($"DELETE FROM public.\"MeasuredData\" " +
-                //            //    $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;");
-                //        }
-                //        catch
-                //        {
+                NewLog($"Backup. Get Data from Data (PostsData) finished. {countBackup.ToString()} rows backed up");
 
-                //        }
-                //    }
-                //    lastBackupDateTime = DateTime.Now;
-                //}
+                NewLog($"Backup. Get Data from Log (PostsData) started");
+                countBackup = 0;
+                if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
+                {
+                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
+                            $"FROM public.\"Log\" " +
+                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';");
+                        countBackup = postLogs.Count();
+                        foreach (PostLog log in postLogs)
+                        {
+                            string fileName = Path.Combine("E:\\Documents\\New", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
+                            fileName = Path.ChangeExtension(fileName, "csv");
+                            string data = log.Log.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
+                                log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
+                            if (!File.Exists(fileName))
+                            {
+                                File.AppendAllText(fileName, $"Log\tDateTime" + Environment.NewLine);
+                            }
+                            File.AppendAllText(fileName, data);
+                        }
+                        try
+                        {
+                            connection.Execute($"DELETE FROM public.\"Log\" " +
+                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                        }
+                        catch
+                        {
 
+                        }
+                        finally
+                        {
+                            connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
+                        }
+                    }
+                }
+                NewLog($"Backup. Get Data from Log (PostsData) finished. {countBackup.ToString()} rows backed up");
+
+                NewLog($"Backup. Get Data from Log (GetPostsData) started");
+                countBackup = 0;
+                if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
+                {
+                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
+                            $"FROM public.\"Log\" " +
+                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';");
+                        countBackup = postLogs.Count();
+                        foreach (PostLog log in postLogs)
+                        {
+                            string fileName = Path.Combine("E:\\Documents\\New", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
+                            fileName = Path.ChangeExtension(fileName, "csv");
+                            string data = log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                log.Log + Environment.NewLine;
+                            if (!File.Exists(fileName))
+                            {
+                                File.AppendAllText(fileName, $"DateTime\tLog" + Environment.NewLine);
+                            }
+                            File.AppendAllText(fileName, data);
+                        }
+                        try
+                        {
+                            connection.Execute($"DELETE FROM public.\"Log\" " +
+                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                        }
+                        catch
+                        {
+
+                        }
+                        finally
+                        {
+                            connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
+                        }
+                    }
+                }
+                NewLog($"Backup. Get Data from Log (GetPostsData) finished. {countBackup.ToString()} rows backed up");
+
+                lastBackupDateTime = DateTime.Now;
                 //=================================================================================================================================================================
                 // Check data
                 if ((DateTime.Now - lastCheckDateTime) > new TimeSpan(0, 1, 0, 0))
