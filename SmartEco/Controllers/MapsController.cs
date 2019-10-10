@@ -634,14 +634,89 @@ namespace SmartEco.Controllers
             {
                 monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
             }
-            var result = monitoringPostMeasuredParameters.OrderBy(m => m.MeasuredParameter.Name);
+            var result = monitoringPostMeasuredParameters.OrderBy(m => m.MeasuredParameter.Name).ToList();
+
+            DateTime dateTimeFrom, dateTimeTo;
+            dateTimeFrom = DateTime.Now.AddMinutes(-Convert.ToInt32(Startup.Configuration["InactivePastMinutes"]));
+            dateTimeTo = DateTime.Now;
+            List<int> measuredParametersEmpty = new List<int>();
+            var measuredDatas = await GetMeasuredDatas(MonitoringPostId, null, dateTimeFrom, dateTimeTo, true);
+            foreach (var item in result)
+            {
+                var measuredData = measuredDatas.Where(m => m.MeasuredParameterId == item.MeasuredParameterId).FirstOrDefault();
+                if (measuredData == null)
+                {
+                    measuredParametersEmpty.Add(item.MeasuredParameterId);
+                }
+            }
+            if (measuredParametersEmpty.Count != 0)
+            {
+                foreach (var item in measuredParametersEmpty)
+                {
+                    result.RemoveAll(r => r.MeasuredParameterId == item);
+                }
+            }
 
             return Json(
                 result
             );
         }
 
-        public async Task<IActionResult> GetMinMax(
+        public async Task<IList<MeasuredData>> GetMeasuredDatas(
+            int? MonitoringPostId,
+            int? MeasuredParameterId,
+            DateTime DateTimeFrom,
+            DateTime DateTimeTo,
+            bool? Averaged = true)
+        {
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            MeasuredData[] measureddatas = null;
+            string url = "api/MeasuredDatas",
+                route = "";
+            // SortOrder=DateTime
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"SortOrder=DateTime";
+            }
+            // MonitoringPostId
+            if (MonitoringPostId != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MonitoringPostId={MonitoringPostId}";
+            }
+            // MeasuredParameterId
+            if (MeasuredParameterId != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MeasuredParameterId={MeasuredParameterId}";
+            }
+            // AveragedFilter
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"Averaged={Averaged}";
+            }
+            // dateTimeFrom
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={DateTimeFrom.ToString(dateTimeFormatInfo)}";
+            }
+            // dateTimeTo
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={DateTimeTo.ToString(dateTimeFormatInfo)}";
+            }
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            if (response.IsSuccessStatusCode)
+            {
+                measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+            }
+            measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToArray();
+            return measureddatas;
+        }
+
+            public async Task<IActionResult> GetMinMax(
             int MonitoringPostId,
             int MeasuredParameterId)
         {
