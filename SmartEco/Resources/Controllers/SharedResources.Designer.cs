@@ -855,6 +855,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string TurnOnOff {
+            get {
+                return ResourceManager.GetString("TurnOnOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Value {
             get {
                 return ResourceManager.GetString("Value", resourceCulture);

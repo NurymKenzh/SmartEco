@@ -23,6 +23,10 @@ namespace SmartEcoAPI.Models
         /// </summary>
         public string Name { get; set; }
         /// <summary>
+        /// Включить/выключить пост.
+        /// </summary>
+        public bool TurnOnOff { get; set; }
+        /// <summary>
         /// Северная широта поста мониторинга.
         /// </summary>
         public decimal NorthLatitude { get; set; }

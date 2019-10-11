@@ -384,4 +384,7 @@
   <data name="Sensors" xml:space="preserve">
     <value>Sensors</value>
   </data>
+  <data name="TurnOnOff" xml:space="preserve">
+    <value>Turn on/turn off post</value>
+  </data>
 </root>

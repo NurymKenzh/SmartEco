@@ -384,4 +384,7 @@
   <data name="Sensors" xml:space="preserve">
     <value>Датчиктер</value>
   </data>
+  <data name="TurnOnOff" xml:space="preserve">
+    <value>Қосу/өшіру постты</value>
+  </data>
 </root>

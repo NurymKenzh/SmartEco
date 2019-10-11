@@ -67,7 +67,7 @@ namespace LayersCreator
 
                     var monitoringPostsv = connection.Query<MonitoringPost>(
                             $"SELECT \"Id\", \"NorthLatitude\", \"EastLongitude\", \"MN\"" +
-                            $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
+                            $"FROM public.\"MonitoringPost\" WHERE \"TurnOnOff\" = true and \"MN\" <> '' and \"MN\" is not null;");
                     monitoringPosts = monitoringPostsv.ToList();
                 }
 

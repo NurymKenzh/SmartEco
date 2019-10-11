@@ -250,7 +250,8 @@ namespace SmartEco.Controllers
             monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
-                .Where(m => m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString())
+                .Where(m => m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                && m.TurnOnOff == true)
                 .ToList();
             JObject kazHydrometAirMonitoringPostsObject = JObject.FromObject(new
             {
@@ -291,7 +292,8 @@ namespace SmartEco.Controllers
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
                 .Where(m => m.NorthLatitude >= 46.00M && m.NorthLatitude <= 51.00M
-                && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
+                && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
+                && m.TurnOnOff == true)
                 .ToList();
             JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
             {
@@ -365,7 +367,8 @@ namespace SmartEco.Controllers
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
                 .Where(m => m.NorthLatitude >= 42.32M && m.NorthLatitude <= 42.50M
-                    && m.EastLongitude >= 68.6M && m.EastLongitude <= 69.0M)
+                    && m.EastLongitude >= 68.6M && m.EastLongitude <= 69.0M
+                    && m.TurnOnOff == true)
                 .Where(m => m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
                 .ToList();
             JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
