@@ -97,7 +97,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["Map"]</a>
                             </li>
                         }
-                        @if (Role == "admin" || Role == "moderator" || Role == "KaragandaRegion")
+                        @if (Role == "admin" || Role == "moderator")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
