@@ -308,6 +308,15 @@
                         @SharedLocalizer["Averaged"]
                     </label>
                 }
+                else
+                {
+                    <div hidden="hidden">
+                        <label>
+                            @Html.CheckBox("TableAveraged", true, new { @id = "TableAveraged", @onchange = "TableGetMeasuredDatas()" })
+                            @SharedLocalizer["Averaged"]
+                        </label>
+                    </div>
+                }
                 <table id="tableMeasuredDatas" class="table-bordered dialog-info-tab-table">
                     <thead>
                         <tr>
