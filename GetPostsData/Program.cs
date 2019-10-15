@@ -110,7 +110,7 @@ namespace GetPostsData
                     List<MeasuredData> measuredDatas = new List<MeasuredData>();
                     connection.Open();
                     connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
-                    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;");
+                    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;", commandTimeout: 86400);
                     postDatasCount = postDatas.Count();
                     try
                     {
@@ -350,21 +350,21 @@ namespace GetPostsData
                 }
                 //=================================================================================================================================================================
                 // Backup data
-                NewLog($"Backup. Get Data from MeasuredData (SmartEcoAPI) started");
                 long countBackup = 0;
                 if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
                 {
+                    NewLog($"Backup. Get Data from MeasuredData (SmartEcoAPI) started");
                     DateTime dateTimeLast = DateTime.Now.AddDays(-30);
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
                         var measuredDatasB = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"Ecomontimestamp_ms\", \"MaxValueDay\", \"MaxValueMonth\", \"Month\", \"Year\", \"MaxValuePerMonth\", \"MaxValuePerYear\", \"MonitoringPostId\", \"PollutionSourceId\", \"Averaged\" " +
                             $"FROM public.\"MeasuredData\" " +
-                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;");
+                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;", commandTimeout: 86400);
                         countBackup = measuredDatasB.Count();
                         foreach (MeasuredData measuredData in measuredDatasB)
                         {
-                            string fileName = Path.Combine("E:\\Documents\\New", $"SmartEcoAPI_MeasuredData {measuredData.DateTime?.ToString("yyyy-MM")}");
+                            string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"SmartEcoAPI_MeasuredData {measuredData.DateTime?.ToString("yyyy-MM")}");
                             fileName = Path.ChangeExtension(fileName, "csv");
                             string data = measuredData.MeasuredParameterId.ToString() + "\t" +
                                 measuredData.DateTime?.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
@@ -400,286 +400,283 @@ namespace GetPostsData
                             connection.Execute($"VACUUM public.\"MeasuredData\"", commandTimeout: 86400);
                         }
                     }
-                }
-                NewLog($"Backup. Get Data from MeasuredData (SmartEcoAPI) finished. {countBackup.ToString()} rows backed up");
+                    NewLog($"Backup. Get Data from MeasuredData (SmartEcoAPI) finished. {countBackup.ToString()} rows backed up");
 
-                NewLog($"Backup. Get Data from Data (PostsData) started");
-                countBackup = 0;
-                if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
-                {
-                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                    NewLog($"Backup. Get Data from Data (PostsData) started");
+                    countBackup = 0;
+                    if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
                     {
-                        connection.Open();
-                        var postDatas = connection.Query<PostData>($"SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\", \"Averaged\" " +
-                            $"FROM public.\"Data\" " +
-                            $"WHERE \"DateTimeServer\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';");
-                        countBackup = postDatas.Count();
-                        foreach (PostData postData in postDatas)
+                        using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                         {
-                            string fileName = Path.Combine("E:\\Documents\\New", $"PostsData_Data {postData.DateTimeServer.ToString("yyyy-MM")}");
-                            fileName = Path.ChangeExtension(fileName, "csv");
-                            string data = postData.Data.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
-                                postData.DateTimeServer.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
-                                postData.DateTimePost?.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
-                                postData.MN + "\t" +
-                                postData.IP + "\t" +
-                                postData.Taken?.ToString() + "\t" +
-                                postData.Averaged?.ToString() + Environment.NewLine;
-                            if (!File.Exists(fileName))
-                            {
-                                string s = $"Data\tDateTimeServer\tDateTimePost\tMN\tIP\tTaken\tAveraged";
-                                File.AppendAllText(fileName, $"Data\tDateTimeServer\tDateTimePost\tMN\tIP\tTaken\tAveraged" + Environment.NewLine);
-                            }
-                            File.AppendAllText(fileName, data);
-                        }
-                        try
-                        {
-                            connection.Execute($"DELETE FROM public.\"Data\" " +
+                            connection.Open();
+                            var postDatas = connection.Query<PostData>($"SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\", \"Averaged\" " +
+                                $"FROM public.\"Data\" " +
                                 $"WHERE \"DateTimeServer\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
-                        }
-                        catch
-                        {
-
-                        }
-                        finally
-                        {
-                            connection.Execute($"VACUUM public.\"Data\"", commandTimeout: 86400);
-                        }
-                    }
-                }
-                NewLog($"Backup. Get Data from Data (PostsData) finished. {countBackup.ToString()} rows backed up");
-
-                NewLog($"Backup. Get Data from Log (PostsData) started");
-                countBackup = 0;
-                if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
-                {
-                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                    {
-                        connection.Open();
-                        var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
-                            $"FROM public.\"Log\" " +
-                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';");
-                        countBackup = postLogs.Count();
-                        foreach (PostLog log in postLogs)
-                        {
-                            string fileName = Path.Combine("E:\\Documents\\New", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
-                            fileName = Path.ChangeExtension(fileName, "csv");
-                            string data = log.Log.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
-                                log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
-                            if (!File.Exists(fileName))
+                            countBackup = postDatas.Count();
+                            foreach (PostData postData in postDatas)
                             {
-                                File.AppendAllText(fileName, $"Log\tDateTime" + Environment.NewLine);
+                                string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"PostsData_Data {postData.DateTimeServer.ToString("yyyy-MM")}");
+                                fileName = Path.ChangeExtension(fileName, "csv");
+                                string data = postData.Data.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
+                                    postData.DateTimeServer.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                    postData.DateTimePost?.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                    postData.MN + "\t" +
+                                    postData.IP + "\t" +
+                                    postData.Taken?.ToString() + "\t" +
+                                    postData.Averaged?.ToString() + Environment.NewLine;
+                                if (!File.Exists(fileName))
+                                {
+                                    string s = $"Data\tDateTimeServer\tDateTimePost\tMN\tIP\tTaken\tAveraged";
+                                    File.AppendAllText(fileName, $"Data\tDateTimeServer\tDateTimePost\tMN\tIP\tTaken\tAveraged" + Environment.NewLine);
+                                }
+                                File.AppendAllText(fileName, data);
                             }
-                            File.AppendAllText(fileName, data);
-                        }
-                        try
-                        {
-                            connection.Execute($"DELETE FROM public.\"Log\" " +
-                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
-                        }
-                        catch
-                        {
-
-                        }
-                        finally
-                        {
-                            connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
-                        }
-                    }
-                }
-                NewLog($"Backup. Get Data from Log (PostsData) finished. {countBackup.ToString()} rows backed up");
-
-                NewLog($"Backup. Get Data from Log (GetPostsData) started");
-                countBackup = 0;
-                if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
-                {
-                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
-                    {
-                        connection.Open();
-                        var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
-                            $"FROM public.\"Log\" " +
-                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';");
-                        countBackup = postLogs.Count();
-                        foreach (PostLog log in postLogs)
-                        {
-                            string fileName = Path.Combine("E:\\Documents\\New", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
-                            fileName = Path.ChangeExtension(fileName, "csv");
-                            string data = log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
-                                log.Log + Environment.NewLine;
-                            if (!File.Exists(fileName))
+                            try
                             {
-                                File.AppendAllText(fileName, $"DateTime\tLog" + Environment.NewLine);
+                                connection.Execute($"DELETE FROM public.\"Data\" " +
+                                    $"WHERE \"DateTimeServer\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
                             }
-                            File.AppendAllText(fileName, data);
-                        }
-                        try
-                        {
-                            connection.Execute($"DELETE FROM public.\"Log\" " +
-                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
-                        }
-                        catch
-                        {
+                            catch
+                            {
 
-                        }
-                        finally
-                        {
-                            connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
+                            }
+                            finally
+                            {
+                                connection.Execute($"VACUUM public.\"Data\"", commandTimeout: 86400);
+                            }
                         }
                     }
-                }
-                NewLog($"Backup. Get Data from Log (GetPostsData) finished. {countBackup.ToString()} rows backed up");
+                    NewLog($"Backup. Get Data from Data (PostsData) finished. {countBackup.ToString()} rows backed up");
 
-                lastBackupDateTime = DateTime.Now;
+                    NewLog($"Backup. Get Data from Log (PostsData) started");
+                    countBackup = 0;
+                    if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
+                    {
+                        using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                        {
+                            connection.Open();
+                            var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
+                                $"FROM public.\"Log\" " +
+                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                            countBackup = postLogs.Count();
+                            foreach (PostLog log in postLogs)
+                            {
+                                string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
+                                fileName = Path.ChangeExtension(fileName, "csv");
+                                string data = log.Log.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
+                                    log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
+                                if (!File.Exists(fileName))
+                                {
+                                    File.AppendAllText(fileName, $"Log\tDateTime" + Environment.NewLine);
+                                }
+                                File.AppendAllText(fileName, data);
+                            }
+                            try
+                            {
+                                connection.Execute($"DELETE FROM public.\"Log\" " +
+                                    $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                            }
+                            catch
+                            {
+
+                            }
+                            finally
+                            {
+                                connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
+                            }
+                        }
+                    }
+                    NewLog($"Backup. Get Data from Log (PostsData) finished. {countBackup.ToString()} rows backed up");
+
+                    NewLog($"Backup. Get Data from Log (GetPostsData) started");
+                    countBackup = 0;
+                    if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
+                    {
+                        using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                        {
+                            connection.Open();
+                            var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
+                                $"FROM public.\"Log\" " +
+                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                            countBackup = postLogs.Count();
+                            foreach (PostLog log in postLogs)
+                            {
+                                string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
+                                fileName = Path.ChangeExtension(fileName, "csv");
+                                string data = log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                    log.Log + Environment.NewLine;
+                                if (!File.Exists(fileName))
+                                {
+                                    File.AppendAllText(fileName, $"DateTime\tLog" + Environment.NewLine);
+                                }
+                                File.AppendAllText(fileName, data);
+                            }
+                            try
+                            {
+                                connection.Execute($"DELETE FROM public.\"Log\" " +
+                                    $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                            }
+                            catch
+                            {
+
+                            }
+                            finally
+                            {
+                                connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
+                            }
+                        }
+                    }
+                    NewLog($"Backup. Get Data from Log (GetPostsData) finished. {countBackup.ToString()} rows backed up");
+
+                    lastBackupDateTime = DateTime.Now;
+                }
                 //=================================================================================================================================================================
                 // Check data
-                if ((DateTime.Now - lastCheckDateTime) > new TimeSpan(0, 1, 0, 0))
-                {
-                    List<LogSendMail> logSendMails = new List<LogSendMail>();
-                    DateTime dateTimeLast = DateTime.Now.AddMinutes(-20);
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                    {
-                        connection.Open();
-                        var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\" " +
-                            $"FROM public.\"MeasuredData\" " +
-                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
-                            $"ORDER BY \"DateTime\"");
-                        measuredDatasCheck = measuredDatasv.ToList();
+                //if ((DateTime.Now - lastCheckDateTime) > new TimeSpan(0, 1, 0, 0))
+                //{
+                //    List<LogSendMail> logSendMails = new List<LogSendMail>();
+                //    DateTime dateTimeLast = DateTime.Now.AddMinutes(-20);
+                //    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //    {
+                //        connection.Open();
+                //        var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\" " +
+                //            $"FROM public.\"MeasuredData\" " +
+                //            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                //            $"ORDER BY \"DateTime\"");
+                //        measuredDatasCheck = measuredDatasv.ToList();
 
-                        var measuredParametersv = connection.Query<MeasuredParameter>(
-                            $"SELECT \"Id\", \"OceanusCode\"" +
-                            $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null;");
-                        measuredParameters = measuredParametersv.ToList();
+                //        var measuredParametersv = connection.Query<MeasuredParameter>(
+                //            $"SELECT \"Id\", \"OceanusCode\"" +
+                //            $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null;");
+                //        measuredParameters = measuredParametersv.ToList();
 
-                        var monitoringPostsv = connection.Query<MonitoringPost>(
-                            $"SELECT \"Id\", \"MN\"" +
-                            $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
-                        monitoringPosts = monitoringPostsv.ToList();
+                //        var monitoringPostsv = connection.Query<MonitoringPost>(
+                //            $"SELECT \"Id\", \"MN\"" +
+                //            $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
+                //        monitoringPosts = monitoringPostsv.ToList();
 
-                        var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\" " +
-                            $"FROM public.\"Person\" " +
-                            $"WHERE \"Role\" = 'admin' OR \"Role\" = 'moderator' " +
-                            $"ORDER BY \"Id\"");
-                        persons = personsv.ToList();
-                    }
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
-                    {
-                        connection.Open();
-                        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
-                        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
-                            $"FROM public.\"LogSendMail\" " +
-                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
-                            $"ORDER BY \"DateTime\"");
-                        logSendMails = logSendMailsv.ToList();
-                    }
+                //        var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\" " +
+                //            $"FROM public.\"Person\" " +
+                //            $"WHERE \"Role\" = 'admin' OR \"Role\" = 'moderator' " +
+                //            $"ORDER BY \"Id\"");
+                //        persons = personsv.ToList();
+                //    }
+                //    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                //    {
+                //        connection.Open();
+                //        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
+                //        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
+                //            $"FROM public.\"LogSendMail\" " +
+                //            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                //            $"ORDER BY \"DateTime\"");
+                //        logSendMails = logSendMailsv.ToList();
+                //    }
 
-                    bool check = true,
-                        checkPost = true,
-                        checkLogSendMail = true;
-                    if (measuredDatasCheck.Count == 0)
-                    {
-                        if (logSendMails.Count != 0)
-                        {
-                            foreach (var logSendMail in logSendMails)
-                            {
-                                if (logSendMail.MonitoringPostId == 0 && logSendMail.MeasuredParameterId == 0)
-                                {
-                                    checkLogSendMail = false;
-                                    break;
-                                }
-                            }
-                            if (checkLogSendMail)
-                            {
-                                string message = "Missing data for all posts";
-                                CreateMail(message, persons);
-                                NewLogSendMail(null, null, message);
-                            }
-                        }
-                        else
-                        {
-                            string message = "Missing data for all posts";
-                            CreateMail(message, persons);
-                            NewLogSendMail(null, null, message);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var monitoringPost in monitoringPosts)
-                        {
-                            foreach (var measuredParameter in measuredParameters)
-                            {
-                                foreach (var measuredData in measuredDatasCheck)
-                                {
-                                    if (measuredData.MonitoringPostId == monitoringPost.Id)
-                                    {
-                                        checkPost = false;
-                                    }
-                                    if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
-                                    {
-                                        check = false;
-                                        break;
-                                    }
-                                }
-                                if (checkPost)
-                                {
-                                    if (logSendMails.Count != 0)
-                                    {
-                                        foreach (var logSendMail in logSendMails)
-                                        {
-                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == 0)
-                                            {
-                                                checkLogSendMail = false;
-                                                break;
-                                            }
-                                        }
-                                        if (checkLogSendMail)
-                                        {
-                                            string message = $"Missing data for post {monitoringPost.MN}";
-                                            CreateMail(message, persons);
-                                            NewLogSendMail(monitoringPost.Id, null, message);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        string message = $"Missing data for post {monitoringPost.MN}";
-                                        CreateMail(message, persons);
-                                        NewLogSendMail(monitoringPost.Id, null, message);
-                                    }
-                                }
-                                else if (check)
-                                {
-                                    if (logSendMails.Count != 0)
-                                    {
-                                        foreach (var logSendMail in logSendMails)
-                                        {
-                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == measuredParameter.Id)
-                                            {
-                                                checkLogSendMail = false;
-                                                break;
-                                            }
-                                        }
-                                        if (checkLogSendMail)
-                                        {
-                                            string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
-                                            CreateMail(message, persons);
-                                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
-                                        }
-                                    }
-                                    else
-                                    {
-                                        string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
-                                        CreateMail(message, persons);
-                                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
-                                    }
-                                }
-                                checkPost = check = true;
-                            }
-                        }
-                    }
-                    lastCheckDateTime = DateTime.Now;
-                }
+                //    bool check = true,
+                //        checkPost = true,
+                //        checkLogSendMail = true;
+                //    if (measuredDatasCheck.Count == 0)
+                //    {
+                //        if (logSendMails.Count != 0)
+                //        {
+                //            foreach (var logSendMail in logSendMails)
+                //            {
+                //                if (logSendMail.MonitoringPostId == 0 && logSendMail.MeasuredParameterId == 0)
+                //                {
+                //                    checkLogSendMail = false;
+                //                    break;
+                //                }
+                //            }
+                //            if (checkLogSendMail)
+                //            {
+                //                string message = "Missing data for all posts";
+                //                CreateMail(message, persons);
+                //                NewLogSendMail(null, null, message);
+                //            }
+                //        }
+                //        else
+                //        {
+                //            string message = "Missing data for all posts";
+                //            CreateMail(message, persons);
+                //            NewLogSendMail(null, null, message);
+                //        }
+                //    }
+                //    else
+                //    {
+                //        foreach (var monitoringPost in monitoringPosts)
+                //        {
+                //            foreach (var measuredParameter in measuredParameters)
+                //            {
+                //                foreach (var measuredData in measuredDatasCheck)
+                //                {
+                //                    if (measuredData.MonitoringPostId == monitoringPost.Id)
+                //                    {
+                //                        checkPost = false;
+                //                    }
+                //                    if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
+                //                    {
+                //                        check = false;
+                //                        break;
+                //                    }
+                //                }
+                //                if (checkPost)
+                //                {
+                //                    if (logSendMails.Count != 0)
+                //                    {
+                //                        foreach (var logSendMail in logSendMails)
+                //                        {
+                //                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == 0)
+                //                            {
+                //                                checkLogSendMail = false;
+                //                                break;
+                //                            }
+                //                        }
+                //                        if (checkLogSendMail)
+                //                        {
+                //                            string message = $"Missing data for post {monitoringPost.MN}";
+                //                            CreateMail(message, persons);
+                //                            NewLogSendMail(monitoringPost.Id, null, message);
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        string message = $"Missing data for post {monitoringPost.MN}";
+                //                        CreateMail(message, persons);
+                //                        NewLogSendMail(monitoringPost.Id, null, message);
+                //                    }
+                //                }
+                //                else if (check)
+                //                {
+                //                    if (logSendMails.Count != 0)
+                //                    {
+                //                        foreach (var logSendMail in logSendMails)
+                //                        {
+                //                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == measuredParameter.Id)
+                //                            {
+                //                                checkLogSendMail = false;
+                //                                break;
+                //                            }
+                //                        }
+                //                        if (checkLogSendMail)
+                //                        {
+                //                            string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
+                //                            CreateMail(message, persons);
+                //                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                //                        }
+                //                    }
+                //                    else
+                //                    {
+                //                        string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
+                //                        CreateMail(message, persons);
+                //                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                //                    }
+                //                }
+                //                checkPost = check = true;
+                //            }
+                //        }
+                //    }
+                //    lastCheckDateTime = DateTime.Now;
+                //}
 
                 Thread.Sleep(30000);
             }
