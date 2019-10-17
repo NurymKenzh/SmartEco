@@ -22,7 +22,9 @@ namespace LayersCreator
             //GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
             CurlFullPath = "C:\\Windows\\curl.exe",
             LayerNameTemplate = "KaragandaRegionPollutantSpread";
-        const decimal MaxDistance = 0.25M;
+        const decimal MaxDistance = 0.25M,
+            DistanceForRectangle = 0.135M,
+            DistanceForPoints = 0.027M;
         const int MinPostsCount = 3;
 
         public class MeasuredParameter
@@ -196,6 +198,8 @@ namespace LayersCreator
                                     {
                                         layersCount++;
                                         string data = "xdd,ydd,value";
+                                        List<decimal> eastLongitudes = new List<decimal>();
+                                        List<decimal> northLatitudes = new List<decimal>();
                                         string layerName = LayerNameTemplate + "_" + measuredParameter.Id.ToString() + "_" + dateTime.ToString("yyyyMMddHHmmss") + "_" + layersCount.ToString();
                                         // create csv
                                         using (var file = new StreamWriter("CSVTIFF/CSV.csv", true))
@@ -207,6 +211,8 @@ namespace LayersCreator
                                                 {
                                                     MonitoringPost monitoringPost = monitoringPostsWithData.FirstOrDefault(m => m.Id == measuredData.MonitoringPostId);
                                                     decimal valueMPC = (decimal)measuredData.Value / (decimal)measuredParameters.FirstOrDefault(m => m.Id == measuredData.MeasuredParameterId).MPC;
+                                                    eastLongitudes.Add(monitoringPost.EastLongitude);
+                                                    northLatitudes.Add(monitoringPost.NorthLatitude);
                                                     file.WriteLine($"{monitoringPost.EastLongitude.ToString()},{monitoringPost.NorthLatitude.ToString()}," +
                                                         $"{(valueMPC).ToString()}");
 
@@ -214,6 +220,46 @@ namespace LayersCreator
                                                         $"{(valueMPC).ToString()}";
                                                 }
                                             }
+                                            decimal minLongitude = eastLongitudes.Min() - DistanceForRectangle,
+                                                maxLongitude = eastLongitudes.Max() + DistanceForRectangle,
+                                                minLatitude = northLatitudes.Min() - DistanceForRectangle,
+                                                maxLatitude = northLatitudes.Max() + DistanceForRectangle;
+                                            decimal lengthLongitude = maxLongitude - minLongitude,
+                                                lengthLatitude = maxLatitude - minLatitude;
+                                            decimal countPointLongitude = Math.Ceiling(lengthLongitude / DistanceForPoints),
+                                                countPointLatitude = Math.Ceiling(lengthLatitude / DistanceForPoints);
+                                            decimal distBetweenPointsLongitude = lengthLongitude / countPointLongitude,
+                                                distBetweenPointsLatitude = lengthLatitude / countPointLatitude;
+                                            // add zero point rectancle on Latitude
+                                            for (int j = 0; j < countPointLatitude; j++)
+                                            {
+                                                file.WriteLine($"{maxLongitude.ToString()},{minLatitude.ToString()}," +
+                                                        $"{0.ToString()}");
+                                                minLatitude = minLatitude + distBetweenPointsLatitude;
+                                            }
+                                            minLatitude = northLatitudes.Min() - DistanceForRectangle;
+                                            for (int j = 0; j < countPointLatitude; j++)
+                                            {
+                                                file.WriteLine($"{minLongitude.ToString()},{minLatitude.ToString()}," +
+                                                        $"{0.ToString()}");
+                                                minLatitude = minLatitude + distBetweenPointsLatitude;
+                                            }
+                                            minLatitude = northLatitudes.Min() - DistanceForRectangle;
+                                            // add zero point rectancle on Longitude
+                                            for (int j = 0; j < countPointLongitude + 1; j++)
+                                            {
+                                                file.WriteLine($"{minLongitude.ToString()},{maxLatitude.ToString()}," +
+                                                        $"{0.ToString()}");
+                                                minLongitude = minLongitude + distBetweenPointsLongitude;
+                                            }
+                                            minLongitude = eastLongitudes.Min() - DistanceForRectangle + distBetweenPointsLongitude;
+                                            for (int j = 1; j < countPointLongitude; j++)
+                                            {
+                                                file.WriteLine($"{minLongitude.ToString()},{minLatitude.ToString()}," +
+                                                        $"{0.ToString()}");
+                                                minLongitude = minLongitude + distBetweenPointsLongitude;
+                                            }
+                                            minLongitude = eastLongitudes.Min() - DistanceForRectangle;
                                         }
                                         // create shp
                                         Process processSHP = new Process();
