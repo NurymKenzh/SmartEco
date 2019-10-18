@@ -470,51 +470,51 @@ namespace SmartEco.Controllers
             bool? Averaged = true)
         {
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
-            MeasuredData[] measureddatas = null;
+            List<MeasuredData> measureddatas = new List<MeasuredData>();
             DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
                 dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
             string url = "api/MeasuredDatas",
                 route = "";
-            // SortOrder=DateTime
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"SortOrder=DateTime";
-            }
-            // MonitoringPostId
-            if (MonitoringPostId != null)
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"MonitoringPostId={MonitoringPostId}";
-            }
-            // MeasuredParameterId
             if (MeasuredParameterId != null)
             {
+                // SortOrder=DateTime
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"SortOrder=DateTime";
+                }
+                // MonitoringPostId
+                if (MonitoringPostId != null)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MonitoringPostId={MonitoringPostId}";
+                }
+                // MeasuredParameterId
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"MeasuredParameterId={MeasuredParameterId}";
+                // AveragedFilter
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"Averaged={Averaged}";
+                }
+                // dateTimeFrom
+                {
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+                }
+                // dateTimeTo
+                {
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+                }
+                HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+                if (response.IsSuccessStatusCode)
+                {
+                    measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+                }
+                measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToList();
             }
-            // AveragedFilter
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"Averaged={Averaged}";
-            }
-            // dateTimeFrom
-            {
-                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
-            }
-            // dateTimeTo
-            {
-                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
-            }
-            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
-            if (response.IsSuccessStatusCode)
-            {
-                measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
-            }
-            measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToArray();
             return Json(new
             {
                 measureddatas
