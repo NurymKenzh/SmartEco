@@ -80,6 +80,12 @@
                     @Html.Editor("NameENFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
+                    @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().MPC).ToString()
+                    <br />
+                    <br />
+                    <br />
+                </th>
+                <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().EcomonCode).ToString(), "Index",
                         new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.EcomonCodeSort, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter })
                     <br />
@@ -109,6 +115,9 @@
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.NameEN)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MPC)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.EcomonCode)
