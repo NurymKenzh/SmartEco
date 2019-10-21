@@ -27,8 +27,13 @@ namespace SmartEcoAPI.Controllers
     public class MeasuredDatasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public int COMPCDivide = 10;
-        public decimal? PValueMultiply = 0.750063755419211m;
+        public int COMPCDivide = 1; // было 10
+        public decimal? PValueMultiply = 0.750063755419211m,
+            NO2ValueMultiply = 0.001m,
+            SO2ValueMultiply = 0.001m,
+            H2SValueMultiply = 0.001m,
+            PM10ValueMultiply = 0.001m,
+            PM25ValueMultiply = 0.001m;
 
         public MeasuredDatasController(ApplicationDbContext context)
         {
@@ -73,7 +78,7 @@ namespace SmartEcoAPI.Controllers
         /// </param>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredData(string SortOrder,
             string Language,
             int? MeasuredParameterId,
@@ -88,11 +93,11 @@ namespace SmartEcoAPI.Controllers
             //PopulateEcoserviceData();
             //GetPostsData();
 
-            //Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
-            //if (!(new string[] { "admin", "moderator" }).Contains(person?.Role))
-            //{
-            //    Averaged = true;
-            //}
+            Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
+            if (!(new string[] { "admin", "moderator" }).Contains(person?.Role))
+            {
+                Averaged = true;
+            }
 
             var measuredDatas = _context.MeasuredData
                 .Include(m => m.MeasuredParameter)
@@ -219,8 +224,16 @@ namespace SmartEcoAPI.Controllers
             measuredDatasR = measuredDatasR
                 .Select(m =>
                 {
-                    m.Value = m.MeasuredParameterId == 7 ? m.Value / COMPCDivide : m.MeasuredParameterId == 1 ?
-         m.Value * PValueMultiply : m.Value; return m;
+                    m.Value =
+                        m.MeasuredParameterId == 7 ? m.Value / COMPCDivide :
+                        m.MeasuredParameterId == 1 ? m.Value * PValueMultiply :
+                        m.MeasuredParameterId == 13 ? m.Value * NO2ValueMultiply :
+                        m.MeasuredParameterId == 9 ? m.Value * SO2ValueMultiply :
+                        m.MeasuredParameterId == 20 ? m.Value * H2SValueMultiply :
+                        m.MeasuredParameterId == 2 ? m.Value * PM10ValueMultiply :
+                        m.MeasuredParameterId == 3 ? m.Value * PM25ValueMultiply :
+                        m.Value;
+                    return m;
                 })
                 .ToList();
 
