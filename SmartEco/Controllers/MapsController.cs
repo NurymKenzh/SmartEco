@@ -189,13 +189,16 @@ namespace SmartEco.Controllers
             });
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
-            string urlMeasuredDatas = "api/MeasuredDatas";
+            string urlMeasuredDatas = "api/MeasuredDatas",
+                 route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={3}";
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
-            HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas);
+            HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double temperature = Convert.ToDouble(measuredDatas.Where(m => m.MonitoringPostId == 3).LastOrDefault(t => t.MeasuredParameterId == 4).Value);
-            double speedWind = Convert.ToDouble(measuredDatas.Where(m => m.MonitoringPostId == 3).LastOrDefault(t => t.MeasuredParameterId == 5).Value);
-            double directionWind = Convert.ToDouble(measuredDatas.Where(m => m.MonitoringPostId == 3).LastOrDefault(t => t.MeasuredParameterId == 6).Value);
+            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 4).Value);
+            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 5).Value);
+            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 6).Value);
             ViewBag.MeasuredData = measuredDatas;
             ViewBag.Temperature = temperature;
             ViewBag.SpeedWind = speedWind;

@@ -501,7 +501,7 @@
     layers.push(Layer_PollutionSources);
 
     var Source_Isolines = new ol.source.Vector({
-        features: (new ol.format.GeoJSON())
+        format: new ol.format.GeoJSON()
     });
 
     //var IsolinesStyle = new ol.style.Style({
@@ -584,6 +584,145 @@
             zoom: 14
         })
     });
+
+    map.on('singleclick', function (evt) {
+
+            //var viewResolution = (map.getView().getResolution());
+            var pixel = evt.pixel;
+
+            $('#info_Ecomons').empty();
+            $('#info_KazHydrometAirPosts').empty();
+            $('#info_KazHydrometSoilPosts').empty();
+            $('#info_PollutionSources').empty();
+
+            var featuresEcomons = [];
+            if (Layer_Ecomons.getVisible()) {
+                map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                    if (layer == Layer_Ecomons) {
+                        featuresEcomons.push(feature);
+                    }
+                });
+                var contentEcomons = '';
+                for (var i = 0, ii = featuresEcomons.length; i < ii; ++i) {
+
+                    contentEcomons +=
+                        '<tr>' +
+                        '<th>' +
+                        $('#Number').val() +
+                        '</th>' +
+                        '<th>' +
+                        $('#Data').val() +
+                        '</th>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' +
+                        //'<a href="../Ecomons/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + featuresEcomons[i].get('Name') + '</a>' +
+                        featuresEcomons[i].get('Number') +
+                        '</td>' +
+                        '<td>' +
+                        '<a href="../EcomonMonitoringPoints/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + $('#Look').val() + '</a>' +
+                        '</td>' +
+                        '</tr>';
+                }
+                $('#info_Ecomons').append(contentEcomons);
+            }
+
+            var featuresKazHydrometAirPosts = [];
+            if (Layer_KazHydrometAirPosts.getVisible()) {
+                map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                    if (layer == Layer_KazHydrometAirPosts) {
+                        featuresKazHydrometAirPosts.push(feature);
+                    }
+                });
+                var contentKazHydrometAirPosts = '';
+                for (var i = 0, ii = featuresKazHydrometAirPosts.length; i < ii; ++i) {
+
+                    contentKazHydrometAirPosts +=
+                        '<tr>' +
+                        '<th>' +
+                        $('#Number').val() +
+                        '</th>' +
+                        '<th>' +
+                        $('#Data').val() +
+                        '</th>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' +
+                        //'<a href="../Ecomons/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + featuresEcomons[i].get('Name') + '</a>' +
+                        featuresKazHydrometAirPosts[i].get('Number') +
+                        '</td>' +
+                        '<td>' +
+                        '<a href="../KazHydrometAirPosts/Details/' + featuresKazHydrometAirPosts[i].get('Id') + '" target="_blank">' + $('#Look').val() + '</a>' +
+                        '</td>' +
+                        '</tr>';
+                }
+                $('#info_KazHydrometAirPosts').append(contentKazHydrometAirPosts);
+            }
+
+            var featuresKazHydrometSoilPosts = [];
+            if (Layer_KazHydrometSoilPosts.getVisible()) {
+                map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                    if (layer == Layer_KazHydrometSoilPosts) {
+                        featuresKazHydrometSoilPosts.push(feature);
+                    }
+                });
+                var contentKazHydrometSoilPosts = '';
+                for (var i = 0, ii = featuresKazHydrometSoilPosts.length; i < ii; ++i) {
+
+                    contentKazHydrometSoilPosts +=
+                        '<tr>' +
+                        '<th>' +
+                        $('#Number').val() +
+                        '</th>' +
+                        '<th>' +
+                        $('#Data').val() +
+                        '</th>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' +
+                        //'<a href="../Ecomons/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + featuresEcomons[i].get('Name') + '</a>' +
+                        featuresKazHydrometSoilPosts[i].get('Number') +
+                        '</td>' +
+                        '<td>' +
+                        '<a href="../KazHydrometSoilPosts/Details/' + featuresKazHydrometSoilPosts[i].get('Id') + '" target="_blank">' + $('#Look').val() + '</a>' +
+                        '</td>' +
+                        '</tr>';
+                }
+                $('#info_KazHydrometSoilPosts').append(contentKazHydrometSoilPosts);
+            }
+
+            var featuresPollutionSources = [];
+            if (Layer_PollutionSources.getVisible()) {
+                map.forEachFeatureAtPixel(pixel, function (feature, layer) {
+                    if (layer == Layer_PollutionSources) {
+                        featuresPollutionSources.push(feature);
+                    }
+                });
+                var contentPollutionSources = '';
+                for (var i = 0, ii = featuresPollutionSources.length; i < ii; ++i) {
+
+                    contentPollutionSources +=
+                        '<tr>' +
+                        '<th>' +
+                        $('#Name').val() +
+                        '</th>' +
+                        '<th>' +
+                        $('#Data').val() +
+                        '</th>' +
+                        '</tr>' +
+                        '<tr>' +
+                        '<td>' +
+                        //'<a href="../Ecomons/Details/' + featuresEcomons[i].get('Id') + '" target="_blank">' + featuresEcomons[i].get('Name') + '</a>' +
+                        featuresPollutionSources[i].get('Name') +
+                        '</td>' +
+                        '<td>' +
+                        '<a href="../PollutionSources/Details/' + featuresPollutionSources[i].get('Id') + '" target="_blank">' + $('#Look').val() + '</a>' +
+                        '</td>' +
+                        '</tr>';
+                }
+                $('#info_PollutionSources').append(contentPollutionSources);
+            }
+        });
 
     var gslayers = [],
         gslayersdata = [];
@@ -893,7 +1032,7 @@
     $("#Temperature").val(temp);
     </script>
 
-    <script>
+    @*<script>
         map.on('singleclick', function (evt) {
 
             //var viewResolution = (map.getView().getResolution());
@@ -1032,6 +1171,6 @@
                 $('#info_PollutionSources').append(contentPollutionSources);
             }
         });
-    </script>
+    </script>*@
 
 }
