@@ -73,7 +73,7 @@ namespace SmartEcoAPI.Controllers
         /// </param>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredData(string SortOrder,
             string Language,
             int? MeasuredParameterId,
