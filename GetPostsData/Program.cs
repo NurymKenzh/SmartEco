@@ -13,10 +13,10 @@ namespace GetPostsData
 {
     class Program
     {
-        const string Heading = "No data!",
+        const string Heading = "Нет данных!",
             Theme = "SmartEco",
-            FromEmail = "testmail@gmail.com",
-            Password = "12345678",
+            FromEmail = "smartecokz@gmail.com",
+            Password = "Qwerty123_",
             SMTPServer = "smtp.gmail.com";
         const int SMTPPort = 465;
 
@@ -24,6 +24,7 @@ namespace GetPostsData
         {
             public int Id { get; set; }
             public string OceanusCode { get; set; }
+            public string NameRU { get; set; }
         }
         public class MonitoringPost
         {
@@ -103,7 +104,7 @@ namespace GetPostsData
 
                 // Copy data
                 // Get Data from PostsData
-                NewLog("Get. Get Data from PostsData started");                
+                NewLog("Get. Get Data from PostsData started");
                 int postDatasCount = 0;
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                 {
@@ -203,7 +204,7 @@ namespace GetPostsData
                 List<MeasuredData> measuredDatasAveraged = new List<MeasuredData>();
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
                 {
-                    List<MeasuredData>  measuredDatas = new List<MeasuredData>();
+                    List<MeasuredData> measuredDatas = new List<MeasuredData>();
                     connection.Open();
                     connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = false WHERE \"Averaged\" is null;", commandTimeout: 86400);
                     var postDatas = connection.Query<PostData>("SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Averaged\" FROM public.\"Data\" WHERE \"Averaged\" = false;");
@@ -532,151 +533,153 @@ namespace GetPostsData
                 }
                 //=================================================================================================================================================================
                 // Check data
-                //if ((DateTime.Now - lastCheckDateTime) > new TimeSpan(0, 1, 0, 0))
-                //{
-                //    List<LogSendMail> logSendMails = new List<LogSendMail>();
-                //    DateTime dateTimeLast = DateTime.Now.AddMinutes(-20);
-                //    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                //    {
-                //        connection.Open();
-                //        var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\" " +
-                //            $"FROM public.\"MeasuredData\" " +
-                //            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
-                //            $"ORDER BY \"DateTime\"");
-                //        measuredDatasCheck = measuredDatasv.ToList();
+                if ((DateTime.Now - lastCheckDateTime) > new TimeSpan(0, 1, 0, 0))
+                {
+                    List<LogSendMail> logSendMails = new List<LogSendMail>();
+                    DateTime dateTimeLast = DateTime.Now.AddMinutes(-20);
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\" " +
+                            $"FROM public.\"MeasuredData\" " +
+                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                            $"ORDER BY \"DateTime\"");
+                        measuredDatasCheck = measuredDatasv.ToList();
 
-                //        var measuredParametersv = connection.Query<MeasuredParameter>(
-                //            $"SELECT \"Id\", \"OceanusCode\"" +
-                //            $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null;");
-                //        measuredParameters = measuredParametersv.ToList();
+                        var measuredParametersv = connection.Query<MeasuredParameter>(
+                            $"SELECT \"Id\", \"OceanusCode\", \"NameRU\"" +
+                            $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null;");
+                        measuredParameters = measuredParametersv.ToList();
 
-                //        var monitoringPostsv = connection.Query<MonitoringPost>(
-                //            $"SELECT \"Id\", \"MN\"" +
-                //            $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
-                //        monitoringPosts = monitoringPostsv.ToList();
+                        var monitoringPostsv = connection.Query<MonitoringPost>(
+                            $"SELECT \"Id\", \"MN\"" +
+                            $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
+                        monitoringPosts = monitoringPostsv.ToList();
 
-                //        var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\" " +
-                //            $"FROM public.\"Person\" " +
-                //            $"WHERE \"Role\" = 'admin' OR \"Role\" = 'moderator' " +
-                //            $"ORDER BY \"Id\"");
-                //        persons = personsv.ToList();
-                //    }
-                //    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
-                //    {
-                //        connection.Open();
-                //        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
-                //        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
-                //            $"FROM public.\"LogSendMail\" " +
-                //            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
-                //            $"ORDER BY \"DateTime\"");
-                //        logSendMails = logSendMailsv.ToList();
-                //    }
+                        var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\" " +
+                            $"FROM public.\"Person\" " +
+                            $"WHERE \"Role\" = 'admin' OR \"Role\" = 'moderator' " +
+                            $"ORDER BY \"Id\"");
+                        persons = personsv
+                            .Where(p => p.Email == "n.a.k@bk.ru")
+                            .ToList();
+                    }
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
+                        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
+                            $"FROM public.\"LogSendMail\" " +
+                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                            $"ORDER BY \"DateTime\"");
+                        logSendMails = logSendMailsv.ToList();
+                    }
 
-                //    bool check = true,
-                //        checkPost = true,
-                //        checkLogSendMail = true;
-                //    if (measuredDatasCheck.Count == 0)
-                //    {
-                //        if (logSendMails.Count != 0)
-                //        {
-                //            foreach (var logSendMail in logSendMails)
-                //            {
-                //                if (logSendMail.MonitoringPostId == 0 && logSendMail.MeasuredParameterId == 0)
-                //                {
-                //                    checkLogSendMail = false;
-                //                    break;
-                //                }
-                //            }
-                //            if (checkLogSendMail)
-                //            {
-                //                string message = "Missing data for all posts";
-                //                CreateMail(message, persons);
-                //                NewLogSendMail(null, null, message);
-                //            }
-                //        }
-                //        else
-                //        {
-                //            string message = "Missing data for all posts";
-                //            CreateMail(message, persons);
-                //            NewLogSendMail(null, null, message);
-                //        }
-                //    }
-                //    else
-                //    {
-                //        foreach (var monitoringPost in monitoringPosts)
-                //        {
-                //            foreach (var measuredParameter in measuredParameters)
-                //            {
-                //                foreach (var measuredData in measuredDatasCheck)
-                //                {
-                //                    if (measuredData.MonitoringPostId == monitoringPost.Id)
-                //                    {
-                //                        checkPost = false;
-                //                    }
-                //                    if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
-                //                    {
-                //                        check = false;
-                //                        break;
-                //                    }
-                //                }
-                //                if (checkPost)
-                //                {
-                //                    if (logSendMails.Count != 0)
-                //                    {
-                //                        foreach (var logSendMail in logSendMails)
-                //                        {
-                //                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == 0)
-                //                            {
-                //                                checkLogSendMail = false;
-                //                                break;
-                //                            }
-                //                        }
-                //                        if (checkLogSendMail)
-                //                        {
-                //                            string message = $"Missing data for post {monitoringPost.MN}";
-                //                            CreateMail(message, persons);
-                //                            NewLogSendMail(monitoringPost.Id, null, message);
-                //                        }
-                //                    }
-                //                    else
-                //                    {
-                //                        string message = $"Missing data for post {monitoringPost.MN}";
-                //                        CreateMail(message, persons);
-                //                        NewLogSendMail(monitoringPost.Id, null, message);
-                //                    }
-                //                }
-                //                else if (check)
-                //                {
-                //                    if (logSendMails.Count != 0)
-                //                    {
-                //                        foreach (var logSendMail in logSendMails)
-                //                        {
-                //                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == measuredParameter.Id)
-                //                            {
-                //                                checkLogSendMail = false;
-                //                                break;
-                //                            }
-                //                        }
-                //                        if (checkLogSendMail)
-                //                        {
-                //                            string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
-                //                            CreateMail(message, persons);
-                //                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
-                //                        }
-                //                    }
-                //                    else
-                //                    {
-                //                        string message = $"Missing data for parameter {measuredParameter.OceanusCode} on post {monitoringPost.MN}";
-                //                        CreateMail(message, persons);
-                //                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
-                //                    }
-                //                }
-                //                checkPost = check = true;
-                //            }
-                //        }
-                //    }
-                //    lastCheckDateTime = DateTime.Now;
-                //}
+                    bool check = true,
+                        checkPost = true,
+                        checkLogSendMail = true;
+                    if (measuredDatasCheck.Count == 0)
+                    {
+                        if (logSendMails.Count != 0)
+                        {
+                            foreach (var logSendMail in logSendMails)
+                            {
+                                if (logSendMail.MonitoringPostId == 0 && logSendMail.MeasuredParameterId == 0)
+                                {
+                                    checkLogSendMail = false;
+                                    break;
+                                }
+                            }
+                            if (checkLogSendMail)
+                            {
+                                string message = "Нет данных по всем постам!";
+                                CreateMail(message, persons);
+                                NewLogSendMail(null, null, message);
+                            }
+                        }
+                        else
+                        {
+                            string message = "Нет данных по всем постам!";
+                            CreateMail(message, persons);
+                            NewLogSendMail(null, null, message);
+                        }
+                    }
+                    else
+                    {
+                        foreach (var monitoringPost in monitoringPosts)
+                        {
+                            foreach (var measuredParameter in measuredParameters)
+                            {
+                                foreach (var measuredData in measuredDatasCheck)
+                                {
+                                    if (measuredData.MonitoringPostId == monitoringPost.Id)
+                                    {
+                                        checkPost = false;
+                                    }
+                                    if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
+                                    {
+                                        check = false;
+                                        break;
+                                    }
+                                }
+                                if (checkPost)
+                                {
+                                    if (logSendMails.Count != 0)
+                                    {
+                                        foreach (var logSendMail in logSendMails)
+                                        {
+                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == 0)
+                                            {
+                                                checkLogSendMail = false;
+                                                break;
+                                            }
+                                        }
+                                        if (checkLogSendMail)
+                                        {
+                                            string message = $"Нет данных по посту {monitoringPost.MN}";
+                                            CreateMail(message, persons);
+                                            NewLogSendMail(monitoringPost.Id, null, message);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string message = $"Нет данных по посту {monitoringPost.MN}";
+                                        CreateMail(message, persons);
+                                        NewLogSendMail(monitoringPost.Id, null, message);
+                                    }
+                                }
+                                else if (check)
+                                {
+                                    if (logSendMails.Count != 0)
+                                    {
+                                        foreach (var logSendMail in logSendMails)
+                                        {
+                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == measuredParameter.Id)
+                                            {
+                                                checkLogSendMail = false;
+                                                break;
+                                            }
+                                        }
+                                        if (checkLogSendMail)
+                                        {
+                                            string message = $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN}";
+                                            CreateMail(message, persons);
+                                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        string message = $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN}";
+                                        CreateMail(message, persons);
+                                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                                    }
+                                }
+                                checkPost = check = true;
+                            }
+                        }
+                    }
+                    lastCheckDateTime = DateTime.Now;
+                }
 
                 Thread.Sleep(30000);
             }
