@@ -543,7 +543,7 @@ namespace GetPostsData
                         var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\" " +
                             $"FROM public.\"MeasuredData\" " +
                             $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
-                            $"ORDER BY \"DateTime\"");
+                            $"ORDER BY \"DateTime\"", commandTimeout: 86400);
                         measuredDatasCheck = measuredDatasv.ToList();
 
                         var measuredParametersv = connection.Query<MeasuredParameter>(
