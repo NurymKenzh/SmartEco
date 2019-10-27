@@ -52,6 +52,14 @@ namespace LayersCreator
             public bool? Averaged { get; set; }
         }
 
+        public class Log
+        {
+            public DateTime DateTimeLayer { get; set; }
+            public string LayerName { get; set; }
+            public int Group { get; set; }
+            public int MeasuredParameterId { get; set; }
+        }
+
         static void Main(string[] args)
         {
             while (true)
@@ -406,6 +414,54 @@ namespace LayersCreator
                             }
                         }
                         catch (Exception ex)
+                        {
+
+                        }
+                    }
+                }
+
+                // Delete old layers, files, rows in DB
+                using (var connection = new NpgsqlConnection("Host=localhost;Database=Layers;Username=postgres;Password=postgres"))
+                {
+                    connection.Open();
+                    var logsv = connection.Query<Log>(
+                        $"SELECT \"DateTimeLayer\", \"LayerName\", \"Group\", \"MeasuredParameterId\"" +
+                        $"FROM public.\"Log\";");
+                    List<Log> logs = logsv
+                        .Where(l => l.DateTimeLayer < DateTime.Today.AddDays(-1))
+                        .ToList();
+                    foreach(Log log in logs)
+                    {
+                        // unpublish layer
+                        try
+                        {
+                            Process process = CurlExecuteFalse($" -u " +
+                                $"{GSUser}:" +
+                                $"{GSPassword}" +
+                                $" -XDELETE " +
+                                $" http://{GSAddress}:" +
+                                $"{GSPort}/geoserver/rest/workspaces/{GSWorkspace}/coveragestores/{log.LayerName}?recurse=true");
+                            process.WaitForExit();
+                        }
+                        catch
+                        {
+
+                        }
+                        // delete file
+                        try
+                        {
+                            File.Delete($"{GSDataDir}/{log.LayerName}.tiff");
+                        }
+                        catch
+                        {
+
+                        }
+                        // delete row in DB
+                        try
+                        {
+                            connection.Execute($"DELETE FROM public.\"Log\" WHERE \"LayerName\" = '{log.LayerName}';", commandTimeout: 86400);
+                        }
+                        catch
                         {
 
                         }
