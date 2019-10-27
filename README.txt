@@ -1,4 +1,4 @@
-Пересчет измеренных данных:
+РџРµСЂРµСЃС‡РµС‚ РёР·РјРµСЂРµРЅРЅС‹С… РґР°РЅРЅС‹С…:
 	* MeasuredDatasController:GetMeasuredData
 	* MeasuredDatasController:GetMeasuredData [HttpGet("{id}")]
 	* MonitoringPostsController:GetEcoserviceMonitoringPostsExceed
