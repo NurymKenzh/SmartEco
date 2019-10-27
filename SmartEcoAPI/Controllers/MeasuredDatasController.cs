@@ -27,13 +27,13 @@ namespace SmartEcoAPI.Controllers
     public class MeasuredDatasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public int COMPCDivide = 1; // было 10
-        public decimal? PValueMultiply = 0.750063755419211m,
-            NO2ValueMultiply = 0.001m,
-            SO2ValueMultiply = 0.001m,
-            H2SValueMultiply = 0.001m,
-            PM10ValueMultiply = 0.001m,
-            PM25ValueMultiply = 0.001m;
+        public int COMPCDivide = 1; // было 10  // Id = 7
+        public decimal? PValueMultiply = 0.750063755419211m, // Id = 1
+            NO2ValueMultiply = 0.001m, // Id = 13
+            SO2ValueMultiply = 0.001m, // Id = 9
+            H2SValueMultiply = 0.001m, // Id = 20
+            PM10ValueMultiply = 0.001m, // Id = 2
+            PM25ValueMultiply = 0.001m; // Id = 3
 
         public MeasuredDatasController(ApplicationDbContext context)
         {
@@ -258,15 +258,14 @@ namespace SmartEcoAPI.Controllers
                 return NotFound();
             }
 
-            if (measuredData.MeasuredParameterId == 7)
-            {
-                measuredData.Value = measuredData.Value / COMPCDivide;
-            }
-
-            if (measuredData.MeasuredParameterId == 1)
-            {
-                measuredData.Value = measuredData.Value * PValueMultiply;
-            }
+            measuredData.Value = measuredData.MeasuredParameterId == 7 ? measuredData.Value / COMPCDivide :
+                measuredData.MeasuredParameterId == 1 ? measuredData.Value * PValueMultiply :
+                measuredData.MeasuredParameterId == 13 ? measuredData.Value * NO2ValueMultiply :
+                measuredData.MeasuredParameterId == 9 ? measuredData.Value * SO2ValueMultiply :
+                measuredData.MeasuredParameterId == 20 ? measuredData.Value * H2SValueMultiply :
+                measuredData.MeasuredParameterId == 2 ? measuredData.Value * PM10ValueMultiply :
+                measuredData.MeasuredParameterId == 3 ? measuredData.Value * PM25ValueMultiply :
+                measuredData.Value;
 
             return measuredData;
         }
