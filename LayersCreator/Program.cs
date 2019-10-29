@@ -228,7 +228,7 @@ namespace LayersCreator
                                                     MonitoringPost monitoringPost = monitoringPostsWithData.FirstOrDefault(m => m.Id == measuredData.MonitoringPostId);
                                                     decimal valueMPC = (decimal)measuredData.Value;
 
-                                                    switch (measuredData.Id)
+                                                    switch (measuredData.MeasuredParameterId)
                                                     {
                                                         case 7:
                                                             valueMPC /= COMPCDivide;
