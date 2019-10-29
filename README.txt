@@ -5,6 +5,7 @@
 		* "Server"
 
 Пересчет измеренных данных:
-	* MeasuredDatasController:GetMeasuredData
-	* MeasuredDatasController:GetMeasuredData [HttpGet("{id}")]
-	* MonitoringPostsController:GetEcoserviceMonitoringPostsExceed
+	* SmartEcoAPI:MeasuredDatasController:GetMeasuredData
+	* SmartEcoAPI:MeasuredDatasController:GetMeasuredData [HttpGet("{id}")]
+	* SmartEcoAPI:MonitoringPostsController:GetEcoserviceMonitoringPostsExceed
+	* LayersCreator:Main

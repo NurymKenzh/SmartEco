@@ -27,6 +27,14 @@ namespace LayersCreator
             DistanceForPoints = 0.027M;
         const int MinPostsCount = 3;
 
+        const int COMPCDivide = 1; // было 10  // Id = 7
+        const decimal PValueMultiply = 0.750063755419211m, // Id = 1
+            NO2ValueMultiply = 0.001m, // Id = 13
+            SO2ValueMultiply = 0.001m, // Id = 9
+            H2SValueMultiply = 0.001m, // Id = 20
+            PM10ValueMultiply = 0.001m, // Id = 2
+            PM25ValueMultiply = 0.001m; // Id = 3
+
         public class MeasuredParameter
         {
             public int Id { get; set; }
@@ -218,7 +226,34 @@ namespace LayersCreator
                                                 if(monitoringPostsIds.Contains((int)measuredData.MonitoringPostId))
                                                 {
                                                     MonitoringPost monitoringPost = monitoringPostsWithData.FirstOrDefault(m => m.Id == measuredData.MonitoringPostId);
-                                                    decimal valueMPC = (decimal)measuredData.Value / (decimal)measuredParameters.FirstOrDefault(m => m.Id == measuredData.MeasuredParameterId).MPC;
+                                                    decimal valueMPC = 0;
+
+                                                    switch (measuredData.Id)
+                                                    {
+                                                        case 7:
+                                                            valueMPC /= COMPCDivide;
+                                                            break;
+                                                        case 1:
+                                                            valueMPC *= PValueMultiply;
+                                                            break;
+                                                        case 13:
+                                                            valueMPC *= NO2ValueMultiply;
+                                                            break;
+                                                        case 9:
+                                                            valueMPC *= SO2ValueMultiply;
+                                                            break;
+                                                        case 20:
+                                                            valueMPC *= H2SValueMultiply;
+                                                            break;
+                                                        case 2:
+                                                            valueMPC *= PM10ValueMultiply;
+                                                            break;
+                                                        case 3:
+                                                            valueMPC *= PM25ValueMultiply;
+                                                            break;
+                                                    }
+                                                    valueMPC = (decimal)valueMPC / (decimal)measuredParameters.FirstOrDefault(m => m.Id == measuredData.MeasuredParameterId).MPC;
+
                                                     eastLongitudes.Add(monitoringPost.EastLongitude);
                                                     northLatitudes.Add(monitoringPost.NorthLatitude);
                                                     file.WriteLine($"{monitoringPost.EastLongitude.ToString()},{monitoringPost.NorthLatitude.ToString()}," +
