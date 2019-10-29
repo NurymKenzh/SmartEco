@@ -221,12 +221,12 @@ namespace LayersCreator
                                         using (var file = new StreamWriter("CSVTIFF/CSV.csv", true))
                                         {
                                             file.WriteLine("xdd,ydd,value");
-                                            foreach(MeasuredData measuredData in measuredDatas)
+                                            foreach (MeasuredData measuredData in measuredDatas)
                                             {
-                                                if(monitoringPostsIds.Contains((int)measuredData.MonitoringPostId))
+                                                if (monitoringPostsIds.Contains((int)measuredData.MonitoringPostId))
                                                 {
                                                     MonitoringPost monitoringPost = monitoringPostsWithData.FirstOrDefault(m => m.Id == measuredData.MonitoringPostId);
-                                                    decimal valueMPC = 0;
+                                                    decimal valueMPC = (decimal)measuredData.Value;
 
                                                     switch (measuredData.Id)
                                                     {
