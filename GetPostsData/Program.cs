@@ -576,10 +576,11 @@ namespace GetPostsData
                             $"ORDER BY \"DateTime\"");
                         logSendMails = logSendMailsv.ToList();
                     }
-
+                    
                     bool check = true,
                         checkPost = true,
                         checkLogSendMail = true;
+                    string message = "";
                     if (measuredDatasCheck.Count == 0)
                     {
                         if (logSendMails.Count != 0)
@@ -594,14 +595,14 @@ namespace GetPostsData
                             }
                             if (checkLogSendMail)
                             {
-                                string message = "Нет данных по всем постам!";
+                                message = "Нет данных по всем постам!";
                                 CreateMail(message, persons);
                                 NewLogSendMail(null, null, message);
                             }
                         }
                         else
                         {
-                            string message = "Нет данных по всем постам!";
+                            message = "Нет данных по всем постам!";
                             CreateMail(message, persons);
                             NewLogSendMail(null, null, message);
                         }
@@ -626,6 +627,16 @@ namespace GetPostsData
                                 }
                                 if (checkPost)
                                 {
+                                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                                    {
+                                        connection.Open();
+                                        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
+                                        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
+                                            $"FROM public.\"LogSendMail\" " +
+                                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                                            $"ORDER BY \"DateTime\"");
+                                        logSendMails = logSendMailsv.ToList();
+                                    }
                                     if (logSendMails.Count != 0)
                                     {
                                         foreach (var logSendMail in logSendMails)
@@ -638,20 +649,31 @@ namespace GetPostsData
                                         }
                                         if (checkLogSendMail)
                                         {
-                                            string message = $"Нет данных по посту {monitoringPost.MN}";
-                                            CreateMail(message, persons);
-                                            NewLogSendMail(monitoringPost.Id, null, message);
+                                            message += $"Нет данных по посту {monitoringPost.MN} <br/>";
+                                            string logText = $"Нет данных по посту {monitoringPost.MN}";
+                                            NewLogSendMail(monitoringPost.Id, null, logText);
                                         }
                                     }
                                     else
                                     {
-                                        string message = $"Нет данных по посту {monitoringPost.MN}";
-                                        CreateMail(message, persons);
-                                        NewLogSendMail(monitoringPost.Id, null, message);
+                                        message += $"Нет данных по посту {monitoringPost.MN} <br/>";
+                                        string logText = $"Нет данных по посту {monitoringPost.MN}";
+                                        NewLogSendMail(monitoringPost.Id, null, logText);
                                     }
+                                    checkLogSendMail = true;
                                 }
                                 else if (check)
                                 {
+                                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                                    {
+                                        connection.Open();
+                                        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
+                                        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
+                                            $"FROM public.\"LogSendMail\" " +
+                                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                                            $"ORDER BY \"DateTime\"");
+                                        logSendMails = logSendMailsv.ToList();
+                                    }
                                     if (logSendMails.Count != 0)
                                     {
                                         foreach (var logSendMail in logSendMails)
@@ -664,21 +686,22 @@ namespace GetPostsData
                                         }
                                         if (checkLogSendMail)
                                         {
-                                            string message = $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN}";
-                                            CreateMail(message, persons);
-                                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                                            message += $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN} <br/>";
+                                            string logText = $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN}";
+                                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, logText);
                                         }
                                     }
                                     else
                                     {
-                                        string message = $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN}";
-                                        CreateMail(message, persons);
-                                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, message);
+                                        message += $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN} <br/>";
+                                        string logText = $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN}";
+                                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, logText);
                                     }
                                 }
                                 checkPost = check = true;
                             }
                         }
+                        CreateMail(message, persons);
                     }
                     lastCheckDateTime = DateTime.Now;
                 }
