@@ -513,6 +513,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string MaxMeasuredValue {
+            get {
+                return ResourceManager.GetString("MaxMeasuredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MaxValueDay {
             get {
                 return ResourceManager.GetString("MaxValueDay", resourceCulture);
@@ -594,6 +603,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string MinMeasuredValue {
+            get {
+                return ResourceManager.GetString("MinMeasuredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MonitoringPost {
             get {
                 return ResourceManager.GetString("MonitoringPost", resourceCulture);
@@ -606,6 +624,15 @@ namespace SmartEco.Resources.Controllers {
         public static string MonitoringPosts {
             get {
                 return ResourceManager.GetString("MonitoringPosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string More {
+            get {
+                return ResourceManager.GetString("More", resourceCulture);
             }
         }
         
@@ -831,6 +858,15 @@ namespace SmartEco.Resources.Controllers {
         public static string ShowHideRightPanelText {
             get {
                 return ResourceManager.GetString("ShowHideRightPanelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Smaller {
+            get {
+                return ResourceManager.GetString("Smaller", resourceCulture);
             }
         }
         

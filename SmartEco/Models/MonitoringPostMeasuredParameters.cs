@@ -16,5 +16,7 @@ namespace SmartEco.Models
         public MeasuredParameter MeasuredParameter { get; set; }
         public decimal? Min { get; set; }
         public decimal? Max { get; set; }
+        public decimal? MinMeasuredValue { get; set; }
+        public decimal? MaxMeasuredValue { get; set; }
     }
 }

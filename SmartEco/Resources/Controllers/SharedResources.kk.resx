@@ -387,4 +387,16 @@
   <data name="TurnOnOff" xml:space="preserve">
     <value>Қосу/өшіру постты</value>
   </data>
+  <data name="MaxMeasuredValue" xml:space="preserve">
+    <value>Максималды өлшенген мәні</value>
+  </data>
+  <data name="MinMeasuredValue" xml:space="preserve">
+    <value>Минималды өлшенген мәні</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Көбірек</value>
+  </data>
+  <data name="Smaller" xml:space="preserve">
+    <value>Аз</value>
+  </data>
 </root>

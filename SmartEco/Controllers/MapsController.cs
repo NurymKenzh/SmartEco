@@ -738,11 +738,15 @@ namespace SmartEco.Controllers
             }
             var min = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Min;
             var max = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Max;
+            var minMeasured = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().MinMeasuredValue;
+            var maxMeasured = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().MaxMeasuredValue;
 
             return Json(new
             {
                 min,
-                max
+                max,
+                minMeasured,
+                maxMeasured
             }
             );
         }

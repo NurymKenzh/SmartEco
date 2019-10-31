@@ -321,7 +321,9 @@ namespace SmartEcoAPI.Controllers
             string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
-            [FromQuery(Name = "Max")] List<string> Max)
+            [FromQuery(Name = "Max")] List<string> Max,
+            [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
+            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue)
         {
             List<int> idMeasuredParameters = new List<int>();
             if (CultureName == "ru")
@@ -342,22 +344,58 @@ namespace SmartEcoAPI.Controllers
                 {
                     if (idMeasuredParameters[i] == id)
                     {
-                        if (Min[i] == "null" && Max[i] != "null")
+                        decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec;
+                        if (Min[i] == "null")
                         {
-                            MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                        }
-                        else if (Max[i] == "null" && Min[i] != "null")
-                        {
-                            MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
-                        }
-                        else if (Max[i] == "null" && Min[i] == "null")
-                        {
-                            MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+                            minDec = null;
                         }
                         else
                         {
-                            MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                            minDec = Decimal.Parse(Min[i], CultureInfo.InvariantCulture);
                         }
+                        if (Max[i] == "null")
+                        {
+                            maxDec = null;
+                        }
+                        else
+                        {
+                            maxDec = Decimal.Parse(Max[i], CultureInfo.InvariantCulture);
+                        }
+                        if (MinMeasuredValue[i] == "null")
+                        {
+                            minMeasuredDec = null;
+                        }
+                        else
+                        {
+                            minMeasuredDec = Decimal.Parse(MinMeasuredValue[i], CultureInfo.InvariantCulture);
+                        }
+                        if (MaxMeasuredValue[i] == "null")
+                        {
+                            maxMeasuredDec = null;
+                        }
+                        else
+                        {
+                            maxMeasuredDec = Decimal.Parse(MaxMeasuredValue[i], CultureInfo.InvariantCulture);
+                        }
+
+                        MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec);
+
+                        //if (Min[i] == "null" && Max[i] != "null")
+                        //{
+                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        //}
+                        //else if (Max[i] == "null" && Min[i] != "null")
+                        //{
+                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+                        //}
+                        //else if (Max[i] == "null" && Min[i] == "null")
+                        //{
+                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+                        //}
+                        //else
+                        //{
+                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        //}
                     }
                 }
             }
@@ -366,14 +404,18 @@ namespace SmartEcoAPI.Controllers
         public void MonitoringPostMeasuredParameter(int MonitoringPostId,
             int MeasuredParameterId,
             decimal? Min,
-            decimal? Max)
+            decimal? Max,
+            decimal? MinMeasuredValue,
+            decimal? MaxMeasuredValue)
         {
             MonitoringPostMeasuredParameters monitoringPostMeasuredParameters = new MonitoringPostMeasuredParameters
             {
                 MonitoringPostId = MonitoringPostId,
                 MeasuredParameterId = MeasuredParameterId,
                 Min = Min,
-                Max = Max
+                Max = Max,
+                MinMeasuredValue = MinMeasuredValue,
+                MaxMeasuredValue = MaxMeasuredValue
             };
 
             _context.MonitoringPostMeasuredParameters.Add(monitoringPostMeasuredParameters);
@@ -388,7 +430,9 @@ namespace SmartEcoAPI.Controllers
             string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
-            [FromQuery(Name = "Max")] List<string> Max)
+            [FromQuery(Name = "Max")] List<string> Max,
+            [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
+            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue)
         {
             List<int> idMeasuredParameters = new List<int>();
             if (CultureName == "ru")
@@ -410,50 +454,93 @@ namespace SmartEcoAPI.Controllers
                 {
                     if (idMeasuredParameters[i] == id)
                     {
-                        if (Min[i] == "null" && Max[i] != "null")
+                        decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec;
+                        if (Min[i] == "null")
                         {
-                            try
-                            {
-                                PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                            }
-                            catch
-                            {
-                                MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                            }
-                        }
-                        else if (Max[i] == "null" && Min[i] != "null")
-                        {
-                            try
-                            {
-                                PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
-                            }
-                            catch
-                            {
-                                MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
-                            }
-                        }
-                        else if (Max[i] == "null" && Min[i] == "null")
-                        {
-                            try
-                            {
-                                PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
-                            }
-                            catch
-                            {
-                                MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
-                            }
+                            minDec = null;
                         }
                         else
                         {
-                            try
-                            {
-                                PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                            }
-                            catch
-                            {
-                                MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                            }
+                            minDec = Decimal.Parse(Min[i], CultureInfo.InvariantCulture);
                         }
+                        if (Max[i] == "null")
+                        {
+                            maxDec = null;
+                        }
+                        else
+                        {
+                            maxDec = Decimal.Parse(Max[i], CultureInfo.InvariantCulture);
+                        }
+                        if (MinMeasuredValue[i] == "null")
+                        {
+                            minMeasuredDec = null;
+                        }
+                        else
+                        {
+                            minMeasuredDec = Decimal.Parse(MinMeasuredValue[i], CultureInfo.InvariantCulture);
+                        }
+                        if (MaxMeasuredValue[i] == "null")
+                        {
+                            maxMeasuredDec = null;
+                        }
+                        else
+                        {
+                            maxMeasuredDec = Decimal.Parse(MaxMeasuredValue[i], CultureInfo.InvariantCulture);
+                        }
+
+                        try
+                        {
+                            PutMonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec);
+                        }
+                        catch
+                        {
+                            MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec);
+                        }
+
+                        //if (Min[i] == "null" && Max[i] != "null")
+                        //{
+                        //    try
+                        //    {
+                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        //    }
+                        //    catch
+                        //    {
+                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        //    }
+                        //}
+                        //else if (Max[i] == "null" && Min[i] != "null")
+                        //{
+                        //    try
+                        //    {
+                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+                        //    }
+                        //    catch
+                        //    {
+                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+                        //    }
+                        //}
+                        //else if (Max[i] == "null" && Min[i] == "null")
+                        //{
+                        //    try
+                        //    {
+                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+                        //    }
+                        //    catch
+                        //    {
+                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+                        //    }
+                        //}
+                        //else
+                        //{
+                        //    try
+                        //    {
+                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        //    }
+                        //    catch
+                        //    {
+                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+                        //    }
+                        //}
                     }
                 }
             }
@@ -487,13 +574,17 @@ namespace SmartEcoAPI.Controllers
             int MonitoringPostId,
             int MeasuredParameterId,
             decimal? Min,
-            decimal? Max)
+            decimal? Max,
+            decimal? MinMeasuredValue,
+            decimal? MaxMeasuredValue)
         {
             var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId && m.MonitoringPostId == MonitoringPostId).First();
             monitoringPostMeasuredParameters.MonitoringPostId = MonitoringPostId;
             monitoringPostMeasuredParameters.MeasuredParameterId = MeasuredParameterId;
             monitoringPostMeasuredParameters.Min = Min;
             monitoringPostMeasuredParameters.Max = Max;
+            monitoringPostMeasuredParameters.MinMeasuredValue = MinMeasuredValue;
+            monitoringPostMeasuredParameters.MaxMeasuredValue = MaxMeasuredValue;
             _context.SaveChangesAsync();
         }
 
@@ -539,6 +630,8 @@ namespace SmartEcoAPI.Controllers
                             MeasuredParameter = measuredParameters[i],
                             Min = id.Min,
                             Max = id.Max,
+                            MinMeasuredValue = id.MinMeasuredValue,
+                            MaxMeasuredValue = id.MaxMeasuredValue,
                             Sensor = true
                         };
                         monitoringPostMeasuredParameterWithNull.Add(item);
@@ -555,6 +648,8 @@ namespace SmartEcoAPI.Controllers
                         MeasuredParameter = measuredParameters[i],
                         Min = null,
                         Max = null,
+                        MinMeasuredValue = null,
+                        MaxMeasuredValue = null,
                         Sensor = false
                     };
                     monitoringPostMeasuredParameterWithNull.Add(item);

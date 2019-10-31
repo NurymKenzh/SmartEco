@@ -83,6 +83,12 @@
                         <th>
                             @SharedLocalizer["Maximum"]
                         </th>
+                        <th>
+                            @SharedLocalizer["MinMeasuredValue"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["MaxMeasuredValue"]
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
@@ -100,6 +106,12 @@
                             </td>
                             <td>
                                 <input type="text" name="Maximum" value=@item.Max class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="MinMeasuredValue" value=@item.MinMeasuredValue class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="MaxMeasuredValue" value=@item.MaxMeasuredValue class="form-control">
                             </td>
                         </tr>
                     }

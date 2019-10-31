@@ -104,6 +104,8 @@
     <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
     <input id="ShowHideRightPanelText" type="text" value="@SharedLocalizer["ShowHideRightPanelText"]" />
     <input id="MonitoringPostMeasuredParameters2" type="text" value="@ViewBag.MonitoringPostMeasuredParameters2" />
+    <input id="More" type="text" value="@SharedLocalizer["More"]" />
+    <input id="Smaller" type="text" value="@SharedLocalizer["Smaller"]" />
 </div>
 
 <div id="fullscreen" class="fullscreen">
@@ -1185,7 +1187,7 @@
             },
             type: 'POST',
             success: function (data) {
-                ChangeTable(data);
+                TableGetMinMax(data);
             },
             error: function () {
                 $("#tableMeasuredDatas").LoadingOverlay("hide");
@@ -1193,11 +1195,48 @@
         })
     };
 
-    function ChangeTable(data) {
+    function TableGetMinMax(data) {
+        $.ajax({
+            url: '@Url.Action("GetMinMax", "Maps")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#TableMeasuredParameterId').val()
+            },
+            type: 'POST',
+            success: function (dataMinMax) {
+                var minMeasured = null;
+                var maxMeasured = null;
+                if (dataMinMax.minMeasured != null) {
+                    minMeasured = parseFloat(dataMinMax.minMeasured);
+                }
+                if (dataMinMax.maxMeasured != null) {
+                    maxMeasured = parseFloat(dataMinMax.maxMeasured);
+                }
+                ChangeTable(data, minMeasured, maxMeasured);
+            },
+            error: function () {
+                ChangeTable(data, null, null);
+            }
+        })
+    }
+
+    function ChangeTable(data, minMeasured, maxMeasured) {
         $("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        if (minMeasured != null || maxMeasured != null)
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            if (minMeasured != null && data.measureddatas[i].value < minMeasured) {
+                data.measureddatas[i].value = $("#Smaller").val() + " " + parseFloat(minMeasured).toFixed(2);
+            }
+            else if (maxMeasured != null && data.measureddatas[i].value > maxMeasured) {
+                data.measureddatas[i].value = $("#More").val() + " " + parseFloat(maxMeasured).toFixed(2);
+            }
+            else {
+                data.measureddatas[i].value = parseFloat(data.measureddatas[i].value).toFixed(2);
+            }
+        }
         var tablehtml = '';
         for (var i = 0; i < data.measureddatas.length; i++) {
-            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + parseFloat(data.measureddatas[i].value).toFixed(2) + '</td></tr>';
+            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + data.measureddatas[i].value + '</td></tr>';
         }
         $('#tableMeasuredDatas tbody').append(tablehtml);
         $("#tableMeasuredDatas").LoadingOverlay("hide");

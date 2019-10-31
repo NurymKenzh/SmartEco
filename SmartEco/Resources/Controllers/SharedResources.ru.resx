@@ -387,4 +387,16 @@
   <data name="TurnOnOff" xml:space="preserve">
     <value>Включить/выключить пост</value>
   </data>
+  <data name="MaxMeasuredValue" xml:space="preserve">
+    <value>Максимальное измеряемое значение</value>
+  </data>
+  <data name="MinMeasuredValue" xml:space="preserve">
+    <value>Минимальное измеряемое значение</value>
+  </data>
+  <data name="More" xml:space="preserve">
+    <value>Больше</value>
+  </data>
+  <data name="Smaller" xml:space="preserve">
+    <value>Меньше</value>
+  </data>
 </root>

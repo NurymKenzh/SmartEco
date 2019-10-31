@@ -420,6 +420,8 @@ namespace SmartEco.Controllers
             int?[] Sensors,
             string[] Minimum,
             string[] Maximum,
+            string[] MinMeasuredValue,
+            string[] MaxMeasuredValue,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,
@@ -509,6 +511,34 @@ namespace SmartEco.Controllers
                         {
                             route += string.IsNullOrEmpty(route) ? "?" : "&";
                             route += $"Max={max.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    foreach (var minV in MinMeasuredValue)
+                    {
+                        if (minV == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MinMeasuredValue=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MinMeasuredValue={minV.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    foreach (var maxV in MaxMeasuredValue)
+                    {
+                        if (maxV == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MaxMeasuredValue=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MaxMeasuredValue={maxV.ToString()}".Replace(',', '.');
                         }
                     }
 
@@ -622,6 +652,8 @@ namespace SmartEco.Controllers
             int?[] Sensors,
             string[] Minimum,
             string[] Maximum,
+            string[] MinMeasuredValue,
+            string[] MaxMeasuredValue,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,
@@ -714,6 +746,34 @@ namespace SmartEco.Controllers
                         {
                             route += string.IsNullOrEmpty(route) ? "?" : "&";
                             route += $"Max={max.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    foreach (var minV in MinMeasuredValue)
+                    {
+                        if (minV == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MinMeasuredValue=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MinMeasuredValue={minV.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    foreach (var maxV in MaxMeasuredValue)
+                    {
+                        if (maxV == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MaxMeasuredValue=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MaxMeasuredValue={maxV.ToString()}".Replace(',', '.');
                         }
                     }
 

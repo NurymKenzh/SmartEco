@@ -79,25 +79,37 @@
                         <th>
                             @SharedLocalizer["Maximum"]
                         </th>
+                        <th>
+                            @SharedLocalizer["MinMeasuredValue"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["MaxMeasuredValue"]
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (MeasuredParameter item in ViewBag.MeasuredParameters)
                     {
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="Sensors" class="form-control" value="@item.Id">
-                            </td>
-                            <td>
-                                @item.Name
-                            </td>
-                            <td>
-                                <input type="text" name="Minimum" class="form-control">
-                            </td>
-                            <td>
-                                <input type="text" name="Maximum" class="form-control">
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="Sensors" class="form-control" value="@item.Id">
+                        </td>
+                        <td>
+                            @item.Name
+                        </td>
+                        <td>
+                            <input type="text" name="Minimum" class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="Maximum" class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="MinMeasuredValue" class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="MaxMeasuredValue" class="form-control">
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
