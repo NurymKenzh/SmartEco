@@ -75,6 +75,11 @@ namespace GetPostsData
             public int MonitoringPostId { get; set; }
             public int MeasuredParameterId { get; set; }
         }
+        public class MonitoringPostMeasuredParameter
+        {
+            public int MonitoringPostId { get; set; }
+            public int MeasuredParameterId { get; set; }
+        }
         static void Main(string[] args)
         {
             NewLog("Program started!");
@@ -84,6 +89,7 @@ namespace GetPostsData
             {
                 List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
                 List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+                List<MonitoringPostMeasuredParameter> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameter>();
                 List<MeasuredData> measuredDatasCheck = new List<MeasuredData>();
                 List<Person> persons = new List<Person>();
 
@@ -556,6 +562,11 @@ namespace GetPostsData
                             $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
                         monitoringPosts = monitoringPostsv.ToList();
 
+                        var monitoringPostMeasuredParametersv = connection.Query<MonitoringPostMeasuredParameter>(
+                            $"SELECT \"MonitoringPostId\", \"MeasuredParameterId\"" +
+                            $"FROM public.\"MonitoringPostMeasuredParameters\"");
+                        monitoringPostMeasuredParameters = monitoringPostMeasuredParametersv.ToList();
+
                         var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\" " +
                             $"FROM public.\"Person\" " +
                             $"WHERE \"Role\" = 'admin' OR \"Role\" = 'moderator' " +
@@ -572,7 +583,7 @@ namespace GetPostsData
                         DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
                         var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
                             $"FROM public.\"LogSendMail\" " +
-                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                            $"WHERE \"DateTime\" > '{dateTimeLastWrite.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
                             $"ORDER BY \"DateTime\"");
                         logSendMails = logSendMailsv.ToList();
                     }
@@ -613,16 +624,24 @@ namespace GetPostsData
                         {
                             foreach (var measuredParameter in measuredParameters)
                             {
+                                var monitoringPostMeasuredParameter = monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id).ToList();
                                 foreach (var measuredData in measuredDatasCheck)
                                 {
                                     if (measuredData.MonitoringPostId == monitoringPost.Id)
                                     {
                                         checkPost = false;
                                     }
-                                    if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
+                                    if (monitoringPostMeasuredParameter.Count != 0)
+                                    {
+                                        if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
+                                        {
+                                            check = false;
+                                            break;
+                                        }
+                                    }
+                                    else
                                     {
                                         check = false;
-                                        break;
                                     }
                                 }
                                 if (checkPost)
@@ -633,7 +652,7 @@ namespace GetPostsData
                                         DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
                                         var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
                                             $"FROM public.\"LogSendMail\" " +
-                                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                                            $"WHERE \"DateTime\" > '{dateTimeLastWrite.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
                                             $"ORDER BY \"DateTime\"");
                                         logSendMails = logSendMailsv.ToList();
                                     }
@@ -670,7 +689,7 @@ namespace GetPostsData
                                         DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
                                         var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\" " +
                                             $"FROM public.\"LogSendMail\" " +
-                                            $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                                            $"WHERE \"DateTime\" > '{dateTimeLastWrite.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
                                             $"ORDER BY \"DateTime\"");
                                         logSendMails = logSendMailsv.ToList();
                                     }
