@@ -1018,10 +1018,16 @@
             }
         }
         if (min == null) {
-            min = Math.floor(Math.min.apply(null, values));
+            min = Math.min.apply(null, values);
+            if (min > 1) {
+                min = Math.floor(min);
+            }
         }
         if (max == null) {
-            max = Math.ceil(Math.max.apply(null, values));
+            max = Math.max.apply(null, values);
+            if (max > 1) {
+                max = Math.ceil(max);
+            }
         }
         for (var i = 0; i < data.measureddatas.length; i++) {
             data1.push({
