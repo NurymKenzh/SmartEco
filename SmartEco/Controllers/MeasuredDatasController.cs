@@ -475,7 +475,8 @@ namespace SmartEco.Controllers
                 dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
             string url = "api/MeasuredDatas",
                 route = "";
-            if (MeasuredParameterId != null)
+            // First condition - for select chart and table. Second condition - for Analytics
+            if (MeasuredParameterId != null || (MonitoringPostId == null && MeasuredParameterId == null))
             {
                 // SortOrder=DateTime
                 {
