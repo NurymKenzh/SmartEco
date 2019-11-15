@@ -54,5 +54,7 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.Person> Person { get; set; }
 
         public DbSet<SmartEcoAPI.Models.MonitoringPostMeasuredParameters> MonitoringPostMeasuredParameters { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.MeasuredParameterUnit> MeasuredParameterUnit { get; set; }
     }
 }

@@ -399,4 +399,10 @@
   <data name="Smaller" xml:space="preserve">
     <value>Меньше</value>
   </data>
+  <data name="MeasuredParameterUnit" xml:space="preserve">
+    <value>Единица измерения измеряемых параметров</value>
+  </data>
+  <data name="MeasuredParameterUnits" xml:space="preserve">
+    <value>Единицы измерения измеряемых параметров</value>
+  </data>
 </root>

@@ -15,6 +15,11 @@ namespace SmartEcoAPI.Models
         /// </summary>
         public int Id { get; set; }
         /// <summary>
+        /// Единица измерения.
+        /// </summary>
+        public int? MeasuredParameterUnitId { get; set; }
+        public MeasuredParameterUnit MeasuredParameterUnit { get; set; }
+        /// <summary>
         /// Название измеряемого параметра на казахском языке.
         /// </summary>
         public string NameKK { get; set; }

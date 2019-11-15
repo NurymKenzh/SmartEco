@@ -11,6 +11,11 @@ namespace SmartEco.Models
     {
         public int Id { get; set; }
 
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MeasuredParameterUnit")]
+        public int? MeasuredParameterUnitId { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MeasuredParameterUnit")]
+        public MeasuredParameterUnit MeasuredParameterUnit { get; set; }
+
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameKK")]
         public string NameKK { get; set; }
 
@@ -26,14 +31,14 @@ namespace SmartEco.Models
             get
             {
                 string language = new RequestLocalizationOptions().DefaultRequestCulture.Culture.Name,
-                    name = NameRU;
+                    name = NameRU + (MeasuredParameterUnit != null ? ", " + MeasuredParameterUnit.Name : "");
                 if (language == "kk")
                 {
-                    name = NameKK;
+                    name = NameKK + (MeasuredParameterUnit != null ? ", " + MeasuredParameterUnit.Name : "");
                 }
                 if (language == "en")
                 {
-                    name = NameEN;
+                    name = NameEN + (MeasuredParameterUnit != null ? ", " + MeasuredParameterUnit.Name : "");
                 }
                 return name;
             }

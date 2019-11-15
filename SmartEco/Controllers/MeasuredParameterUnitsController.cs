@@ -5,47 +5,40 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SmartEco.Models;
 
 namespace SmartEco.Controllers
 {
-    public class MeasuredParametersController : Controller
+    public class MeasuredParameterUnitsController : Controller
     {
         private readonly HttpApiClientController _HttpApiClient;
 
-        public MeasuredParametersController(HttpApiClientController HttpApiClient)
+        public MeasuredParameterUnitsController(HttpApiClientController HttpApiClient)
         {
             _HttpApiClient = HttpApiClient;
         }
 
-        // GET: MeasuredParameters
+        // GET: MeasuredParameterUnits
         public async Task<IActionResult> Index(string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
 
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
 
             ViewBag.NameKKSort = SortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
             ViewBag.NameRUSort = SortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
             ViewBag.NameENSort = SortOrder == "NameEN" ? "NameENDesc" : "NameEN";
-            ViewBag.EcomonCodeSort = SortOrder == "EcomonCode" ? "EcomonCodeDesc" : "EcomonCode";
-            ViewBag.OceanusCodeSort = SortOrder == "OceanusCode" ? "OceanusCodeDesc" : "OceanusCode";
 
-            string url = "api/MeasuredParameters",
+            string url = "api/MeasuredParameterUnits",
                 route = "",
                 routeCount = "";
             if (!string.IsNullOrEmpty(SortOrder))
@@ -73,20 +66,6 @@ namespace SmartEco.Controllers
                 route += $"NameEN={NameENFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"NameEN={NameENFilter}";
-            }
-            if (EcomonCodeFilter != null)
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"EcomonCode={EcomonCodeFilter}";
-                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
-                routeCount += $"EcomonCode={EcomonCodeFilter}";
-            }
-            if (OceanusCodeFilter != null)
-            {
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"OceanusCode={OceanusCodeFilter}";
-                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
-                routeCount += $"OceanusCode={OceanusCodeFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -121,17 +100,17 @@ namespace SmartEco.Controllers
                 responseCount = await _HttpApiClient.GetAsync(url + "/count" + routeCount);
             if (response.IsSuccessStatusCode)
             {
-                measuredParameters = await response.Content.ReadAsAsync<List<MeasuredParameter>>();
+                measuredParameterUnits = await response.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
             }
-            int measuredParametersCount = 0;
+            int measuredParameterUnitsCount = 0;
             if (responseCount.IsSuccessStatusCode)
             {
-                measuredParametersCount = await responseCount.Content.ReadAsAsync<int>();
+                measuredParameterUnitsCount = await responseCount.Content.ReadAsAsync<int>();
             }
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber != null ? PageNumber : 1;
-            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(measuredParametersCount / (decimal)PageSize) : 1;
+            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(measuredParameterUnitsCount / (decimal)PageSize) : 1;
             ViewBag.StartPage = PageNumber - 5;
             ViewBag.EndPage = PageNumber + 4;
             if (ViewBag.StartPage <= 0)
@@ -148,17 +127,15 @@ namespace SmartEco.Controllers
                 }
             }
 
-            return View(measuredParameters);
+            return View(measuredParameterUnits);
         }
 
-        // GET: MeasuredParameters/Details/5
+        // GET: MeasuredParameterUnits/Details/5
         public async Task<IActionResult> Details(int? id,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -168,34 +145,30 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            MeasuredParameter measuredParameter = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
+            MeasuredParameterUnit measuredParameterUnit = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameterUnits/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                measuredParameterUnit = await response.Content.ReadAsAsync<MeasuredParameterUnit>();
             }
-            if (measuredParameter == null)
+            if (measuredParameterUnit == null)
             {
                 return NotFound();
             }
 
-            return View(measuredParameter);
+            return View(measuredParameterUnit);
         }
 
-        // GET: MeasuredParameters/Create
-        public async Task<IActionResult> Create(string SortOrder,
+        // GET: MeasuredParameterUnits/Create
+        public IActionResult Create(string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -205,32 +178,19 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
-            List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
-            string urlMeasuredParameterUnits = "api/MeasuredParameterUnits",
-                routeMeasuredParameterUnits = "";
-            HttpResponseMessage responseMeasuredParameterUnits = await _HttpApiClient.GetAsync(urlMeasuredParameterUnits + routeMeasuredParameterUnits);
-            if (responseMeasuredParameterUnits.IsSuccessStatusCode)
-            {
-                measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
-            }
-            ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name");
             return View();
         }
 
-        // POST: MeasuredParameters/Create
+        // POST: MeasuredParameterUnits/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN,MPC")] MeasuredParameterUnit measuredParameterUnit,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -240,12 +200,10 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
-                    "api/MeasuredParameters", measuredParameter);
+                    "api/MeasuredParameterUnits", measuredParameterUnit);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -260,7 +218,7 @@ namespace SmartEco.Controllers
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(measuredParameter);
+                    return View(measuredParameterUnit);
                 }
 
                 return RedirectToAction(nameof(Index),
@@ -271,31 +229,18 @@ namespace SmartEco.Controllers
                         PageNumber = ViewBag.PageNumber,
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
-                        NameENFilter = ViewBag.NameENFilter,
-                        EcomonCodeFilter = ViewBag.EcomonCodeFilter,
-                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
+                        NameENFilter = ViewBag.NameENFilter
                     });
             }
-            List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
-            string urlMeasuredParameterUnits = "api/MeasuredParameterUnits",
-                routeMeasuredParameterUnits = "";
-            HttpResponseMessage responseMeasuredParameterUnits = await _HttpApiClient.GetAsync(urlMeasuredParameterUnits + routeMeasuredParameterUnits);
-            if (responseMeasuredParameterUnits.IsSuccessStatusCode)
-            {
-                measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
-            }
-            ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name");
-            return View(measuredParameter);
+            return View(measuredParameterUnit);
         }
 
-        // GET: MeasuredParameters/Edit/5
+        // GET: MeasuredParameterUnits/Edit/5
         public async Task<IActionResult> Edit(int? id,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -305,38 +250,25 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
-            MeasuredParameter measuredParameter = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
+            MeasuredParameterUnit measuredParameterUnit = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameterUnits/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                measuredParameterUnit = await response.Content.ReadAsAsync<MeasuredParameterUnit>();
             }
-            List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
-            string urlMeasuredParameterUnits = "api/MeasuredParameterUnits",
-                routeMeasuredParameterUnits = "";
-            HttpResponseMessage responseMeasuredParameterUnits = await _HttpApiClient.GetAsync(urlMeasuredParameterUnits + routeMeasuredParameterUnits);
-            if (responseMeasuredParameterUnits.IsSuccessStatusCode)
-            {
-                measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
-            }
-            ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name", measuredParameter.MeasuredParameterUnitId);
-            return View(measuredParameter);
+            return View(measuredParameterUnit);
         }
 
-        // POST: MeasuredParameters/Edit/5
+        // POST: MeasuredParameterUnits/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,MPC")] MeasuredParameterUnit measuredParameterUnit,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -346,16 +278,14 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
-            if (id != measuredParameter.Id)
+            if (id != measuredParameterUnit.Id)
             {
                 return NotFound();
             }
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
-                    $"api/MeasuredParameters/{measuredParameter.Id}", measuredParameter);
+                    $"api/MeasuredParameterUnits/{measuredParameterUnit.Id}", measuredParameterUnit);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -370,10 +300,10 @@ namespace SmartEco.Controllers
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(measuredParameter);
+                    return View(measuredParameterUnit);
                 }
 
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                measuredParameterUnit = await response.Content.ReadAsAsync<MeasuredParameterUnit>();
                 return RedirectToAction(nameof(Index),
                     new
                     {
@@ -382,31 +312,18 @@ namespace SmartEco.Controllers
                         PageNumber = ViewBag.PageNumber,
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
-                        NameENFilter = ViewBag.NameENFilter,
-                        EcomonCodeFilter = ViewBag.EcomonCodeFilter,
-                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
+                        NameENFilter = ViewBag.NameENFilter
                     });
             }
-            List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
-            string urlMeasuredParameterUnits = "api/MeasuredParameterUnits",
-                routeMeasuredParameterUnits = "";
-            HttpResponseMessage responseMeasuredParameterUnits = await _HttpApiClient.GetAsync(urlMeasuredParameterUnits + routeMeasuredParameterUnits);
-            if (responseMeasuredParameterUnits.IsSuccessStatusCode)
-            {
-                measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
-            }
-            ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name", measuredParameter.MeasuredParameterUnitId);
-            return View(measuredParameter);
+            return View(measuredParameterUnit);
         }
 
-        // GET: MeasuredParameters/Delete/5
+        // GET: MeasuredParameterUnits/Delete/5
         public async Task<IActionResult> Delete(int? id,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -416,28 +333,26 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            MeasuredParameter measuredParameter = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
+            MeasuredParameterUnit measuredParameterUnit = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameterUnits/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                measuredParameter = await response.Content.ReadAsAsync<MeasuredParameter>();
+                measuredParameterUnit = await response.Content.ReadAsAsync<MeasuredParameterUnit>();
             }
-            if (measuredParameter == null)
+            if (measuredParameterUnit == null)
             {
                 return NotFound();
             }
 
-            return View(measuredParameter);
+            return View(measuredParameterUnit);
         }
 
-        // POST: MeasuredParameters/Delete/5
+        // POST: MeasuredParameterUnits/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id,
@@ -445,8 +360,6 @@ namespace SmartEco.Controllers
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
-            int? EcomonCodeFilter,
-            string OceanusCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -456,10 +369,8 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            ViewBag.EcomonCodeFilter = EcomonCodeFilter;
-            ViewBag.OceanusCodeFilter = OceanusCodeFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
-                $"api/MeasuredParameters/{id}");
+                $"api/MeasuredParameterUnits/{id}");
             return RedirectToAction(nameof(Index),
                     new
                     {
@@ -468,15 +379,8 @@ namespace SmartEco.Controllers
                         PageNumber = ViewBag.PageNumber,
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
-                        NameENFilter = ViewBag.NameENFilter,
-                        EcomonCodeFilter = ViewBag.EcomonCodeFilter,
-                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
+                        NameENFilter = ViewBag.NameENFilter
                     });
         }
-
-        //private bool MeasuredParameterExists(int id)
-        //{
-        //    return _context.MeasuredParameter.Any(e => e.Id == id);
-        //}
     }
 }

@@ -36,6 +36,7 @@ namespace SmartEcoAPI.Controllers
             int? PageNumber)
         {
             var measuredParameters = _context.MeasuredParameter
+                .Include(m => m.MeasuredParameterUnit)
                 .Where(m => true);
 
             if (!string.IsNullOrEmpty(NameKK))
@@ -109,7 +110,10 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         public async Task<ActionResult<MeasuredParameter>> GetMeasuredParameter(int id)
         {
-            var measuredParameter = await _context.MeasuredParameter.FindAsync(id);
+            var measuredParameter = await _context.MeasuredParameter
+                .Include(m => m.MeasuredParameterUnit)
+                //.FindAsync(id);
+                .FirstOrDefaultAsync(m => m.Id == id);
 
             if (measuredParameter == null)
             {

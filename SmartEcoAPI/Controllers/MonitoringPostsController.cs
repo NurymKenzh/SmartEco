@@ -667,6 +667,7 @@ namespace SmartEcoAPI.Controllers
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters
                 .Where(m => m.MonitoringPostId == MonitoringPostId)
                 .Include(m => m.MeasuredParameter)
+                .Include(m => m.MeasuredParameter.MeasuredParameterUnit)
                 .Include(m => m.MonitoringPost)
                 .OrderBy(m => m.MonitoringPostId)
                 .ToList();
