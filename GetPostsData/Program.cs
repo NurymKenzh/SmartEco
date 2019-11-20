@@ -720,7 +720,10 @@ namespace GetPostsData
                                 checkPost = check = true;
                             }
                         }
-                        CreateMail(message, persons);
+                        if (message != "")
+                        {
+                            CreateMail(message, persons);
+                        }
                     }
                     lastCheckDateTime = DateTime.Now;
                 }
