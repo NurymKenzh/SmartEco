@@ -405,4 +405,7 @@
   <data name="MeasuredParameterUnits" xml:space="preserve">
     <value />
   </data>
+  <data name="ComparisonMeasuredParameters" xml:space="preserve">
+    <value />
+  </data>
 </root>

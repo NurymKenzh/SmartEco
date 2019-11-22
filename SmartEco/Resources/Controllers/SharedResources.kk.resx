@@ -405,4 +405,7 @@
   <data name="MeasuredParameterUnits" xml:space="preserve">
     <value>Өлшем бірлігі</value>
   </data>
+  <data name="ComparisonMeasuredParameters" xml:space="preserve">
+    <value>Өлшенген параметрлерді салыстыру</value>
+  </data>
 </root>

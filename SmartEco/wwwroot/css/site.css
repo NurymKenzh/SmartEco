@@ -288,3 +288,8 @@ body {
 .table-analytics {
     text-align: right;
 }
+
+.analystScrollCheck {
+    overflow: auto;
+    height: 120px;
+}
