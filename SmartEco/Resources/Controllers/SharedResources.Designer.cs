@@ -819,6 +819,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string PostAnalytics {
+            get {
+                return ResourceManager.GetString("PostAnalytics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Posts {
             get {
                 return ResourceManager.GetString("Posts", resourceCulture);

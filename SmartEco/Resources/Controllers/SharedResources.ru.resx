@@ -408,4 +408,7 @@
   <data name="ComparisonMeasuredParameters" xml:space="preserve">
     <value>Сравнение измеряемых параметров</value>
   </data>
+  <data name="PostAnalytics" xml:space="preserve">
+    <value>Аналитика по постам</value>
+  </data>
 </root>
