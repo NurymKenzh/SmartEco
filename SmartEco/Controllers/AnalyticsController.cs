@@ -185,5 +185,82 @@ namespace SmartEco.Controllers
                 measureddatas
             );
         }
+
+        public async Task<IActionResult> Stats()
+        {
+            int[] postsIds = new int[] { 52, 53, 43, 45, 47, 49, 50, 51, 48, 46 };
+            string report = $"Период с 2019-06-01 по 2019-11-26\r\n";
+
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            measuredParameters = measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).ToList();
+
+            foreach (int postId in postsIds)
+            {
+                report += $"Пост Id\t{postId}\r\n";
+                DateTime startDT = new DateTime(2019, 6, 1);
+                List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                string url = "api/MeasuredDatas",
+                    route = "";
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MonitoringPostId={postId}";
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"Averaged={true}";
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={startDT.ToString(dateTimeFormatInfo)}";
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={DateTime.Now.ToString(dateTimeFormatInfo)}";
+                HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+                if (response.IsSuccessStatusCode)
+                {
+                    measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+                }
+                measuredDatas = measuredDatas.OrderBy(m => m.DateTime).ToList();
+                report += $"Средние значения:\r\n";
+                foreach (MeasuredParameter measuredParameter in measuredParameters)
+                {
+                    report += $"{measuredParameter.Name}\t";
+                    decimal? value = measuredDatas
+                        .Where(m => m.MeasuredParameterId == measuredParameter.Id)
+                        .Average(m => m.Value);
+                    report += $"{value?.ToString().Replace(',','.')}\r\n";
+                }
+                int count = measuredDatas.Count() * 20;
+                report += $"Количество данных:\t{count.ToString()}\r\n";
+                //foreach (MeasuredParameter measuredParameter in measuredParameters)
+                //{
+                //    report += $"{measuredParameter.Name}\t";
+                //    int count = measuredDatas
+                //        .Count(m => m.MeasuredParameterId == measuredParameter.Id);
+                //    report += $"{count.ToString()}\r\n";
+                //}
+                report += $"Превышения ПДК:\r\n";
+                report += $"Пост\tПараметр\tДата, время\tЗначение\tПДК\r\n";
+                foreach (MeasuredData measuredData in measuredDatas)
+                //for (int i = 0; i <= measuredDatas.Count(); i++)
+                {
+                    if(measuredData.MeasuredParameter.MPC!=null)
+                    {
+                        if (measuredData.Value >= measuredData.MeasuredParameter.MPC)
+                        {
+                            report += $"{measuredData.MonitoringPost.Name} ({measuredData.MonitoringPost.AdditionalInformation})\t";
+                            report += $"{measuredData.MeasuredParameter.Name}\t";
+                            report += $"{measuredData.DateTime?.ToString()}\t";
+                            report += $"{measuredData.Value?.ToString().Replace(',', '.')}\t";
+                            report += $"{measuredData.MeasuredParameter.MPC?.ToString().Replace(',', '.')}\r\n";
+                        }
+                    }
+                }
+            }
+
+            return View();
+        }
     }
 }
