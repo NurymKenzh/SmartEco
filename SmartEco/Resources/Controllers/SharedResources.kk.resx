@@ -408,4 +408,7 @@
   <data name="ComparisonMeasuredParameters" xml:space="preserve">
     <value>Өлшенген параметрлерді салыстыру</value>
   </data>
+  <data name="PostAnalytics" xml:space="preserve">
+    <value>Постар бойынша талдау</value>
+  </data>
 </root>

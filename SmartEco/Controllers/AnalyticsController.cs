@@ -4,6 +4,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -90,6 +91,43 @@ namespace SmartEco.Controllers
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
             ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
 
+            return View();
+        }
+
+        public IActionResult PostAnalytics()
+        {
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAnalytics(
+            DateTime DateTimeFrom,
+            DateTime DateTimeTo)
+        {
+            string url = "api/Analytics",
+                route = "";
+            if (DateTimeFrom != null)
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={DateTimeFrom.ToString(dateTimeFormatInfo)}";
+            }
+            if (DateTimeTo != null)
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={DateTimeTo.ToString(dateTimeFormatInfo)}";
+            }
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            //if (response.IsSuccessStatusCode)
+            //{
+            //}
+
+            ViewBag.ExcelSent = "Excel-файл отправлен на Ваш E-mail";
+            ViewBag.DateFrom = DateTimeFrom.ToString("yyyy-MM-dd");
+            ViewBag.DateTo = DateTimeTo.ToString("yyyy-MM-dd");
             return View();
         }
 
