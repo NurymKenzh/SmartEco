@@ -300,5 +300,50 @@ namespace SmartEco.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> Data()
+        {
+            int[] postsIds = new int[] { 52, 53, 43, 45, 47, 49, 50, 51, 48, 46 };
+            string fileName = @"E:\Documents\New\Data.txt";
+            System.IO.File.AppendAllText(fileName, "Дата\tПост\tПараметр\tЗначение\r\n");
+            string data = "";
+
+            foreach (int postId in postsIds)
+            {
+                DateTime startDT = new DateTime(2019, 6, 1);
+                List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                string url = "api/MeasuredDatas",
+                    route = "";
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MonitoringPostId={postId}";
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"Averaged={true}";
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={startDT.ToString(dateTimeFormatInfo)}";
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={DateTime.Now.ToString(dateTimeFormatInfo)}";
+                HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+                if (response.IsSuccessStatusCode)
+                {
+                    measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+                }
+                measuredDatas = measuredDatas.OrderBy(m => m.DateTime).ToList();
+                foreach(MeasuredData measuredData in measuredDatas)
+                {
+                    //System.IO.File.AppendAllText(fileName, $"{measuredData.DateTime?.ToString()}\t" +
+                    //    $"{measuredData.MonitoringPost.Name} ({measuredData.MonitoringPost.AdditionalInformation})\t" +
+                    //    $"{measuredData.MeasuredParameter.Name}\t" +
+                    //    $"{measuredData.Value?.ToString().Replace(',', '.')}\r\n");
+                    data += $"{measuredData.DateTime?.ToString()}\t" +
+                        $"{measuredData.MonitoringPost.Name} ({measuredData.MonitoringPost.AdditionalInformation})\t" +
+                        $"{measuredData.MeasuredParameter.Name}\t" +
+                        $"{measuredData.Value?.ToString().Replace(',', '.')}\r\n";
+                }
+            }
+            System.IO.File.AppendAllText(fileName, data);
+
+            return View();
+        }
     }
 }
