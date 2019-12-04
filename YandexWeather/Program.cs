@@ -47,7 +47,7 @@ namespace YandexWeather
                 List<MeasuredData> measuredDatas = new List<MeasuredData>();
                 DateTime? dateTime = DateTime.Now;
 
-                if ((new int[] { 00, 20, 40 }).Contains(dateTime.Value.Minute))
+                if ((new int[] { 00, 20, 36 }).Contains(dateTime.Value.Minute))
                 {
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
@@ -83,7 +83,7 @@ namespace YandexWeather
 
                             measuredDatas.Add(new MeasuredData()
                             {
-                                DateTime = DateTime.Now,
+                                DateTime = dateTime.Value.AddSeconds(-dateTime.Value.Second),
                                 MeasuredParameterId = 21,
                                 MonitoringPostId = monitoringPost.Id,
                                 Value = Convert.ToDecimal(temp),
