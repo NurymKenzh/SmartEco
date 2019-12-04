@@ -919,16 +919,24 @@
             success: function (dataMinMax) {
                 var min = null;
                 var max = null;
+                var minMeasured = null;
+                //var maxMeasured = null;
                 if (dataMinMax.min != null) {
                     min = parseFloat(dataMinMax.min);
                 }
                 if (dataMinMax.max != null) {
                     max = parseFloat(dataMinMax.max);
                 }
-                ChangeChart(data, min, max);
+                if (dataMinMax.minMeasured != null) {
+                    minMeasured = parseFloat(dataMinMax.minMeasured);
+                }
+                //if (dataMinMax.maxMeasured != null) {
+                //    maxMeasured = parseFloat(dataMinMax.maxMeasured);
+                //}
+                ChangeChart(data, min, max, minMeasured);
             },
             error: function () {
-                ChangeChart(data, null, null);
+                ChangeChart(data, null, null, null);
             }
         })
     }
@@ -1003,7 +1011,7 @@
     };
 
     var ChartMeasuredDatas = null;
-    function ChangeChart(data, min, max) {
+    function ChangeChart(data, min, max, minMeasured) {
         if (ChartMeasuredDatas != null) {
             ChartMeasuredDatas.destroy();
         }
@@ -1087,6 +1095,19 @@
                     meta.data[i]._view.borderColor = newColor;
                 }
 
+                function _setBorderDash(meta, i) {
+                    if (i != data1.length + 1) {
+                        if (minMeasured != null && data1[i - 2].y <= minMeasured && data1[i - 1].y <= minMeasured) {
+                            meta.dataset._view.borderDash = [3, 3];
+                            meta.data[i - 2]._view.borderDash = [3, 3];
+                        }
+                        else {
+                            meta.dataset._view.borderDash = [0, 0];
+                            meta.data[i - 2]._view.borderDash = [0, 0];
+                        }
+                    }
+                }
+
                 if (!colors) {
                     Chart.controllers.line.prototype.draw.call(this, ease);
                     return;
@@ -1096,24 +1117,28 @@
                     if (data1[i - 2].y <= MPC && MPC != null && i != data1.length + 1 && data1[i - 1].y >= MPC) {
                         _setColor(colors[3], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
                     else if (data1[i - 2].y >= MPC && MPC != null && i != data1.length + 1 && data1[i - 1].y <= MPC) {
                         _setColor(colors[3], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
                     else if (data1[i - 2].y >= MPC && MPC != null) {
                         _setColor(colors[1], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
                     else {
                         _setColor(colors[2], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
