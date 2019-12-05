@@ -47,7 +47,7 @@ namespace YandexWeather
                 List<MeasuredData> measuredDatas = new List<MeasuredData>();
                 DateTime? dateTime = DateTime.Now;
 
-                if ((new int[] { 00, 20, 36 }).Contains(dateTime.Value.Minute))
+                if ((new int[] { 00, 20, 40 }).Contains(dateTime.Value.Minute))
                 {
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
@@ -59,6 +59,7 @@ namespace YandexWeather
                         monitoringPosts = monitoringPostsv.ToList();
                     }
 
+                    Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Yandex started.{Environment.NewLine}");
                     foreach (var monitoringPost in monitoringPosts)
                     {
                         if (monitoringPost.MN == "kazA2019082001" || monitoringPost.MN == "kazA2019082002" || 
@@ -68,57 +69,71 @@ namespace YandexWeather
                         {
                             decimal lat = monitoringPost.NorthLatitude;
                             decimal lon = monitoringPost.EastLongitude;
-                            HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(string.Format($"https://api.weather.yandex.ru/v1/forecast?lat={lat}&lon={lon}"));
-                            WebReq.Method = "GET";
-                            WebReq.Headers.Add("X-Yandex-API-Key", "8997ff67-00e3-4f0a-8c88-f7b72f90f2c6");
-                            HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
-                            string jsonString;
-                            using (Stream stream = WebResp.GetResponseStream())   //modified from your code since the using statement disposes the stream automatically when done
+                            try
                             {
-                                StreamReader reader = new StreamReader(stream, System.Text.Encoding.UTF8);
-                                jsonString = reader.ReadToEnd();
+                                HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(string.Format($"https://api.weather.yandex.ru/v1/forecast?lat={lat}&lon={lon}"));
+                                WebReq.Method = "GET";
+                                WebReq.Headers.Add("X-Yandex-API-Key", "8997ff67-00e3-4f0a-8c88-f7b72f90f2c6");
+                                HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
+                                string jsonString;
+                                using (Stream stream = WebResp.GetResponseStream())   //modified from your code since the using statement disposes the stream automatically when done
+                                {
+                                    StreamReader reader = new StreamReader(stream, System.Text.Encoding.UTF8);
+                                    jsonString = reader.ReadToEnd();
+                                }
+
+                                dynamic data = JObject.Parse(jsonString);
+                                string temp = data.fact.temp;
+
+                                measuredDatas.Add(new MeasuredData()
+                                {
+                                    DateTime = dateTime.Value.AddSeconds(-dateTime.Value.Second),
+                                    MeasuredParameterId = 21,
+                                    MonitoringPostId = monitoringPost.Id,
+                                    Value = Convert.ToDecimal(temp),
+                                    Averaged = true
+                                });
                             }
-
-                            dynamic data = JObject.Parse(jsonString);
-                            string temp = data.fact.temp;
-
-                            //Console.WriteLine($"Temperature for {monitoringPost.MN}: {temp}");
-
-                            measuredDatas.Add(new MeasuredData()
+                            catch (Exception ex)
                             {
-                                DateTime = dateTime.Value.AddSeconds(-dateTime.Value.Second),
-                                MeasuredParameterId = 21,
-                                MonitoringPostId = monitoringPost.Id,
-                                Value = Convert.ToDecimal(temp),
-                                Averaged = true
-                            });
+                                Console.WriteLine(DateTime.Now.ToString() + " >> Error: " + ex.ToString() + Environment.NewLine);
+                            }
 
                             //Console.WriteLine($"Post - {monitoringPost.Id}, Date - {dateTime.Value.AddSeconds(-dateTime.Value.Second)}, Temp - {temp}");
                         }
                     }
+                    Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Yandex finished. Data from Yandex count: {measuredDatas.Count.ToString()}{Environment.NewLine}");
 
-                    using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    Console.WriteLine($"{DateTime.Now.ToString()} >> Insert Data to MeasuredData started.{Environment.NewLine}");
+                    try
                     {
-                        connection2.Open();
-                        foreach (MeasuredData measuredData in measuredDatas)
+                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                         {
-                            string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
-                                $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                $"make_timestamptz(" +
-                                    $"{measuredData.DateTime?.Year.ToString()}, " +
-                                    $"{measuredData.DateTime?.Month.ToString()}, " +
-                                    $"{measuredData.DateTime?.Day.ToString()}, " +
-                                    $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                    $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                    $"{measuredData.DateTime?.Second.ToString()})," +
-                                $"{measuredData.Value.ToString()}," +
-                                $"{measuredData.MonitoringPostId.ToString()}," +
-                                $"{measuredData.Averaged.ToString()});";
-                            connection2.Execute(execute);
+                            connection2.Open();
+                            foreach (MeasuredData measuredData in measuredDatas)
+                            {
+                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
+                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                                    $"make_timestamptz(" +
+                                        $"{measuredData.DateTime?.Year.ToString()}, " +
+                                        $"{measuredData.DateTime?.Month.ToString()}, " +
+                                        $"{measuredData.DateTime?.Day.ToString()}, " +
+                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
+                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
+                                        $"{measuredData.DateTime?.Second.ToString()})," +
+                                    $"{measuredData.Value.ToString()}," +
+                                    $"{measuredData.MonitoringPostId.ToString()}," +
+                                    $"{measuredData.Averaged.ToString()});";
+                                connection2.Execute(execute);
+                            }
                         }
                     }
+                    catch (Exception ex)
+                    {
+                        Console.WriteLine(DateTime.Now.ToString() + " >> Error: " + ex.ToString() + Environment.NewLine);
+                    }
+                    Console.WriteLine($"{DateTime.Now.ToString()} >> Insert Data to MeasuredData finished.{Environment.NewLine}");
                 }
-                //Console.WriteLine($"");
 
                 Thread.Sleep(sleepSeconds * 1000);
             }
