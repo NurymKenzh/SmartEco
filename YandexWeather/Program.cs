@@ -61,7 +61,10 @@ namespace YandexWeather
 
                     foreach (var monitoringPost in monitoringPosts)
                     {
-                        if (monitoringPost.MN != "0034" && monitoringPost.MN != "0038" && monitoringPost.MN != "kazA2019081901" && monitoringPost.MN != "kazA2019081902" && monitoringPost.MN != "kazA2019081903")
+                        if (monitoringPost.MN == "kazA2019082001" || monitoringPost.MN == "kazA2019082002" || 
+                            monitoringPost.MN == "0032" || monitoringPost.MN == "0033" || monitoringPost.MN == "0035" || 
+                            monitoringPost.MN == "0036" || monitoringPost.MN == "0037" || monitoringPost.MN == "0039" || 
+                            monitoringPost.MN == "0040" || monitoringPost.MN == "0041")
                         {
                             decimal lat = monitoringPost.NorthLatitude;
                             decimal lon = monitoringPost.EastLongitude;
