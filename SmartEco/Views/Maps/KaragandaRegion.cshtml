@@ -1114,21 +1114,27 @@
                 }
 
                 for (var i = 2; i < data1.length + 2; i++) {
-                    if (data1[i - 2].y <= MPC && MPC != null && i != data1.length + 1 && data1[i - 1].y >= MPC) {
+                    var numb = parseFloat(data1[i - 2].y);
+                    var numbNext = parseFloat(data1[i - 2].y);
+                    if (i != data1.length + 1) {
+                        numbNext = parseFloat(data1[i - 1].y);
+                    }
+                    MPC = MPC;
+                    if (numb <= MPC && MPC != null && i != data1.length + 1 && numbNext >= MPC) {
                         _setColor(colors[3], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
                         _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
-                    else if (data1[i - 2].y >= MPC && MPC != null && i != data1.length + 1 && data1[i - 1].y <= MPC) {
+                    else if (numb >= MPC && MPC != null && i != data1.length + 1 && numbNext <= MPC) {
                         _setColor(colors[3], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
                         _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
-                    else if (data1[i - 2].y >= MPC && MPC != null) {
+                    else if (numb >= MPC && MPC != null) {
                         _setColor(colors[1], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
                         _setBorderDash(meta, i);
