@@ -74,11 +74,14 @@ namespace GetPostsData
             public DateTime DateTime { get; set; }
             public int MonitoringPostId { get; set; }
             public int MeasuredParameterId { get; set; }
+            public string Log { get; set; }
         }
         public class MonitoringPostMeasuredParameter
         {
             public int MonitoringPostId { get; set; }
             public int MeasuredParameterId { get; set; }
+            public string Min { get; set; }
+            public string Max { get; set; }
         }
         static void Main(string[] args)
         {
@@ -91,6 +94,7 @@ namespace GetPostsData
                 List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
                 List<MonitoringPostMeasuredParameter> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameter>();
                 List<MeasuredData> measuredDatasCheck = new List<MeasuredData>();
+                List<MeasuredData> measuredDatasCheckMinMax = new List<MeasuredData>();
                 List<Person> persons = new List<Person>();
 
                 // Get MeasuredParameters, MonitoringPosts
@@ -543,6 +547,7 @@ namespace GetPostsData
                 {
                     List<LogSendMail> logSendMails = new List<LogSendMail>();
                     DateTime dateTimeLast = DateTime.Now.AddMinutes(-20);
+                    DateTime dateTimeLastMinMax = DateTime.Now.AddMinutes(-60);
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
@@ -551,6 +556,12 @@ namespace GetPostsData
                             $"WHERE \"DateTime\" > '{dateTimeLast.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
                             $"ORDER BY \"DateTime\"", commandTimeout: 86400);
                         measuredDatasCheck = measuredDatasv.ToList();
+
+                        var measuredDatasMinMaxv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\" " +
+                            $"FROM public.\"MeasuredData\" " +
+                            $"WHERE \"DateTime\" > '{dateTimeLastMinMax.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                            $"ORDER BY \"DateTime\"", commandTimeout: 86400);
+                        measuredDatasCheckMinMax = measuredDatasMinMaxv.ToList();
 
                         var measuredParametersv = connection.Query<MeasuredParameter>(
                             $"SELECT \"Id\", \"OceanusCode\", \"NameRU\"" +
@@ -563,7 +574,7 @@ namespace GetPostsData
                         monitoringPosts = monitoringPostsv.ToList();
 
                         var monitoringPostMeasuredParametersv = connection.Query<MonitoringPostMeasuredParameter>(
-                            $"SELECT \"MonitoringPostId\", \"MeasuredParameterId\"" +
+                            $"SELECT \"MonitoringPostId\", \"MeasuredParameterId\", \"Min\", \"Max\"" +
                             $"FROM public.\"MonitoringPostMeasuredParameters\"");
                         monitoringPostMeasuredParameters = monitoringPostMeasuredParametersv.ToList();
 
@@ -590,6 +601,8 @@ namespace GetPostsData
                     
                     bool check = true,
                         checkPost = true,
+                        checkMin = true,
+                        checkMax= true,
                         checkLogSendMail = true;
                     string message = "";
                     if (measuredDatasCheck.Count == 0)
@@ -625,6 +638,8 @@ namespace GetPostsData
                             foreach (var measuredParameter in measuredParameters)
                             {
                                 var monitoringPostMeasuredParameter = monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id).ToList();
+                                var min = (monitoringPostMeasuredParameter.Count != 0) ? monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id).FirstOrDefault().Min : null;
+                                var max = (monitoringPostMeasuredParameter.Count != 0) ? monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id).FirstOrDefault().Max : null;
                                 foreach (var measuredData in measuredDatasCheck)
                                 {
                                     if (measuredData.MonitoringPostId == monitoringPost.Id)
@@ -642,6 +657,31 @@ namespace GetPostsData
                                     else
                                     {
                                         check = false;
+                                    }
+                                }
+                                foreach (var measuredData in measuredDatasCheckMinMax)
+                                {
+                                    if (monitoringPostMeasuredParameter.Count != 0)
+                                    {
+                                        if (measuredData.MonitoringPostId == monitoringPost.Id && measuredData.MeasuredParameterId == measuredParameter.Id)
+                                        {
+                                            if (min != null)
+                                            {
+                                                var minValue = Convert.ToDecimal(min);
+                                                if (measuredData.Value < minValue)
+                                                {
+                                                    checkMin = false;
+                                                }
+                                            }
+                                            if (max != null)
+                                            {
+                                                var maxValue = Convert.ToDecimal(max);
+                                                if (measuredData.Value > maxValue)
+                                                {
+                                                    checkMax = false;
+                                                }
+                                            }
+                                        }
                                     }
                                 }
                                 if (checkPost)
@@ -716,8 +756,83 @@ namespace GetPostsData
                                         string logText = $"Нет данных по \"{measuredParameter.NameRU}\" по посту {monitoringPost.MN}";
                                         NewLogSendMail(monitoringPost.Id, measuredParameter.Id, logText);
                                     }
+                                    checkLogSendMail = true;
                                 }
-                                checkPost = check = true;
+                                if (!checkMin)
+                                {
+                                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                                    {
+                                        connection.Open();
+                                        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
+                                        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\", \"Log\"" +
+                                            $"FROM public.\"LogSendMail\" " +
+                                            $"WHERE \"DateTime\" > '{dateTimeLastWrite.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                                            $"ORDER BY \"DateTime\"");
+                                        logSendMails = logSendMailsv.ToList();
+                                    }
+                                    if (logSendMails.Count != 0)
+                                    {
+                                        foreach (var logSendMail in logSendMails)
+                                        {
+                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == measuredParameter.Id && logSendMail.Log.Contains("меньше минимума"))
+                                            {
+                                                checkLogSendMail = false;
+                                                break;
+                                            }
+                                        }
+                                        if (checkLogSendMail)
+                                        {
+                                            message += $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение меньше минимума <br/>";
+                                            string logText = $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение меньше минимума";
+                                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, logText);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        message += $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение меньше минимума <br/>";
+                                        string logText = $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение меньше минимума";
+                                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, logText);
+                                    }
+                                    checkLogSendMail = true;
+                                }
+                                if (!checkMax)
+                                {
+                                    using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+                                    {
+                                        connection.Open();
+                                        DateTime dateTimeLastWrite = DateTime.Now.AddHours(-24);
+                                        var logSendMailsv = connection.Query<LogSendMail>($"SELECT \"DateTime\", \"MeasuredParameterId\", \"MonitoringPostId\", \"Log\"" +
+                                            $"FROM public.\"LogSendMail\" " +
+                                            $"WHERE \"DateTime\" > '{dateTimeLastWrite.ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null " +
+                                            $"ORDER BY \"DateTime\"");
+                                        logSendMails = logSendMailsv.ToList();
+                                    }
+                                    if (logSendMails.Count != 0)
+                                    {
+                                        foreach (var logSendMail in logSendMails)
+                                        {
+                                            if (logSendMail.MonitoringPostId == monitoringPost.Id && logSendMail.MeasuredParameterId == measuredParameter.Id && logSendMail.Log.Contains("больше максимума"))
+                                            {
+                                                checkLogSendMail = false;
+                                                break;
+                                            }
+                                        }
+                                        if (checkLogSendMail)
+                                        {
+                                            message += $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение больше максимума <br/>";
+                                            string logText = $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение больше максимума";
+                                            NewLogSendMail(monitoringPost.Id, measuredParameter.Id, logText);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        message += $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение больше максимума <br/>";
+                                        string logText = $"На посту {monitoringPost.MN} у параметра \"{measuredParameter.NameRU}\" значение больше максимума";
+                                        NewLogSendMail(monitoringPost.Id, measuredParameter.Id, logText);
+                                    }
+                                    checkLogSendMail = true;
+                                }
+                                checkPost = check = checkMin = checkMax = true;
                             }
                         }
                         if (message != "")
