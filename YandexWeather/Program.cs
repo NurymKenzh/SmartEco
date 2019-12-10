@@ -84,6 +84,7 @@ namespace YandexWeather
 
                                 dynamic data = JObject.Parse(jsonString);
                                 string temp = data.fact.temp;
+                                string pressure = data.fact.pressure_mm;
 
                                 measuredDatas.Add(new MeasuredData()
                                 {
@@ -91,6 +92,14 @@ namespace YandexWeather
                                     MeasuredParameterId = 21,
                                     MonitoringPostId = monitoringPost.Id,
                                     Value = Convert.ToDecimal(temp),
+                                    Averaged = true
+                                });
+                                measuredDatas.Add(new MeasuredData()
+                                {
+                                    DateTime = dateTime.Value.AddSeconds(-dateTime.Value.Second),
+                                    MeasuredParameterId = 22,
+                                    MonitoringPostId = monitoringPost.Id,
+                                    Value = Convert.ToDecimal(pressure),
                                     Averaged = true
                                 });
                             }
@@ -102,7 +111,8 @@ namespace YandexWeather
                             //Console.WriteLine($"Post - {monitoringPost.Id}, Date - {dateTime.Value.AddSeconds(-dateTime.Value.Second)}, Temp - {temp}");
                         }
                     }
-                    Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Yandex finished. Data from Yandex count: {measuredDatas.Count.ToString()}{Environment.NewLine}");
+                    Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Yandex finished. Data from Yandex \"Temperature\" count: {measuredDatas.Where(m => m.MeasuredParameterId == 21).Count().ToString()}{Environment.NewLine}");
+                    Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Yandex finished. Data from Yandex \"Pressure\" count: {measuredDatas.Where(m => m.MeasuredParameterId == 22).Count().ToString()}{Environment.NewLine}");
 
                     Console.WriteLine($"{DateTime.Now.ToString()} >> Insert Data to MeasuredData started.{Environment.NewLine}");
                     try
