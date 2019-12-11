@@ -19,5 +19,6 @@ namespace SmartEcoAPI.Models
         public decimal? Max { get; set; }
         public decimal? MinMeasuredValue { get; set; }
         public decimal? MaxMeasuredValue { get; set; }
+        public decimal? Coefficient { get; set; }
     }
 }

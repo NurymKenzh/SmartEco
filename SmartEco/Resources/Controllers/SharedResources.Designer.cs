@@ -153,6 +153,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Coefficient {
+            get {
+                return ResourceManager.GetString("Coefficient", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string ComparisonMeasuredParameters {
             get {
                 return ResourceManager.GetString("ComparisonMeasuredParameters", resourceCulture);

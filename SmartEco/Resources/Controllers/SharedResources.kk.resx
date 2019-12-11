@@ -411,4 +411,7 @@
   <data name="PostAnalytics" xml:space="preserve">
     <value>Постар бойынша талдау</value>
   </data>
+  <data name="Coefficient" xml:space="preserve">
+    <value>Коэффициент</value>
+  </data>
 </root>

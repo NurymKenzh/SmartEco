@@ -323,7 +323,8 @@ namespace SmartEcoAPI.Controllers
             [FromQuery(Name = "Min")] List<string> Min,
             [FromQuery(Name = "Max")] List<string> Max,
             [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
-            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue)
+            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue,
+            [FromQuery(Name = "Coefficient")] List<string> Coefficient)
         {
             List<int> idMeasuredParameters = new List<int>();
             if (CultureName == "ru")
@@ -344,7 +345,7 @@ namespace SmartEcoAPI.Controllers
                 {
                     if (idMeasuredParameters[i] == id)
                     {
-                        decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec;
+                        decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef;
                         if (Min[i] == "null")
                         {
                             minDec = null;
@@ -377,8 +378,16 @@ namespace SmartEcoAPI.Controllers
                         {
                             maxMeasuredDec = Decimal.Parse(MaxMeasuredValue[i], CultureInfo.InvariantCulture);
                         }
+                        if (Coefficient[i] == "null")
+                        {
+                            coef = null;
+                        }
+                        else
+                        {
+                            coef = Decimal.Parse(Coefficient[i], CultureInfo.InvariantCulture);
+                        }
 
-                        MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec);
+                        MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef);
 
                         //if (Min[i] == "null" && Max[i] != "null")
                         //{
@@ -406,7 +415,8 @@ namespace SmartEcoAPI.Controllers
             decimal? Min,
             decimal? Max,
             decimal? MinMeasuredValue,
-            decimal? MaxMeasuredValue)
+            decimal? MaxMeasuredValue,
+            decimal? Coefficient)
         {
             MonitoringPostMeasuredParameters monitoringPostMeasuredParameters = new MonitoringPostMeasuredParameters
             {
@@ -415,7 +425,8 @@ namespace SmartEcoAPI.Controllers
                 Min = Min,
                 Max = Max,
                 MinMeasuredValue = MinMeasuredValue,
-                MaxMeasuredValue = MaxMeasuredValue
+                MaxMeasuredValue = MaxMeasuredValue,
+                Coefficient = Coefficient
             };
 
             _context.MonitoringPostMeasuredParameters.Add(monitoringPostMeasuredParameters);
@@ -432,7 +443,8 @@ namespace SmartEcoAPI.Controllers
             [FromQuery(Name = "Min")] List<string> Min,
             [FromQuery(Name = "Max")] List<string> Max,
             [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
-            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue)
+            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue,
+            [FromQuery(Name = "Coefficient")] List<string> Coefficient)
         {
             List<int> idMeasuredParameters = new List<int>();
             if (CultureName == "ru")
@@ -454,7 +466,7 @@ namespace SmartEcoAPI.Controllers
                 {
                     if (idMeasuredParameters[i] == id)
                     {
-                        decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec;
+                        decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef;
                         if (Min[i] == "null")
                         {
                             minDec = null;
@@ -487,14 +499,22 @@ namespace SmartEcoAPI.Controllers
                         {
                             maxMeasuredDec = Decimal.Parse(MaxMeasuredValue[i], CultureInfo.InvariantCulture);
                         }
+                        if (Coefficient[i] == "null")
+                        {
+                            coef = null;
+                        }
+                        else
+                        {
+                            coef = Decimal.Parse(Coefficient[i], CultureInfo.InvariantCulture);
+                        }
 
                         try
                         {
-                            PutMonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec);
+                            PutMonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef);
                         }
                         catch
                         {
-                            MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec);
+                            MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef);
                         }
 
                         //if (Min[i] == "null" && Max[i] != "null")
@@ -576,7 +596,8 @@ namespace SmartEcoAPI.Controllers
             decimal? Min,
             decimal? Max,
             decimal? MinMeasuredValue,
-            decimal? MaxMeasuredValue)
+            decimal? MaxMeasuredValue,
+            decimal? Coefficient)
         {
             var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId && m.MonitoringPostId == MonitoringPostId).First();
             monitoringPostMeasuredParameters.MonitoringPostId = MonitoringPostId;
@@ -585,6 +606,7 @@ namespace SmartEcoAPI.Controllers
             monitoringPostMeasuredParameters.Max = Max;
             monitoringPostMeasuredParameters.MinMeasuredValue = MinMeasuredValue;
             monitoringPostMeasuredParameters.MaxMeasuredValue = MaxMeasuredValue;
+            monitoringPostMeasuredParameters.Coefficient = Coefficient;
             _context.SaveChangesAsync();
         }
 
@@ -632,6 +654,7 @@ namespace SmartEcoAPI.Controllers
                             Max = id.Max,
                             MinMeasuredValue = id.MinMeasuredValue,
                             MaxMeasuredValue = id.MaxMeasuredValue,
+                            Coefficient = id.Coefficient,
                             Sensor = true
                         };
                         monitoringPostMeasuredParameterWithNull.Add(item);
@@ -650,6 +673,7 @@ namespace SmartEcoAPI.Controllers
                         Max = null,
                         MinMeasuredValue = null,
                         MaxMeasuredValue = null,
+                        Coefficient = null,
                         Sensor = false
                     };
                     monitoringPostMeasuredParameterWithNull.Add(item);

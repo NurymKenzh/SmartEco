@@ -422,6 +422,7 @@ namespace SmartEco.Controllers
             string[] Maximum,
             string[] MinMeasuredValue,
             string[] MaxMeasuredValue,
+            string[] Coefficient,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,
@@ -542,6 +543,20 @@ namespace SmartEco.Controllers
                         }
                     }
 
+                    foreach (var coef in Coefficient)
+                    {
+                        if (coef == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Coefficient=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Coefficient={coef.ToString()}".Replace(',', '.');
+                        }
+                    }
+
                     HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url + route, null);
                 }
                 catch
@@ -654,6 +669,7 @@ namespace SmartEco.Controllers
             string[] Maximum,
             string[] MinMeasuredValue,
             string[] MaxMeasuredValue,
+            string[] Coefficient,
             string SortOrder,
             int? NumberFilter,
             string NameFilter,
@@ -774,6 +790,20 @@ namespace SmartEco.Controllers
                         {
                             route += string.IsNullOrEmpty(route) ? "?" : "&";
                             route += $"MaxMeasuredValue={maxV.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    foreach (var coef in Coefficient)
+                    {
+                        if (coef == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Coefficient=null";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Coefficient={coef.ToString()}".Replace(',', '.');
                         }
                     }
 

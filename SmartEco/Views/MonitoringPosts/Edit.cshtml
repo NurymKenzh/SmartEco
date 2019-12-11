@@ -89,31 +89,37 @@
                         <th>
                             @SharedLocalizer["MaxMeasuredValue"]
                         </th>
+                        <th>
+                            @SharedLocalizer["Coefficient"]
+                        </th>
                     </tr>
                 </thead>
                 <tbody>
                     @foreach (MonitoringPostMeasuredParameters item in ViewBag.MonitoringPostMeasuredParameters)
                     {
-                        <tr>
-                            <td>
-                                <input type="checkbox" name="Sensors" class="form-control" value="@item.Id" checked=@item.Sensor>
-                            </td>
-                            <td>
-                                @item.MeasuredParameter.Name
-                            </td>
-                            <td>
-                                <input type="text" name="Minimum" value=@item.Min class="form-control">
-                            </td>
-                            <td>
-                                <input type="text" name="Maximum" value=@item.Max class="form-control">
-                            </td>
-                            <td>
-                                <input type="text" name="MinMeasuredValue" value=@item.MinMeasuredValue class="form-control">
-                            </td>
-                            <td>
-                                <input type="text" name="MaxMeasuredValue" value=@item.MaxMeasuredValue class="form-control">
-                            </td>
-                        </tr>
+                    <tr>
+                        <td>
+                            <input type="checkbox" name="Sensors" class="form-control" value="@item.Id" checked=@item.Sensor>
+                        </td>
+                        <td>
+                            @item.MeasuredParameter.Name
+                        </td>
+                        <td>
+                            <input type="text" name="Minimum" value=@item.Min class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="Maximum" value=@item.Max class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="MinMeasuredValue" value=@item.MinMeasuredValue class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="MaxMeasuredValue" value=@item.MaxMeasuredValue class="form-control">
+                        </td>
+                        <td>
+                            <input type="text" name="Coefficient" value=@item.Coefficient class="form-control">
+                        </td>
+                    </tr>
                     }
                 </tbody>
             </table>
