@@ -210,7 +210,8 @@ namespace TCPIPTestServer
                     }
                     catch (Exception ex)
                     {
-                        Console.WriteLine(DateTime.Now.ToString() + " >> " + ex.ToString() + Environment.NewLine);
+                        //Console.WriteLine(DateTime.Now.ToString() + " >> " + ex.ToString() + Environment.NewLine);
+                        NewLog($"Error - {clNo} (IP {((IPEndPoint)clientSocket.Client.RemoteEndPoint).Address.ToString()}) >> {ex.ToString()}");
                         ok = false;
                     }
                 }
