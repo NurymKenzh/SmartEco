@@ -6,14 +6,35 @@
 @{
     ViewData["Title"] = SharedLocalizer["EcoserviceMonitoringPosts"];
 }
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
 <h1>@SharedLocalizer["EcoserviceMonitoringPosts"]</h1>
 
 @*<input type="date" id="Date"/>
     <input type="time" id="Time" />*@
 
-<table class="table table-analytics">
+<table class="table table-analytics" id="TableAnalytics">
     <tr>
-        <td></td>
+        <td>
+            @if (Role == "admin" || Role == "moderator")
+            {
+                <label>
+                    @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "GetData()" })
+                    @SharedLocalizer["Averaged"]
+                </label>
+            }
+            else
+            {
+                <div hidden="hidden">
+                    <label>
+                        @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "GetData()" })
+                        @SharedLocalizer["Averaged"]
+                    </label>
+                </div>
+            }
+        </td>
         <td></td>
         @foreach (MeasuredParameter measuredParameter in ViewBag.MeasuredParameters)
         {
@@ -50,18 +71,18 @@
 <script>
     var ids = [];
 </script>
-    @foreach (MonitoringPost monitoringPost in ViewBag.EcoserviceAirMonitoringPosts)
+@foreach (MonitoringPost monitoringPost in ViewBag.EcoserviceAirMonitoringPosts)
+{
+    @foreach (MeasuredParameter measuredParameter in ViewBag.MeasuredParameters)
     {
-        @foreach (MeasuredParameter measuredParameter in ViewBag.MeasuredParameters)
-        {
-            string id = $"{monitoringPost.Id}_{measuredParameter.Id}";
-            <script>
+        string id = $"{monitoringPost.Id}_{measuredParameter.Id}";
+        <script>
                 ids.push('@id');
-            </script>
-        }
+        </script>
     }
+}
 <script>
-    var duration = 3000;
+    var duration = 6000;
     function GetData() {
         function getData() {
             let now = new Date();
@@ -78,9 +99,20 @@
                     TimeFrom: timeFrom,
                     DateTo: dateTo,
                     TimeTo: timeTo,
+                    Averaged: $('#Averaged').is(':checked')
                 },
                 type: 'POST',
                 success: function (data) {
+                    //clear table
+                    var td = document.getElementsByTagName("td");
+                    console.log(td);
+                    for (i = 0; i < td.length; i++) {
+                        if (td[i].id != "") {
+                            td[i].innerHTML = "";
+                            $('#' + td[i].id).css("background-color", "#fff");
+                        }
+                    }
+                    //parse data
                     for (var i = 0; i < data.measureddatas.length; i++) {
                         var id = data.measureddatas[i].monitoringPostId + '_' + data.measureddatas[i].measuredParameterId;
                         $('#' + id).text(parseFloat(data.measureddatas[i].value).toFixed(2));

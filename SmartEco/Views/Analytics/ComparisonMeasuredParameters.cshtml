@@ -8,6 +8,9 @@
     ViewData["Title"] = SharedLocalizer["ComparisonMeasuredParameters"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
+@{
+    string Role = Context.Session.GetString("Role");
+}
 <link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
 <script src="~/lib/jquery-ui/jquery-ui.js"></script>
 <script src="~/lib/moment.js/moment.js"></script>
@@ -18,6 +21,8 @@
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
     <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPost"]" />
+    <input id="TimeFrom" type="text" value="@ViewBag.TimeFrom" />
+    <input id="TimeTo" type="text" value="@ViewBag.TimeTo" />
 </div>
 
 <h1>@SharedLocalizer["ComparisonMeasuredParameters"]</h1>
@@ -29,16 +34,32 @@
         @Html.TextBox("ChartDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "ChartDateTo", @onchange = "ChartGetMeasuredParameters()" })
         @Html.DropDownList("ChartMonitoringPostId", (IEnumerable<SelectListItem>)ViewBag.EcoserviceAirMonitoringPosts, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMonitoringPostId", @onchange = "ChartGetMeasuredParameters()" })
         @Html.DropDownList("ChartMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MonitoringPostMeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMeasuredParameterId", @onchange = "ChartGetMeasuredParameters()" })
+        @if (Role == "admin" || Role == "moderator")
+        {
+            <label>
+                @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "ChartGetMeasuredDatas()" })
+                @SharedLocalizer["Averaged"]
+            </label>
+        }
+        else
+        {
+            <div hidden="hidden">
+                <label>
+                    @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "ChartGetMeasuredDatas()" })
+                    @SharedLocalizer["Averaged"]
+                </label>
+            </div>
+        }
     </div>
     <div id="CheckBoxList" class="col-md-3 form-control analystScrollCheck">
         @*@foreach (var item in ViewBag.MonitoringPostMeasuredParameters)
-        {
-            <label>
-                @Html.CheckBox(item.Name, false, new { id = item.Id, onchange = "ChartGetMeasuredParameters()" })
-                @item.Name
-            </label>
-            <br />
-        }*@
+            {
+                <label>
+                    @Html.CheckBox(item.Name, false, new { id = item.Id, onchange = "ChartGetMeasuredParameters()" })
+                    @item.Name
+                </label>
+                <br />
+            }*@
     </div>
 </div>
 <div class="col-md-9">
@@ -161,8 +182,10 @@
         arrayText.push($("#ChartMeasuredParameterId option:selected").text());
         var checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
         for (var i = 0; i < checkboxes.length; i++) {
-            arrayId.push(checkboxes[i].id);
-            arrayText.push(checkboxes[i].value);
+            if (checkboxes[i].id != "Averaged") {
+                arrayId.push(checkboxes[i].id);
+                arrayText.push(checkboxes[i].value);
+            }
         }
 
         $("#chartMeasuredDatas").LoadingOverlay("show");
@@ -181,9 +204,11 @@
             data: {
                 MonitoringPostId: $('#ChartMonitoringPostId').val(),
                 MeasuredParameterId: arrayId[j],
-                DateTimeFrom: $('#ChartDateFrom').val(),
-                DateTimeTo: $('#ChartDateTo').val(),
-                Averaged: true,
+                DateFrom: $('#ChartDateFrom').val(),
+                TimeFrom: $('#TimeFrom').val(),
+                DateTo: $('#ChartDateTo').val(),
+                TimeTo: $('#TimeTo').val(),
+                Averaged: $('#Averaged').is(':checked')
             },
             type: 'POST',
             success: function (data) {

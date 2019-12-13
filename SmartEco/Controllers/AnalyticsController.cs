@@ -89,7 +89,9 @@ namespace SmartEco.Controllers
                 .ToList();
             ViewBag.EcoserviceAirMonitoringPosts = new SelectList(ecoserviceAirMonitoringPosts.OrderBy(m => m.Name), "Id", "AdditionalInformation"); ;
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
             ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
 
             return View();
         }
@@ -171,14 +173,18 @@ namespace SmartEco.Controllers
         public async Task<IActionResult> GetMeasuredDatas(
             int? MonitoringPostId,
             int? MeasuredParameterId,
-            DateTime DateTimeFrom,
-            DateTime DateTimeTo,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo,
             bool? Averaged = true)
         {
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             MeasuredData[] measureddatas = null;
             string url = "api/MeasuredDatas",
                 route = "";
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
             // SortOrder=DateTime
             {
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -205,13 +211,13 @@ namespace SmartEco.Controllers
             {
                 DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeFrom={DateTimeFrom.ToString(dateTimeFormatInfo)}";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
             }
             // dateTimeTo
             {
                 DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeTo={DateTimeTo.ToString(dateTimeFormatInfo)}";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
             }
             HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
             if (response.IsSuccessStatusCode)
