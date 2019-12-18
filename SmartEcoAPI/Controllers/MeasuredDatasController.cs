@@ -27,7 +27,7 @@ namespace SmartEcoAPI.Controllers
     public class MeasuredDatasController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
-        public int COMPCDivide = 1; // было 10  // Id = 7
+        public int COMPCDivide = 1000; // было 10  // Id = 7
         public decimal? PValueMultiply = 0.750063755419211m, // Id = 1
             NO2ValueMultiply = 0.001m, // Id = 13
             SO2ValueMultiply = 0.001m, // Id = 9
@@ -225,7 +225,7 @@ namespace SmartEcoAPI.Controllers
                 .Select(m =>
                 {
                     m.Value =
-                        m.MeasuredParameterId == 7 ? m.Value / COMPCDivide :
+                        (m.MeasuredParameterId == 7 && (m.MonitoringPostId == 44 || m.MonitoringPostId == 50)) ? m.Value / COMPCDivide :
                         m.MeasuredParameterId == 1 ? m.Value * PValueMultiply :
                         m.MeasuredParameterId == 13 ? m.Value * NO2ValueMultiply :
                         m.MeasuredParameterId == 9 ? m.Value * SO2ValueMultiply :
@@ -258,7 +258,7 @@ namespace SmartEcoAPI.Controllers
                 return NotFound();
             }
 
-            measuredData.Value = measuredData.MeasuredParameterId == 7 ? measuredData.Value / COMPCDivide :
+            measuredData.Value = (measuredData.MeasuredParameterId == 7 && (measuredData.MonitoringPostId == 44 || measuredData.MonitoringPostId == 50)) ? measuredData.Value / COMPCDivide :
                 measuredData.MeasuredParameterId == 1 ? measuredData.Value * PValueMultiply :
                 measuredData.MeasuredParameterId == 13 ? measuredData.Value * NO2ValueMultiply :
                 measuredData.MeasuredParameterId == 9 ? measuredData.Value * SO2ValueMultiply :

@@ -231,7 +231,10 @@ namespace LayersCreator
                                                     switch (measuredData.MeasuredParameterId)
                                                     {
                                                         case 7:
-                                                            valueMPC /= COMPCDivide;
+                                                            if (measuredData.MonitoringPostId == 44 || measuredData.MonitoringPostId == 50)
+                                                            {
+                                                                valueMPC /= COMPCDivide;
+                                                            }
                                                             break;
                                                         case 1:
                                                             valueMPC *= PValueMultiply;
