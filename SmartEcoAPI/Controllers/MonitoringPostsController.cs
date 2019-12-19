@@ -258,7 +258,7 @@ namespace SmartEcoAPI.Controllers
                     .Select(m =>
                     {
                         m.Value =
-                            (m.MeasuredParameterId == 7 && (m.MonitoringPostId == 44 || m.MonitoringPostId == 50)) ? m.Value / measuredDatasController.COMPCDivide :
+                            (m.MeasuredParameterId == 7 && (m.MonitoringPostId == 44 || m.MonitoringPostId == 50 || m.MonitoringPostId == 47)) ? m.Value / measuredDatasController.COMPCDivide :
                             m.MeasuredParameterId == 1 ? m.Value * measuredDatasController.PValueMultiply :
                             m.MeasuredParameterId == 13 ? m.Value * measuredDatasController.NO2ValueMultiply :
                             m.MeasuredParameterId == 9 ? m.Value * measuredDatasController.SO2ValueMultiply :

@@ -18,8 +18,8 @@ namespace LayersCreator
             GSPort = "8080",
             GSUser = "admin",
             GSPassword = "geoserver",
-            GSDataDir = "E:\\Documents\\Google Drive\\Geoserver\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
-            //GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
+            //GSDataDir = "E:\\Documents\\Google Drive\\Geoserver\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
+            GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
             CurlFullPath = "C:\\Windows\\curl.exe",
             LayerNameTemplate = "KaragandaRegionPollutantSpread";
         const decimal MaxDistance = 0.25M,
@@ -231,7 +231,7 @@ namespace LayersCreator
                                                     switch (measuredData.MeasuredParameterId)
                                                     {
                                                         case 7:
-                                                            if (measuredData.MonitoringPostId == 44 || measuredData.MonitoringPostId == 50)
+                                                            if (measuredData.MonitoringPostId == 44 || measuredData.MonitoringPostId == 50 || measuredData.MonitoringPostId == 47)
                                                             {
                                                                 valueMPC /= COMPCDivide;
                                                             }
