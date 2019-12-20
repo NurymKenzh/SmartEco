@@ -105,6 +105,61 @@ namespace SmartEcoAPI.Controllers
                 .Include(m => m.PollutionSource)
                 .Where(m => true);
 
+            if (MonitoringPostId != null)
+            {
+                measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
+                var measuredParameters = _context.MeasuredParameter.ToList();
+                var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).ToList();
+                foreach (var item in monitoringPostMeasuredParameters)
+                {
+                    measuredParameters.RemoveAll(m => m.Id == item.MeasuredParameterId);
+                }
+                foreach (var measuredParameter in measuredParameters)
+                {
+                    measuredDatas = measuredDatas.Where(m => m.MeasuredParameterId != measuredParameter.Id);
+                }
+            }
+            else
+            {
+                var monitoringPosts = _context.MonitoringPost
+                    .Where(m => true);
+
+                var selection = $"SELECT * FROM public.\"MeasuredData\" WHERE";
+
+                //var measuredParameters = _context.MeasuredParameter.ToList();
+
+                //foreach (var monitoringPost in monitoringPosts)
+                //{
+                //    var measuredParameters = _context.MeasuredParameter.ToList();
+                //    var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == monitoringPost.Id).ToList();
+                //    foreach (var item in monitoringPostMeasuredParameters)
+                //    {
+                //        measuredParameters.RemoveAll(m => m.Id == item.MeasuredParameterId);
+                //    }
+                //    foreach (var measuredParameter in measuredParameters)
+                //    {
+                //        measuredDatas = measuredDatas.Where(m => m.MonitoringPostId != monitoringPost.Id && m.MeasuredParameterId != measuredParameter.Id);
+                //    }
+                //}
+
+                foreach (var monitoringPost in monitoringPosts)
+                {
+                    var measuredParameters = _context.MeasuredParameter.ToList();
+                    var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == monitoringPost.Id).ToList();
+                    if (monitoringPostMeasuredParameters.Count != 0)
+                    {
+                        selection += $" \"MonitoringPostId\" = {monitoringPost.Id} AND (";
+                        foreach (var item in monitoringPostMeasuredParameters)
+                        {
+                            selection += $"\"MeasuredParameterId\" = {item.MeasuredParameterId} OR ";
+                        }
+                        selection = selection.Substring(0, selection.Length - 4);
+                        selection += $") OR";
+                    }
+                }
+                selection = selection.Substring(0, selection.Length - 3);
+                measuredDatas = _context.MeasuredData.FromSql(selection);
+            }
             if (MeasuredParameterId != null)
             {
                 measuredDatas = measuredDatas.Where(m => m.MeasuredParameterId == MeasuredParameterId);
@@ -121,10 +176,6 @@ namespace SmartEcoAPI.Controllers
                 measuredDatas = measuredDatas.Where(m => (m.DateTime != null && m.DateTime <= DateTimeTo) ||
                     (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
                     (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
-            }
-            if (MonitoringPostId != null)
-            {
-                measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
             }
             if (PollutionSourceId != null)
             {
@@ -390,7 +441,46 @@ namespace SmartEcoAPI.Controllers
 
             var measuredDatas = _context.MeasuredData
                  .Where(m => true);
+            
+            if (MonitoringPostId != null)
+            {
+                measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
+                var measuredParameters = _context.MeasuredParameter.ToList();
+                var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).ToList();
+                foreach (var item in monitoringPostMeasuredParameters)
+                {
+                    measuredParameters.RemoveAll(m => m.Id == item.MeasuredParameterId);
+                }
+                foreach (var measuredParameter in measuredParameters)
+                {
+                    measuredDatas = measuredDatas.Where(m => m.MeasuredParameterId != measuredParameter.Id);
+                }
+            }
+            else
+            {
+                var monitoringPosts = _context.MonitoringPost
+                    .Where(m => true);
 
+                var selection = $"SELECT * FROM public.\"MeasuredData\" WHERE";
+
+                foreach (var monitoringPost in monitoringPosts)
+                {
+                    var measuredParameters = _context.MeasuredParameter.ToList();
+                    var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == monitoringPost.Id).ToList();
+                    if (monitoringPostMeasuredParameters.Count != 0)
+                    {
+                        selection += $" \"MonitoringPostId\" = {monitoringPost.Id} AND (";
+                        foreach (var item in monitoringPostMeasuredParameters)
+                        {
+                            selection += $"\"MeasuredParameterId\" = {item.MeasuredParameterId} OR ";
+                        }
+                        selection = selection.Substring(0, selection.Length - 4);
+                        selection += $") OR";
+                    }
+                }
+                selection = selection.Substring(0, selection.Length - 3);
+                measuredDatas = _context.MeasuredData.FromSql(selection);
+            }
             if (MeasuredParameterId != null)
             {
                 measuredDatas = measuredDatas.Where(m => m.MeasuredParameterId == MeasuredParameterId);
@@ -408,10 +498,6 @@ namespace SmartEcoAPI.Controllers
                 measuredDatas = measuredDatas.Where(m => (m.DateTime != null && m.DateTime <= DateTimeTo) ||
                     (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
                     (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
-            }
-            if (MonitoringPostId != null)
-            {
-                measuredDatas = measuredDatas.Where(m => m.MonitoringPostId == MonitoringPostId);
             }
             if (PollutionSourceId != null)
             {
