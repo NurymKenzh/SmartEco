@@ -41,5 +41,10 @@ namespace SmartEco.Models
         public PollutionEnvironment PollutionEnvironment { get; set; }
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "PollutionEnvironment")]
         public int PollutionEnvironmentId { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Project")]
+        public Project Project { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Project")]
+        public int? ProjectId { get; set; }
     }
 }

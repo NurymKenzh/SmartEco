@@ -39,6 +39,7 @@ namespace SmartEcoAPI.Controllers
             var monitoringPosts = _context.MonitoringPost
                 .Include(m => m.DataProvider)
                 .Include(m => m.PollutionEnvironment)
+                .Include(m => m.Project)
                 .Where(m => true);
 
             if (Number != null)
@@ -106,6 +107,7 @@ namespace SmartEcoAPI.Controllers
             var monitoringPost = await _context.MonitoringPost
                 .Include(m => m.DataProvider)
                 .Include(m => m.PollutionEnvironment)
+                .Include(m => m.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (monitoringPost == null)
@@ -167,6 +169,7 @@ namespace SmartEcoAPI.Controllers
             var monitoringPost = await _context.MonitoringPost
                 .Include(m => m.DataProvider)
                 .Include(m => m.PollutionEnvironment)
+                .Include(m => m.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (monitoringPost == null)
             {
@@ -244,6 +247,7 @@ namespace SmartEcoAPI.Controllers
             var monitoringPosts = _context.MonitoringPost
                 .Include(m => m.DataProvider)
                 .Include(m => m.PollutionEnvironment)
+                .Include(m => m.Project)
                 .Where(m => (m.DataProviderId == (int)DataProviderId) || DataProviderId == null);
 
             foreach (MonitoringPost monitoringPost in monitoringPosts)
@@ -293,6 +297,7 @@ namespace SmartEcoAPI.Controllers
             var monitoringPosts = _context.MonitoringPost
                 .Include(m => m.DataProvider)
                 .Include(m => m.PollutionEnvironment)
+                .Include(m => m.Project)
                 .Where(m => (m.DataProviderId == (int)DataProviderId) || DataProviderId == null);
             List<MonitoringPost> monitoringPostsInactive = new List<MonitoringPost>();
 

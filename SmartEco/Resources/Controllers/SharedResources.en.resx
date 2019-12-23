@@ -414,4 +414,13 @@
   <data name="Coefficient" xml:space="preserve">
     <value>Coefficient</value>
   </data>
+  <data name="Project" xml:space="preserve">
+    <value>Project</value>
+  </data>
+  <data name="Projects" xml:space="preserve">
+    <value>Projects</value>
+  </data>
+  <data name="Almaty" xml:space="preserve">
+    <value>Almaty</value>
+  </data>
 </root>

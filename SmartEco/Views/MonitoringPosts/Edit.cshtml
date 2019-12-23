@@ -68,6 +68,10 @@
                 <label asp-for="PollutionEnvironmentId" class="control-label"></label>
                 <select asp-for="PollutionEnvironmentId" class="form-control" asp-items="ViewBag.PollutionEnvironments"></select>
             </div>
+            <div class="form-group">
+                <label asp-for="ProjectId" class="control-label"></label>
+                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.Projects"></select>
+            </div>
             <table class="table">
                 <thead>
                     <tr>
@@ -97,29 +101,29 @@
                 <tbody>
                     @foreach (MonitoringPostMeasuredParameters item in ViewBag.MonitoringPostMeasuredParameters)
                     {
-                    <tr>
-                        <td>
-                            <input type="checkbox" name="Sensors" class="form-control" value="@item.Id" checked=@item.Sensor>
-                        </td>
-                        <td>
-                            @item.MeasuredParameter.Name
-                        </td>
-                        <td>
-                            <input type="text" name="Minimum" value=@item.Min class="form-control">
-                        </td>
-                        <td>
-                            <input type="text" name="Maximum" value=@item.Max class="form-control">
-                        </td>
-                        <td>
-                            <input type="text" name="MinMeasuredValue" value=@item.MinMeasuredValue class="form-control">
-                        </td>
-                        <td>
-                            <input type="text" name="MaxMeasuredValue" value=@item.MaxMeasuredValue class="form-control">
-                        </td>
-                        <td>
-                            <input type="text" name="Coefficient" value=@item.Coefficient class="form-control">
-                        </td>
-                    </tr>
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="Sensors" class="form-control" value="@item.Id" checked=@item.Sensor>
+                            </td>
+                            <td>
+                                @item.MeasuredParameter.Name
+                            </td>
+                            <td>
+                                <input type="text" name="Minimum" value=@item.Min class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="Maximum" value=@item.Max class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="MinMeasuredValue" value=@item.MinMeasuredValue class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="MaxMeasuredValue" value=@item.MaxMeasuredValue class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="Coefficient" value=@item.Coefficient class="form-control">
+                            </td>
+                        </tr>
                     }
                 </tbody>
             </table>

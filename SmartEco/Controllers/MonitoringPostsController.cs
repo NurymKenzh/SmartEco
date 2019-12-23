@@ -313,6 +313,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             return View(monitoringPosts);
         }
 
@@ -398,6 +408,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
             string urlMeasuredParameters = "api/MeasuredParameters",
                 routeMeasuredParameters = "";
@@ -416,7 +436,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Number,Name,TurnOnOff,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
+        public async Task<IActionResult> Create([Bind("Id,Number,Name,TurnOnOff,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId,ProjectId")] MonitoringPost monitoringPost,
             int?[] Sensors,
             string[] Minimum,
             string[] Maximum,
@@ -628,7 +648,17 @@ namespace SmartEco.Controllers
             }
             ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
 
-            if(!string.IsNullOrEmpty(monitoringPost.AdditionalInformation))
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
+            if (!string.IsNullOrEmpty(monitoringPost.AdditionalInformation))
             {
                 monitoringPost.AdditionalInformation = monitoringPost.AdditionalInformation.Replace("\r\n", "\r");
             }
@@ -663,7 +693,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Name,TurnOnOff,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId")] MonitoringPost monitoringPost,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Name,TurnOnOff,NorthLatitude,EastLongitude,AdditionalInformation,MN,DataProviderId,PollutionEnvironmentId,ProjectId")] MonitoringPost monitoringPost,
             int?[] Sensors,
             string[] Minimum,
             string[] Maximum,

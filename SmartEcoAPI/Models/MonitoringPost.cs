@@ -55,5 +55,11 @@ namespace SmartEcoAPI.Models
         /// </summary>
         public int PollutionEnvironmentId { get; set; }
         public PollutionEnvironment PollutionEnvironment { get; set; }
+
+        /// <summary>
+        /// Id проекта.
+        /// </summary>
+        public int? ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }

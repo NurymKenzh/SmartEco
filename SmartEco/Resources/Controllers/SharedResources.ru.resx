@@ -414,4 +414,13 @@
   <data name="Coefficient" xml:space="preserve">
     <value>Коэффициент</value>
   </data>
+  <data name="Project" xml:space="preserve">
+    <value>Проект</value>
+  </data>
+  <data name="Projects" xml:space="preserve">
+    <value>Проекты</value>
+  </data>
+  <data name="Almaty" xml:space="preserve">
+    <value>Алматы</value>
+  </data>
 </root>
