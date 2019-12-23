@@ -775,21 +775,21 @@ namespace SmartEco.Controllers
             dateTimeTo = DateTime.Now;
             List<int> measuredParametersEmpty = new List<int>();
             var measuredDatas = await GetMeasuredDatas(MonitoringPostId, null, dateTimeFrom, dateTimeTo, true);
-            //foreach (var item in result)
-            //{
-            //    var measuredData = measuredDatas.Where(m => m.MeasuredParameterId == item.MeasuredParameterId).FirstOrDefault();
-            //    if (measuredData == null)
-            //    {
-            //        measuredParametersEmpty.Add(item.MeasuredParameterId);
-            //    }
-            //}
-            //if (measuredParametersEmpty.Count != 0)
-            //{
-            //    foreach (var item in measuredParametersEmpty)
-            //    {
-            //        result.RemoveAll(r => r.MeasuredParameterId == item);
-            //    }
-            //}
+            foreach (var item in result)
+            {
+                var measuredData = measuredDatas.Where(m => m.MeasuredParameterId == item.MeasuredParameterId).FirstOrDefault();
+                if (measuredData == null)
+                {
+                    measuredParametersEmpty.Add(item.MeasuredParameterId);
+                }
+            }
+            if (measuredParametersEmpty.Count != 0)
+            {
+                foreach (var item in measuredParametersEmpty)
+                {
+                    result.RemoveAll(r => r.MeasuredParameterId == item);
+                }
+            }
 
             return Json(
                 result
