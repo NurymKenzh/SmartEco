@@ -977,5 +977,23 @@ namespace SmartEco.Resources.Controllers {
                 return ResourceManager.GetString("Value", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string WaterProtectionStrip {
+            get {
+                return ResourceManager.GetString("WaterProtectionStrip", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string WaterProtectionZone {
+            get {
+                return ResourceManager.GetString("WaterProtectionZone", resourceCulture);
+            }
+        }
     }
 }

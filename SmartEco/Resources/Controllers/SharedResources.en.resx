@@ -423,4 +423,10 @@
   <data name="Almaty" xml:space="preserve">
     <value>Almaty</value>
   </data>
+  <data name="WaterProtectionStrip" xml:space="preserve">
+    <value>Water protection strip</value>
+  </data>
+  <data name="WaterProtectionZone" xml:space="preserve">
+    <value>Water protection zone</value>
+  </data>
 </root>
