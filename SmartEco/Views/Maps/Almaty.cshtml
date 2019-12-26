@@ -179,6 +179,22 @@
             <option value="ThunderforestMobileAtlas">Thunderforest Mobile Atlas</option>
             <option value="ThunderforestNeighbourhood">Thunderforest Neighbourhood</option>
         </select>
+        <br />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
+            @SharedLocalizer["WaterProtectionStrip"]
+        </label>
+        <br />
+        <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
+            @SharedLocalizer["WaterProtectionZone"]
+        </label>
+        <br />
+        <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
     </div>
 </div>
 
@@ -567,6 +583,38 @@
     Layer_EcoserviceAirMonitoringPosts.set('name', 'EcoserviceAirMonitoringPosts');
     layers.push(Layer_EcoserviceAirMonitoringPosts);
 
+    var Source_WaterProtectionStrip = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':Vodoohr_polosa',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_WaterProtectionStrip = new ol.layer.Image({
+        source: Source_WaterProtectionStrip
+    });
+    Layer_WaterProtectionStrip.set('name', 'WaterProtectionStrip');
+    layers.push(Layer_WaterProtectionStrip);
+    Layer_WaterProtectionStrip.setVisible(false);
+
+    var Source_WaterProtectionZone = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':Vodoohr_zona',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_WaterProtectionZone = new ol.layer.Image({
+        source: Source_WaterProtectionZone
+    });
+    Layer_WaterProtectionZone.set('name', 'WaterProtectionZone');
+    layers.push(Layer_WaterProtectionZone);
+    Layer_WaterProtectionZone.setVisible(false);
+
     function ChangeLayers() {
         map.getLayers().forEach(function (layer) {
             if (layer.get('name') == 'Base') {
@@ -643,6 +691,14 @@
             if (layer.get('name') == 'EcoserviceAirMonitoringPosts') {
                 layer.setVisible(document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked);
                 layer.setOpacity($('#layerEcoserviceAirMonitoringPostsOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'WaterProtectionStrip') {
+                layer.setVisible(document.getElementById("layerWaterProtectionStripShow").checked);
+                layer.setOpacity($('#layerWaterProtectionStripOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'WaterProtectionZone') {
+                layer.setVisible(document.getElementById("layerWaterProtectionZoneShow").checked);
+                layer.setOpacity($('#layerWaterProtectionZoneOpacity').val() / 100)
             }
             //if (layer.get('name') == 'KaragandaRegionPollutantSpread') {
             //    layer.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
@@ -873,6 +929,34 @@
                 GetMeasuredParameters();
             }
         } else {
+        }
+
+        var viewResolution = (map.getView().getResolution());
+        var url = Layer_WaterProtectionStrip.getSource().getGetFeatureInfoUrl(
+            evt.coordinate, viewResolution, 'EPSG:3857',
+            {
+                'INFO_FORMAT': 'text/javascript',
+                'FEATURE_COUNT': '10000'
+            });
+        console.log(url);
+        if (url) {
+            var parser = new ol.format.GeoJSON();
+            $.ajax({
+                //jsonp: false,
+                //jsonpCallback: 'getJson',
+                //type: 'GET',
+                url: url,
+                //async: false,
+                dataType: 'jsonp',
+                jsonpCallback: 'parseResponse',
+                error: function (xhr, status, error) {
+                }
+            }).then(function (response) {
+                var result = parser.readFeatures(response);
+                if (result.length > 0) {
+                    console.log(result);
+                }
+            })
         }
     });
 
