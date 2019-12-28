@@ -895,21 +895,40 @@
         });
         if (feature) {
             $('.dialog-info-content').hide();
-            if (layerName == 'KazHydrometAirMonitoringPosts') {
-                $('#KazHydrometAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
-                $('#KazHydrometAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
-                $('#KazHydrometAirMonitoringPostNumber').text(feature.get('Number'));
-                $('#KazHydrometAirMonitoringPostName').text(feature.get('Name'));
-                $('#KazHydrometAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
-                $('#tableKazHydrometAirMonitoringPost').show();
-                $("#dialogMonitoringPostInfo").dialog({
-                    resize: DialogResize,
-                    title: $('#KazHydrometAirPost').val(),
-                    minHeight: 100,
-                    minWidth: 100
-                });
-            }
-            if (layerName == 'EcoserviceAirMonitoringPosts') {
+            //if (layerName == 'KazHydrometAirMonitoringPosts') {
+            //    $('#KazHydrometAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+            //    $('#KazHydrometAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+            //    $('#KazHydrometAirMonitoringPostNumber').text(feature.get('Number'));
+            //    $('#KazHydrometAirMonitoringPostName').text(feature.get('Name'));
+            //    $('#KazHydrometAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+            //    $('#tableKazHydrometAirMonitoringPost').show();
+            //    $("#dialogMonitoringPostInfo").dialog({
+            //        resize: DialogResize,
+            //        title: $('#KazHydrometAirPost').val(),
+            //        minHeight: 100,
+            //        minWidth: 100
+            //    });
+            //}
+            //if (layerName == 'EcoserviceAirMonitoringPosts') {
+            //    $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
+            //    $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+            //    $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+            //    $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
+            //    $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+            //    $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+            //    $('#divEcoserviceAirPost').show();
+            //    $("#divEcoserviceAirPost").tabs();
+            //    $("#dialogMonitoringPostInfo").dialog({
+            //        resize: DialogResize,
+            //        title: $('#EcoserviceAirPost').val(),
+            //        minHeight: 100,
+            //        minWidth: 100,
+            //        width: 750,
+            //        maxHeight: window.innerHeight
+            //    });
+            //    GetMeasuredParameters();
+            //}
+            if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPosts') {
                 $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
                 $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
                 $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
@@ -918,9 +937,13 @@
                 $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
                 $('#divEcoserviceAirPost').show();
                 $("#divEcoserviceAirPost").tabs();
+                var title = $('#EcoserviceAirPost').val();
+                if (layerName == 'KazHydrometAirMonitoringPosts') {
+                    title = $('#KazHydrometAirPost').val();
+                }
                 $("#dialogMonitoringPostInfo").dialog({
                     resize: DialogResize,
-                    title: $('#EcoserviceAirPost').val(),
+                    title: title,
                     minHeight: 100,
                     minWidth: 100,
                     width: 750,

@@ -455,7 +455,8 @@ namespace SmartEco.Controllers
             monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
-                .Where(m => m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                .Where(m => m.Project != null && m.Project.Name == "Almaty" 
+                && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
             JObject kazHydrometAirMonitoringPostsObject = JObject.FromObject(new
@@ -775,19 +776,22 @@ namespace SmartEco.Controllers
             dateTimeTo = DateTime.Now;
             List<int> measuredParametersEmpty = new List<int>();
             var measuredDatas = await GetMeasuredDatas(MonitoringPostId, null, dateTimeFrom, dateTimeTo, true);
-            foreach (var item in result)
+            if (result[0].MonitoringPost.DataProviderId != 1)
             {
-                var measuredData = measuredDatas.Where(m => m.MeasuredParameterId == item.MeasuredParameterId).FirstOrDefault();
-                if (measuredData == null)
+                foreach (var item in result)
                 {
-                    measuredParametersEmpty.Add(item.MeasuredParameterId);
+                    var measuredData = measuredDatas.Where(m => m.MeasuredParameterId == item.MeasuredParameterId).FirstOrDefault();
+                    if (measuredData == null)
+                    {
+                        measuredParametersEmpty.Add(item.MeasuredParameterId);
+                    }
                 }
-            }
-            if (measuredParametersEmpty.Count != 0)
-            {
-                foreach (var item in measuredParametersEmpty)
+                if (measuredParametersEmpty.Count != 0)
                 {
-                    result.RemoveAll(r => r.MeasuredParameterId == item);
+                    foreach (var item in measuredParametersEmpty)
+                    {
+                        result.RemoveAll(r => r.MeasuredParameterId == item);
+                    }
                 }
             }
 

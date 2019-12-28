@@ -272,21 +272,24 @@ namespace SmartEcoAPI.Controllers
             }
 
             List<MeasuredData> measuredDatasR = measuredDatas.ToList();
-            measuredDatasR = measuredDatasR
-                .Select(m =>
-                {
-                    m.Value =
-                        (m.MeasuredParameterId == 7 && (m.MonitoringPostId == 44 || m.MonitoringPostId == 50 || m.MonitoringPostId == 47)) ? m.Value / COMPCDivide :
-                        m.MeasuredParameterId == 1 ? m.Value * PValueMultiply :
-                        m.MeasuredParameterId == 13 ? m.Value * NO2ValueMultiply :
-                        m.MeasuredParameterId == 9 ? m.Value * SO2ValueMultiply :
-                        m.MeasuredParameterId == 20 ? m.Value * H2SValueMultiply :
-                        m.MeasuredParameterId == 2 ? m.Value * PM10ValueMultiply :
-                        m.MeasuredParameterId == 3 ? m.Value * PM25ValueMultiply :
-                        m.Value;
-                    return m;
-                })
-                .ToList();
+            if (measuredDatasR[0].MonitoringPost.DataProviderId != 1)
+            {
+                measuredDatasR = measuredDatasR
+                    .Select(m =>
+                    {
+                        m.Value =
+                            (m.MeasuredParameterId == 7 && (m.MonitoringPostId == 44 || m.MonitoringPostId == 50 || m.MonitoringPostId == 47)) ? m.Value / COMPCDivide :
+                            m.MeasuredParameterId == 1 ? m.Value * PValueMultiply :
+                            m.MeasuredParameterId == 13 ? m.Value * NO2ValueMultiply :
+                            m.MeasuredParameterId == 9 ? m.Value * SO2ValueMultiply :
+                            m.MeasuredParameterId == 20 ? m.Value * H2SValueMultiply :
+                            m.MeasuredParameterId == 2 ? m.Value * PM10ValueMultiply :
+                            m.MeasuredParameterId == 3 ? m.Value * PM25ValueMultiply :
+                            m.Value;
+                        return m;
+                    })
+                    .ToList();
+            }
 
             return measuredDatasR;
         }
