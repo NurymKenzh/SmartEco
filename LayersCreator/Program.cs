@@ -640,7 +640,10 @@ namespace LayersCreator
                 DateTime dateTime = new DateTime(
                     Convert.ToInt32(dateTimeS.Substring(0, 4)),
                     Convert.ToInt32(dateTimeS.Substring(4, 2)),
-                    Convert.ToInt32(dateTimeS.Substring(6, 2))
+                    Convert.ToInt32(dateTimeS.Substring(6, 2)),
+                    Convert.ToInt32(dateTimeS.Substring(8, 2)),
+                    Convert.ToInt32(dateTimeS.Substring(10, 2)),
+                    Convert.ToInt32(dateTimeS.Substring(12, 2))
                     );
                 return dateTime;
             }
