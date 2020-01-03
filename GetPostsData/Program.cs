@@ -268,6 +268,7 @@ namespace GetPostsData
                                         {
                                             measuredDatas.Add(new MeasuredData()
                                             {
+                                                Id = postData.Id,
                                                 //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
                                                 DateTime = postData.DateTimeServer,
                                                 MeasuredParameterId = (int)MeasuredParameterId,
@@ -279,6 +280,7 @@ namespace GetPostsData
                                         {
                                             measuredDatas.Add(new MeasuredData()
                                             {
+                                                Id = postData.Id,
                                                 //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
                                                 DateTime = postData.DateTimeServer,
                                                 MeasuredParameterId = (int)MeasuredParameterId,

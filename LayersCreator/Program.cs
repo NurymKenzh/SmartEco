@@ -89,8 +89,26 @@ namespace LayersCreator
                     monitoringPosts = monitoringPostsv.ToList();
                 }
 
-                //List<DateTime> times20 = new List<DateTime>();
-                for (DateTime dateTime = DateTime.Today; dateTime <= DateTime.Now; dateTime = dateTime.AddMinutes(20))
+                // Get last layer time
+                DateTime dateTimeLast = new DateTime(2000, 1, 1);
+                foreach (string file in Directory.GetFiles(GSDataDir))
+                {
+                    string layer = Path.GetFileName(file);
+                    DateTime? dateTimeCurrent = GetFileDateTime(layer);
+                    if (dateTimeCurrent != null)
+                    {
+                        if (dateTimeCurrent > dateTimeLast)
+                        {
+                            dateTimeLast = (DateTime)dateTimeCurrent;
+                        }
+                    }
+                }
+                if (DateTime.Today > dateTimeLast)
+                {
+                    dateTimeLast = DateTime.Today;
+                }
+
+                for (DateTime dateTime = dateTimeLast; dateTime <= DateTime.Now; dateTime = dateTime.AddMinutes(20))
                 {
                     //times20.Add(i);
                     foreach (MeasuredParameter measuredParameter in measuredParameters)
@@ -468,7 +486,7 @@ namespace LayersCreator
                     List<Log> logs = logsv
                         .Where(l => l.DateTimeLayer < DateTime.Today.AddDays(-1))
                         .ToList();
-                    foreach(Log log in logs)
+                    foreach (Log log in logs)
                     {
                         // unpublish layer
                         try
@@ -502,6 +520,15 @@ namespace LayersCreator
                         catch
                         {
 
+                        }
+                    }
+                    // delete files, which haven't been deleted
+                    foreach (string file in Directory.GetFiles(GSDataDir))
+                    {
+                        string layer = Path.GetFileName(file);
+                        if (GetFileDateTime(layer) < DateTime.Today)
+                        {
+                            File.Delete(file);
                         }
                     }
                 }
@@ -602,6 +629,27 @@ namespace LayersCreator
                     $");";
                 connection.Execute(execute);
                 connection.Close();
+            }
+        }
+
+        public static DateTime? GetFileDateTime(string Layer)
+        {
+            try
+            {
+                string dateTimeS = Layer.Split("_")[2];
+                DateTime dateTime = new DateTime(
+                    Convert.ToInt32(dateTimeS.Substring(0, 4)),
+                    Convert.ToInt32(dateTimeS.Substring(4, 2)),
+                    Convert.ToInt32(dateTimeS.Substring(6, 2)),
+                    Convert.ToInt32(dateTimeS.Substring(8, 2)),
+                    Convert.ToInt32(dateTimeS.Substring(10, 2)),
+                    Convert.ToInt32(dateTimeS.Substring(12, 2))
+                    );
+                return dateTime;
+            }
+            catch
+            {
+                return null;
             }
         }
     }
