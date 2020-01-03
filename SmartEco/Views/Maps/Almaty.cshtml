@@ -961,7 +961,7 @@
                 'INFO_FORMAT': 'text/javascript',
                 'FEATURE_COUNT': '10000'
             });
-        console.log(url);
+        //console.log(url);
         if (url) {
             var parser = new ol.format.GeoJSON();
             $.ajax({
@@ -977,7 +977,7 @@
             }).then(function (response) {
                 var result = parser.readFeatures(response);
                 if (result.length > 0) {
-                    console.log(result);
+                    //console.log(result);
                 }
             })
         }
