@@ -32,6 +32,7 @@ namespace SmartEcoAPI.Controllers
             string NameEN,
             int? EcomonCode,
             string OceanusCode,
+            string KazhydrometCode,
             int? PageSize,
             int? PageNumber)
         {
@@ -58,6 +59,10 @@ namespace SmartEcoAPI.Controllers
             if (!string.IsNullOrEmpty(OceanusCode))
             {
                 measuredParameters = measuredParameters.Where(m => m.OceanusCode.ToLower().Contains(OceanusCode.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(KazhydrometCode))
+            {
+                measuredParameters = measuredParameters.Where(m => m.KazhydrometCode.ToLower().Contains(KazhydrometCode.ToLower()));
             }
 
             switch (SortOrder)
@@ -91,6 +96,12 @@ namespace SmartEcoAPI.Controllers
                     break;
                 case "OceanusCodeDesc":
                     measuredParameters = measuredParameters.OrderByDescending(m => m.OceanusCode);
+                    break;
+                case "KazhydrometCode":
+                    measuredParameters = measuredParameters.OrderBy(m => m.KazhydrometCode);
+                    break;
+                case "KazhydrometCodeDesc":
+                    measuredParameters = measuredParameters.OrderByDescending(m => m.KazhydrometCode);
                     break;
                 default:
                     measuredParameters = measuredParameters.OrderBy(m => m.Id);
@@ -194,7 +205,8 @@ namespace SmartEcoAPI.Controllers
             string NameRU,
             string NameEN,
             int? EcomonCode,
-            string OceanusCode)
+            string OceanusCode,
+            string KazhydrometCode)
         {
             var measuredParameters = _context.MeasuredParameter
                 .Where(m => true);
@@ -218,6 +230,10 @@ namespace SmartEcoAPI.Controllers
             if (!string.IsNullOrEmpty(OceanusCode))
             {
                 measuredParameters = measuredParameters.Where(m => m.OceanusCode.ToLower().Contains(OceanusCode.ToLower()));
+            }
+            if (!string.IsNullOrEmpty(KazhydrometCode))
+            {
+                measuredParameters = measuredParameters.Where(m => m.KazhydrometCode.ToLower().Contains(KazhydrometCode.ToLower()));
             }
 
             int count = await measuredParameters.CountAsync();

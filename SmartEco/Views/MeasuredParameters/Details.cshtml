@@ -46,18 +46,24 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.OceanusCode)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.KazhydrometCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.KazhydrometCode)
+        </dd>
     </dl>
 </div>
 @if (Role == "admin" || Role == "moderator")
 {
     <div>
-        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter }) |
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter })
+        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter, KazhydrometCodeFilter = ViewBag.KazhydrometCodeFilter }) |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter, KazhydrometCodeFilter = ViewBag.KazhydrometCodeFilter })
     </div>
 }
 else
 {
     <div>
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter })
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter, KazhydrometCodeFilter = ViewBag.KazhydrometCodeFilter })
     </div>
 }

@@ -441,6 +441,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string KazhydrometCode {
+            get {
+                return ResourceManager.GetString("KazhydrometCode", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string KazhydrometID {
+            get {
+                return ResourceManager.GetString("KazhydrometID", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string KazHydrometSoilPost {
             get {
                 return ResourceManager.GetString("KazHydrometSoilPost", resourceCulture);

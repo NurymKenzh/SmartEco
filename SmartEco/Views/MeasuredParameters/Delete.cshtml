@@ -50,6 +50,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.OceanusCode)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.KazhydrometCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.KazhydrometCode)
+        </dd>
     </dl>
 
     <form asp-action="Delete">
@@ -63,8 +69,9 @@
             @Html.Editor("NameENFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
             @Html.Editor("EcomonCodeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
             @Html.Editor("OceanusCodeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("KazhydrometCodeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
         </div>
         <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-danger" /> |
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter })
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, EcomonCodeFilter = ViewBag.EcomonCodeFilter, OceanusCodeFilter = ViewBag.OceanusCodeFilter, KazhydrometCodeFilter = ViewBag.KazhydrometCodeFilter })
     </form>
 </div>

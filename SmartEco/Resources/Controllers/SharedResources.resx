@@ -429,4 +429,10 @@
   <data name="WaterProtectionZone" xml:space="preserve">
     <value />
   </data>
+  <data name="KazhydrometCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazhydrometID" xml:space="preserve">
+    <value />
+  </data>
 </root>

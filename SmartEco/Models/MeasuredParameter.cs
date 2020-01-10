@@ -50,6 +50,9 @@ namespace SmartEco.Models
         [Display(Name = "OceanusCode")]
         public string OceanusCode { get; set; }
 
+        [Display(Name = "KazhydrometCode")]
+        public string KazhydrometCode { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:G}", ApplyFormatInEditMode = true)]
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPC")]
         public decimal? MPC { get; set; } // maximum permissible concentration

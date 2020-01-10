@@ -28,6 +28,7 @@ namespace SmartEco.Controllers
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -38,12 +39,14 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
 
             ViewBag.NameKKSort = SortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
             ViewBag.NameRUSort = SortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
             ViewBag.NameENSort = SortOrder == "NameEN" ? "NameENDesc" : "NameEN";
             ViewBag.EcomonCodeSort = SortOrder == "EcomonCode" ? "EcomonCodeDesc" : "EcomonCode";
             ViewBag.OceanusCodeSort = SortOrder == "OceanusCode" ? "OceanusCodeDesc" : "OceanusCode";
+            ViewBag.KazhydrometCodeSort = SortOrder == "KazhydrometCode" ? "KazhydrometCodeDesc" : "KazhydrometCode";
 
             string url = "api/MeasuredParameters",
                 route = "",
@@ -87,6 +90,13 @@ namespace SmartEco.Controllers
                 route += $"OceanusCode={OceanusCodeFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"OceanusCode={OceanusCodeFilter}";
+            }
+            if (KazhydrometCodeFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"KazhydrometCode={KazhydrometCodeFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"KazhydrometCode={KazhydrometCodeFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -159,6 +169,7 @@ namespace SmartEco.Controllers
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -170,6 +181,7 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
             if (id == null)
             {
                 return NotFound();
@@ -196,6 +208,7 @@ namespace SmartEco.Controllers
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -207,6 +220,7 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
             List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
             string urlMeasuredParameterUnits = "api/MeasuredParameterUnits",
                 routeMeasuredParameterUnits = "";
@@ -224,13 +238,14 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Create([Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -242,6 +257,7 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
@@ -273,7 +289,8 @@ namespace SmartEco.Controllers
                         NameRUFilter = ViewBag.NameRUFilter,
                         NameENFilter = ViewBag.NameENFilter,
                         EcomonCodeFilter = ViewBag.EcomonCodeFilter,
-                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
+                        OceanusCodeFilter = ViewBag.OceanusCodeFilter,
+                        KazhydrometCodeFilter = ViewBag.KazhydrometCodeFilter
                     });
             }
             List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
@@ -296,6 +313,7 @@ namespace SmartEco.Controllers
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -307,6 +325,7 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
             MeasuredParameter measuredParameter = null;
             HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/MeasuredParameters/{id.ToString()}");
             if (response.IsSuccessStatusCode)
@@ -330,13 +349,14 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -348,6 +368,7 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
             if (id != measuredParameter.Id)
             {
                 return NotFound();
@@ -384,7 +405,8 @@ namespace SmartEco.Controllers
                         NameRUFilter = ViewBag.NameRUFilter,
                         NameENFilter = ViewBag.NameENFilter,
                         EcomonCodeFilter = ViewBag.EcomonCodeFilter,
-                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
+                        OceanusCodeFilter = ViewBag.OceanusCodeFilter,
+                        KazhydrometCodeFilter = ViewBag.KazhydrometCodeFilter
                     });
             }
             List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
@@ -407,6 +429,7 @@ namespace SmartEco.Controllers
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -418,6 +441,7 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
             if (id == null)
             {
                 return NotFound();
@@ -447,6 +471,7 @@ namespace SmartEco.Controllers
             string NameENFilter,
             int? EcomonCodeFilter,
             string OceanusCodeFilter,
+            string KazhydrometCodeFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -458,6 +483,7 @@ namespace SmartEco.Controllers
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.EcomonCodeFilter = EcomonCodeFilter;
             ViewBag.OceanusCodeFilter = OceanusCodeFilter;
+            ViewBag.KazhydrometCodeFilter = KazhydrometCodeFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
                 $"api/MeasuredParameters/{id}");
             return RedirectToAction(nameof(Index),
@@ -470,7 +496,8 @@ namespace SmartEco.Controllers
                         NameRUFilter = ViewBag.NameRUFilter,
                         NameENFilter = ViewBag.NameENFilter,
                         EcomonCodeFilter = ViewBag.EcomonCodeFilter,
-                        OceanusCodeFilter = ViewBag.OceanusCodeFilter
+                        OceanusCodeFilter = ViewBag.OceanusCodeFilter,
+                        KazhydrometCodeFilter = ViewBag.KazhydrometCodeFilter
                     });
         }
 

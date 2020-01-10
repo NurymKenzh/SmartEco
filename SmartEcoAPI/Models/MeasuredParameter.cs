@@ -40,6 +40,10 @@ namespace SmartEcoAPI.Models
         /// </summary>
         public string OceanusCode { get; set; }
         /// <summary>
+        /// Kazhydromet код измеряемого параметра.
+        /// </summary>
+        public string KazhydrometCode { get; set; }
+        /// <summary>
         /// ПДК измеряемого параметра.
         /// </summary>
         public decimal? MPC { get; set; } // maximum permissible concentration

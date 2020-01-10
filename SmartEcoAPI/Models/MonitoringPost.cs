@@ -45,6 +45,11 @@ namespace SmartEcoAPI.Models
         public string MN { get; set; }
 
         /// <summary>
+        /// Казгидромет Id поста мониторинга.
+        /// </summary>
+        public int? KazhydrometID { get; set; }
+
+        /// <summary>
         /// Id поставщика данных.
         /// </summary>
         public int DataProviderId { get; set; }
