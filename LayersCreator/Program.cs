@@ -528,7 +528,14 @@ namespace LayersCreator
                         string layer = Path.GetFileName(file);
                         if (GetFileDateTime(layer) < DateTime.Today)
                         {
-                            File.Delete(file);
+                            try
+                            {
+                                File.Delete(file);
+                            }
+                            catch
+                            {
+
+                            }
                         }
                     }
                 }
