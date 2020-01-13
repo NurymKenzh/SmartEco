@@ -457,6 +457,7 @@ namespace SmartEco.Controllers
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
                 .Where(m => m.Project != null && m.Project.Name == "Almaty" 
                 && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                && m.PollutionEnvironmentId == 2
                 && m.TurnOnOff == true)
                 .ToList();
             JObject kazHydrometAirMonitoringPostsObject = JObject.FromObject(new
@@ -495,6 +496,92 @@ namespace SmartEco.Controllers
                            }
             });
             ViewBag.KazHydrometAirMonitoringPostsLayerJson = kazHydrometAirMonitoringPostsObject.ToString();
+
+            List<MonitoringPost> kazHydrometWaterMonitoringPosts = monitoringPosts
+                .Where(m => m.Project != null && m.Project.Name == "Almaty"
+                && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                && m.PollutionEnvironmentId == 3
+                && m.TurnOnOff == true)
+                .ToList();
+            JObject kazHydrometWaterMonitoringPostsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometWaterMonitoringPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.KazHydrometWaterMonitoringPostsLayerJson = kazHydrometWaterMonitoringPostsObject.ToString();
+
+            List<MonitoringPost> kazHydrometTransportMonitoringPosts = monitoringPosts
+                .Where(m => m.Project != null && m.Project.Name == "Almaty"
+                && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                && m.PollutionEnvironmentId == 7
+                && m.TurnOnOff == true)
+                .ToList();
+            JObject kazHydrometTransportMonitoringPostsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometTransportMonitoringPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.KazHydrometTransportMonitoringPostsLayerJson = kazHydrometTransportMonitoringPostsObject.ToString();
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
                 .Where(m => /*m.NorthLatitude >= 46.00M && m.NorthLatitude <= 51.00M*/

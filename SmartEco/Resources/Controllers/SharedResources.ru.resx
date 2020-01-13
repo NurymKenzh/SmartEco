@@ -438,4 +438,25 @@
   <data name="Automatic" xml:space="preserve">
     <value>Автоматическая</value>
   </data>
+  <data name="CarbonOxide" xml:space="preserve">
+    <value>Углерод оксид</value>
+  </data>
+  <data name="Formaldehyde" xml:space="preserve">
+    <value>Формальдегид (Метаналь)</value>
+  </data>
+  <data name="NitrogenDioxide" xml:space="preserve">
+    <value>Азот (IV) диоксид</value>
+  </data>
+  <data name="SulfurDioxide" xml:space="preserve">
+    <value>Сера диоксид</value>
+  </data>
+  <data name="SummationGroups" xml:space="preserve">
+    <value>Группы суммации 0301* + 0330*</value>
+  </data>
+  <data name="KazHydrometTransportPosts" xml:space="preserve">
+    <value>Посты наблюдения за интенсивностью движения Казгидромета</value>
+  </data>
+  <data name="KazHydrometWaterPosts" xml:space="preserve">
+    <value>Посты наблюдения за водными объектами КазГидромета</value>
+  </data>
 </root>

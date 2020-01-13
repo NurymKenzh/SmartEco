@@ -438,4 +438,25 @@
   <data name="Automatic" xml:space="preserve">
     <value>Automatic</value>
   </data>
+  <data name="CarbonOxide" xml:space="preserve">
+    <value>Carbon oxide</value>
+  </data>
+  <data name="Formaldehyde" xml:space="preserve">
+    <value>Formaldehyde (Metanal)</value>
+  </data>
+  <data name="NitrogenDioxide" xml:space="preserve">
+    <value>Nitrogen (IV) dioxide</value>
+  </data>
+  <data name="SulfurDioxide" xml:space="preserve">
+    <value>Sulfur dioxide</value>
+  </data>
+  <data name="SummationGroups" xml:space="preserve">
+    <value>Summation groups 0301* + 0330*</value>
+  </data>
+  <data name="KazHydrometTransportPosts" xml:space="preserve">
+    <value>KazHydromet monitoring posts for the traffic</value>
+  </data>
+  <data name="KazHydrometWaterPosts" xml:space="preserve">
+    <value>KazHydromet monitoring posts for the water bodies</value>
+  </data>
 </root>

@@ -94,6 +94,8 @@
     <input id="GeoServerPort" type="text" value="@ViewBag.GeoServerPort" />
     <input id="KazHydrometAirMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsLayerJson" />
     <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
+    <input id="KazHydrometWaterMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometWaterMonitoringPostsLayerJson" />
+    <input id="KazHydrometTransportMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometTransportMonitoringPostsLayerJson" />
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
     <input id="MPC" type="text" value="@SharedLocalizer["MPC"]" />
@@ -153,6 +155,22 @@
         <br />
         <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
         <hr />
+        <label>
+            <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["KazHydrometWaterPosts"]
+            <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["KazHydrometTransportPosts"]
+            <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
         <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
         <br />
         <input id="layerBaseOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -194,6 +212,41 @@
         </label>
         <br />
         <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["NitrogenDioxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["SulfurDioxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["CarbonOxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
+            @SharedLocalizer["Formaldehyde"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["SummationGroups"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
         <hr />
     </div>
 </div>
@@ -583,6 +636,58 @@
     Layer_EcoserviceAirMonitoringPosts.set('name', 'EcoserviceAirMonitoringPosts');
     layers.push(Layer_EcoserviceAirMonitoringPosts);
 
+    var KazHydrometWaterMonitoringPostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/KazHydrometWaterMonitoringPost.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            scale: 0.0625
+        }))
+    });
+    var KazHydrometWaterMonitoringPostsLayerJson = $("#KazHydrometWaterMonitoringPostsLayerJson").val();
+    var Source_KazHydrometWaterMonitoringPosts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometWaterMonitoringPostsLayerJson, {
+
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometWaterMonitoringPosts = new ol.layer.Vector({
+        source: Source_KazHydrometWaterMonitoringPosts,
+        style: KazHydrometWaterMonitoringPostsStyle,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometWaterMonitoringPosts.set('name', 'KazHydrometWaterMonitoringPosts');
+    layers.push(Layer_KazHydrometWaterMonitoringPosts);
+    Layer_KazHydrometWaterMonitoringPosts.setVisible(false);
+
+    var KazHydrometTransportMonitoringPostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/KazHydrometTransportMonitoringPost.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            scale: 0.0625
+        }))
+    });
+    var KazHydrometTransportMonitoringPostsLayerJson = $("#KazHydrometTransportMonitoringPostsLayerJson").val();
+    var Source_KazHydrometTransportMonitoringPosts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometTransportMonitoringPostsLayerJson, {
+
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometTransportMonitoringPosts = new ol.layer.Vector({
+        source: Source_KazHydrometTransportMonitoringPosts,
+        style: KazHydrometTransportMonitoringPostsStyle,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometTransportMonitoringPosts.set('name', 'KazHydrometTransportMonitoringPosts');
+    layers.push(Layer_KazHydrometTransportMonitoringPosts);
+    Layer_KazHydrometTransportMonitoringPosts.setVisible(false);
+
     var Source_WaterProtectionStrip = new ol.source.ImageWMS({
         url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
         params: {
@@ -614,6 +719,85 @@
     Layer_WaterProtectionZone.set('name', 'WaterProtectionZone');
     layers.push(Layer_WaterProtectionZone);
     Layer_WaterProtectionZone.setVisible(false);
+
+    var Source_TotalRTransport7_po0301 = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':TotalRTransport7_po0301',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_TotalRTransport7_po0301 = new ol.layer.Image({
+        source: Source_TotalRTransport7_po0301
+    });
+    Layer_TotalRTransport7_po0301.set('name', 'TotalRTransport7_po0301');
+    Layer_TotalRTransport7_po0301.setVisible(false);
+    layers.push(Layer_TotalRTransport7_po0301);
+
+    var Source_TotalRTransport7_po0330 = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':TotalRTransport7_po0330',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_TotalRTransport7_po0330 = new ol.layer.Image({
+        source: Source_TotalRTransport7_po0330
+    });
+    Layer_TotalRTransport7_po0330.set('name', 'TotalRTransport7_po0330');
+    Layer_TotalRTransport7_po0330.setVisible(false);
+    layers.push(Layer_TotalRTransport7_po0330);
+
+    var Source_TotalRTransport7_po0337 = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':TotalRTransport7_po0337',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_TotalRTransport7_po0337 = new ol.layer.Image({
+        source: Source_TotalRTransport7_po0337
+    });
+    Layer_TotalRTransport7_po0337.set('name', 'TotalRTransport7_po0337');
+    Layer_TotalRTransport7_po0337.setVisible(false);
+    layers.push(Layer_TotalRTransport7_po0337);
+
+    var Source_TotalRTransport7_po1325 = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':TotalRTransport7_po1325',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_TotalRTransport7_po1325 = new ol.layer.Image({
+        source: Source_TotalRTransport7_po1325
+    });
+    Layer_TotalRTransport7_po1325.set('name', 'TotalRTransport7_po1325');
+    Layer_TotalRTransport7_po1325.setVisible(false);
+    layers.push(Layer_TotalRTransport7_po1325);
+
+    var Source_TotalRTransport7_po__31 = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':TotalRTransport7_po__31',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        }, serverType: 'geoserver'
+    });
+    var Layer_TotalRTransport7_po__31 = new ol.layer.Image({
+        source: Source_TotalRTransport7_po__31
+    });
+    Layer_TotalRTransport7_po__31.set('name', 'TotalRTransport7_po__31');
+    Layer_TotalRTransport7_po__31.setVisible(false);
+    layers.push(Layer_TotalRTransport7_po__31);
 
     function ChangeLayers() {
         map.getLayers().forEach(function (layer) {
@@ -692,6 +876,14 @@
                 layer.setVisible(document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked);
                 layer.setOpacity($('#layerEcoserviceAirMonitoringPostsOpacity').val() / 100)
             }
+            if (layer.get('name') == 'KazHydrometWaterMonitoringPosts') {
+                layer.setVisible(document.getElementById("layerKazHydrometWaterMonitoringPostsShow").checked);
+                layer.setOpacity($('#layerKazHydrometWaterMonitoringPostsOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'KazHydrometTransportMonitoringPosts') {
+                layer.setVisible(document.getElementById("layerKazHydrometTransportMonitoringPostsShow").checked);
+                layer.setOpacity($('#layerKazHydrometTransportMonitoringPostsOpacity').val() / 100)
+            }
             if (layer.get('name') == 'WaterProtectionStrip') {
                 layer.setVisible(document.getElementById("layerWaterProtectionStripShow").checked);
                 layer.setOpacity($('#layerWaterProtectionStripOpacity').val() / 100)
@@ -699,6 +891,26 @@
             if (layer.get('name') == 'WaterProtectionZone') {
                 layer.setVisible(document.getElementById("layerWaterProtectionZoneShow").checked);
                 layer.setOpacity($('#layerWaterProtectionZoneOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'TotalRTransport7_po0301') {
+                layer.setVisible(document.getElementById("layerTotalRTransportNitrogenDioxideShow").checked);
+                layer.setOpacity($('#layerTotalRTransportNitrogenDioxideOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'TotalRTransport7_po0330') {
+                layer.setVisible(document.getElementById("layerTotalRTransportSulfurDioxideShow").checked);
+                layer.setOpacity($('#layerTotalRTransportSulfurDioxideOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'TotalRTransport7_po0337') {
+                layer.setVisible(document.getElementById("layerTotalRTransportCarbonOxideShow").checked);
+                layer.setOpacity($('#layerTotalRTransportCarbonOxideOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'TotalRTransport7_po1325') {
+                layer.setVisible(document.getElementById("layerTotalRTransportFormaldehydeShow").checked);
+                layer.setOpacity($('#layerTotalRTransportFormaldehydeOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'TotalRTransport7_po__31') {
+                layer.setVisible(document.getElementById("layerTotalRTransportSummationGroupsShow").checked);
+                layer.setOpacity($('#layerTotalRTransportSummationGroupsOpacity').val() / 100)
             }
             //if (layer.get('name') == 'KaragandaRegionPollutantSpread') {
             //    layer.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
