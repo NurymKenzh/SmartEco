@@ -19,6 +19,9 @@ namespace SmartEco.Models
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "TurnOnOff")]
         public bool TurnOnOff { get; set; }
 
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Automatic")]
+        public bool Automatic { get; set; }
+
         [DisplayFormat(DataFormatString = "{0:G}", ApplyFormatInEditMode = true)]
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NorthLatitude")]
         public decimal NorthLatitude { get; set; }

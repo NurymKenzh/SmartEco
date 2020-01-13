@@ -435,4 +435,7 @@
   <data name="KazhydrometID" xml:space="preserve">
     <value>Қазгидромет ID</value>
   </data>
+  <data name="Automatic" xml:space="preserve">
+    <value>Автоматты</value>
+  </data>
 </root>
