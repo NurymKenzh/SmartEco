@@ -1022,7 +1022,7 @@
         for (var i = 0; i < data.measureddatas.length; i++) {
             values.push(parseFloat(data.measureddatas[i].value).toFixed(2));
             if (data.measureddatas[0].measuredParameter.mpc != null) {
-                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2));
+                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(3));
             }
         }
         if (min == null) {
@@ -1046,7 +1046,7 @@
         for (var i = 0; i < data.measureddatas.length; i++) {
             data1.push({
                 'x': moment(data.measureddatas[i].dateTime),
-                'y': parseFloat(data.measureddatas[i].value).toFixed(2)
+                'y': parseFloat(data.measureddatas[i].value).toFixed(3)
             });
             data2.push({
                 'x': moment(data.measureddatas[i].dateTime),

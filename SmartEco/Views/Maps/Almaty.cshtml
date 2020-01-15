@@ -130,6 +130,24 @@
         </table>
         <br />
         <hr />
+        <label>
+            @SharedLocalizer["KazHydrometAirPosts"]
+        </label>
+        <table>
+            @{
+                MonitoringPost[] kazHydrometAirMonitoringPosts = ViewBag.KazHydrometAirMonitoringPosts;
+            }
+            @foreach (MonitoringPost monitoringPost in kazHydrometAirMonitoringPosts.OrderBy(m => m.Name))
+            {
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name - @monitoringPost.AdditionalInformation</button>
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+        <hr />
         <br />
         <div>
             <input type="button" value="Карта по-умолчанию" class="btn btn-default" onclick="DefaultMap()">
@@ -1327,7 +1345,7 @@
         for (var i = 0; i < data.measureddatas.length; i++) {
             values.push(parseFloat(data.measureddatas[i].value).toFixed(2));
             if (data.measureddatas[0].measuredParameter.mpc != null) {
-                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2));
+                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(3));
             }
         }
         if (min == null) {
@@ -1345,7 +1363,7 @@
         for (var i = 0; i < data.measureddatas.length; i++) {
             data1.push({
                 'x': moment(data.measureddatas[i].dateTime),
-                'y': parseFloat(data.measureddatas[i].value).toFixed(2)
+                'y': parseFloat(data.measureddatas[i].value).toFixed(3)
             });
             data2.push({
                 'x': moment(data.measureddatas[i].dateTime),
@@ -1684,6 +1702,9 @@
 <script>
     function SelectPost(id) {
         var features = Layer_EcoserviceAirMonitoringPosts.getSource().getFeatures();
+        $.each(Layer_KazHydrometAirMonitoringPosts.getSource().getFeatures(), function (i) {
+            features.push(Layer_KazHydrometAirMonitoringPosts.getSource().getFeatures()[i]);
+        });
         var feature = features.find(f => f.get('Id') === id);
         if (feature) {
             //alert(feature.getGeometry().getExtent());

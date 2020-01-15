@@ -496,6 +496,7 @@ namespace SmartEco.Controllers
                            }
             });
             ViewBag.KazHydrometAirMonitoringPostsLayerJson = kazHydrometAirMonitoringPostsObject.ToString();
+            ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
 
             List<MonitoringPost> kazHydrometWaterMonitoringPosts = monitoringPosts
                 .Where(m => m.Project != null && m.Project.Name == "Almaty"
