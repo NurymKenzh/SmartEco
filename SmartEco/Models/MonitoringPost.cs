@@ -35,6 +35,9 @@ namespace SmartEco.Models
 
         public string MN { get; set; }
 
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "PhoneNumber")]
+        public string PhoneNumber { get; set; }
+
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "KazhydrometID")]
         public int? KazhydrometID { get; set; }
 

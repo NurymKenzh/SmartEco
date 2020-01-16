@@ -436,7 +436,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Number,Name,TurnOnOff,Automatic,NorthLatitude,EastLongitude,AdditionalInformation,MN,KazhydrometID,DataProviderId,PollutionEnvironmentId,ProjectId")] MonitoringPost monitoringPost,
+        public async Task<IActionResult> Create([Bind("Id,Number,Name,TurnOnOff,Automatic,NorthLatitude,EastLongitude,AdditionalInformation,MN,PhoneNumber,KazhydrometID,DataProviderId,PollutionEnvironmentId,ProjectId")] MonitoringPost monitoringPost,
             int?[] Sensors,
             string[] Minimum,
             string[] Maximum,
@@ -693,7 +693,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Name,TurnOnOff,Automatic,NorthLatitude,EastLongitude,AdditionalInformation,MN,KazhydrometID,DataProviderId,PollutionEnvironmentId,ProjectId")] MonitoringPost monitoringPost,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Number,Name,TurnOnOff,Automatic,NorthLatitude,EastLongitude,AdditionalInformation,MN,PhoneNumber,KazhydrometID,DataProviderId,PollutionEnvironmentId,ProjectId")] MonitoringPost monitoringPost,
             int?[] Sensors,
             string[] Minimum,
             string[] Maximum,

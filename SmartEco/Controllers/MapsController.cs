@@ -460,7 +460,13 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 2
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject kazHydrometAirMonitoringPostsObject = JObject.FromObject(new
+            List<MonitoringPost> kazHydrometAirMonitoringPostsAutomatic = kazHydrometAirMonitoringPosts
+                .Where(m => m.Automatic == true)
+                .ToList();
+            List<MonitoringPost> kazHydrometAirMonitoringPostsHands = kazHydrometAirMonitoringPosts
+                .Where(m => m.Automatic == false)
+                .ToList();
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = JObject.FromObject(new
             {
                 type = "FeatureCollection",
                 crs = new
@@ -471,7 +477,7 @@ namespace SmartEco.Controllers
                         name = "urn:ogc:def:crs:EPSG::3857"
                     }
                 },
-                features = from monitoringPost in kazHydrometAirMonitoringPosts
+                features = from monitoringPost in kazHydrometAirMonitoringPostsAutomatic
                            select new
                            {
                                type = "Feature",
@@ -483,6 +489,7 @@ namespace SmartEco.Controllers
                                    AdditionalInformation = monitoringPost.AdditionalInformation,
                                    DataProviderName = monitoringPost.DataProvider.Name,
                                    PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                                   Automatic = monitoringPost.Automatic
                                },
                                geometry = new
                                {
@@ -495,7 +502,46 @@ namespace SmartEco.Controllers
                                }
                            }
             });
-            ViewBag.KazHydrometAirMonitoringPostsLayerJson = kazHydrometAirMonitoringPostsObject.ToString();
+            ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
+
+            JObject kazHydrometAirMonitoringPostsHandsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometAirMonitoringPostsHands
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                                   Automatic = monitoringPost.Automatic
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
+
             ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
 
             List<MonitoringPost> kazHydrometWaterMonitoringPosts = monitoringPosts

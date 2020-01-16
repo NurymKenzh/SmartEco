@@ -459,4 +459,13 @@
   <data name="KazHydrometWaterPosts" xml:space="preserve">
     <value>KazHydromet monitoring posts for the water bodies</value>
   </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Phone Number</value>
+  </data>
+  <data name="Hands" xml:space="preserve">
+    <value>Hands</value>
+  </data>
+  <data name="TypeStation" xml:space="preserve">
+    <value>Type Station</value>
+  </data>
 </root>

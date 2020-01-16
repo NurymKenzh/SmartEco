@@ -92,7 +92,8 @@
     <input id="GeoServerWorkspace" type="text" value="@ViewBag.GeoServerWorkspace" />
     <input id="GeoServerAddress" type="text" value="@ViewBag.GeoServerAddress" />
     <input id="GeoServerPort" type="text" value="@ViewBag.GeoServerPort" />
-    <input id="KazHydrometAirMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsLayerJson" />
+    <input id="KazHydrometAirMonitoringPostsAutomaticLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson" />
+    <input id="KazHydrometAirMonitoringPostsHandsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson" />
     <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
     <input id="KazHydrometWaterMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometWaterMonitoringPostsLayerJson" />
     <input id="KazHydrometTransportMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometTransportMonitoringPostsLayerJson" />
@@ -101,6 +102,8 @@
     <input id="MPC" type="text" value="@SharedLocalizer["MPC"]" />
     <input id="KazHydrometAirPost" type="text" value="@SharedLocalizer["KazHydrometAirPost"]" />
     <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
+    <input id="Automatic" type="text" value="@SharedLocalizer["Automatic"]" />
+    <input id="Hands" type="text" value="@SharedLocalizer["Hands"]" />
     <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPost"]" />
     <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirPosts"]" />
     <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
@@ -168,7 +171,8 @@
         <label>
             <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()">
             @SharedLocalizer["KazHydrometAirPosts"]
-            <img src="~/images/KazHydrometAirMonitoringPost.png" style="width:16px;height:16px;" />
+            <img src="~/images/KazHydrometAirMonitoringPostAutomatic.png" style="width:16px;height:16px;" />
+            <img src="~/images/KazHydrometAirMonitoringPostHands.png" style="width:16px;height:16px;" />
         </label>
         <br />
         <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -335,6 +339,12 @@
                             @SharedLocalizer["Name"]
                         </td>
                         <td id="EcoserviceAirMonitoringPostName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["TypeStation"]
+                        </td>
+                        <td id="KazHydrometAirMonitoringPostType"></td>
                     </tr>
                     <tr>
                         <td>
@@ -563,31 +573,57 @@
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
 
-    var KazHydrometAirMonitoringPostsStyle = new ol.style.Style({
+    var KazHydrometAirMonitoringPostsAutomaticStyle = new ol.style.Style({
         image: new ol.style.Icon(({
-            src: '/images/KazHydrometAirMonitoringPost.png',
+            src: '/images/KazHydrometAirMonitoringPostAutomatic.png',
             anchor: [0.5, 0.5],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
             scale: 0.0625
         }))
     });
-    var KazHydrometAirMonitoringPostsLayerJson = $("#KazHydrometAirMonitoringPostsLayerJson").val();
-    var Source_KazHydrometAirMonitoringPosts = new ol.source.Vector({
-        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsLayerJson, {
+    var KazHydrometAirMonitoringPostsAutomaticLayerJson = $("#KazHydrometAirMonitoringPostsAutomaticLayerJson").val();
+    var Source_KazHydrometAirMonitoringPostsAutomatic = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsAutomaticLayerJson, {
 
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857'
         })
     });
-    var Layer_KazHydrometAirMonitoringPosts = new ol.layer.Vector({
-        source: Source_KazHydrometAirMonitoringPosts,
-        style: KazHydrometAirMonitoringPostsStyle,
+    var Layer_KazHydrometAirMonitoringPostsAutomatic = new ol.layer.Vector({
+        source: Source_KazHydrometAirMonitoringPostsAutomatic,
+        style: KazHydrometAirMonitoringPostsAutomaticStyle,
         renderBuffer: 200
     });
-    Layer_KazHydrometAirMonitoringPosts.set('name', 'KazHydrometAirMonitoringPosts');
-    layers.push(Layer_KazHydrometAirMonitoringPosts);
-    Layer_KazHydrometAirMonitoringPosts.setVisible(false);
+    Layer_KazHydrometAirMonitoringPostsAutomatic.set('name', 'KazHydrometAirMonitoringPostsAutomatic');
+    layers.push(Layer_KazHydrometAirMonitoringPostsAutomatic);
+    Layer_KazHydrometAirMonitoringPostsAutomatic.setVisible(false);
+
+    var KazHydrometAirMonitoringPostsHandsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/KazHydrometAirMonitoringPostHands.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            scale: 0.0625
+        }))
+    });
+    var KazHydrometAirMonitoringPostsHandsLayerJson = $("#KazHydrometAirMonitoringPostsHandsLayerJson").val();
+    var Source_KazHydrometAirMonitoringPostsHands = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsHandsLayerJson, {
+
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometAirMonitoringPostsHands = new ol.layer.Vector({
+        source: Source_KazHydrometAirMonitoringPostsHands,
+        style: KazHydrometAirMonitoringPostsHandsStyle,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometAirMonitoringPostsHands.set('name', 'KazHydrometAirMonitoringPostsHands');
+    layers.push(Layer_KazHydrometAirMonitoringPostsHands);
+    Layer_KazHydrometAirMonitoringPostsHands.setVisible(false)
 
     var EcoserviceAirMonitoringPostsStyle = new ol.style.Style({
         image: new ol.style.Icon(({
@@ -886,7 +922,7 @@
                     layer.setSource(Source_ThunderforestNeighbourhood);
                 }
             }
-            if (layer.get('name') == 'KazHydrometAirMonitoringPosts') {
+            if (layer.get('name') == 'KazHydrometAirMonitoringPostsAutomatic' || layer.get('name') == 'KazHydrometAirMonitoringPostsHands') {
                 layer.setVisible(document.getElementById("layerKazHydrometAirMonitoringPostsShow").checked);
                 layer.setOpacity($('#layerKazHydrometAirMonitoringPostsOpacity').val() / 100)
             }
@@ -1118,7 +1154,8 @@
         var layerName = '';
         var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
             layerName = layer.get('name');
-            if (layer.get('name') == 'KazHydrometAirMonitoringPosts'
+            if (layer.get('name') == 'KazHydrometAirMonitoringPostsAutomatic'
+                || layer.get('name') == 'KazHydrometAirMonitoringPostsHands'
                 || layer.get('name') == 'EcoserviceAirMonitoringPosts') {
                 return feature;
             }
@@ -1158,17 +1195,26 @@
             //    });
             //    GetMeasuredParameters();
             //}
-            if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPosts') {
+            if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
                 $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
                 $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
                 $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
                 $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
                 $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+                if (feature.get('Automatic') == true) {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+                }
+                else if (feature.get('Automatic') == false) {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Hands").val());
+                }
+                else {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+                }
                 $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
                 $('#divEcoserviceAirPost').show();
                 $("#divEcoserviceAirPost").tabs();
                 var title = $('#EcoserviceAirPost').val();
-                if (layerName == 'KazHydrometAirMonitoringPosts') {
+                if (layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
                     title = $('#KazHydrometAirPost').val();
                 }
                 $("#dialogMonitoringPostInfo").dialog({
@@ -1702,8 +1748,11 @@
 <script>
     function SelectPost(id) {
         var features = Layer_EcoserviceAirMonitoringPosts.getSource().getFeatures();
-        $.each(Layer_KazHydrometAirMonitoringPosts.getSource().getFeatures(), function (i) {
-            features.push(Layer_KazHydrometAirMonitoringPosts.getSource().getFeatures()[i]);
+        $.each(Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().getFeatures(), function (i) {
+            features.push(Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().getFeatures()[i]);
+        });
+        $.each(Layer_KazHydrometAirMonitoringPostsHands.getSource().getFeatures(), function (i) {
+            features.push(Layer_KazHydrometAirMonitoringPostsHands.getSource().getFeatures()[i]);
         });
         var feature = features.find(f => f.get('Id') === id);
         if (feature) {
@@ -1718,6 +1767,15 @@
             $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
             $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
             $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+            if (feature.get('Automatic') == true) {
+                $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+            }
+            else if (feature.get('Automatic') == false) {
+                $('#KazHydrometAirMonitoringPostType').text($("#Hands").val());
+            }
+            else {
+                $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+            }
             $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
             $('#divEcoserviceAirPost').show();
             $("#divEcoserviceAirPost").tabs();

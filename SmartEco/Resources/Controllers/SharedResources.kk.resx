@@ -459,4 +459,13 @@
   <data name="KazHydrometWaterPosts" xml:space="preserve">
     <value>Қазгидрометтің су объектілерін бақылау бекеттері</value>
   </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value>Телефон нөмірі</value>
+  </data>
+  <data name="Hands" xml:space="preserve">
+    <value>Қолмен</value>
+  </data>
+  <data name="TypeStation" xml:space="preserve">
+    <value>Станция түрі</value>
+  </data>
 </root>

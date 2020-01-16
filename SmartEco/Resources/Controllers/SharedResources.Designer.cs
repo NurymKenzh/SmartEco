@@ -396,6 +396,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Hands {
+            get {
+                return ResourceManager.GetString("Hands", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string History {
             get {
                 return ResourceManager.GetString("History", resourceCulture);
@@ -828,6 +837,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string PhoneNumber {
+            get {
+                return ResourceManager.GetString("PhoneNumber", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Pollutant {
             get {
                 return ResourceManager.GetString("Pollutant", resourceCulture);
@@ -1056,6 +1074,15 @@ namespace SmartEco.Resources.Controllers {
         public static string TurnOnOff {
             get {
                 return ResourceManager.GetString("TurnOnOff", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TypeStation {
+            get {
+                return ResourceManager.GetString("TypeStation", resourceCulture);
             }
         }
         
