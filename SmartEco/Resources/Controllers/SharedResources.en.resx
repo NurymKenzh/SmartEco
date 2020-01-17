@@ -454,7 +454,7 @@
     <value>Summation groups 0301* + 0330*</value>
   </data>
   <data name="KazHydrometTransportPosts" xml:space="preserve">
-    <value>KazHydromet monitoring posts for the traffic</value>
+    <value>Traffic intensity</value>
   </data>
   <data name="KazHydrometWaterPosts" xml:space="preserve">
     <value>KazHydromet monitoring posts for the water bodies</value>
@@ -467,5 +467,17 @@
   </data>
   <data name="TypeStation" xml:space="preserve">
     <value>Type Station</value>
+  </data>
+  <data name="AssessmentAir" xml:space="preserve">
+    <value>The main impact factors and assessment of the current state and quality of atmospheric air in Almaty</value>
+  </data>
+  <data name="AssessmentWater" xml:space="preserve">
+    <value>Assessment of the current state and quality of water resources</value>
+  </data>
+  <data name="DissipationSummary" xml:space="preserve">
+    <value>Dissipation Summary</value>
+  </data>
+  <data name="MobileEmissionSources" xml:space="preserve">
+    <value>Mobile emission sources</value>
   </data>
 </root>

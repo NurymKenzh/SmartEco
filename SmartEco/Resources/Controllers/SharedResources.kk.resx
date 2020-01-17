@@ -454,7 +454,7 @@
     <value>Қорытындылау топтары 0301* + 0330*</value>
   </data>
   <data name="KazHydrometTransportPosts" xml:space="preserve">
-    <value>Қазгидрометтің трафикті бақылау бекеттері</value>
+    <value>Қозғалыс қарқындылығы</value>
   </data>
   <data name="KazHydrometWaterPosts" xml:space="preserve">
     <value>Қазгидрометтің су объектілерін бақылау бекеттері</value>
@@ -467,5 +467,17 @@
   </data>
   <data name="TypeStation" xml:space="preserve">
     <value>Станция түрі</value>
+  </data>
+  <data name="AssessmentAir" xml:space="preserve">
+    <value>Алматы қаласындағы атмосфералық ауаның қазіргі жағдайы мен сапасын бағалаудың негізгі факторлары мен бағалауы</value>
+  </data>
+  <data name="AssessmentWater" xml:space="preserve">
+    <value>Су ресурстарының қазіргі жағдайы мен сапасын бағалау</value>
+  </data>
+  <data name="DissipationSummary" xml:space="preserve">
+    <value>Диссертацияның қысқаша мазмұны</value>
+  </data>
+  <data name="MobileEmissionSources" xml:space="preserve">
+    <value>Жылжымалы шығарындылар көздері</value>
   </data>
 </root>

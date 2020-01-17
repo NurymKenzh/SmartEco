@@ -454,7 +454,7 @@
     <value>Группы суммации 0301* + 0330*</value>
   </data>
   <data name="KazHydrometTransportPosts" xml:space="preserve">
-    <value>Посты наблюдения за интенсивностью движения Казгидромета</value>
+    <value>Интенсивность движения автотранспорта</value>
   </data>
   <data name="KazHydrometWaterPosts" xml:space="preserve">
     <value>Посты наблюдения за водными объектами КазГидромета</value>
@@ -467,5 +467,17 @@
   </data>
   <data name="TypeStation" xml:space="preserve">
     <value>Тип станции</value>
+  </data>
+  <data name="AssessmentAir" xml:space="preserve">
+    <value>Основные факторы воздействия и оценка современного состояния и качества атмосферного воздуха города Алматы</value>
+  </data>
+  <data name="AssessmentWater" xml:space="preserve">
+    <value>Оценка современного состояния и качества водных ресурсов</value>
+  </data>
+  <data name="DissipationSummary" xml:space="preserve">
+    <value>Сводный расчёт рассеивания</value>
+  </data>
+  <data name="MobileEmissionSources" xml:space="preserve">
+    <value>Передвижные источники выбросов</value>
   </data>
 </root>

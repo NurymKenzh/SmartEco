@@ -117,6 +117,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AssessmentAir {
+            get {
+                return ResourceManager.GetString("AssessmentAir", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AssessmentWater {
+            get {
+                return ResourceManager.GetString("AssessmentWater", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Automatic {
             get {
                 return ResourceManager.GetString("Automatic", resourceCulture);
@@ -282,6 +300,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Directories {
             get {
                 return ResourceManager.GetString("Directories", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string DissipationSummary {
+            get {
+                return ResourceManager.GetString("DissipationSummary", resourceCulture);
             }
         }
         
@@ -723,6 +750,15 @@ namespace SmartEco.Resources.Controllers {
         public static string MinMeasuredValue {
             get {
                 return ResourceManager.GetString("MinMeasuredValue", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MobileEmissionSources {
+            get {
+                return ResourceManager.GetString("MobileEmissionSources", resourceCulture);
             }
         }
         
