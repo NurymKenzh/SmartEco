@@ -73,7 +73,7 @@ namespace YandexWeather
                             {
                                 HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(string.Format($"https://api.weather.yandex.ru/v1/forecast?lat={lat}&lon={lon}"));
                                 WebReq.Method = "GET";
-                                WebReq.Headers.Add("X-Yandex-API-Key", "8997ff67-00e3-4f0a-8c88-f7b72f90f2c6");
+                                WebReq.Headers.Add("X-Yandex-API-Key", "697247f6-ab7e-4e47-a309-efbddc396285");
                                 HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
                                 string jsonString;
                                 using (Stream stream = WebResp.GetResponseStream())   //modified from your code since the using statement disposes the stream automatically when done
