@@ -415,7 +415,7 @@ namespace SmartEcoAPI.Controllers
             }
         }
 
-        public void MonitoringPostMeasuredParameter(int MonitoringPostId,
+        public async Task MonitoringPostMeasuredParameter(int MonitoringPostId,
             int MeasuredParameterId,
             decimal? Min,
             decimal? Max,
@@ -435,7 +435,7 @@ namespace SmartEcoAPI.Controllers
             };
 
             _context.MonitoringPostMeasuredParameters.Add(monitoringPostMeasuredParameters);
-            _context.SaveChanges();
+            await _context.SaveChangesAsync();
         }
 
         // POST: api/MonitoringPosts/EditMonitoringPostMeasuredParameter
@@ -515,11 +515,11 @@ namespace SmartEcoAPI.Controllers
 
                         try
                         {
-                            PutMonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef);
+                            Task.WaitAll(PutMonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
                         }
-                        catch
+                        catch (Exception ex)
                         {
-                            MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef);
+                            Task.WaitAll(MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
                         }
 
                         //if (Min[i] == "null" && Max[i] != "null")
@@ -595,7 +595,7 @@ namespace SmartEcoAPI.Controllers
             return Ok(1);
         }
 
-        public void PutMonitoringPostMeasuredParameter(
+        public async Task PutMonitoringPostMeasuredParameter(
             int MonitoringPostId,
             int MeasuredParameterId,
             decimal? Min,
@@ -612,16 +612,16 @@ namespace SmartEcoAPI.Controllers
             monitoringPostMeasuredParameters.MinMeasuredValue = MinMeasuredValue;
             monitoringPostMeasuredParameters.MaxMeasuredValue = MaxMeasuredValue;
             monitoringPostMeasuredParameters.Coefficient = Coefficient;
-            _context.SaveChangesAsync();
+            await _context.SaveChangesAsync();
         }
 
-        public void DeleteMonitoringPostMeasuredParameter(
+        public async Task DeleteMonitoringPostMeasuredParameter(
             MonitoringPostMeasuredParameters monitoringPostMeasuredParameters)
         {
             try
             {
                 _context.MonitoringPostMeasuredParameters.Remove(monitoringPostMeasuredParameters);
-                _context.SaveChangesAsync();
+                await _context.SaveChangesAsync();
             }
             catch(Exception ex)
             {
