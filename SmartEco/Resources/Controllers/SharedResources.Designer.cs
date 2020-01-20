@@ -351,9 +351,27 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string EcoserviceAirPostAlmaty {
+            get {
+                return ResourceManager.GetString("EcoserviceAirPostAlmaty", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string EcoserviceAirPosts {
             get {
                 return ResourceManager.GetString("EcoserviceAirPosts", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string EcoserviceAirPostsAlmaty {
+            get {
+                return ResourceManager.GetString("EcoserviceAirPostsAlmaty", resourceCulture);
             }
         }
         

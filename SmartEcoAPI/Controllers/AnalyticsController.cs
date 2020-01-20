@@ -27,13 +27,13 @@ namespace SmartEcoAPI.Controllers
             SMTPServer = "smtp.gmail.com";
         const int SMTPPort = 465;
 
-        public int COMPCDivide = 1; // было 10  // Id = 7
-        public decimal? PValueMultiply = 0.750063755419211m, // Id = 1
-            NO2ValueMultiply = 0.001m, // Id = 13
-            SO2ValueMultiply = 0.001m, // Id = 9
-            H2SValueMultiply = 0.001m, // Id = 20
-            PM10ValueMultiply = 0.001m, // Id = 2
-            PM25ValueMultiply = 0.001m; // Id = 3
+        //public int COMPCDivide = 1; // было 10  // Id = 7
+        //public decimal? PValueMultiply = 0.750063755419211m, // Id = 1
+        //    NO2ValueMultiply = 0.001m, // Id = 13
+        //    SO2ValueMultiply = 0.001m, // Id = 9
+        //    H2SValueMultiply = 0.001m, // Id = 20
+        //    PM10ValueMultiply = 0.001m, // Id = 2
+        //    PM25ValueMultiply = 0.001m; // Id = 3
         public string sName = "PostsAnalytics";
 
         public AnalyticsController(ApplicationDbContext context)
@@ -200,21 +200,21 @@ namespace SmartEcoAPI.Controllers
             }
 
             List<MeasuredData> measuredDatasR = measuredDatas.ToList();
-            measuredDatasR = measuredDatasR
-                .Select(m =>
-                {
-                    m.Value =
-                        m.MeasuredParameterId == 7 ? m.Value / COMPCDivide :
-                        m.MeasuredParameterId == 1 ? m.Value * PValueMultiply :
-                        m.MeasuredParameterId == 13 ? m.Value * NO2ValueMultiply :
-                        m.MeasuredParameterId == 9 ? m.Value * SO2ValueMultiply :
-                        m.MeasuredParameterId == 20 ? m.Value * H2SValueMultiply :
-                        m.MeasuredParameterId == 2 ? m.Value * PM10ValueMultiply :
-                        m.MeasuredParameterId == 3 ? m.Value * PM25ValueMultiply :
-                        m.Value;
-                    return m;
-                })
-                .ToList();
+            //measuredDatasR = measuredDatasR
+            //    .Select(m =>
+            //    {
+            //        m.Value =
+            //            m.MeasuredParameterId == 7 ? m.Value / COMPCDivide :
+            //            m.MeasuredParameterId == 1 ? m.Value * PValueMultiply :
+            //            m.MeasuredParameterId == 13 ? m.Value * NO2ValueMultiply :
+            //            m.MeasuredParameterId == 9 ? m.Value * SO2ValueMultiply :
+            //            m.MeasuredParameterId == 20 ? m.Value * H2SValueMultiply :
+            //            m.MeasuredParameterId == 2 ? m.Value * PM10ValueMultiply :
+            //            m.MeasuredParameterId == 3 ? m.Value * PM25ValueMultiply :
+            //            m.Value;
+            //        return m;
+            //    })
+            //    .ToList();
 
             return measuredDatasR;
         }

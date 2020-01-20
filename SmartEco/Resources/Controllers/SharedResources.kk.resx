@@ -454,7 +454,7 @@
     <value>Қорытындылау топтары 0301* + 0330*</value>
   </data>
   <data name="KazHydrometTransportPosts" xml:space="preserve">
-    <value>Қозғалыс қарқындылығы</value>
+    <value>Жол қозғалысын бақылау камералары</value>
   </data>
   <data name="KazHydrometWaterPosts" xml:space="preserve">
     <value>Қазгидрометтің су объектілерін бақылау бекеттері</value>
@@ -479,5 +479,11 @@
   </data>
   <data name="MobileEmissionSources" xml:space="preserve">
     <value>Жылжымалы шығарындылар көздері</value>
+  </data>
+  <data name="EcoserviceAirPostAlmaty" xml:space="preserve">
+    <value>Ауаны бақылау станциясы</value>
+  </data>
+  <data name="EcoserviceAirPostsAlmaty" xml:space="preserve">
+    <value>Ауаны бақылау станциялары</value>
   </data>
 </root>

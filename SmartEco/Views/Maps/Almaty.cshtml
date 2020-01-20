@@ -124,8 +124,8 @@
     <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
     <input id="Automatic" type="text" value="@SharedLocalizer["Automatic"]" />
     <input id="Hands" type="text" value="@SharedLocalizer["Hands"]" />
-    <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPost"]" />
-    <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirPosts"]" />
+    <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPostAlmaty"]" />
+    <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirPostsAlmaty"]" />
     <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
     <input id="ShowHideRightPanelText" type="text" value="@SharedLocalizer["ShowHideRightPanelText"]" />
     <input id="MonitoringPostMeasuredParameters2" type="text" value="@ViewBag.MonitoringPostMeasuredParameters2" />
@@ -136,7 +136,7 @@
 <div id="fullscreen" class="fullscreen">
     <div id="sidepanelLeft" class="sidepanel">
         <label>
-            @SharedLocalizer["EcoserviceAirPosts"]
+            @SharedLocalizer["EcoserviceAirPostsAlmaty"]
         </label>
         <table>
             @{
@@ -182,8 +182,8 @@
     <div id="sidepanelRight" class="sidepanel">
         <label>
             <input type="checkbox" id="layerEcoserviceAirMonitoringPostsShow" onchange="ChangeLayers()" checked="checked">
-            @SharedLocalizer["EcoserviceAirPosts"]
-            <img src="~/images/EcoserviceAirMonitoringPost.png" style="width:16px;height:16px;" />
+            @SharedLocalizer["EcoserviceAirPostsAlmaty"]
+            <img src="~/images/EcoserviceAirMonitoringPostPanel.png" style="width:16px;height:16px;" />
         </label>
         <br />
         <input id="layerEcoserviceAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -191,8 +191,8 @@
         <label>
             <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()">
             @SharedLocalizer["KazHydrometAirPosts"]
-            <img src="~/images/KazHydrometAirMonitoringPostAutomatic.png" style="width:16px;height:16px;" />
-            <img src="~/images/KazHydrometAirMonitoringPostHands.png" style="width:16px;height:16px;" />
+            <img src="~/images/KazHydrometAirMonitoringPostAutomaticPanel.png" style="width:16px;height:16px;" />
+            <img src="~/images/KazHydrometAirMonitoringPostHandsPanel.png" style="width:16px;height:16px;" />
         </label>
         <br />
         <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -235,7 +235,7 @@
                             <ul>
                                 <li class="is-checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onclick="ChangeLayers()">
                                     @SharedLocalizer["KazHydrometTransportPosts"]
-                                    <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
+                                    <img src="~/images/KazHydrometTransportMonitoringPostPanel.png" style="width:16px;height:16px;" />
                                 </li>
                                 <li>
                                     @SharedLocalizer["DissipationSummary"]
@@ -256,7 +256,7 @@
                     <ul>
                         <li class="is-checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onclick="ChangeLayers()">
                             @SharedLocalizer["KazHydrometWaterPosts"]
-                            <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
+                            <img src="~/images/KazHydrometWaterMonitoringPostPanel.png" style="width:16px;height:16px;" />
                             @*<input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />*@
                         </li>
                         <li class="is-checkbox" id="layerWaterProtectionStripShow" onclick="ChangeLayers()">@SharedLocalizer["WaterProtectionStrip"]</li>

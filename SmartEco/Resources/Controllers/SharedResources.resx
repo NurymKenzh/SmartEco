@@ -480,4 +480,10 @@
   <data name="MobileEmissionSources" xml:space="preserve">
     <value />
   </data>
+  <data name="EcoserviceAirPostAlmaty" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcoserviceAirPostsAlmaty" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -454,7 +454,7 @@
     <value>Summation groups 0301* + 0330*</value>
   </data>
   <data name="KazHydrometTransportPosts" xml:space="preserve">
-    <value>Traffic intensity</value>
+    <value>Traffic surveillance cameras</value>
   </data>
   <data name="KazHydrometWaterPosts" xml:space="preserve">
     <value>KazHydromet monitoring posts for the water bodies</value>
@@ -479,5 +479,11 @@
   </data>
   <data name="MobileEmissionSources" xml:space="preserve">
     <value>Mobile emission sources</value>
+  </data>
+  <data name="EcoserviceAirPostAlmaty" xml:space="preserve">
+    <value>Air monitoring station</value>
+  </data>
+  <data name="EcoserviceAirPostsAlmaty" xml:space="preserve">
+    <value>Air monitoring stations</value>
   </data>
 </root>
