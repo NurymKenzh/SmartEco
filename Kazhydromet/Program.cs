@@ -60,7 +60,7 @@ namespace Kazhydromet
 
                         var monitoringPostsv = connection.Query<MonitoringPost>(
                             $"SELECT \"Id\", \"Name\", \"KazhydrometID\", \"Automatic\"" +
-                            $"FROM public.\"MonitoringPost\" WHERE \"DataProviderId\" = 1 and \"ProjectId\" = 3");
+                            $"FROM public.\"MonitoringPost\" WHERE \"DataProviderId\" = 1 and \"ProjectId\" = 3 and \"PollutionEnvironmentId\" = 2");
                         monitoringPosts = monitoringPostsv.ToList();
 
                         var measuredParametersv = connection.Query<MeasuredParameter>(
