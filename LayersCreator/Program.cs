@@ -20,11 +20,12 @@ namespace LayersCreator
             GSPassword = "geoserver",
             //GSDataDir = "E:\\Documents\\Google Drive\\Geoserver\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
             //GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco\\KaragandaRegionPollutantSpread",
+            GSData = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco",
             CurlFullPath = "C:\\Windows\\curl.exe";
         static string LayerNameTemplate = "",
             GSStyle = "",
+            GSDataDir = "";
             //GSDataDir = "D:\\GeoServer 2.13.4\\data_dir\\data\\SmartEco";
-            GSDataDir = "C:\\Program Files (x86)\\GeoServer 2.13.4\\data_dir\\data\\SmartEco";
         static List<string> GSStyleList = new List<string>() { "KaragandaRegionPollutantSpread", "AlmatyPollutantSpread" },
             LayerNameTemplateList = new List<string>() { "KaragandaRegionPollutantSpread", "AlmatyPollutantSpread" };
         const decimal MaxDistance = 0.25M,
@@ -584,18 +585,25 @@ namespace LayersCreator
 
                 // Get last layer time
                 DateTime dateTimeLast = new DateTime(2000, 1, 1);
-                foreach (string file in Directory.GetFiles(GSDataDir))
+                List<DateTime> dateTimeLastList = new List<DateTime>();
+                foreach (var layerName in LayerNameTemplateList)
                 {
-                    string layer = Path.GetFileName(file);
-                    DateTime? dateTimeCurrent = GetFileDateTime(layer);
-                    if (dateTimeCurrent != null)
+                    dateTimeLast = new DateTime(2000, 1, 1);
+                    foreach (string file in Directory.GetFiles(Path.Combine(GSData, layerName)))
                     {
-                        if (dateTimeCurrent > dateTimeLast)
+                        string layer = Path.GetFileName(file);
+                        DateTime? dateTimeCurrent = GetFileDateTime(layer);
+                        if (dateTimeCurrent != null)
                         {
-                            dateTimeLast = (DateTime)dateTimeCurrent;
+                            if (dateTimeCurrent > dateTimeLast)
+                            {
+                                dateTimeLast = (DateTime)dateTimeCurrent;
+                            }
                         }
                     }
+                    dateTimeLastList.Add((DateTime)dateTimeLast);
                 }
+                dateTimeLast = dateTimeLastList.Min();
                 if (DateTime.Today > dateTimeLast)
                 {
                     dateTimeLast = DateTime.Today;
@@ -623,14 +631,14 @@ namespace LayersCreator
                                     if (layerName.Contains(project.Name))
                                     {
                                         LayerNameTemplate = layerName;
-                                        GSDataDir = Path.Combine(GSDataDir, LayerNameTemplate);
+                                        GSDataDir = Path.Combine(GSData, LayerNameTemplate);
                                     }
                                 }
                                 foreach (var styleName in GSStyleList)
                                 {
                                     if (styleName.Contains(project.Name))
                                     {
-                                        LayerNameTemplate = styleName;
+                                        GSStyle = styleName;
                                     }
                                 }
                             }
