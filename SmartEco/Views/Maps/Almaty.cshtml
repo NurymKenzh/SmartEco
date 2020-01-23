@@ -225,6 +225,20 @@
         </select>
         <br />
         <hr />
+        <label>
+            <input type="checkbox" id="layerPollutantSpreadShow" onchange="ChangeLayers()">
+            @SharedLocalizer["PollutantSpread"]
+        </label>
+        <br />
+        <input id="layerPollutantSpreadOpacity" type="range" min="0" max="100" value="80" oninput="ChangeLayers()" />
+        <br />
+        <label>@SharedLocalizer["Time"]</label>: <label id="time20Label"></label>
+        <input id="time20" type="range" min="0" value="0" max="0" step="1">
+        <label>@SharedLocalizer["MeasuredParameter"]</label>
+        <br />
+        @Html.DropDownList("PollutantSpreadMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control info-input-select", @id = "PollutantSpreadMeasuredParameterId", @onchange = "PollutantSpreadChange()" })
+        <br />
+        <hr />
         <div id="tree">
             <ul>
                 <li class="no-checkbox">
@@ -265,72 +279,72 @@
                 </li>
             </ul>
         </div>
-        <hr />
-        @*<label>
-            <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
-            @SharedLocalizer["KazHydrometWaterPosts"]
-            <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
-        </label>
         <br />
-        <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
-            @SharedLocalizer["KazHydrometTransportPosts"]
-            <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
-        </label>
-        <br />
-        <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
-            @SharedLocalizer["WaterProtectionStrip"]
-        </label>
-        <br />
-        <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
-            @SharedLocalizer["WaterProtectionZone"]
-        </label>
-        <br />
-        <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
-            @SharedLocalizer["NitrogenDioxide"]
-        </label>
-        <br />
-        <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
-            @SharedLocalizer["SulfurDioxide"]
-        </label>
-        <br />
-        <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
-            @SharedLocalizer["CarbonOxide"]
-        </label>
-        <br />
-        <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
-            @SharedLocalizer["Formaldehyde"]
-        </label>
-        <br />
-        <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-        <hr />
-        <label>
-            <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
-            @SharedLocalizer["SummationGroups"]
-        </label>
-        <br />
-        <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-        <hr />*@
+        <hr />@*<label>
+                <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
+                @SharedLocalizer["KazHydrometWaterPosts"]
+                <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
+            </label>
+            <br />
+            <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
+                @SharedLocalizer["KazHydrometTransportPosts"]
+                <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
+            </label>
+            <br />
+            <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
+                @SharedLocalizer["WaterProtectionStrip"]
+            </label>
+            <br />
+            <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
+                @SharedLocalizer["WaterProtectionZone"]
+            </label>
+            <br />
+            <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
+                @SharedLocalizer["NitrogenDioxide"]
+            </label>
+            <br />
+            <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
+                @SharedLocalizer["SulfurDioxide"]
+            </label>
+            <br />
+            <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
+                @SharedLocalizer["CarbonOxide"]
+            </label>
+            <br />
+            <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
+                @SharedLocalizer["Formaldehyde"]
+            </label>
+            <br />
+            <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+            <hr />
+            <label>
+                <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
+                @SharedLocalizer["SummationGroups"]
+            </label>
+            <br />
+            <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+            <hr />*@
     </div>
 </div>
 
@@ -1033,6 +1047,10 @@
             if (layer.get('name') == 'EcoserviceAirMonitoringPosts') {
                 layer.setVisible(document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked);
                 layer.setOpacity($('#layerEcoserviceAirMonitoringPostsOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'AlmatyPollutantSpread') {
+                layer.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
+                layer.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
             }
             if (layer.get('name') == 'KazHydrometWaterMonitoringPosts') {
                 if ($("#layerKazHydrometWaterMonitoringPostsShow").attr("aria-selected") == "true") {
@@ -2191,6 +2209,95 @@
         ChangeLayers();
         CreateRangeOpacity();
     }, 1);
+</script>
+
+@* PollutantSpreadChange *@
+<script>
+    var geoserverWorkspace = $('#GeoServerWorkspace').val(),
+        geoserverAddress = $('#GeoServerAddress').val(),
+        geoserverPort = $('#GeoServerPort').val();
+
+    var times20 = [];
+
+    $.ajax({
+        url: '@Url.Action("GetTodayTimes20")',
+        type: 'POST',
+        success: function (data) {
+            times20 = data.times20;
+            $("#time20").attr({
+                "max": times20.length - 1,
+                "value": times20.length - 1
+            });
+            $("#time20Label").text(moment(times20[times20.length - 1]).format('HH:mm'));
+            PollutantSpreadChange();
+        },
+        error: function () {
+        }
+    })
+
+    var input = document.getElementById('time20'),
+        output = document.getElementById('time20Label');
+    input.oninput = function () {
+        output.innerHTML = moment(times20[this.value]).format('HH:mm');
+        PollutantSpreadChange();
+    };
+    input.oninput();
+
+    function PollutantSpreadChange() {
+        // remove old layers
+        map.getLayers().forEach(function (layer) {
+            if (layer != null) {
+                if (layer.get('name') == 'AlmatyPollutantSpread') {
+                    map.removeLayer(layer);
+                }
+            }
+        })
+        // add new layers
+        var layer_name = 'AlmatyPollutantSpread_' + $('#PollutantSpreadMeasuredParameterId').val() + '_' +
+            (new Date($.now())).getFullYear() +
+            ('0' + ((new Date($.now())).getMonth() + 1)).slice(-2) +
+            ('0' + (new Date($.now())).getDate()).slice(-2) +
+            $('#time20Label').text().replace(":", "") + '00';
+        $.ajax({
+            url: '@Url.Action("GetLayersCount")',
+            type: 'POST',
+            data: {
+                LayerBaseName: layer_name
+            },
+            success: function (data) {
+                // remove old layers
+                map.getLayers().forEach(function (layer) {
+                    if (layer != null) {
+                        if (layer.get('name') == 'AlmatyPollutantSpread') {
+                            map.removeLayer(layer);
+                        }
+                    }
+                })
+                for (i = 1; i <= data.count; i++) {
+                    var layer_name_current = layer_name + '_' + i.toString();
+                    var Source_AlmatyPollutantSpread = new ol.source.TileWMS({
+                        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/' + geoserverWorkspace + '/wms?',
+                        params: {
+                            'LAYERS': geoserverWorkspace + ':' + layer_name_current,
+                            'VERSION': '1.1.0',
+                            'FORMAT': 'image/png',
+                            'TILED': true
+                        },
+                        serverType: 'geoserver'
+                    });
+                    var Layer_AlmatyPollutantSpread = new ol.layer.Tile({
+                        source: Source_AlmatyPollutantSpread
+                    });
+                    Layer_AlmatyPollutantSpread.set('name', 'AlmatyPollutantSpread');
+                    Layer_AlmatyPollutantSpread.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
+                    Layer_AlmatyPollutantSpread.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
+                    map.getLayers().insertAt(1, Layer_AlmatyPollutantSpread);
+                }
+            },
+            error: function () {
+            }
+        })
+    };
 </script>
 
 @* window.onload *@
