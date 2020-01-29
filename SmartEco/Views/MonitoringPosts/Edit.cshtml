@@ -20,7 +20,7 @@
     <div class="col-md-4">
         <form asp-action="Edit">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="Id" />
+            <input type="hidden" asp-for="Id" id="MonitoringPostId" />
             <div class="form-group">
                 <label asp-for="Number" class="control-label"></label>
                 <input asp-for="Number" class="form-control" />
@@ -75,7 +75,7 @@
             </div>
             <div class="form-group">
                 <label asp-for="DataProviderId" class="control-label"></label>
-                <select asp-for="DataProviderId" class="form-control" asp-items="ViewBag.DataProviders"></select>
+                <select asp-for="DataProviderId" class="form-control" asp-items="ViewBag.DataProviders" id="DataProviderId" onchange="ChangeProvider()"></select>
                 <span asp-validation-for="DataProviderId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -112,8 +112,8 @@
                         </th>
                     </tr>
                 </thead>
-                <tbody>
-                    @foreach (MonitoringPostMeasuredParameters item in ViewBag.MonitoringPostMeasuredParameters)
+                <tbody id="tableMeasuredParametersBody">
+                    @*@foreach (MonitoringPostMeasuredParameters item in ViewBag.MonitoringPostMeasuredParameters)
                     {
                         <tr>
                             <td>
@@ -138,7 +138,7 @@
                                 <input type="text" name="Coefficient" value=@item.Coefficient class="form-control">
                             </td>
                         </tr>
-                    }
+                    }*@
                 </tbody>
             </table>
             <div hidden="hidden">
@@ -222,8 +222,43 @@
         source.addFeature(featurething);
     };
 
+    function ChangeProvider() {
+        $.ajax({
+            url: '@Url.Action("GetMeasuredParameters", "MonitoringPosts")',
+            data: {
+                DataProviderId: $('#DataProviderId').val(),
+                MonitoringPostId: $('#MonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var htmlTable = '';
+                $.each(data.monitoringPostMeasuredParameters, function (i) {
+                    var checked = '';
+                    if (data.monitoringPostMeasuredParameters[i].sensor == true) {
+                        checked = ' checked=true';
+                    }
+                    htmlTable += '<tr>';
+                    htmlTable +=
+                        '<td><input type="checkbox" name="Sensors" class="form-control" value="' + data.monitoringPostMeasuredParameters[i].id + '"' + checked + '></td > ' +
+                        '<td>' + data.monitoringPostMeasuredParameters[i].measuredParameter.name + '</td>' +
+                        '<td><input type="text" name="Minimum" value="' + (data.monitoringPostMeasuredParameters[i].min != null ? data.monitoringPostMeasuredParameters[i].min : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="Maximum" value="' + (data.monitoringPostMeasuredParameters[i].max != null ? data.monitoringPostMeasuredParameters[i].max : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="MinMeasuredValue" value="' + (data.monitoringPostMeasuredParameters[i].minMeasuredValue != null ? data.monitoringPostMeasuredParameters[i].minMeasuredValue : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="MaxMeasuredValue" value="' + (data.monitoringPostMeasuredParameters[i].maxMeasuredValue != null ? data.monitoringPostMeasuredParameters[i].maxMeasuredValue : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="Coefficient" value="' + (data.monitoringPostMeasuredParameters[i].coefficient != null ? data.monitoringPostMeasuredParameters[i].coefficient : '') + '" class="form-control"></td>';
+                    htmlTable += '</tr>';
+                });
+                $('#tableMeasuredParametersBody').empty();
+                $('#tableMeasuredParametersBody').append(htmlTable);
+            },
+            error: function () {
+            }
+        })
+    }
+
     $(document).ready(function () {
         ChangeCoordinates();
+        ChangeProvider();
     });
 </script>
 
