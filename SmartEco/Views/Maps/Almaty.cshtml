@@ -19,6 +19,7 @@
 <script src="~/lib/moment.js/moment.js"></script>
 <link href="~/lib/jstree/dist/themes/default/style.css" rel="stylesheet" />
 <script src="~/lib/jstree/dist/jstree.js"></script>
+<script src="~/lib/turf.js/turf515.min.js"></script>
 
 <style>
     /*.map {
@@ -117,6 +118,7 @@
     <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
     <input id="KazHydrometWaterMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometWaterMonitoringPostsLayerJson" />
     <input id="KazHydrometTransportMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometTransportMonitoringPostsLayerJson" />
+    <input id="PollutionSourcesLayerJson" type="text" value="@ViewBag.PollutionSourcesLayerJson" />
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
     <input id="MPC" type="text" value="@SharedLocalizer["MPC"]" />
@@ -197,6 +199,17 @@
         <br />
         <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
         <hr />
+
+        @*PollutionSources*@
+        <label>
+            <input type="checkbox" id="layerPollutionSourcesShow" onchange="ChangeLayers()">
+            @SharedLocalizer["PollutionSources"]
+            <img src="~/images/PollutionSources.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerPollutionSourcesOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
         <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
         <br />
         <input id="layerBaseOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -280,71 +293,78 @@
             </ul>
         </div>
         <br />
-        <hr />@*<label>
-                <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["KazHydrometWaterPosts"]
-                <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
-            </label>
-            <br />
-            <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["KazHydrometTransportPosts"]
-                <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
-            </label>
-            <br />
-            <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
-                @SharedLocalizer["WaterProtectionStrip"]
-            </label>
-            <br />
-            <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
-                @SharedLocalizer["WaterProtectionZone"]
-            </label>
-            <br />
-            <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["NitrogenDioxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["SulfurDioxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["CarbonOxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
-                @SharedLocalizer["Formaldehyde"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["SummationGroups"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />*@
+        <hr />
+        <br />
+        <div class="form-group">
+            <input type="button" class="btn btn-primary" id="Calculate" value="Расчет рассеивания" onclick="ShowParametersCalculate();">
+        </div>
+        <br />
+        <hr />
+        @*<label>
+            <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["KazHydrometWaterPosts"]
+            <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["KazHydrometTransportPosts"]
+            <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
+            @SharedLocalizer["WaterProtectionStrip"]
+        </label>
+        <br />
+        <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
+            @SharedLocalizer["WaterProtectionZone"]
+        </label>
+        <br />
+        <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["NitrogenDioxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["SulfurDioxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["CarbonOxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
+            @SharedLocalizer["Formaldehyde"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["SummationGroups"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />*@
     </div>
 </div>
 
@@ -490,6 +510,74 @@
                     </thead>
                     <tbody></tbody>
                 </table>
+            </div>
+        </div>
+    </div>
+    <div id="dialogCalculateDissipation" class="row">
+        <div class="col-md-4">
+            @*<h5>Расчёт рассеивания</h5>*@
+            <div class="form-group">
+                <label for="Temperature" class="control-label">Температура</label>
+                <input type="text" id="Temperature" class="form-control" step=",01" value=@ViewBag.Temperature />
+            </div>
+            <div class="form-group">
+                <label for="WindSpeed" class="control-label">Скорость ветра</label>
+                <input type="text" id="WindSpeed" class="form-control" value=@ViewBag.SpeedWind />
+            </div>
+            <div class="form-group">
+                <label for="StartSpeed" class="control-label">Начальная скорость</label>
+                <input type="text" id="StartSpeed" class="form-control" value="0" />
+            </div>
+            <div class="form-group">
+                <label for="EndSpeed" class="control-label">Конечная скорость</label>
+                <input type="text" id="EndSpeed" class="form-control" value="2" />
+            </div>
+            <div class="form-group">
+                <label for="StepSpeed" class="control-label">Шаг скорости</label>
+                <input type="text" id="StepSpeed" class="form-control" value="0,1" />
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="WindDirection" class="control-label">Направление ветра</label>
+                <input type="text" id="WindDirection" class="form-control" value=@ViewBag.DirectionWind />
+            </div>
+            <div class="form-group">
+                <label for="StartDirection" class="control-label">Начальное направление</label>
+                <input type="text" id="StartDirection" class="form-control" value="0" />
+            </div>
+            <div class="form-group">
+                <label for="EndDirection" class="control-label">Конечное направление</label>
+                <input type="text" id="EndDirection" class="form-control" value="360" />
+            </div>
+            <div class="form-group">
+                <label for="StepDirection" class="control-label">Шаг направления</label>
+                <input type="text" id="StepDirection" class="form-control" value="1" />
+            </div>
+            <div class="form-group">
+                <label class="control-label">Загрязняющее вещество</label>
+                @Html.DropDownList("Pollutants", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control", @id = "Pollutants" })
+            </div>
+        </div>
+        <div class="col-md-4">
+            <div class="form-group">
+                <label for="uSpeed" class="control-label">Скорость ветра, повторяемость превышения которой составляет 5%</label>
+                <input type="text" id="uSpeed" class="form-control" value="1" />
+            </div>
+            <div class="form-group">
+                <label for="Width" class="control-label">Ширина области</label>
+                <input type="text" id="Width" class="form-control" value="4000" />
+            </div>
+            <div class="form-group">
+                <label for="Length" class="control-label">Длина области</label>
+                <input type="text" id="Length" class="form-control" value="4000" />
+            </div>
+            <div class="form-group">
+                <label for="Step" class="control-label">Шаг рассеивания</label>
+                <input type="text" id="Step" class="form-control" value="20" />
+            </div>
+            <div class="form-group">
+                <input type="button" class="btn btn-primary" id="ToCalculate" value="Расчитать рассеивание" onclick="CalculateDissipation();">
             </div>
         </div>
     </div>
@@ -928,6 +1016,58 @@
     Layer_TotalRTransport7_po__31.setVisible(false);
     layers.push(Layer_TotalRTransport7_po__31);
 
+    //Pollution Sources
+    var PollutionSourcesStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/PollutionSources.png'
+        }))
+    });
+    var PollutionSourcesLayerJson = $("#PollutionSourcesLayerJson").val();
+    var Source_PollutionSources = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(PollutionSourcesLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_PollutionSources = new ol.layer.Vector({
+        source: Source_PollutionSources,
+        style: PollutionSourcesStyle,
+        renderBuffer: 200
+    });
+    Layer_PollutionSources.set('name', 'PollutionSources');
+    Layer_PollutionSources.setVisible(false);
+    layers.push(Layer_PollutionSources);
+
+    //Isolines
+    var Source_Isolines = new ol.source.Vector({
+        format: new ol.format.GeoJSON()
+    });
+
+    var isolinesLayer = new ol.layer.Vector({
+        source: Source_Isolines,
+        style: (feature, resolution) => {
+            const color = perc2colorForIsolines(
+                parseFloat(feature.get('c_pdk')),
+                1
+            );
+            return new ol.style.Style({
+                stroke: new ol.style.Stroke({
+                    color: color,
+                    width: 2
+                }),
+                text: createTextStyle(feature, resolution, linesProperties)
+            });
+        }
+    });
+
+    isolinesLayer.set('name', 'Isolines');
+    isolinesLayer.setVisible(false);
+    isolinesLayer.setOpacity(1);
+    layers.push(isolinesLayer);
+
+    format = new ol.format.GeoJSON();
+
+    //tree
     var $root = $("#tree")
         .on('changed.jstree', function (e, data) {
             var i, selected_layers = [];
@@ -1051,6 +1191,10 @@
             if (layer.get('name') == 'AlmatyPollutantSpread') {
                 layer.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
                 layer.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'PollutionSources') {
+                layer.setVisible(document.getElementById("layerPollutionSourcesShow").checked);
+                layer.setOpacity($('#layerPollutionSourcesOpacity').val() / 100)
             }
             if (layer.get('name') == 'KazHydrometWaterMonitoringPosts') {
                 if ($("#layerKazHydrometWaterMonitoringPostsShow").attr("aria-selected") == "true") {
@@ -2298,6 +2442,223 @@
             }
         })
     };
+</script>
+
+@* Calculate Dissipation *@
+<script>
+    function ShowParametersCalculate() {
+        $("#dialogCalculateDissipation").dialog({
+            resize: DialogResize,
+            title: "Расчёт рассеивания",
+            minHeight: 100,
+            minWidth: 100,
+            width: 750,
+            maxHeight: window.innerHeight
+        });
+    }
+
+    var maxPdkForIsolines,
+        minPdkForIsolines,
+        COUNT_STEPS;
+
+    var linesProperties = {
+        text: 'wrap',
+        align: '',
+        baseline: 'middle',
+        rotation: '0',
+        font: '\'Courier New\'',
+        weight: 'normal',
+        placement: 'point',
+        maxangle: '0.1',
+        overflow: 'false',
+        size: '8px',
+        offsetX: '0',
+        offsetY: '0',
+        color: 'green',
+        outline: '#ffffff',
+        outlineWidth: '3',
+        maxreso: '20',
+        getPropertyFunction: function (feature) {
+            return (Math.round(+feature.get('c_pdk') * 100) / 100).toString();
+        }
+    };
+
+    function CalculateDissipation() {
+        var temperature = $('#Temperature').val();
+        var windSpeed = $('#WindSpeed').val();
+        var startSpeed = $('#StartSpeed').val();
+        var endSpeed = $('#EndSpeed').val();
+        var stepSpeed = $('#StepSpeed').val();
+        var windDirection = $('#WindDirection').val();
+        var startDirection = $('#StartDirection').val();
+        var endDirection = $('#EndDirection').val();
+        var stepDirection = $('#StepDirection').val();
+        var uSpeed = $('#uSpeed').val();
+        var pollutants = $('#Pollutants').val();
+        var width = $('#Width').val();
+        var length = $('#Length').val();
+
+        COUNT_STEPS = $('#Step').val();
+
+        $.ajax({
+            url: '@Url.Action("CalculateDissipation")',
+            data: {
+                temperature: temperature,
+                windSpeed: windSpeed,
+                startSpeed: startSpeed,
+                endSpeed: endSpeed,
+                stepSpeed: stepSpeed,
+                windDirection: windDirection,
+                startDirection: startDirection,
+                endDirection: endDirection,
+                stepDirection: stepDirection,
+                uSpeed: uSpeed,
+                pollutants: pollutants,
+                width: width,
+                length: length
+            },
+            type: 'POST',
+            success: function (data) {
+                var turfFeatureCollection = JSON.parse(data.answer);
+                const minAndMax = turfFeatureCollection.features.reduce(
+                    (values, feature) => {
+                        const c = feature.properties['c_pdk'];
+
+                        if (values.max < c) {
+                            values.max = c;
+                        }
+
+                        if (values.min > c) {
+                            values.min = c;
+                        }
+
+                        return values;
+                    },
+                    { min: Number.MAX_SAFE_INTEGER, max: 0 }
+                );
+                const step = (minAndMax.max - minAndMax.min) / COUNT_STEPS;
+                maxPdkForIsolines = minAndMax.max;
+                minPdkForIsolines = minAndMax.min;
+
+                const breaks = [];
+                breaks.push(0);
+                if (step > 0) {
+                    for (let pdk = minAndMax.min; pdk <= minAndMax.max; pdk += step) {
+                        breaks.push(pdk);
+                    }
+
+                    breaks.push(1);
+                }
+                breaks.push(minAndMax.max);
+                const lines = turf.isolines(turfFeatureCollection, breaks, { zProperty: 'c_pdk' });
+                //isolinesLayer.getSource().addFeatures(format.readFeatures(lines));
+                //isolinesLayer.setVisible(true);
+                //var marker = format.readFeatures(lines, {
+                //    dataProjection: 'EPSG:4326',
+                //    featureProjection: 'EPSG:3857'
+                //});
+                var marker = format.readFeatures(lines);
+                isolinesLayer.getSource().clear(true);
+                isolinesLayer.getSource().addFeatures(marker);
+                isolinesLayer.setVisible(true);
+            },
+            error: function () {
+            }
+        });
+    }
+
+    function perc2colorForIsolines(pdk, opacity) {
+        let color;
+        if (maxPdkForIsolines === minPdkForIsolines) {
+            color = pdk > maxPdkForIsolines ? 255 : 0;
+        } else {
+            color = (
+                (pdk - minPdkForIsolines) /
+                ((maxPdkForIsolines - minPdkForIsolines) / (COUNT_STEPS + 2))
+            ) * (255 / COUNT_STEPS);
+        }
+        return 'rgba(' + (255 - color) + ',' + (255 - color) + ',' + (255 - color) + ', ' + opacity + ')';
+    }
+
+    var createTextStyle = function (feature, resolution, dom) {
+        var align = dom.align;
+        var baseline = dom.baseline;
+        var size = dom.size;
+        var offsetX = parseInt(dom.offsetX, 10);
+        var offsetY = parseInt(dom.offsetY, 10);
+        var weight = dom.weight;
+        var placement = dom.placement ? dom.placement : undefined;
+        var maxAngle = dom.maxangle ? parseFloat(dom.maxangle) : undefined;
+        var overflow = dom.overflow ? (dom.overflow.value === 'true') : undefined;
+        var rotation = parseFloat(dom.rotation);
+        var font = weight + ' ' + size + ' ' + dom.font;
+        var fillColor = dom.color;
+        var outlineColor = dom.outline;
+        var outlineWidth = parseInt(dom.outlineWidth, 10);
+
+        return new ol.style.Text({
+            textAlign: align === '' ? undefined : align,
+            textBaseline: baseline,
+            font: font,
+            text: getText(feature, resolution, dom),
+            fill: new ol.style.Fill({ color: fillColor }),
+            stroke: new ol.style.Stroke({ color: outlineColor, width: outlineWidth }),
+            offsetX: offsetX,
+            offsetY: offsetY,
+            placement: placement,
+            maxAngle: true,
+            overflow: overflow,
+            rotation: rotation
+        });
+    };
+
+    function getText(feature, resolution, dom) {
+        var text = dom.getPropertyFunction(feature);
+
+        return stringDivider(text, 16, '\n');
+    }
+
+    function stringDivider(str, width, spaceReplacer) {
+        if (str.length > width) {
+            let p = width;
+            while (p > 0 && (str[p] !== ' ' && str[p] !== '-')) {
+                p--;
+            }
+            if (p > 0) {
+                let left;
+                if (str.substring(p, p + 1) === '-') {
+                    left = str.substring(0, p + 1);
+                } else {
+                    left = str.substring(0, p);
+                }
+                const right = str.substring(p + 1);
+                return left + spaceReplacer + stringDivider(right, width, spaceReplacer);
+            }
+        }
+        return str;
+    }
+
+    function ChangeRaster(nameSource) {
+        map.getLayers().forEach(function (layer) {
+            if (layer.get('name') == 'raster') {
+                if (nameSource == 'Source_OSM') {
+                    layer.setSource(Source_OSM);
+                } else if (nameSource == 'Source_BingAerialWithLabels') {
+                    layer.setSource(Source_BingAerialWithLabels);
+                }
+            }
+        })
+    }
+
+
+
+    var temp = parseFloat(document.getElementById('Temperature').value.replace(',', '.'));
+    temp = temp.toFixed(2).replace('.', ',');
+    $("#Temperature").val(temp);
+
+    var windSpeed = parseFloat(document.getElementById('WindSpeed').value.replace(',', '.'));
+    windSpeed = windSpeed.toFixed(2).replace('.', ',');
+    $("#WindSpeed").val(windSpeed);
 </script>
 
 @* window.onload *@

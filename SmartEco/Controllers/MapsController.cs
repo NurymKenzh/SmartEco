@@ -673,6 +673,100 @@ namespace SmartEco.Controllers
             });
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
+
+            string urlPollutionSources = "api/PollutionSources";
+            List<PollutionSource> pollutionSources = new List<PollutionSource>();
+            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
+            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
+            JObject objectPollutionSources = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from pollutionSource in pollutionSources
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = pollutionSource.Id,
+                                   Name = pollutionSource.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                            {
+                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                            },
+                               }
+                           }
+            });
+            ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
+
+            //Data for calculate dissipation
+            string urlMeasuredDatas = "api/MeasuredDatas",
+                 route = "";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MonitoringPostId={55}";
+            //List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            //HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //double temperature = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 4).Value);
+            //double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 5).Value);
+            //double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 6).Value);
+            //ViewBag.MeasuredData = measuredDatas;
+            //ViewBag.Temperature = temperature;
+            //ViewBag.SpeedWind = speedWind;
+            //ViewBag.DirectionWind = directionWind;
+
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={55}";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MeasuredParameterId={4}";
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={55}";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MeasuredParameterId={5}";
+            measuredDatas = new List<MeasuredData>();
+            responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={55}";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MeasuredParameterId={6}";
+            measuredDatas = new List<MeasuredData>();
+            responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            ViewBag.MeasuredData = measuredDatas;
+            ViewBag.Temperature = temperature;
+            ViewBag.SpeedWind = speedWind;
+            ViewBag.DirectionWind = directionWind;
+
+            List<SelectListItem> pollutants = new List<SelectListItem>();
+            pollutants.Add(new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12" });
+            pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
+            pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
+            pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
+            ViewBag.Pollutants = pollutants;
+
             return View();
         }
 
@@ -722,13 +816,31 @@ namespace SmartEco.Controllers
             string widthString = Convert.ToString(width, CultureInfo.InvariantCulture);
             string lengthString = Convert.ToString(length, CultureInfo.InvariantCulture);
 
-            string urlMeasuredDatas = "api/MeasuredDatas";
-            List<MeasuredData> measuredDatas = new List<MeasuredData>();
-            HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas);
-            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //string urlMeasuredDatas = "api/MeasuredDatas";
+            //List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            //HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+
+            //var measuredDatas = await GetMeasuredDatas(null, pollutants, new DateTime(2000, 1, 1), DateTime.Now, true);
+            List<MeasuredData> measuredDatas = new List<MeasuredData>()
+            {
+                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 12, Value = 3.4711m},
+                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 13, Value = 21.3608m},
+                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 16, Value = 53.5362m},
+                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 17, Value = 2.5523m},
+
+                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 12, Value = 2.4711m},
+                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 13, Value = 23.3608m},
+                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 16, Value = 49.5362m},
+                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 17, Value = 5.5523m}
+            };
+
             List<double> pollutantsValue = new List<double>();
             pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
             pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 4).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
+            //pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault().Value));
+            //pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 4).LastOrDefault().Value));
+
             List<string> pollutantsValueString = new List<string>();
             foreach (double pollutantValue in pollutantsValue)
             {
@@ -769,11 +881,11 @@ namespace SmartEco.Controllers
 
             content = "{ \"threshold_pdk\": 0, \"locality\": { \"square\": 682, \"relief_coefficient\": 1, \"stratification_coefficient\": 200 }, \"meteo\": " +
                 "{ \"temperature\": " + temperatureString + ", \"wind_speed_settings\": { \"mode\": 1, \"speed\": " + windSpeedString + ", \"start_speed\": " + startSpeedString + ", \"end_speed\": " + endSpeedString + ", \"step_speed\": " + stepSpeedString + " }, " +
-                "\"wind_direction_settings\": { \"mode\": 1, \"direction\": " + windDirectionString + ", \"start_direction\": " + startDirectionString + ", \"end_direction\": " + endDirectionString + ", \"step_direction\": " + stepDirectionString + " }, \"rose_of_wind\": { \"north\": 1.2, \"northeast\": 1.7, \"northwest\": 1.4, \"south\": 2.6, \"southeast\": 1.5, \"southwest\": 1.55, \"west\": 1.75, \"east\": 1.0 }, \"u_speed\": " + uSpeedString + " }" +
+                "\"wind_direction_settings\": { \"mode\": 1, \"direction\": " + windDirectionString + ", \"start_direction\": " + startDirectionString + ", \"end_direction\": " + endDirectionString + ", \"step_direction\": " + stepDirectionString + " }, \"u_speed\": " + uSpeedString + " }" +
                 ", \"background\": { \"mode\": 0 }, \"method\": 1, \"contributor_count\": " + pollutantsValueString.Count + ", \"use_summation_groups\": false, \"";
             content += airPollutionSources;
             //content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
-            content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 5376759.33, \"x\": 8572343.29, \"z\": 0 }, \"width\": " + widthString + ", \"length\": " + lengthString + ", \"height\": 1, \"step_by_width\": 100, \"step_by_length\": 100 }], \"points\": [], \"lines\": [] }}";
+            content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 5376759.33, \"x\": 8572343.29, \"z\": 0 }, \"width\": " + widthString + ", \"length\": " + lengthString + ", \"height\": 1, \"step_by_width\": 100, \"step_by_length\": 100 }], \"points\": [], \"lines\": [] }, \"buildings\": []}";
 
             bool server = Convert.ToBoolean(Startup.Configuration["Server"]);
             string URPZAUrl = server ? Startup.Configuration["URPZAUrlServer"] : Startup.Configuration["URPZAUrlDebug"];
