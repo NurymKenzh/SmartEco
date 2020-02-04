@@ -765,7 +765,7 @@ namespace SmartEco.Controllers
             pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
             pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
             pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
-            ViewBag.Pollutants = pollutants;
+            ViewBag.PollutantsDessipation = pollutants;
 
             return View();
         }
@@ -987,7 +987,6 @@ namespace SmartEco.Controllers
                     $"{GSPort}/geoserver/rest/layers/{GSWorkspace}:{Layer}.json");
                 string json = process.StandardOutput.ReadToEnd();
                 process.WaitForExit();
-
                 if (json.Contains("No such layer"))
                 {
                     break;
