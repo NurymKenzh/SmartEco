@@ -122,6 +122,9 @@ namespace SmartEco.Controllers
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"DateTimeTo={DateTimeTo.ToString(dateTimeFormatInfo)}";
             }
+
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"Server={Startup.Configuration["Server"]}";
             HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
             //if (response.IsSuccessStatusCode)
             //{
