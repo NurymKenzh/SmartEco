@@ -2360,7 +2360,6 @@
     var geoserverWorkspace = $('#GeoServerWorkspace').val(),
         geoserverAddress = $('#GeoServerAddress').val(),
         geoserverPort = $('#GeoServerPort').val();
-    console.log("0");
 
     var times20 = [];
 
@@ -2374,11 +2373,9 @@
                 "value": times20.length - 1
             });
             $("#time20Label").text(moment(times20[times20.length - 1]).format('HH:mm'));
-            console.log("1");
             PollutantSpreadChange();
         },
         error: function () {
-            console.log("Error 1");
         }
     })
 
@@ -2399,14 +2396,12 @@
                 }
             }
         })
-        console.log("2");
         // add new layers
         var layer_name = 'AlmatyPollutantSpread_' + $('#PollutantSpreadMeasuredParameterId').val() + '_' +
             (new Date($.now())).getFullYear() +
             ('0' + ((new Date($.now())).getMonth() + 1)).slice(-2) +
             ('0' + (new Date($.now())).getDate()).slice(-2) +
             $('#time20Label').text().replace(":", "") + '00';
-        console.log("3");
         $.ajax({
             url: '@Url.Action("GetLayersCount")',
             type: 'POST',
@@ -2444,7 +2439,6 @@
                 }
             },
             error: function () {
-                console.log("Error 2");
             }
         })
     };
@@ -2573,6 +2567,19 @@
         });
     }
 
+    //function perc2colorForIsolines(pdk, opacity) {
+    //    let color;
+    //    if (maxPdkForIsolines === minPdkForIsolines) {
+    //        color = pdk > maxPdkForIsolines ? 255 : 0;
+    //    } else {
+    //        color = (
+    //            (pdk - minPdkForIsolines) /
+    //            ((maxPdkForIsolines - minPdkForIsolines) / (COUNT_STEPS + 2))
+    //        ) * (255 / COUNT_STEPS);
+    //    }
+    //    return 'rgba(' + (255 - color) + ',' + (255 - color) + ',' + (255 - color) + ', ' + opacity + ')';
+    //}
+
     function perc2colorForIsolines(pdk, opacity) {
         let color;
         if (maxPdkForIsolines === minPdkForIsolines) {
@@ -2580,10 +2587,10 @@
         } else {
             color = (
                 (pdk - minPdkForIsolines) /
-                ((maxPdkForIsolines - minPdkForIsolines) / (COUNT_STEPS + 2))
+                ((maxPdkForIsolines - minPdkForIsolines) / (COUNT_STEPS * 2))
             ) * (255 / COUNT_STEPS);
         }
-        return 'rgba(' + (255 - color) + ',' + (255 - color) + ',' + (255 - color) + ', ' + opacity + ')';
+        return 'rgba(' + (0 + color) + ',' + (255 - color) + ',' + (0) + ', ' + opacity + ')';
     }
 
     var createTextStyle = function (feature, resolution, dom) {

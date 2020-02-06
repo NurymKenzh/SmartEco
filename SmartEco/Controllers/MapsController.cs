@@ -765,6 +765,8 @@ namespace SmartEco.Controllers
             pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
             pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
             pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
+            pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM2,5", Value = "3" });
+            pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
             ViewBag.PollutantsDessipation = pollutants;
 
             return View();
@@ -802,6 +804,14 @@ namespace SmartEco.Controllers
             {
                 code = 0337;
             }
+            if (pollutants == 3)
+            {
+                code = 0010;
+            }
+            if (pollutants == 2)
+            {
+                code = 0008;
+            }
 
             string temperatureString = Convert.ToString(temperature, CultureInfo.InvariantCulture);
             string windSpeedString = Convert.ToString(windSpeed, CultureInfo.InvariantCulture);
@@ -834,6 +844,43 @@ namespace SmartEco.Controllers
                 new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 16, Value = 49.5362m},
                 new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 17, Value = 5.5523m}
             };
+            if (pollutants == 2)
+            {
+                var measuredDatasPM10 = await GetMeasuredDatas(10, 2, new DateTime(2000, 1, 1), DateTime.Now, true);
+                measuredDatasPM10 = measuredDatasPM10.OrderBy(m => m.DateTime).ToList();
+                MeasuredData measuredDataPM101 = new MeasuredData {
+                    PollutionSourceId = 3,
+                    MeasuredParameterId = 2,
+                    Value = measuredDatasPM10.LastOrDefault().Value
+                };
+                MeasuredData measuredDataPM102 = new MeasuredData
+                {
+                    PollutionSourceId = 4,
+                    MeasuredParameterId = 2,
+                    Value = measuredDatasPM10.LastOrDefault().Value
+                };
+                measuredDatas.Add(measuredDataPM101);
+                measuredDatas.Add(measuredDataPM102);
+            }
+            if (pollutants == 3)
+            {
+                var measuredDatasPM25 = await GetMeasuredDatas(10, 3, new DateTime(2000, 1, 1), DateTime.Now, true);
+                measuredDatasPM25 = measuredDatasPM25.OrderBy(m => m.DateTime).ToList();
+                MeasuredData measuredDataPM251 = new MeasuredData
+                {
+                    PollutionSourceId = 3,
+                    MeasuredParameterId = 3,
+                    Value = measuredDatasPM25.LastOrDefault().Value
+                };
+                MeasuredData measuredDataPM252 = new MeasuredData
+                {
+                    PollutionSourceId = 4,
+                    MeasuredParameterId = 3,
+                    Value = measuredDatasPM25.LastOrDefault().Value
+                };
+                measuredDatas.Add(measuredDataPM251);
+                measuredDatas.Add(measuredDataPM252);
+            }
 
             List<double> pollutantsValue = new List<double>();
             pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
