@@ -323,6 +323,7 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator")]
         public void PostMonitoringPostMeasuredParameter(
             int MonitoringPostId,
+            int DataProviderId,
             string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
@@ -332,18 +333,33 @@ namespace SmartEcoAPI.Controllers
             [FromQuery(Name = "Coefficient")] List<string> Coefficient)
         {
             List<int> idMeasuredParameters = new List<int>();
-            if (CultureName == "ru")
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            if (DataProviderId == 1)
             {
-                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+                measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
             }
-            else if (CultureName == "kk")
+            else if (DataProviderId == 3 || DataProviderId == 2)
             {
-                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+                measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
             }
             else
             {
-                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+                measuredParameters = _context.MeasuredParameter.ToList();
             }
+
+            if (CultureName == "ru")
+            {
+                idMeasuredParameters = measuredParameters.OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+            }
+            else if (CultureName == "kk")
+            {
+                idMeasuredParameters = measuredParameters.OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+            }
+            else
+            {
+                idMeasuredParameters = measuredParameters.OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+            }
+
             for (int i = 0; i < idMeasuredParameters.Count; i++)
             {
                 foreach (var id in MeasuredParametersId)
@@ -392,7 +408,7 @@ namespace SmartEcoAPI.Controllers
                             coef = Decimal.Parse(Coefficient[i], CultureInfo.InvariantCulture);
                         }
 
-                        MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef);
+                        Task.WaitAll(MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
 
                         //if (Min[i] == "null" && Max[i] != "null")
                         //{
@@ -443,6 +459,7 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<MonitoringPostMeasuredParameters>> EditMonitoringPostMeasuredParameter(
             int MonitoringPostId,
+            int DataProviderId,
             string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
@@ -452,18 +469,33 @@ namespace SmartEcoAPI.Controllers
             [FromQuery(Name = "Coefficient")] List<string> Coefficient)
         {
             List<int> idMeasuredParameters = new List<int>();
-            if (CultureName == "ru")
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            if (DataProviderId == 1)
             {
-                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+                measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
             }
-            else if (CultureName == "kk")
+            else if (DataProviderId == 3 || DataProviderId == 2)
             {
-                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+                measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
             }
             else
             {
-                idMeasuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+                measuredParameters = _context.MeasuredParameter.ToList();
             }
+
+            if (CultureName == "ru")
+            {
+                idMeasuredParameters = measuredParameters.OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+            }
+            else if (CultureName == "kk")
+            {
+                idMeasuredParameters = measuredParameters.OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+            }
+            else
+            {
+                idMeasuredParameters = measuredParameters.OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+            }
+
             List<int> idMonitoringPostMeasuredParametersId = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).OrderBy(m => m.MeasuredParameterId).Select(m => m.MeasuredParameterId).ToList();
             for (int i = 0; i < idMeasuredParameters.Count; i++)
             {
@@ -632,7 +664,9 @@ namespace SmartEcoAPI.Controllers
         // GET: api/MonitoringPosts/GetMonitoringPostMeasuredParameter
         [HttpPost("getMonitoringPostMeasuredParameters")]
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
-        public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParameters(int MonitoringPostId)
+        public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParameters(
+            int MonitoringPostId,
+            int DataProviderId)
         {
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters
                 .Where(m => m.MonitoringPostId == MonitoringPostId)
@@ -640,7 +674,19 @@ namespace SmartEcoAPI.Controllers
                 .Include(m => m.MonitoringPost)
                 .OrderBy(m => m.MonitoringPostId)
                 .ToList();
-            List<MeasuredParameter> measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.Id).ToList();
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            if (DataProviderId == 1)
+            {
+                measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).OrderBy(m => m.Id).ToList();
+            }
+            else if (DataProviderId == 3 || DataProviderId == 2)
+            {
+                measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.Id).ToList();
+            }
+            else
+            {
+                measuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).ToList();
+            }
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameterWithNull = new List<MonitoringPostMeasuredParameters>();
             bool check = false;
             for (int i = 0; i < measuredParameters.Count; i++)

@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SmartEco.Data;
 using SmartEco.Models;
 
@@ -418,15 +419,15 @@ namespace SmartEco.Controllers
             }
             ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
 
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            string urlMeasuredParameters = "api/MeasuredParameters",
-                routeMeasuredParameters = "";
-            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            if (responseMeasuredParameters.IsSuccessStatusCode)
-            {
-                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            }
-            ViewBag.MeasuredParameters = measuredParameters.Where(m => m.OceanusCode != null).OrderBy(m => m.Name);
+            //List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            //string urlMeasuredParameters = "api/MeasuredParameters",
+            //    routeMeasuredParameters = "";
+            //HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            //if (responseMeasuredParameters.IsSuccessStatusCode)
+            //{
+            //    measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            //}
+            //ViewBag.MeasuredParameters = measuredParameters.Where(m => m.OceanusCode != null).OrderBy(m => m.Name);
 
             return View();
         }
@@ -489,14 +490,20 @@ namespace SmartEco.Controllers
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
                 try
                 {
+                    dynamic jsonOutput = JObject.Parse(OutputViewText);
                     response.EnsureSuccessStatusCode();
-                    int id = Convert.ToInt32(OutputViewText.Substring(OutputViewText.IndexOf(':') + 1, OutputViewText.IndexOf(',') - (OutputViewText.IndexOf(':') + 1)));
+                    //int id = Convert.ToInt32(OutputViewText.Substring(OutputViewText.IndexOf(':') + 1, OutputViewText.IndexOf(',') - (OutputViewText.IndexOf(':') + 1)));
+                    int id = jsonOutput.id;
+                    int dataProviderId = jsonOutput.dataProviderId;
 
                     url = "api/MonitoringPosts/monitoringPostMeasuredParameter";
                     route = "";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"MonitoringPostId={id.ToString()}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DataProviderId={dataProviderId.ToString()}";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
@@ -673,17 +680,17 @@ namespace SmartEco.Controllers
             }
             ViewBag.MeasuredParameters = measuredParameters.Where(m => m.OceanusCode != null);
 
-            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();
-            string urlMonitoringPostMeasuredParameters = "api/MonitoringPosts/getMonitoringPostMeasuredParameters";
-            string routeMonitoringPostMeasuredParameters = "";
-            routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
-            routeMonitoringPostMeasuredParameters += $"MonitoringPostId={id.ToString()}";
-            HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(urlMonitoringPostMeasuredParameters + routeMonitoringPostMeasuredParameters, null);
-            if (responseMPMP.IsSuccessStatusCode)
-            {
-                monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
-            }
-            ViewBag.MonitoringPostMeasuredParameters = monitoringPostMeasuredParameters.OrderBy(m => m.MeasuredParameter.Name);
+            //List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();
+            //string urlMonitoringPostMeasuredParameters = "api/MonitoringPosts/getMonitoringPostMeasuredParameters";
+            //string routeMonitoringPostMeasuredParameters = "";
+            //routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
+            //routeMonitoringPostMeasuredParameters += $"MonitoringPostId={id.ToString()}";
+            //HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(urlMonitoringPostMeasuredParameters + routeMonitoringPostMeasuredParameters, null);
+            //if (responseMPMP.IsSuccessStatusCode)
+            //{
+            //    monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
+            //}
+            //ViewBag.MonitoringPostMeasuredParameters = monitoringPostMeasuredParameters.OrderBy(m => m.MeasuredParameter.Name);
 
             return View(monitoringPost);
         }
@@ -757,6 +764,9 @@ namespace SmartEco.Controllers
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"MonitoringPostId={id.ToString()}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DataProviderId={monitoringPost.DataProviderId.ToString()}";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
@@ -1022,6 +1032,59 @@ namespace SmartEco.Controllers
             return Json(new
             {
                 ids
+            });
+        }
+
+        public async Task<ActionResult> GetMeasuredParameters(
+            int DataProviderId,
+            int? MonitoringPostId)
+        {
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();
+
+            if (MonitoringPostId == null)
+            {
+                string urlMeasuredParameters = "api/MeasuredParameters",
+                    routeMeasuredParameters = "";
+                HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+                if (responseMeasuredParameters.IsSuccessStatusCode)
+                {
+                    measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+                }
+
+                if (DataProviderId == 1)
+                {
+                    measuredParameters = measuredParameters.Where(m => m.KazhydrometCode != null).OrderBy(m => m.Name).ToList();
+                }
+                else if (DataProviderId == 3 || DataProviderId == 2)
+                {
+                    measuredParameters = measuredParameters.Where(m => m.OceanusCode != null).OrderBy(m => m.Name).ToList();
+                }
+                else
+                {
+                    measuredParameters = measuredParameters.OrderBy(m => m.Name).ToList();
+                }
+            }
+            else
+            {
+                string urlMonitoringPostMeasuredParameters = "api/MonitoringPosts/getMonitoringPostMeasuredParameters";
+                string routeMonitoringPostMeasuredParameters = "";
+                routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
+                routeMonitoringPostMeasuredParameters += $"MonitoringPostId={MonitoringPostId.ToString()}";
+                routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
+                routeMonitoringPostMeasuredParameters += $"DataProviderId={DataProviderId.ToString()}";
+                HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(urlMonitoringPostMeasuredParameters + routeMonitoringPostMeasuredParameters, null);
+                if (responseMPMP.IsSuccessStatusCode)
+                {
+                    monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
+                }
+                monitoringPostMeasuredParameters = monitoringPostMeasuredParameters.OrderBy(m => m.MeasuredParameter.Name).ToList();
+            }
+
+            return Json(new
+            {
+                measuredParameters,
+                monitoringPostMeasuredParameters
             });
         }
 

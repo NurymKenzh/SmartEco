@@ -34,7 +34,8 @@ namespace SmartEcoAPI.Controllers
         //    H2SValueMultiply = 0.001m, // Id = 20
         //    PM10ValueMultiply = 0.001m, // Id = 2
         //    PM25ValueMultiply = 0.001m; // Id = 3
-        public string sName = "PostsAnalytics";
+        public string sName = "PostsAnalytics",
+            PathExcelFile = "C:\\inetpub\\wwwroot";
 
         public AnalyticsController(ApplicationDbContext context)
         {
@@ -45,13 +46,14 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys")]
         public async Task<ActionResult> ExcelFormation(
             DateTime DateTimeFrom,
-            DateTime DateTimeTo)
+            DateTime DateTimeTo,
+            bool Server)
         {
             var measuredDatas = GetMeasuredData(DateTimeFrom, DateTimeTo, true).ToList();
             measuredDatas.Where(m => !string.IsNullOrEmpty(m.MonitoringPost.MN) && !string.IsNullOrEmpty(m.MeasuredParameter.OceanusCode)).ToList();
 
             string sFileName = $"{sName}.xlsx";
-            FileInfo file = new FileInfo(Path.Combine(sFileName));
+            FileInfo file = Server == true ? new FileInfo(Path.Combine(PathExcelFile, sFileName)) : new FileInfo(Path.Combine(sFileName));
             if (file.Exists)
             {
                 file.Delete();
@@ -161,8 +163,8 @@ namespace SmartEcoAPI.Controllers
                 package.Save();
 
                 string userEmail = User.Identity.Name;
-                Task.WaitAll(SendExcel(userEmail));
-                System.IO.File.Delete(Path.Combine($"{sName}.xlsx"));
+                Task.WaitAll(SendExcel(userEmail, Server));
+                System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
             }
             return null;
         }
@@ -219,11 +221,12 @@ namespace SmartEcoAPI.Controllers
             return measuredDatasR;
         }
 
-        private async Task SendExcel(string mailTo)
+        private async Task SendExcel(string mailTo, bool Server)
         {
             try
             {
-                var file = System.IO.File.OpenRead($"{sName}.xlsx");
+                var path = Server == true ? Path.Combine(PathExcelFile, $"{sName}.xlsx") : Path.Combine($"{sName}.xlsx");
+                var file = System.IO.File.OpenRead(path);
                 var emailMessage = new MimeMessage();
 
                 emailMessage.From.Add(new MailboxAddress(Theme, FromEmail));
@@ -236,7 +239,7 @@ namespace SmartEcoAPI.Controllers
                     Content = new MimeContent(file),
                     ContentDisposition = new ContentDisposition(ContentDisposition.Attachment),
                     ContentTransferEncoding = ContentEncoding.Base64,
-                    FileName = Path.GetFileName($"{sName}.xlsx")
+                    FileName = Path.GetFileName(path)
                 };
 
                 // create the multipart/mixed container to hold the message text and the pdf attachment
