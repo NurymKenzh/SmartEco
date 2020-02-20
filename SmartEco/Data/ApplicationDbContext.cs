@@ -24,6 +24,12 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.DataProvider> DataProvider { get; set; }
         public DbSet<SmartEco.Models.MonitoringPost> MonitoringPost { get; set; }
         public DbSet<SmartEco.Models.Project> Project { get; set; }
+        public DbSet<SmartEco.Models.TerritoryType> TerritoryType { get; set; }
+        public DbSet<SmartEco.Models.Target> Target { get; set; }
+        public DbSet<SmartEco.Models.Event> Event { get; set; }
+        public DbSet<SmartEco.Models.TargetTerritory> TargetTerritory { get; set; }
+        public DbSet<SmartEco.Models.TargetValue> TargetValue { get; set; }
+        public DbSet<SmartEco.Models.AActivity> AActivity { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }

@@ -58,5 +58,17 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.MeasuredParameterUnit> MeasuredParameterUnit { get; set; }
 
         public DbSet<SmartEcoAPI.Models.Project> Project { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.TerritoryType> TerritoryType { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.Target> Target { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.Event> Event { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.TargetTerritory> TargetTerritory { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.TargetValue> TargetValue { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.AActivity> AActivity { get; set; }
     }
 }

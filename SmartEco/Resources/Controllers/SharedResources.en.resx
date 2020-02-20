@@ -486,4 +486,94 @@
   <data name="EcoserviceAirPostsAlmaty" xml:space="preserve">
     <value>Air monitoring stations</value>
   </data>
+  <data name="AdditionalInformationEN" xml:space="preserve">
+    <value>Additional Information (english)</value>
+  </data>
+  <data name="AdditionalInformationKK" xml:space="preserve">
+    <value>Additional Information (kazakh)</value>
+  </data>
+  <data name="AdditionalInformationRU" xml:space="preserve">
+    <value>Additional Information (russian)</value>
+  </data>
+  <data name="TerritoryType" xml:space="preserve">
+    <value>Territory Type</value>
+  </data>
+  <data name="TerritoryTypes" xml:space="preserve">
+    <value>Territory Types</value>
+  </data>
+  <data name="Direct" xml:space="preserve">
+    <value>Direct</value>
+  </data>
+  <data name="Reverse" xml:space="preserve">
+    <value>Reverse</value>
+  </data>
+  <data name="TypeOfAchievement" xml:space="preserve">
+    <value>Type of Achievement</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Target</value>
+  </data>
+  <data name="Targets" xml:space="preserve">
+    <value>Targets</value>
+  </data>
+  <data name="Event" xml:space="preserve">
+    <value>Event</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Events</value>
+  </data>
+  <data name="KazHydrometTransportPost" xml:space="preserve">
+    <value>Video surveillance post for the amount of transport</value>
+  </data>
+  <data name="KazHydrometWaterPost" xml:space="preserve">
+    <value>Observation post for the water body of KazHydromet</value>
+  </data>
+  <data name="Post" xml:space="preserve">
+    <value>Post, sampling point, monitoring place</value>
+  </data>
+  <data name="GISConnectionCode" xml:space="preserve">
+    <value>GIS Connection Code</value>
+  </data>
+  <data name="TargetTerritories" xml:space="preserve">
+    <value>Target Achievement Territories</value>
+  </data>
+  <data name="TargetTerritory" xml:space="preserve">
+    <value>Target Achievement Territory</value>
+  </data>
+  <data name="Actual" xml:space="preserve">
+    <value>Actual</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Planned</value>
+  </data>
+  <data name="TargetValueType" xml:space="preserve">
+    <value>Type of Value</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Year</value>
+  </data>
+  <data name="TargetValue" xml:space="preserve">
+    <value>Target Value</value>
+  </data>
+  <data name="TargetValues" xml:space="preserve">
+    <value>Target Values</value>
+  </data>
+  <data name="ErrorNumberRangeMustBe" xml:space="preserve">
+    <value>The value {0} must be in the range {1} to {2}.</value>
+  </data>
+  <data name="AActivities" xml:space="preserve">
+    <value>Activities</value>
+  </data>
+  <data name="AActivity" xml:space="preserve">
+    <value>Activity</value>
+  </data>
+  <data name="ActivityType" xml:space="preserve">
+    <value>Type</value>
+  </data>
+  <data name="ImplementationPercentage" xml:space="preserve">
+    <value>Implementation Percentage</value>
+  </data>
+  <data name="RelatedItems" xml:space="preserve">
+    <value>Related Items</value>
+  </data>
 </root>

@@ -486,4 +486,94 @@
   <data name="EcoserviceAirPostsAlmaty" xml:space="preserve">
     <value />
   </data>
+  <data name="AdditionalInformationEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AdditionalInformationKK" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AdditionalInformationRU" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TerritoryType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TerritoryTypes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Direct" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Reverse" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeOfAchievement" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Targets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Event" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometTransportPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometWaterPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Post" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GISConnectionCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetTerritories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetTerritory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Actual" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetValueType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetValue" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetValues" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ErrorNumberRangeMustBe" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AActivities" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AActivity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ActivityType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplementationPercentage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RelatedItems" xml:space="preserve">
+    <value />
+  </data>
 </root>

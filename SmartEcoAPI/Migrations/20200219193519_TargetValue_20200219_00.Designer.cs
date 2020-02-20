@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,47 +10,16 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200219193519_TargetValue_20200219_00")]
+    partial class TargetValue_20200219_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("Npgsql:ValueGenerationStrategy", NpgsqlValueGenerationStrategy.SerialColumn)
                 .HasAnnotation("ProductVersion", "2.2.4-servicing-10062")
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
-
-            modelBuilder.Entity("SmartEcoAPI.Models.AActivity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<bool>("ActivityType");
-
-                    b.Property<string>("AdditionalInformationKK");
-
-                    b.Property<string>("AdditionalInformationRU");
-
-                    b.Property<int>("EventId");
-
-                    b.Property<decimal>("ImplementationPercentage");
-
-                    b.Property<int>("TargetId");
-
-                    b.Property<int>("TargetTerritoryId");
-
-                    b.Property<int>("Year");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EventId");
-
-                    b.HasIndex("TargetId");
-
-                    b.HasIndex("TargetTerritoryId");
-
-                    b.ToTable("AActivity");
-                });
 
             modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
                 {
@@ -579,24 +549,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("TerritoryType");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.AActivity", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.Event", "Event")
-                        .WithMany()
-                        .HasForeignKey("EventId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.Target", "Target")
-                        .WithMany()
-                        .HasForeignKey("TargetId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.TargetTerritory", "TargetTerritory")
-                        .WithMany()
-                        .HasForeignKey("TargetTerritoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.Layer", b =>

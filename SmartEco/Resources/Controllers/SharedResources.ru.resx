@@ -486,4 +486,94 @@
   <data name="EcoserviceAirPostsAlmaty" xml:space="preserve">
     <value>Станции мониторинга атмосферного воздуха</value>
   </data>
+  <data name="AdditionalInformationEN" xml:space="preserve">
+    <value>Дополнительная информация (английский)</value>
+  </data>
+  <data name="AdditionalInformationKK" xml:space="preserve">
+    <value>Дополнительная информация (казахский)</value>
+  </data>
+  <data name="AdditionalInformationRU" xml:space="preserve">
+    <value>Дополнительная информация (русский)</value>
+  </data>
+  <data name="TerritoryType" xml:space="preserve">
+    <value>Тип территории</value>
+  </data>
+  <data name="TerritoryTypes" xml:space="preserve">
+    <value>Типы территорий</value>
+  </data>
+  <data name="Direct" xml:space="preserve">
+    <value>Прямой</value>
+  </data>
+  <data name="Reverse" xml:space="preserve">
+    <value>Обратный</value>
+  </data>
+  <data name="TypeOfAchievement" xml:space="preserve">
+    <value>Тип достижения</value>
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value>Целевой показатель</value>
+  </data>
+  <data name="Targets" xml:space="preserve">
+    <value>Целевые показатели</value>
+  </data>
+  <data name="Event" xml:space="preserve">
+    <value>Мероприятие</value>
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value>Мероприятия</value>
+  </data>
+  <data name="KazHydrometTransportPost" xml:space="preserve">
+    <value>Пост видеонаблюдения за количеством транспорта</value>
+  </data>
+  <data name="KazHydrometWaterPost" xml:space="preserve">
+    <value>Пост наблюдения за водным объектом КазГидромета</value>
+  </data>
+  <data name="Post" xml:space="preserve">
+    <value>Пост, точка отбора, место мониторинга</value>
+  </data>
+  <data name="GISConnectionCode" xml:space="preserve">
+    <value>Код связи с ГИС</value>
+  </data>
+  <data name="TargetTerritories" xml:space="preserve">
+    <value>Территории достижения ЦП</value>
+  </data>
+  <data name="TargetTerritory" xml:space="preserve">
+    <value>Территория достижения ЦП</value>
+  </data>
+  <data name="Actual" xml:space="preserve">
+    <value>Фактическое</value>
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value>Планируемое</value>
+  </data>
+  <data name="TargetValueType" xml:space="preserve">
+    <value>Тип значения</value>
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value>Год</value>
+  </data>
+  <data name="TargetValue" xml:space="preserve">
+    <value>Значение целевого показателя</value>
+  </data>
+  <data name="TargetValues" xml:space="preserve">
+    <value>Значения целевых показателей</value>
+  </data>
+  <data name="ErrorNumberRangeMustBe" xml:space="preserve">
+    <value>Значение {0} должно быть в диапазоне от {1} до {2}.</value>
+  </data>
+  <data name="AActivities" xml:space="preserve">
+    <value>Мероприятия</value>
+  </data>
+  <data name="AActivity" xml:space="preserve">
+    <value>Мероприятие</value>
+  </data>
+  <data name="ActivityType" xml:space="preserve">
+    <value>Тип</value>
+  </data>
+  <data name="ImplementationPercentage" xml:space="preserve">
+    <value>Процент реализации</value>
+  </data>
+  <data name="RelatedItems" xml:space="preserve">
+    <value>Связанные элементы</value>
+  </data>
 </root>

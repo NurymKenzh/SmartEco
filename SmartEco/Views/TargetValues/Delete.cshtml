@@ -1,0 +1,104 @@
+﻿@model SmartEco.Models.TargetValue
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = "Delete";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Delete"]</h1>
+
+<h3>@SharedLocalizer["Delete"]?</h3>
+<div>
+    <h4>@SharedLocalizer["TargetValue"]</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Target.PollutionEnvironmentId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Target.PollutionEnvironment.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Target)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Target.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Target.MeasuredParameterUnitId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Target.MeasuredParameterUnit.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TargetTerritory.TerritoryTypeId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TargetTerritory.TerritoryType.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TargetTerritory)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TargetTerritory.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TargetValueType)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.TargetValueType)
+            {
+                @SharedLocalizer["Actual"]
+            }
+            else
+            {
+                @SharedLocalizer["Planned"]
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AdditionalInformationKK)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AdditionalInformationKK)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AdditionalInformationRU)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AdditionalInformationRU)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div hidden="hidden">
+            @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
+            @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("PollutionEnvironmentIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("TargetIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("MeasuredParameterUnitIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("TerritoryTypeIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("TargetTerritoryIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("YearFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("TargetValueTypeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </div>
+        <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-danger" /> |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+    </form>
+</div>

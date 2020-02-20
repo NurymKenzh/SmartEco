@@ -12,6 +12,10 @@
     <Compile Remove="Data\Migrations\20190313105409_KATO_20190313_00.Designer.cs" />
     <Compile Remove="Data\Migrations\20190401173428_MeasuredData_20190401_00.cs" />
     <Compile Remove="Data\Migrations\20190401173428_MeasuredData_20190401_00.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200214141251_TargetTerritory_20200214_00.cs" />
+    <Compile Remove="Data\Migrations\20200214141251_TargetTerritory_20200214_00.Designer.cs" />
+    <Compile Remove="Data\Migrations\20200220161044_AActivity_20200220_00.cs" />
+    <Compile Remove="Data\Migrations\20200220161044_AActivity_20200220_00.Designer.cs" />
   </ItemGroup>
 
 

@@ -1,0 +1,101 @@
+﻿@model SmartEco.Models.TargetValue
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["Details"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Details"]</h1>
+@{
+    string Role = Context.Session.GetString("Role");
+}
+<div>
+    <h4>@SharedLocalizer["TargetValue"]</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Target.PollutionEnvironmentId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Target.PollutionEnvironment.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Target)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Target.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Target.MeasuredParameterUnitId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Target.MeasuredParameterUnit.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TargetTerritory.TerritoryTypeId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TargetTerritory.TerritoryType.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TargetTerritory)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TargetTerritory.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Year)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Year)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TargetValueType)
+        </dt>
+        <dd class="col-sm-10">
+            @if (Model.TargetValueType)
+            {
+                @SharedLocalizer["Actual"]
+            }
+            else
+            {
+                @SharedLocalizer["Planned"]
+            }
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Value)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Value)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AdditionalInformationKK)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AdditionalInformationKK)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AdditionalInformationRU)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AdditionalInformationRU)
+        </dd>
+    </dl>
+</div>
+@if (Role == "admin" || Role == "moderator")
+{
+<div>
+    @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter }) |
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+</div>
+}
+else
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+    </div>
+}
