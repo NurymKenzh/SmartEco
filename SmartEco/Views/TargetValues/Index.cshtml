@@ -14,7 +14,7 @@
 @{
     string Role = Context.Session.GetString("Role");
 }
-@if (Role == "admin" || Role == "moderator")
+@if (Role == "admin" || Role == "moderator" || Role == "Almaty")
 {
     <p>
         @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
@@ -141,7 +141,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Value)
                     </td>
-                    @if (Role == "admin" || Role == "moderator")
+                    @if (Role == "admin" || Role == "moderator" || Role == "Almaty")
                     {
                         <td>
                             @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter }) |

@@ -153,7 +153,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/TargetValues/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator")]
+        [Authorize(Roles = "admin,moderator,Almaty")]
         public async Task<IActionResult> PutTargetValue(int id, TargetValue targetValue)
         {
             if (id != targetValue.Id)
@@ -184,7 +184,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/TargetValues
         [HttpPost]
-        [Authorize(Roles = "admin,moderator")]
+        [Authorize(Roles = "admin,moderator,Almaty")]
         public async Task<ActionResult<TargetValue>> PostTargetValue(TargetValue targetValue)
         {
             _context.TargetValue.Add(targetValue);
@@ -195,7 +195,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/TargetValues/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator")]
+        [Authorize(Roles = "admin,moderator,Almaty")]
         public async Task<ActionResult<TargetValue>> DeleteTargetValue(int id)
         {
             var targetValue = await _context.TargetValue

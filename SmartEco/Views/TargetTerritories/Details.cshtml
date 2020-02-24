@@ -70,7 +70,7 @@
         </dd>
     </dl>
 </div>
-@if (Role == "admin" || Role == "moderator")
+@if (Role == "admin" || Role == "moderator" || Role == "Almaty")
 {
     <div>
         @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, GISConnectionCodeFilter = ViewBag.GISConnectionCodeFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter }) |

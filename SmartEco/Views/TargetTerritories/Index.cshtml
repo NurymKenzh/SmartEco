@@ -15,7 +15,7 @@
 @{
     string Role = Context.Session.GetString("Role");
 }
-@if (Role == "admin" || Role == "moderator")
+@if (Role == "admin" || Role == "moderator" || Role == "Almaty")
 {
     <p>
         @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, GISConnectionCodeFilter = ViewBag.GISConnectionCodeFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter })
@@ -109,7 +109,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.GISConnectionCode)
                     </td>
-                    @if (Role == "admin" || Role == "moderator")
+                    @if (Role == "admin" || Role == "moderator" || Role == "Almaty")
                     {
                         <td>
                             @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, GISConnectionCodeFilter = ViewBag.GISConnectionCodeFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter }) |

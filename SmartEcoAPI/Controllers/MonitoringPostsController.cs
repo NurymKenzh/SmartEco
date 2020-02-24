@@ -27,7 +27,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPost(string SortOrder,
             int? Number,
             string Name,
@@ -100,7 +100,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public async Task<ActionResult<MonitoringPost>> GetMonitoringPost(long id)
         {
             //var monitoringPost = await _context.MonitoringPost.FindAsync(id);
@@ -200,7 +200,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPostsCount(int? Number,
             string Name,
             int? DataProviderId,
@@ -233,7 +233,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Exceed
         [HttpGet("exceed")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsExceed(int MPCExceedPastMinutes,
             int? DataProviderId)
         {
@@ -286,7 +286,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Exceed
         [HttpGet("inactive")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsInactive(int InactivePastMinutes,
             int? DataProviderId)
         {
@@ -663,7 +663,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/GetMonitoringPostMeasuredParameter
         [HttpPost("getMonitoringPostMeasuredParameters")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParameters(
             int MonitoringPostId,
             int DataProviderId)
@@ -736,7 +736,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/GetMonitoringPostMeasuredParameterForMap
         [HttpPost("getMonitoringPostMeasuredParametersForMap")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParametersForMap(int MonitoringPostId)
         {
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters
