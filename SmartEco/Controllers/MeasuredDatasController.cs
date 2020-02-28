@@ -471,10 +471,14 @@ namespace SmartEco.Controllers
         {
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             List<MeasuredData> measureddatas = new List<MeasuredData>();
+            List<MeasuredData> measuredDatasDailyAverage = new List<MeasuredData>();
+            List<MeasuredData> measureddatasDailyAverage = new List<MeasuredData>();
+            decimal? dailyAverage = null;
             DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
                 dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
             string url = "api/MeasuredDatas",
-                route = "";
+                route = "",
+                routeDailyAverage = "";
             // First condition - for select chart and table. Second condition - for Analytics
             if (MeasuredParameterId != null || (MonitoringPostId == null && MeasuredParameterId == null))
             {
@@ -482,32 +486,50 @@ namespace SmartEco.Controllers
                 {
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"SortOrder=DateTime";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"SortOrder=DateTime";
                 }
                 // MonitoringPostId
                 if (MonitoringPostId != null)
                 {
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"MonitoringPostId={MonitoringPostId}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"MonitoringPostId={MonitoringPostId}";
                 }
                 // MeasuredParameterId
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"MeasuredParameterId={MeasuredParameterId}";
+
+                routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                routeDailyAverage += $"MeasuredParameterId={MeasuredParameterId}";
                 // AveragedFilter
                 {
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"Averaged={Averaged}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"Averaged=false";
                 }
                 // dateTimeFrom
                 {
                     DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"DateTimeFrom={DateTime.Now.AddDays(-1).ToString(dateTimeFormatInfo)}";
                 }
                 // dateTimeTo
                 {
                     DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"DateTimeTo={DateTime.Now.ToString(dateTimeFormatInfo)}";
                 }
                 HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
                 if (response.IsSuccessStatusCode)
@@ -515,10 +537,23 @@ namespace SmartEco.Controllers
                     measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
                 }
                 measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToList();
+
+                HttpResponseMessage responseDailyAverage = await _HttpApiClient.GetAsync(url + routeDailyAverage);
+                if (responseDailyAverage.IsSuccessStatusCode)
+                {
+                    measuredDatasDailyAverage = await responseDailyAverage.Content.ReadAsAsync<List<MeasuredData>>();
+                }
+                measureddatasDailyAverage = measuredDatasDailyAverage.OrderByDescending(m => m.DateTime).ToList();
+
+                if (measureddatasDailyAverage.Count != 0)
+                {
+                    dailyAverage = measureddatasDailyAverage.Sum(m => m.Value) / measureddatasDailyAverage.Count();
+                }
             }
             return Json(new
             {
-                measureddatas
+                measureddatas,
+                dailyAverage
             });
         }
     }

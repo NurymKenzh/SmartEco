@@ -122,6 +122,7 @@
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
     <input id="MPC" type="text" value="@SharedLocalizer["MPC"]" />
+    <input id="DailyAveraged" type="text" value="@SharedLocalizer["DailyAveraged"]" />
     <input id="KazHydrometAirPost" type="text" value="@SharedLocalizer["KazHydrometAirPost"]" />
     <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
     <input id="Automatic" type="text" value="@SharedLocalizer["Automatic"]" />
@@ -1779,6 +1780,7 @@
         var ctx1 = document.getElementById("chartMeasuredDatas").getContext('2d');
         var data1 = [],
             data2 = [],
+            data3 = [],
             values = [];
         for (var i = 0; i < data.measureddatas.length; i++) {
             values.push(parseFloat(data.measureddatas[i].value).toFixed(2));
@@ -1807,6 +1809,10 @@
                 'x': moment(data.measureddatas[i].dateTime),
                 'y': parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2)
             });
+            data3.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.dailyAverage).toFixed(3)
+            });
         }
         var datasets = [];
         var MPC = null;
@@ -1829,6 +1835,19 @@
                     data: data2,
                     backgroundColor: 'rgba(255,0,0,1)',
                     borderColor: 'rgba(255,100,100,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                });
+            }
+            // add daily averaged
+            if (data.dailyAverage != null) {
+                datasets.push({
+                    label: $("#DailyAveraged").val(),
+                    data: data3,
+                    backgroundColor: 'rgba(85,255,255,1)',
+                    borderColor: 'rgba(85,255,255,1)',
                     borderWidth: 3,
                     fill: false,
                     showLine: true,

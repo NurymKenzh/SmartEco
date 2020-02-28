@@ -576,4 +576,7 @@
   <data name="RelatedItems" xml:space="preserve">
     <value />
   </data>
+  <data name="DailyAveraged" xml:space="preserve">
+    <value />
+  </data>
 </root>
