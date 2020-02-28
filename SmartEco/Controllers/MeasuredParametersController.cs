@@ -238,7 +238,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Create([Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,MPCMaxSingle,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -349,7 +349,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,MPC,MPCMaxSingle,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,

@@ -56,5 +56,9 @@ namespace SmartEco.Models
         [DisplayFormat(DataFormatString = "{0:G}", ApplyFormatInEditMode = true)]
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPC")]
         public decimal? MPC { get; set; } // maximum permissible concentration
+
+        [DisplayFormat(DataFormatString = "{0:G}", ApplyFormatInEditMode = true)]
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPCMaxSingle")]
+        public decimal? MPCMaxSingle { get; set; }
     }
 }

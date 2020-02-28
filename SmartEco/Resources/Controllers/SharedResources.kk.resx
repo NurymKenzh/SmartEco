@@ -579,4 +579,7 @@
   <data name="DailyAveraged" xml:space="preserve">
     <value>Тәуліктік орташа мән</value>
   </data>
+  <data name="MPCMaxSingle" xml:space="preserve">
+    <value>Шоғырланудың максималды шегі</value>
+  </data>
 </root>

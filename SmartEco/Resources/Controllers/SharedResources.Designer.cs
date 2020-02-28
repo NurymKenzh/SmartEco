@@ -963,6 +963,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string MPCMaxSingle {
+            get {
+                return ResourceManager.GetString("MPCMaxSingle", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Name {
             get {
                 return ResourceManager.GetString("Name", resourceCulture);

@@ -47,5 +47,9 @@ namespace SmartEcoAPI.Models
         /// ПДК измеряемого параметра.
         /// </summary>
         public decimal? MPC { get; set; } // maximum permissible concentration
+        /// <summary>
+        /// Максимально разовое ПДК измеряемого параметра.
+        /// </summary>
+        public decimal? MPCMaxSingle { get; set; }
     }
 }

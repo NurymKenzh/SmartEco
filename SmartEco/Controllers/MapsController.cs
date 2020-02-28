@@ -253,7 +253,8 @@ namespace SmartEco.Controllers
             monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
-                .Where(m => m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                .Where(m => m.Project != null && m.Project.Name == "KaragandaRegion"
+                && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
             JObject kazHydrometAirMonitoringPostsObject = JObject.FromObject(new
