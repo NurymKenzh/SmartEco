@@ -272,7 +272,7 @@ namespace SmartEcoAPI.Controllers
                     //        m.Value;
                     //    return m;
                     //})
-                    .Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
+                    .Where(m => m.Value > m.MeasuredParameter.MPCMaxSingle && m.MeasuredParameter.MPCMaxSingle != null)
                     .FirstOrDefault() != null;
                 if (!exceed)
                 {

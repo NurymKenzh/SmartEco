@@ -44,9 +44,9 @@ namespace SmartEcoAPI.Models
         /// </summary>
         public string KazhydrometCode { get; set; }
         /// <summary>
-        /// ПДК измеряемого параметра.
+        ///Среднесуточное ПДК измеряемого параметра.
         /// </summary>
-        public decimal? MPC { get; set; } // maximum permissible concentration
+        public decimal? MPCDailyAverage { get; set; } // maximum permissible concentration
         /// <summary>
         /// Максимально разовое ПДК измеряемого параметра.
         /// </summary>

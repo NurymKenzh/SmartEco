@@ -87,7 +87,7 @@ namespace SmartEco.Controllers
                 .Where(m => m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
                 .OrderBy(m => m.Name)
                 .ToList();
-            ViewBag.EcoserviceAirMonitoringPosts = new SelectList(ecoserviceAirMonitoringPosts.OrderBy(m => m.Name), "Id", "AdditionalInformation"); ;
+            ViewBag.EcoserviceAirMonitoringPosts = new SelectList(ecoserviceAirMonitoringPosts.OrderBy(m => m.Name), "Id", "AdditionalInformation");
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
             ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
             ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
@@ -134,6 +134,83 @@ namespace SmartEco.Controllers
             ViewBag.DateFrom = DateTimeFrom.ToString("yyyy-MM-dd");
             ViewBag.DateTo = DateTimeTo.ToString("yyyy-MM-dd");
             return View();
+        }
+
+        public IActionResult PostAnalyticsAlmaty()
+        {
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAnalyticsAlmaty(
+            DateTime DateFrom,
+            DateTime DateTo,
+            DateTime TimeFrom,
+            DateTime TimeTo,
+            List<string> MonitoringPostsId)
+        {
+            string url = "api/Analytics/ExcelFormationAlmaty",
+                route = "";
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            if (dateTimeFrom != null)
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+            }
+            if (dateTimeTo != null)
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+            }
+            if (MonitoringPostsId.Count != 0)
+            {
+                foreach (var monitoringPostId in MonitoringPostsId)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MonitoringPostsId={monitoringPostId}".Replace(',', '.');
+                }
+            }
+
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"Server={Startup.Configuration["Server"]}";
+            HttpResponseMessage response = await _HttpApiClient.PostAsync(url + route, null);
+            //if (response.IsSuccessStatusCode)
+            //{
+            //}
+
+            ViewBag.ExcelSent = "Excel-файл отправлен на Ваш E-mail";
+            ViewBag.DateFrom = DateFrom.ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = DateTo.ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+            return View();
+        }
+
+        public async Task<IActionResult> GetMonitoringPosts()
+        {
+            string urlMonitoringPosts = "api/MonitoringPosts";
+            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
+            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
+                .Where(m => m.Project != null && m.Project.Name == "Almaty"
+                && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
+                && m.TurnOnOff == true)
+                .OrderBy(m => m.Name)
+                .ToList();
+            var result = ecoserviceAirMonitoringPosts;
+
+            return Json(
+                result
+            );
         }
 
         public async Task<IActionResult> GetMeasuredParameters(int MonitoringPostId)
@@ -293,15 +370,15 @@ namespace SmartEco.Controllers
                 foreach (MeasuredData measuredData in measuredDatas)
                 //for (int i = 0; i <= measuredDatas.Count(); i++)
                 {
-                    if(measuredData.MeasuredParameter.MPC!=null)
+                    if(measuredData.MeasuredParameter.MPCMaxSingle!=null)
                     {
-                        if (measuredData.Value >= measuredData.MeasuredParameter.MPC)
+                        if (measuredData.Value >= measuredData.MeasuredParameter.MPCMaxSingle)
                         {
                             report += $"{measuredData.MonitoringPost.Name} ({measuredData.MonitoringPost.AdditionalInformation})\t";
                             report += $"{measuredData.MeasuredParameter.Name}\t";
                             report += $"{measuredData.DateTime?.ToString()}\t";
                             report += $"{measuredData.Value?.ToString().Replace(',', '.')}\t";
-                            report += $"{measuredData.MeasuredParameter.MPC?.ToString().Replace(',', '.')}\r\n";
+                            report += $"{measuredData.MeasuredParameter.MPCMaxSingle?.ToString().Replace(',', '.')}\r\n";
                         }
                     }
                 }

@@ -582,4 +582,10 @@
   <data name="MPCMaxSingle" xml:space="preserve">
     <value />
   </data>
+  <data name="PostAnalyticsAlmaty" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MPCDailyAverage" xml:space="preserve">
+    <value />
+  </data>
 </root>

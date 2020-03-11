@@ -96,7 +96,8 @@
     <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
-    <input id="MPC" type="text" value="@SharedLocalizer["MPC"]" />
+    <input id="MPCMaxSingle" type="text" value="@SharedLocalizer["MPCMaxSingle"]" />
+    <input id="MPCDailyAverage" type="text" value="@SharedLocalizer["MPCDailyAverage"]" />
     <input id="DailyAveraged" type="text" value="@SharedLocalizer["DailyAveraged"]" />
     <input id="KazHydrometAirPost" type="text" value="@SharedLocalizer["KazHydrometAirPost"]" />
     <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
@@ -1020,11 +1021,15 @@
         var data1 = [],
             data2 = [],
             data3 = [],
+            data4 = [],
             values = [];
         for (var i = 0; i < data.measureddatas.length; i++) {
             values.push(parseFloat(data.measureddatas[i].value).toFixed(2));
-            if (data.measureddatas[0].measuredParameter.mpc != null) {
-                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(3));
+            if (data.measureddatas[0].measuredParameter.mpcMaxSingle != null) {
+                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpcMaxSingle).toFixed(3));
+            }
+            if (data.measureddatas[0].measuredParameter.mpcDailyAverage != null) {
+                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpcDailyAverage).toFixed(3));
             }
         }
         if (min == null) {
@@ -1052,15 +1057,20 @@
             });
             data2.push({
                 'x': moment(data.measureddatas[i].dateTime),
-                'y': parseFloat(data.measureddatas[i].measuredParameter.mpc).toFixed(2)
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcMaxSingle).toFixed(2)
             });
             data3.push({
                 'x': moment(data.measureddatas[i].dateTime),
                 'y': parseFloat(data.dailyAverage).toFixed(3)
             });
+            data4.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcDailyAverage).toFixed(2)
+            });
         }
         var datasets = [];
-        var MPC = null;
+        var MPCMaxSingle = null;
+        var MPCDailyAverage = null;
         datasets.push({
             label: $("#ChartMeasuredParameterId option:selected").text(),
             data: data1,
@@ -1073,10 +1083,10 @@
             lineTension: 0
         });
         if (data.measureddatas.length > 0) {
-            if (data.measureddatas[0].measuredParameter.mpc != null) {
-                MPC = parseFloat(data.measureddatas[0].measuredParameter.mpc).toFixed(2);
+            if (data.measureddatas[0].measuredParameter.mpcMaxSingle != null) {
+                MPCMaxSingle = parseFloat(data.measureddatas[0].measuredParameter.mpcMaxSingle).toFixed(2);
                 datasets.push({
-                    label: $("#MPC").val(),
+                    label: $("#MPCMaxSingle").val(),
                     data: data2,
                     backgroundColor: 'rgba(255,0,0,1)',
                     borderColor: 'rgba(255,100,100,1)',
@@ -1093,6 +1103,19 @@
                     data: data3,
                     backgroundColor: 'rgba(85,255,255,1)',
                     borderColor: 'rgba(85,255,255,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                });
+            }
+            if (data.measureddatas[0].measuredParameter.mpcDailyAverage != null) {
+                MPCDailyAverage = parseFloat(data.measureddatas[0].measuredParameter.mpcDailyAverage).toFixed(2);
+                datasets.push({
+                    label: $("#MPCDailyAverage").val(),
+                    data: data4,
+                    backgroundColor: 'rgba(255,0,255,1)',
+                    borderColor: 'rgba(255,100,255,1)',
                     borderWidth: 3,
                     fill: false,
                     showLine: true,
@@ -1144,22 +1167,22 @@
                     if (i != data1.length + 1) {
                         numbNext = parseFloat(data1[i - 1].y);
                     }
-                    MPC = MPC;
-                    if (numb <= MPC && MPC != null && i != data1.length + 1 && numbNext >= MPC) {
+                    MPCMaxSingle = MPCMaxSingle;
+                    if (numb <= MPCMaxSingle && MPCMaxSingle != null && i != data1.length + 1 && numbNext >= MPCMaxSingle) {
                         _setColor(colors[3], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
                         _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
-                    else if (numb >= MPC && MPC != null && i != data1.length + 1 && numbNext <= MPC) {
+                    else if (numb >= MPCMaxSingle && MPCMaxSingle != null && i != data1.length + 1 && numbNext <= MPCMaxSingle) {
                         _setColor(colors[3], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
                         _setBorderDash(meta, i);
                         meta.dataset.draw();
                         startIndex = i - 1;
                     }
-                    else if (numb >= MPC && MPC != null) {
+                    else if (numb >= MPCMaxSingle && MPCMaxSingle != null) {
                         _setColor(colors[1], meta, i - 2);
                         meta.dataset._children = originalDatasets.slice(startIndex, i);
                         _setBorderDash(meta, i);

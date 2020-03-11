@@ -80,7 +80,7 @@
                     @Html.Editor("NameENFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().MPC).ToString()
+                    @Html.DisplayNameFor(c => c.ToList().FirstOrDefault().MPCDailyAverage).ToString()
                     <br />
                     <br />
                     <br />
@@ -129,7 +129,7 @@
                     @Html.DisplayFor(modelItem => item.NameEN)
                 </td>
                 <td>
-                    @Html.DisplayFor(modelItem => item.MPC)
+                    @Html.DisplayFor(modelItem => item.MPCDailyAverage)
                 </td>
                 <td>
                     @Html.DisplayFor(modelItem => item.MPCMaxSingle)

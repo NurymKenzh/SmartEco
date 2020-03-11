@@ -87,15 +87,15 @@ namespace SmartEcoAPI.Controllers
                 int row = 9;
                 foreach (var measuredData in measuredDatas)
                 {
-                    if (measuredData.MeasuredParameter.MPC != null)
+                    if (measuredData.MeasuredParameter.MPCMaxSingle != null)
                     {
-                        if (measuredData.Value > measuredData.MeasuredParameter.MPC)
+                        if (measuredData.Value > measuredData.MeasuredParameter.MPCMaxSingle)
                         {
                             worksheet.Cells[row, 1].Value = measuredData.MonitoringPost.AdditionalInformation;
                             worksheet.Cells[row, 2].Value = measuredData.MeasuredParameter.NameRU;
                             worksheet.Cells[row, 3].Value = measuredData.DateTime.ToString();
                             worksheet.Cells[row, 4].Value = measuredData.Value;
-                            worksheet.Cells[row, 5].Value = measuredData.MeasuredParameter.MPC;
+                            worksheet.Cells[row, 5].Value = measuredData.MeasuredParameter.MPCMaxSingle;
 
                             row++;
                         }
@@ -169,6 +169,271 @@ namespace SmartEcoAPI.Controllers
             return null;
         }
 
+        // POST: api/Analytics/ExcelFormationAlmaty
+        [HttpPost("ExcelFormationAlmaty")]
+        [Authorize(Roles = "admin,moderator,Almaty")]
+        public async Task<ActionResult> ExcelFormationAlmaty(
+            DateTime? DateTimeFrom,
+            DateTime? DateTimeTo,
+            [FromQuery(Name = "MonitoringPostsId")] List<string> MonitoringPostsId,
+            bool Server)
+        {
+            string sFileName = $"{sName}.xlsx";
+            FileInfo file = Server == true ? new FileInfo(Path.Combine(PathExcelFile, sFileName)) : new FileInfo(Path.Combine(sFileName));
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(sFileName));
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(sName);
+
+                //Заголовок
+                worksheet.Cells[3, 1].Value = $"Отчёт по мониторингу качества атмосферного воздуха";
+                worksheet.Cells["A3:I3"].Merge = true;
+                worksheet.Cells[3, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                worksheet.Cells[3, 1].Style.Font.Bold = true;
+                worksheet.Cells[3, 1].Style.Font.Size = 16;
+
+                worksheet.Cells[4, 1].Value = $"За период с {DateTimeFrom.Value.ToShortDateString()} по {DateTimeTo.Value.ToShortDateString()}";
+                worksheet.Cells["A4:I4"].Merge = true;
+                worksheet.Cells[4, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                worksheet.Cells[4, 1].Style.Font.Bold = true;
+                worksheet.Cells[4, 1].Style.Font.Size = 16;
+
+                //Запись информации каждого поста
+                int row = 5;
+                List<MeasuredData> measuredDatasTotal = new List<MeasuredData>(); //Список для итоговой таблицы
+                foreach (var monitoringPostId in MonitoringPostsId)
+                {
+                    row++;
+                    var monitoringPost = _context.MonitoringPost
+                        .Where(m => m.Id == Convert.ToInt32(monitoringPostId))
+                        .ToList();
+
+                    worksheet.Cells[row, 1].Value = $"Станция № {monitoringPost[0].Number}";
+                    worksheet.Cells[row, 1].Style.Font.Bold = true;
+                    worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    row++;
+
+                    worksheet.Cells[row, 1].Value = $"Название станции: {monitoringPost[0].Name}";
+                    worksheet.Cells[row, 1].Style.Font.Bold = true;
+                    worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    row++;
+
+                    worksheet.Cells[row, 1].Value = $"Место установки: {monitoringPost[0].AdditionalInformation}";
+                    worksheet.Cells[row, 1].Style.Font.Bold = true;
+                    worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    row++;
+
+                    worksheet.Cells[row, 1].Value = $"Координаты: {monitoringPost[0].NorthLatitude} с.ш. {monitoringPost[0].EastLongitude} в.д.";
+                    worksheet.Cells[row, 1].Style.Font.Bold = true;
+                    worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
+                    row++;
+
+                    row++;
+                    worksheet.Cells[row, 1].Value = $"Параметр";
+                    worksheet.Cells[row, 2].Value = $"ПДКмр";
+                    worksheet.Cells[row, 3].Value = $"ПДКсс";
+                    worksheet.Cells[row, 4].Value = $"Среднее";
+                    worksheet.Cells[row, 5].Value = $"Максимальное значение";
+                    worksheet.Cells[row, 5].Style.WrapText = true; //Перенос текста
+                    worksheet.Cells[row, 6].Value = $"Минимальное";
+                    worksheet.Cells[row, 7].Value = $"Количесво превышений ПДК мр";
+                    worksheet.Cells[row, 7].Style.WrapText = true;
+                    worksheet.Cells[row, 8].Value = $"Количесво превышений ПДК сс";
+                    worksheet.Cells[row, 8].Style.WrapText = true;
+                    worksheet.Cells[row, 9].Value = $"Оценка";
+
+                    //Установка стилей для "шапки" таблицы
+                    for (int i = 1; i < 10; i++)
+                    {
+                        worksheet.Cells[row, i].Style.Font.Bold = true;
+                        worksheet.Cells[row, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[row, i].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    }
+                    row++;
+
+                    //Параметры, которые включены у постов
+                    var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
+                        .Where(m => m.MonitoringPostId == monitoringPost[0].Id)
+                        .OrderBy (m => m.MeasuredParameter.NameRU)
+                        .Include(m => m.MeasuredParameter)
+                        .ToList();
+                    foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+                    {
+                        var measuredDatasv = _context.MeasuredData
+                            .Where(m => m.MonitoringPostId == monitoringPost[0].Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId);
+                        measuredDatasv = measuredDatasv.Where(m => (m.DateTime != null && m.DateTime >= DateTimeFrom) ||
+                            (m.Year != null && m.Month == null && m.Year >= DateTimeFrom.Value.Year) ||
+                            (m.Year != null && m.Month != null && m.Year >= DateTimeFrom.Value.Year && m.Month >= DateTimeFrom.Value.Month));
+                        measuredDatasv = measuredDatasv.Where(m => (m.DateTime != null && m.DateTime <= DateTimeTo) ||
+                            (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
+                            (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
+                        var measuredDatas = measuredDatasv.ToList();
+                        measuredDatasTotal.AddRange(measuredDatas); //Запись данных в общий список
+
+                        worksheet.Cells[row, 1].Value = $"{monitoringPostMeasuredParameter.MeasuredParameter.NameRU}";
+                        worksheet.Cells[row, 2].Value = $"{monitoringPostMeasuredParameter.MeasuredParameter.MPCMaxSingle}";
+                        worksheet.Cells[row, 3].Value = $"{monitoringPostMeasuredParameter.MeasuredParameter.MPCDailyAverage}";
+
+                        //Запись среднего, максимального, минимального
+                        if (measuredDatas.Count != 0)
+                        {
+                            worksheet.Cells[row, 4].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Sum(m => m.Value) / measuredDatas.Count()), 3)}";
+                            worksheet.Cells[row, 5].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Max(m => m.Value)), 3)}";
+                            worksheet.Cells[row, 6].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Min(m => m.Value)), 3)}";
+                        }
+
+                        //Количетсво превышений ПДКмр
+                        if (monitoringPostMeasuredParameter.MeasuredParameter.MPCMaxSingle != null && measuredDatas.Count != 0)
+                        {
+                            int numberExcess = 0;
+                            foreach (var measuredDataValue in measuredDatas.Select(m => m.Value))
+                            {
+                                if (measuredDataValue > monitoringPostMeasuredParameter.MeasuredParameter.MPCMaxSingle)
+                                {
+                                    numberExcess++;
+                                }
+                            }
+                            worksheet.Cells[row, 7].Value = $"{numberExcess}";
+                        }
+
+                        //Количетсво превышений ПДКсс
+                        if (monitoringPostMeasuredParameter.MeasuredParameter.MPCDailyAverage != null && measuredDatas.Count != 0)
+                        {
+                            int numberExcess = 0;
+                            foreach (var measuredDataValue in measuredDatas.Select(m => m.Value))
+                            {
+                                if (measuredDataValue > monitoringPostMeasuredParameter.MeasuredParameter.MPCDailyAverage)
+                                {
+                                    numberExcess++;
+                                }
+                            }
+                            worksheet.Cells[row, 8].Value = $"{numberExcess}";
+                        }
+
+                        //Установка стиля для заполненного ряда
+                        for (int i = 1; i < 10; i++)
+                        {
+                            worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                        }
+                        row++;
+                    }
+                }
+
+                //Итог
+                row += 2;
+                worksheet.Cells[row, 1].Value = $"Итого по городу Алматы";
+                worksheet.Cells[$"A{row}:I{row}"].Merge = true;
+                worksheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                worksheet.Cells[row, 1].Style.Font.Bold = true;
+                worksheet.Cells[row, 1].Style.Font.Size = 16;
+
+                //Выбираем различные параметры из общего количества
+                List<MeasuredParameter> measuredParametersTotal = new List<MeasuredParameter>();
+                measuredParametersTotal.AddRange(measuredDatasTotal
+                    .OrderBy(m => m.MeasuredParameter.NameRU)
+                    .Select(m => m.MeasuredParameter)
+                    .Distinct());
+
+                row += 2;
+                worksheet.Cells[row, 1].Value = $"Параметр";
+                worksheet.Cells[row, 2].Value = $"ПДКмр";
+                worksheet.Cells[row, 3].Value = $"ПДКсс";
+                worksheet.Cells[row, 4].Value = $"Среднее";
+                worksheet.Cells[row, 5].Value = $"Максимальное значение";
+                worksheet.Cells[row, 5].Style.WrapText = true;
+                worksheet.Cells[row, 6].Value = $"Минимальное";
+                worksheet.Cells[row, 7].Value = $"Количесво превышений ПДК мр";
+                worksheet.Cells[row, 7].Style.WrapText = true;
+                worksheet.Cells[row, 8].Value = $"Количесво превышений ПДК сс";
+                worksheet.Cells[row, 8].Style.WrapText = true;
+                worksheet.Cells[row, 9].Value = $"Оценка";
+
+                for (int i = 1; i < 10; i++)
+                {
+                    worksheet.Cells[row, i].Style.Font.Bold = true;
+                    worksheet.Cells[row, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[row, i].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                }
+                row++;
+
+                foreach (var measuredParameter in measuredParametersTotal)
+                {
+                    var measuredDatasForParameter = measuredDatasTotal.Where(m => m.MeasuredParameterId == measuredParameter.Id).ToList();
+
+                    worksheet.Cells[row, 1].Value = $"{measuredParameter.NameRU}";
+                    worksheet.Cells[row, 2].Value = $"{measuredParameter.MPCMaxSingle}";
+                    worksheet.Cells[row, 3].Value = $"{measuredParameter.MPCDailyAverage}";
+
+                    //Запись среднего, максимального, минимального
+                    if (measuredDatasForParameter.Count != 0)
+                    {
+                        worksheet.Cells[row, 4].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Sum(m => m.Value) / measuredDatasForParameter.Count()), 3)}";
+                        worksheet.Cells[row, 5].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Max(m => m.Value)), 3)}";
+                        worksheet.Cells[row, 6].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Min(m => m.Value)), 3)}";
+                    }
+
+                    //Количетсво превышений ПДКмр
+                    if (measuredParameter.MPCMaxSingle != null && measuredDatasForParameter.Count != 0)
+                    {
+                        int numberExcess = 0;
+                        foreach (var measuredDataValue in measuredDatasForParameter.Select(m => m.Value))
+                        {
+                            if (measuredDataValue > measuredParameter.MPCMaxSingle)
+                            {
+                                numberExcess++;
+                            }
+                        }
+                        worksheet.Cells[row, 7].Value = $"{numberExcess}";
+                    }
+
+                    //Количетсво превышений ПДКсс
+                    if (measuredParameter.MPCDailyAverage != null && measuredDatasForParameter.Count != 0)
+                    {
+                        int numberExcess = 0;
+                        foreach (var measuredDataValue in measuredDatasForParameter.Select(m => m.Value))
+                        {
+                            if (measuredDataValue > measuredParameter.MPCDailyAverage)
+                            {
+                                numberExcess++;
+                            }
+                        }
+                        worksheet.Cells[row, 8].Value = $"{numberExcess}";
+                    }
+
+                    //Установка стиля для заполненного ряда
+                    for (int i = 1; i < 10; i++)
+                    {
+                        worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    }
+                    row++;
+                }
+
+                //Автовыравнивание по ширине
+                for (int i = 1; i < 10; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+
+                //Задание ширины для текста, который переносится (значение = ширина в пикселях * 7)
+                worksheet.Column(5).Width = 16;
+                worksheet.Column(7).Width = 20;
+                worksheet.Column(8).Width = 20;
+                package.Save();
+
+                string userEmail = User.Identity.Name;
+                Task.WaitAll(SendExcel(userEmail, Server));
+                System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
+            }
+
+            return null;
+        }
+
         private IEnumerable<MeasuredData> GetMeasuredData(
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
@@ -223,12 +488,12 @@ namespace SmartEcoAPI.Controllers
 
         private async Task SendExcel(string mailTo, bool Server)
         {
+            var path = Server == true ? Path.Combine(PathExcelFile, $"{sName}.xlsx") : Path.Combine($"{sName}.xlsx");
+            var file = System.IO.File.OpenRead(path);
+            var emailMessage = new MimeMessage();
+
             try
             {
-                var path = Server == true ? Path.Combine(PathExcelFile, $"{sName}.xlsx") : Path.Combine($"{sName}.xlsx");
-                var file = System.IO.File.OpenRead(path);
-                var emailMessage = new MimeMessage();
-
                 emailMessage.From.Add(new MailboxAddress(Theme, FromEmail));
                 emailMessage.To.Add(new MailboxAddress("", mailTo));
                 emailMessage.Subject = Heading;
@@ -260,9 +525,9 @@ namespace SmartEcoAPI.Controllers
 
                 file.Close();
             }
-            catch
+            catch (Exception ex)
             {
-
+                file.Close();
             }
         }
     }

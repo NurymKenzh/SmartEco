@@ -582,4 +582,10 @@
   <data name="MPCMaxSingle" xml:space="preserve">
     <value>Шоғырланудың максималды шегі</value>
   </data>
+  <data name="PostAnalyticsAlmaty" xml:space="preserve">
+    <value>Алматы посттарына аналитика</value>
+  </data>
+  <data name="MPCDailyAverage" xml:space="preserve">
+    <value>Күнделікті орташа мән</value>
+  </data>
 </root>

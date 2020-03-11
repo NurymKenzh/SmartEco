@@ -54,8 +54,8 @@ namespace SmartEco.Models
         public string KazhydrometCode { get; set; }
 
         [DisplayFormat(DataFormatString = "{0:G}", ApplyFormatInEditMode = true)]
-        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPC")]
-        public decimal? MPC { get; set; } // maximum permissible concentration
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPCDailyAverage")]
+        public decimal? MPCDailyAverage { get; set; } // maximum permissible concentration
 
         [DisplayFormat(DataFormatString = "{0:G}", ApplyFormatInEditMode = true)]
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPCMaxSingle")]

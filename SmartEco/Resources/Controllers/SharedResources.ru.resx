@@ -580,6 +580,12 @@
     <value>Среднесуточное значение</value>
   </data>
   <data name="MPCMaxSingle" xml:space="preserve">
-    <value>ПДК максимально разовое</value>
+    <value>ПДК максимально-разовое</value>
+  </data>
+  <data name="PostAnalyticsAlmaty" xml:space="preserve">
+    <value>Аналитика по постам Алматы</value>
+  </data>
+  <data name="MPCDailyAverage" xml:space="preserve">
+    <value>ПДК среднесуточное</value>
   </data>
 </root>

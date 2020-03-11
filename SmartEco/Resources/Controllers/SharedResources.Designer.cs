@@ -963,6 +963,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string MPCDailyAverage {
+            get {
+                return ResourceManager.GetString("MPCDailyAverage", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MPCMaxSingle {
             get {
                 return ResourceManager.GetString("MPCMaxSingle", resourceCulture);
@@ -1155,6 +1164,15 @@ namespace SmartEco.Resources.Controllers {
         public static string PostAnalytics {
             get {
                 return ResourceManager.GetString("PostAnalytics", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PostAnalyticsAlmaty {
+            get {
+                return ResourceManager.GetString("PostAnalyticsAlmaty", resourceCulture);
             }
         }
         
