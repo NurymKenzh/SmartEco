@@ -242,7 +242,9 @@ namespace SmartEcoAPI.Controllers
                     worksheet.Cells[row, 6].Value = $"Минимальное";
                     worksheet.Cells[row, 7].Value = $"Количесво превышений ПДК мр";
                     worksheet.Cells[row, 7].Style.WrapText = true;
-                    worksheet.Cells[row, 8].Value = $"Количесво превышений ПДК сс";
+                    //worksheet.Cells[row, 8].Value = $"Количесво превышений ПДК сс";
+                    //worksheet.Cells[row, 8].Style.WrapText = true;
+                    worksheet.Cells[row, 8].Value = $"Количество измерений";
                     worksheet.Cells[row, 8].Style.WrapText = true;
                     worksheet.Cells[row, 9].Value = $"Оценка";
 
@@ -283,8 +285,12 @@ namespace SmartEcoAPI.Controllers
                         if (measuredDatas.Count != 0)
                         {
                             worksheet.Cells[row, 4].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Sum(m => m.Value) / measuredDatas.Count()), 3)}";
-                            worksheet.Cells[row, 5].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Max(m => m.Value)), 3)}";
-                            worksheet.Cells[row, 6].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Min(m => m.Value)), 3)}";
+                            //Если параметр не "Направление ветра"
+                            if (monitoringPostMeasuredParameter.MeasuredParameter.Id != 6)
+                            {
+                                worksheet.Cells[row, 5].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Max(m => m.Value)), 3)}";
+                                worksheet.Cells[row, 6].Value = $"{Math.Round(Convert.ToDecimal(measuredDatas.Min(m => m.Value)), 3)}";
+                            }
                         }
 
                         //Количетсво превышений ПДКмр
@@ -302,17 +308,23 @@ namespace SmartEcoAPI.Controllers
                         }
 
                         //Количетсво превышений ПДКсс
-                        if (monitoringPostMeasuredParameter.MeasuredParameter.MPCDailyAverage != null && measuredDatas.Count != 0)
+                        //if (monitoringPostMeasuredParameter.MeasuredParameter.MPCDailyAverage != null && measuredDatas.Count != 0)
+                        //{
+                        //    int numberExcess = 0;
+                        //    foreach (var measuredDataValue in measuredDatas.Select(m => m.Value))
+                        //    {
+                        //        if (measuredDataValue > monitoringPostMeasuredParameter.MeasuredParameter.MPCDailyAverage)
+                        //        {
+                        //            numberExcess++;
+                        //        }
+                        //    }
+                        //    worksheet.Cells[row, 8].Value = $"{numberExcess}";
+                        //}
+
+                        //Количество измерений
+                        if (measuredDatas.Count != 0)
                         {
-                            int numberExcess = 0;
-                            foreach (var measuredDataValue in measuredDatas.Select(m => m.Value))
-                            {
-                                if (measuredDataValue > monitoringPostMeasuredParameter.MeasuredParameter.MPCDailyAverage)
-                                {
-                                    numberExcess++;
-                                }
-                            }
-                            worksheet.Cells[row, 8].Value = $"{numberExcess}";
+                            worksheet.Cells[row, 8].Value = $"{measuredDatas.Count}";
                         }
 
                         //Установка стиля для заполненного ряда
@@ -349,7 +361,9 @@ namespace SmartEcoAPI.Controllers
                 worksheet.Cells[row, 6].Value = $"Минимальное";
                 worksheet.Cells[row, 7].Value = $"Количесво превышений ПДК мр";
                 worksheet.Cells[row, 7].Style.WrapText = true;
-                worksheet.Cells[row, 8].Value = $"Количесво превышений ПДК сс";
+                //worksheet.Cells[row, 8].Value = $"Количесво превышений ПДК сс";
+                //worksheet.Cells[row, 8].Style.WrapText = true;
+                worksheet.Cells[row, 8].Value = $"Количество измерений";
                 worksheet.Cells[row, 8].Style.WrapText = true;
                 worksheet.Cells[row, 9].Value = $"Оценка";
 
@@ -374,8 +388,13 @@ namespace SmartEcoAPI.Controllers
                     if (measuredDatasForParameter.Count != 0)
                     {
                         worksheet.Cells[row, 4].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Sum(m => m.Value) / measuredDatasForParameter.Count()), 3)}";
-                        worksheet.Cells[row, 5].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Max(m => m.Value)), 3)}";
-                        worksheet.Cells[row, 6].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Min(m => m.Value)), 3)}";
+                        //Если параметр не "Направление ветра"
+                        if (measuredParameter.Id != 6)
+                        {
+                            worksheet.Cells[row, 5].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Max(m => m.Value)), 3)}";
+                            worksheet.Cells[row, 6].Value = $"{Math.Round(Convert.ToDecimal(measuredDatasForParameter.Min(m => m.Value)), 3)}";
+                        }
+
                     }
 
                     //Количетсво превышений ПДКмр
@@ -393,17 +412,23 @@ namespace SmartEcoAPI.Controllers
                     }
 
                     //Количетсво превышений ПДКсс
-                    if (measuredParameter.MPCDailyAverage != null && measuredDatasForParameter.Count != 0)
+                    //if (measuredParameter.MPCDailyAverage != null && measuredDatasForParameter.Count != 0)
+                    //{
+                    //    int numberExcess = 0;
+                    //    foreach (var measuredDataValue in measuredDatasForParameter.Select(m => m.Value))
+                    //    {
+                    //        if (measuredDataValue > measuredParameter.MPCDailyAverage)
+                    //        {
+                    //            numberExcess++;
+                    //        }
+                    //    }
+                    //    worksheet.Cells[row, 8].Value = $"{numberExcess}";
+                    //}
+
+                    //Количество измерений
+                    if (measuredDatasForParameter.Count != 0)
                     {
-                        int numberExcess = 0;
-                        foreach (var measuredDataValue in measuredDatasForParameter.Select(m => m.Value))
-                        {
-                            if (measuredDataValue > measuredParameter.MPCDailyAverage)
-                            {
-                                numberExcess++;
-                            }
-                        }
-                        worksheet.Cells[row, 8].Value = $"{numberExcess}";
+                        worksheet.Cells[row, 8].Value = $"{measuredDatasForParameter.Count}";
                     }
 
                     //Установка стиля для заполненного ряда
