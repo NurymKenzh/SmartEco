@@ -45,7 +45,7 @@ namespace LayersCreator
         {
             public int Id { get; set; }
             public string OceanusCode { get; set; }
-            public decimal? MPC { get; set; } // maximum permissible concentration
+            public decimal? MPCMaxSingle { get; set; } // maximum permissible concentration
         }
 
         public class MonitoringPost
@@ -568,8 +568,8 @@ namespace LayersCreator
                 {
                     connection.Open();
                     var measuredParametersv = connection.Query<MeasuredParameter>(
-                        $"SELECT \"Id\", \"OceanusCode\", \"MPC\"" +
-                        $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null and \"MPC\" is not null;");
+                        $"SELECT \"Id\", \"OceanusCode\", \"MPCMaxSingle\"" +
+                        $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null and \"MPCMaxSingle\" is not null;");
                     measuredParameters = measuredParametersv.ToList();
 
                     var monitoringPostsv = connection.Query<MonitoringPost>(
@@ -807,7 +807,7 @@ namespace LayersCreator
                                                         //        valueMPC *= PM25ValueMultiply;
                                                         //        break;
                                                         //}
-                                                        valueMPC = (decimal)valueMPC / (decimal)measuredParameters.FirstOrDefault(m => m.Id == measuredData.MeasuredParameterId).MPC;
+                                                        valueMPC = (decimal)valueMPC / (decimal)measuredParameters.FirstOrDefault(m => m.Id == measuredData.MeasuredParameterId).MPCMaxSingle;
 
                                                         eastLongitudes.Add(monitoringPost.EastLongitude);
                                                         northLatitudes.Add(monitoringPost.NorthLatitude);
