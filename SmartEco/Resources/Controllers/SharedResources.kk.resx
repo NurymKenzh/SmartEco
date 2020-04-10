@@ -588,4 +588,10 @@
   <data name="MPCDailyAverage" xml:space="preserve">
     <value>Күнделікті орташа мән</value>
   </data>
+  <data name="LEDScreen" xml:space="preserve">
+    <value>LED экран</value>
+  </data>
+  <data name="LEDScreens" xml:space="preserve">
+    <value>LED экрандар</value>
+  </data>
 </root>

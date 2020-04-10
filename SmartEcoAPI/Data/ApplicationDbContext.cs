@@ -70,5 +70,7 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.TargetValue> TargetValue { get; set; }
 
         public DbSet<SmartEcoAPI.Models.AActivity> AActivity { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.LEDScreen> LEDScreen { get; set; }
     }
 }

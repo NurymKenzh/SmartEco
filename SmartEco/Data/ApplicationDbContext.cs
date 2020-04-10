@@ -30,6 +30,7 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.TargetTerritory> TargetTerritory { get; set; }
         public DbSet<SmartEco.Models.TargetValue> TargetValue { get; set; }
         public DbSet<SmartEco.Models.AActivity> AActivity { get; set; }
+        public DbSet<SmartEco.Models.LEDScreen> LEDScreen { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }
