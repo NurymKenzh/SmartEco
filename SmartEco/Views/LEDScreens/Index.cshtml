@@ -71,7 +71,7 @@
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().MonitoringPostId).ToString(), "Index",
                         new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MonitoringPostSort, NameFilter = ViewBag.NameFilter, MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter })
                     <br />
-                    @Html.DropDownList("MonitoringPostIdFilter", (IEnumerable<SelectListItem>)ViewBag.DataProviders, "", htmlAttributes: new { @class = "form-control" })
+                    @Html.DropDownList("MonitoringPostIdFilter", (IEnumerable<SelectListItem>)ViewBag.MonitoringPosts, "", htmlAttributes: new { @class = "form-control" })
                 </th>
                 <th>
                     @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })

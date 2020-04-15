@@ -12,7 +12,6 @@ namespace SmartEcoAPI.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    [ApiExplorerSettings(IgnoreApi = true)]
     public class LEDScreensController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -25,6 +24,7 @@ namespace SmartEcoAPI.Controllers
         // GET: api/LEDScreens
         [HttpGet]
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<LEDScreen>>> GetLEDScreen(string SortOrder,
             string Name,
             int? MonitoringPostId,
@@ -34,7 +34,7 @@ namespace SmartEcoAPI.Controllers
             var ledScreens = _context.LEDScreen
                 .Include(m => m.MonitoringPost)
                 .Where(k => true);
-            
+
             if (!string.IsNullOrEmpty(Name))
             {
                 ledScreens = ledScreens.Where(m => m.Name.ToLower().Contains(Name.ToLower()));
@@ -74,6 +74,7 @@ namespace SmartEcoAPI.Controllers
         // GET: api/LEDScreens/5
         [HttpGet("{id}")]
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<LEDScreen>> GetLEDScreen(int id)
         {
             var ledScreen = await _context.LEDScreen
@@ -91,6 +92,7 @@ namespace SmartEcoAPI.Controllers
         // PUT: api/LEDScreens/5
         [HttpPut("{id}")]
         [Authorize(Roles = "admin,moderator")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> PutLEDScreen(int id, LEDScreen ledScreen)
         {
             if (id != ledScreen.Id)
@@ -122,6 +124,7 @@ namespace SmartEcoAPI.Controllers
         // POST: api/LEDScreens
         [HttpPost]
         [Authorize(Roles = "admin,moderator")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<LEDScreen>> PostLEDScreen(LEDScreen ledScreen)
         {
             _context.LEDScreen.Add(ledScreen);
@@ -133,6 +136,7 @@ namespace SmartEcoAPI.Controllers
         // DELETE: api/LEDScreens/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin,moderator")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<LEDScreen>> DeleteLEDScreen(int id)
         {
             var ledScreen = await _context.LEDScreen
@@ -157,6 +161,7 @@ namespace SmartEcoAPI.Controllers
         // GET: api/LEDScreens/Count
         [HttpGet("count")]
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<LEDScreen>>> GetLEDScreenCount(string Name,
             int? MonitoringPostId)
         {
@@ -175,6 +180,117 @@ namespace SmartEcoAPI.Controllers
             int count = await ledScreens.CountAsync();
 
             return Ok(count);
+        }
+
+        [HttpGet("GetAQI")]
+        public JsonResult GetAQI(int ledScreenId)
+        {
+            dynamic indexResult = null;
+            string level = "";
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { AQI = .0m, Level = "" })
+                .ToList();
+
+            var ledScreens = _context.LEDScreen
+                .Where(l => l.Id == ledScreenId)
+                .LastOrDefault();
+
+            var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
+                        .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId)
+                        .OrderBy(m => m.MeasuredParameter.NameRU)
+                        .Include(m => m.MeasuredParameter)
+                        .ToList();
+
+            foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+            {
+                var measuredData = _context.MeasuredData
+                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                    .LastOrDefault();
+                if (measuredData != null)
+                {
+                    decimal index = Convert.ToDecimal(measuredData.Value / measuredData.MeasuredParameter.MPCMaxSingle);
+                    if (Convert.ToDecimal(indexResult) < index)
+                    {
+                        indexResult = index;
+                    }
+                }
+            }
+            if (indexResult != null)
+            {
+                if (indexResult <= 0.2m)
+                {
+                    level = "Низкий";
+                }
+                else if (indexResult <= 0.5m)
+                {
+                    level = "Повышенный";
+                }
+                else if (indexResult <= 1m)
+                {
+                    level = "Высокий";
+                }
+                else
+                {
+                    level = "Опасный";
+                }
+
+                decimal aqi = Convert.ToDecimal(indexResult);
+                jsonResult.Add(new { AQI = aqi, Level = level });
+            }
+            else
+            {
+                jsonResult.Add(new { AQI = .0m, Level = "Data not found!" });
+            }
+
+            return new JsonResult(jsonResult);
+        }
+
+        [HttpGet("GetAQIPosts")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public JsonResult GetAQIPosts()
+        {
+            dynamic indexResult = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Id = 0, AQI = indexResult })
+                .ToList();
+            //var emptyList = new List<Tuple<int, decimal>>()
+            //    .Select(t => new { Id = 0, AQI = indexResult })
+            //    .ToList();
+
+            var monitoringPosts = _context.MonitoringPost
+                .Where(m => m.Project != null && m.Project.Name == "Almaty" && m.PollutionEnvironmentId == 2 && m.TurnOnOff == true)
+                .ToList();
+            foreach (var monitoringPost in monitoringPosts)
+            {
+                indexResult = null;
+                var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
+                            .Where(m => m.MonitoringPostId == monitoringPost.Id)
+                            .OrderBy(m => m.MeasuredParameter.NameRU)
+                            .Include(m => m.MeasuredParameter)
+                            .ToList();
+
+                foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+                {
+                    var measuredData = _context.MeasuredData
+                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-2000))
+                        .LastOrDefault();
+                    if (measuredData != null)
+                    {
+                        decimal index = Convert.ToDecimal(measuredData.Value / measuredData.MeasuredParameter.MPCMaxSingle);
+                        if (Convert.ToDecimal(indexResult) < index)
+                        {
+                            indexResult = index;
+                        }
+                    }
+                }
+                
+                if (indexResult != null)
+                {
+                    jsonResult.Add(new { Id = monitoringPost.Id, AQI = indexResult });
+                }
+            }
+
+            return new JsonResult(jsonResult);
         }
     }
 }

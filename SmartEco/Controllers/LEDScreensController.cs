@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SmartEco.Data;
 using SmartEco.Models;
 
@@ -388,6 +389,35 @@ namespace SmartEco.Controllers
                         NameFilter = ViewBag.NameFilter,
                         MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter
                     });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetAQIPosts()
+        {
+            Task<string> jsonString = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Id = 0, AQI = .0m })
+                .ToList();
+            string url = "api/LEDScreens/GetAQIPosts",
+                route = "";
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            if (response.IsSuccessStatusCode)
+            {
+                jsonString = response.Content.ReadAsStringAsync();
+            }
+            var resultString = jsonString.Result.ToString();
+            dynamic json = JArray.Parse(resultString);
+            foreach (dynamic data in json)
+            {
+                int id = data.id;
+                decimal aqi = data.aqi;
+                jsonResult.Add(new { Id = id, AQI = aqi });
+            }
+
+            return Json(new
+            {
+                jsonResult
+            });
         }
     }
 }
