@@ -22,9 +22,28 @@ namespace SmartEcoAPI.Controllers
         }
 
         // GET: api/LEDScreens
+        /// <summary>
+        /// Получение списка LED-экранов.
+        /// </summary>
+        /// <param name="SortOrder">
+        /// Сортировка данных. Доступные значения: null (пустое поле), "Name", "MonitoringPost", "NameDesc", "MonitoringPostDesc".
+        /// </param>
+        /// <param name="Name">
+        /// Наименование LED-экрана. Может быть пустым. Если задан, то возвращаемые данные будут отфильтрованы по наименованию LED-экрана.
+        /// </param>
+        /// <param name="MonitoringPostId">
+        /// Id поста мониторинга. Может быть пустым. Если задан, то возвращаемые данные будут отфильтрованы по посту мониторинга.
+        /// </param>
+        /// <param name="PageSize">
+        /// Все возвращаемые данные разделены на блоки (страницы). Данный параметр задает размер блока. Если не задан, то размер блока будет равен числу всех LED-экранов.
+        /// </param>
+        /// <param name="PageNumber">
+        /// Номер возвращаемого блока. Если не задан, то номер блока равен 1.
+        /// </param>
+        /// <returns></returns>
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
-        [ApiExplorerSettings(IgnoreApi = true)]
+        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        //[ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<LEDScreen>>> GetLEDScreen(string SortOrder,
             string Name,
             int? MonitoringPostId,
@@ -182,6 +201,14 @@ namespace SmartEcoAPI.Controllers
             return Ok(count);
         }
 
+        // GET: api/GetAQI
+        /// <summary>
+        /// Получение информации по AQI с поста мониторинга.
+        /// </summary>
+        /// <param name="ledScreenId">
+        /// Id LED-экрана.
+        /// </param>
+        /// <returns></returns>
         [HttpGet("GetAQI")]
         public JsonResult GetAQI(int ledScreenId)
         {
