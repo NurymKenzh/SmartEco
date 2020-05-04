@@ -74,7 +74,7 @@ namespace Kazhydromet
                     {
                         Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Kazhydromet Automatic Posts started.{Environment.NewLine}");
 
-                        HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(string.Format($"http://93.185.75.19:4003/simple/averages/last?key=be927b4b6fbd304984b72d1456c098860b57ee0692f3d9634a41a230272f73d0"));
+                        HttpWebRequest WebReq = (HttpWebRequest)WebRequest.Create(string.Format($"http://93.185.75.19:4003/simple/averages/last?key=21c44891715d8504e1d5de1fabebeb1a796148c34a011d4329553e064771590f"));
                         WebReq.Method = "GET";
                         string jsonString;
                         HttpWebResponse WebResp = (HttpWebResponse)WebReq.GetResponse();
