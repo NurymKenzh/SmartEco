@@ -156,7 +156,7 @@ namespace Kazhydromet
                         string dateTime = DateTime.Now.ToString("yyyy-MM-dd");
                         foreach (var monitoringPost in monitoringPostHands)
                         {
-                            HttpWebRequest WebReqHand = (HttpWebRequest)WebRequest.Create(string.Format($"http://93.185.75.19:4003/simple/averages?stationNumber={monitoringPost.KazhydrometID}&after={dateTime}&key=be927b4b6fbd304984b72d1456c098860b57ee0692f3d9634a41a230272f73d0"));
+                            HttpWebRequest WebReqHand = (HttpWebRequest)WebRequest.Create(string.Format($"http://93.185.75.19:4003/simple/averages?stationNumber={monitoringPost.KazhydrometID}&after={dateTime}&key=21c44891715d8504e1d5de1fabebeb1a796148c34a011d4329553e064771590f"));
                             WebReqHand.Method = "GET";
                             string jsonStringHand;
                             HttpWebResponse WebRespHand = (HttpWebResponse)WebReqHand.GetResponse();
