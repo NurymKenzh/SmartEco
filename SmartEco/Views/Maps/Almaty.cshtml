@@ -406,10 +406,27 @@
         </table>
         <div id="divEcoserviceAirPost" class="dialog-info-content">
             <ul>
+                <li><a href="#divEcoserviceAirPostAQI">@SharedLocalizer["AQI"]</a></li>
                 <li><a href="#divEcoserviceAirPostInfo">@SharedLocalizer["Info"]</a></li>
                 <li><a href="#divEcoserviceAirPostChart">@SharedLocalizer["Chart"]</a></li>
                 <li><a href="#divEcoserviceAirPostTable">@SharedLocalizer["Table"]</a></li>
             </ul>
+            <div id="divEcoserviceAirPostAQI" class="dialog-info-tab-div">
+                <input id="EcoserviceAirMonitoringMonitoringPostId" type="hidden" />
+                <table id="tablePollutantsConcentration" class="table-bordered dialog-info-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @SharedLocalizer["Pollutants"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["Concentration"]
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <div id="divEcoserviceAirPostInfo" class="dialog-info-tab-div">
                 <input id="EcoserviceAirMonitoringMonitoringPostId" type="hidden" />
                 <table class="table-bordered dialog-info-table">
@@ -1791,6 +1808,7 @@
                     width: 750,
                     maxHeight: window.innerHeight
                 });
+                GetPollutantsConcentration();
                 GetMeasuredParameters();
             }
         } else {
@@ -1841,8 +1859,43 @@
     }
 </script>
 
-@* ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
+@*  GetPollutantsConcentration, ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
 <script>
+    function GetPollutantsConcentration() {
+        $("#tablePollutantsConcentration").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetPollutantsConcentration", "LEDScreens")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var tablehtml = '';
+                $.each(data.jsonResult, function (i) {
+                    console.log(data.jsonResult);
+                    if (data.jsonResult[i].aqi <= 0.2) {
+                        tablehtml += '<tr><td>' + data.jsonResult[i].pollutant + '</td><td>' + data.jsonResult[i].aqi + '</td></tr>';
+                    }
+                    else if (data.jsonResult[i].aqi <= 0.5) {
+                        tablehtml += '<tr><td style="background: #ff9f33;">' + data.jsonResult[i].pollutant + '</td><td style="background: #ff9f33;">' + data.jsonResult[i].aqi + '</td></tr>';
+                    }
+                    else if (data.jsonResult[i].aqi <= 1) {
+                        tablehtml += '<tr><td style="background: #cc0033;">' + data.jsonResult[i].pollutant + '</td><td style="background: #cc0033;">' + data.jsonResult[i].aqi + '</td></tr>';
+                    }
+                    else {
+                        tablehtml += '<tr><td style="background: #9b0064;">' + data.jsonResult[i].pollutant + '</td><td style="background: #9b0064;">' + data.jsonResult[i].aqi + '</td></tr>';
+                    }
+                });
+                $('#tablePollutantsConcentration tbody').empty();
+                $('#tablePollutantsConcentration tbody').append(tablehtml);
+                $("#tablePollutantsConcentration").LoadingOverlay("hide");
+            },
+            error: function () {
+                $("#tablePollutantsConcentration").LoadingOverlay("hide");
+            }
+        })
+    }
+
     function ChartGetMinMax(data) {
         $.ajax({
             url: '@Url.Action("GetMinMax", "Maps")',

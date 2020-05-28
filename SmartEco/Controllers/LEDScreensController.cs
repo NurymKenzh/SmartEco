@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -412,6 +413,50 @@ namespace SmartEco.Controllers
                 int id = data.id;
                 decimal aqi = data.aqi;
                 jsonResult.Add(new { Id = id, AQI = aqi });
+            }
+
+            return Json(new
+            {
+                jsonResult
+            });
+        }
+
+        [HttpPost]
+        public async Task<ActionResult> GetPollutantsConcentration(int MonitoringPostId)
+        {
+            Task<string> jsonString = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Pollutant = "", AQI = .0m })
+                .ToList();
+            string url = "api/LEDScreens/GetPollutantsConcentration",
+                route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={MonitoringPostId.ToString()}";
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            if (response.IsSuccessStatusCode)
+            {
+                jsonString = response.Content.ReadAsStringAsync();
+            }
+            var resultString = jsonString.Result.ToString();
+            dynamic json = JArray.Parse(resultString);
+            string language = new RequestLocalizationOptions().DefaultRequestCulture.Culture.Name;
+            foreach (dynamic data in json)
+            {
+                string name = "";
+                if (language == "ru")
+                {
+                    name = data.nameRU;
+                }
+                else if (language == "en")
+                {
+                    name = data.nameEN;
+                }
+                else
+                {
+                    name = data.nameKK;
+                }
+                decimal aqi = data.aqi;
+                jsonResult.Add(new { Pollutant = name, AQI = aqi });
             }
 
             return Json(new

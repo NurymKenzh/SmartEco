@@ -594,4 +594,7 @@
   <data name="LEDScreens" xml:space="preserve">
     <value>LED экрандар</value>
   </data>
+  <data name="Concentration" xml:space="preserve">
+    <value>Шоғырлану</value>
+  </data>
 </root>

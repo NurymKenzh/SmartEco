@@ -299,7 +299,7 @@ namespace SmartEcoAPI.Controllers
                 foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
                 {
                     var measuredData = _context.MeasuredData
-                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-2000))
+                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
                         .LastOrDefault();
                     if (measuredData != null)
                     {
@@ -314,6 +314,37 @@ namespace SmartEcoAPI.Controllers
                 if (indexResult != null)
                 {
                     jsonResult.Add(new { Id = monitoringPost.Id, AQI = indexResult });
+                }
+            }
+
+            return new JsonResult(jsonResult);
+        }
+
+        [HttpGet("GetPollutantsConcentration")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        public JsonResult GetPollutantsConcentration(int MonitoringPostId)
+        {
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { NameRU = "", NameEN = "", NameKK = "", AQI = .0m })
+                .ToList();
+            var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
+                        .Where(m => m.MonitoringPostId == MonitoringPostId)
+                        .OrderBy(m => m.MeasuredParameter.NameRU)
+                        .Include(m => m.MeasuredParameter)
+                        .ToList();
+
+            foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+            {
+                var measuredData = _context.MeasuredData
+                    .Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                    .LastOrDefault();
+                if (measuredData != null)
+                {
+                    jsonResult.Add(new {
+                        NameRU = monitoringPostMeasuredParameter.MeasuredParameter.NameRU,
+                        NameEN = monitoringPostMeasuredParameter.MeasuredParameter.NameEN,
+                        NameKK = monitoringPostMeasuredParameter.MeasuredParameter.NameKK,
+                        AQI = Convert.ToDecimal(measuredData.Value / measuredData.MeasuredParameter.MPCMaxSingle) });
                 }
             }
 
