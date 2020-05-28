@@ -556,5 +556,68 @@ namespace SmartEco.Controllers
                 dailyAverage
             });
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetMeasuredDatasAnalytic(
+            int? MonitoringPostId,
+            int? MeasuredParameterId,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo,
+            bool? Averaged = true)
+        {
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            List<MeasuredData> measureddatas = new List<MeasuredData>();
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            string url = "api/MeasuredDatas",
+                route = "";
+            // First condition - for select chart and table. Second condition - for Analytics
+            if (MeasuredParameterId != null || (MonitoringPostId == null && MeasuredParameterId == null))
+            {
+                // SortOrder=DateTime
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"SortOrder=DateTime";
+                }
+                // MonitoringPostId
+                if (MonitoringPostId != null)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MonitoringPostId={MonitoringPostId}";
+                }
+                // MeasuredParameterId
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MeasuredParameterId={MeasuredParameterId}";
+                // AveragedFilter
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"Averaged={Averaged}";
+                }
+                // dateTimeFrom
+                {
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+                }
+                // dateTimeTo
+                {
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+                }
+                HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+                if (response.IsSuccessStatusCode)
+                {
+                    measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+                }
+                measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToList();
+            }
+            return Json(new
+            {
+                measureddatas
+            });
+        }
     }
 }
