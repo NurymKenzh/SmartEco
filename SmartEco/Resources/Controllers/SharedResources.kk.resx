@@ -597,4 +597,7 @@
   <data name="Concentration" xml:space="preserve">
     <value>Шоғырлану</value>
   </data>
+  <data name="AllMonitoringPosts" xml:space="preserve">
+    <value>Барлық бақылау бекеттері Экосервис-С</value>
+  </data>
 </root>

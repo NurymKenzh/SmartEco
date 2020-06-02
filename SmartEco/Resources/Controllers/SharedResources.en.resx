@@ -597,4 +597,7 @@
   <data name="Concentration" xml:space="preserve">
     <value>Concentration</value>
   </data>
+  <data name="AllMonitoringPosts" xml:space="preserve">
+    <value>All monitoring posts Ecoservice-S</value>
+  </data>
 </root>

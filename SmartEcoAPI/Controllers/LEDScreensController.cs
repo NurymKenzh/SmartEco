@@ -299,7 +299,7 @@ namespace SmartEcoAPI.Controllers
                 foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
                 {
                     var measuredData = _context.MeasuredData
-                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-60))
                         .LastOrDefault();
                     if (measuredData != null)
                     {
@@ -336,7 +336,7 @@ namespace SmartEcoAPI.Controllers
             foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
             {
                 var measuredData = _context.MeasuredData
-                    .Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                    .Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-60))
                     .LastOrDefault();
                 if (measuredData != null)
                 {

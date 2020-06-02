@@ -597,4 +597,7 @@
   <data name="Concentration" xml:space="preserve">
     <value />
   </data>
+  <data name="AllMonitoringPosts" xml:space="preserve">
+    <value />
+  </data>
 </root>

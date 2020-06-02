@@ -431,5 +431,15 @@ namespace SmartEco.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> AllMonitoringPosts()
+        {
+            string url = "api/Analytics/GetAllMonitoringPosts";
+            List<PostData> postDatas = new List<PostData>();
+            HttpResponseMessage responsePostDatass = await _HttpApiClient.GetAsync(url);
+            postDatas = await responsePostDatass.Content.ReadAsAsync<List<PostData>>();
+
+            return View(postDatas);
+        }
     }
 }

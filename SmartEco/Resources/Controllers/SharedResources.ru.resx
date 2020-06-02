@@ -597,4 +597,7 @@
   <data name="Concentration" xml:space="preserve">
     <value>Концентрация</value>
   </data>
+  <data name="AllMonitoringPosts" xml:space="preserve">
+    <value>Все посты мониторинга Экосервис-С</value>
+  </data>
 </root>
