@@ -99,28 +99,34 @@ namespace SmartEco.Controllers
         public IActionResult PostAnalytics()
         {
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
             ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
             return View();
         }
 
         [HttpPost]
         public async Task<IActionResult> PostAnalytics(
-            DateTime DateTimeFrom,
-            DateTime DateTimeTo)
+            DateTime DateFrom,
+            DateTime DateTo,
+            DateTime TimeFrom,
+            DateTime TimeTo)
         {
             string url = "api/Analytics",
                 route = "";
-            if (DateTimeFrom != null)
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            if (dateTimeFrom != null)
             {
                 DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeFrom={DateTimeFrom.ToString(dateTimeFormatInfo)}";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
             }
-            if (DateTimeTo != null)
+            if (dateTimeTo != null)
             {
                 DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeTo={DateTimeTo.ToString(dateTimeFormatInfo)}";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
             }
 
             route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -131,8 +137,10 @@ namespace SmartEco.Controllers
             //}
 
             ViewBag.ExcelSent = "Excel-файл отправлен на Ваш E-mail";
-            ViewBag.DateFrom = DateTimeFrom.ToString("yyyy-MM-dd");
-            ViewBag.DateTo = DateTimeTo.ToString("yyyy-MM-dd");
+            ViewBag.DateFrom = DateFrom.ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = DateTo.ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
             return View();
         }
 

@@ -14,9 +14,13 @@
 <div class="row">
     <div class="col-md-6">
         <form asp-action="PostAnalytics">
-            @Html.TextBox("DateTimeFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "DateTimeFrom" })
+            @Html.TextBox("DateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "DateTimeFrom" })
             -
-            @Html.TextBox("DateTimeTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "DateTimeTo" })
+            @Html.TextBox("DateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "DateTimeTo" })
+            <div hidden="hidden">
+                <input id="TimeFrom" name="TimeFrom" type="text" value="@ViewBag.TimeFrom" />
+                <input id="TimeTo" name="TimeTo" type="text" value="@ViewBag.TimeTo" />
+            </div>
 
             <div class="form-group">
                 <input type="submit" value="@SharedLocalizer["SendExcel"]" class="btn btn-primary" onclick="ExcelFormation()" />

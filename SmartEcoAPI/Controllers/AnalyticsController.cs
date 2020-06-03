@@ -52,7 +52,10 @@ namespace SmartEcoAPI.Controllers
             bool Server)
         {
             var measuredDatas = GetMeasuredData(DateTimeFrom, DateTimeTo, true).ToList();
-            measuredDatas.Where(m => !string.IsNullOrEmpty(m.MonitoringPost.MN) && !string.IsNullOrEmpty(m.MeasuredParameter.OceanusCode)).ToList();
+            measuredDatas = measuredDatas
+                .Where(m => !string.IsNullOrEmpty(m.MonitoringPost.MN) && !string.IsNullOrEmpty(m.MeasuredParameter.OceanusCode))
+                .OrderBy(m => m.DateTime)
+                .ToList();
 
             string sFileName = $"{sName}.xlsx";
             FileInfo file = Server == true ? new FileInfo(Path.Combine(PathExcelFile, sFileName)) : new FileInfo(Path.Combine(sFileName));
