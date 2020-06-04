@@ -1874,16 +1874,16 @@
                 $.each(data.jsonResult, function (i) {
                     console.log(data.jsonResult);
                     if (data.jsonResult[i].aqi <= 0.2) {
-                        tablehtml += '<tr><td>' + data.jsonResult[i].pollutant + '</td><td>' + data.jsonResult[i].aqi + '</td></tr>';
+                        tablehtml += '<tr><td>' + data.jsonResult[i].pollutant + '</td><td>' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
                     }
                     else if (data.jsonResult[i].aqi <= 0.5) {
-                        tablehtml += '<tr><td style="background: #ff9f33;">' + data.jsonResult[i].pollutant + '</td><td style="background: #ff9f33;">' + data.jsonResult[i].aqi + '</td></tr>';
+                        tablehtml += '<tr><td style="background: #ff9f33;">' + data.jsonResult[i].pollutant + '</td><td style="background: #ff9f33;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
                     }
                     else if (data.jsonResult[i].aqi <= 1) {
-                        tablehtml += '<tr><td style="background: #cc0033;">' + data.jsonResult[i].pollutant + '</td><td style="background: #cc0033;">' + data.jsonResult[i].aqi + '</td></tr>';
+                        tablehtml += '<tr><td style="background: #cc0033;">' + data.jsonResult[i].pollutant + '</td><td style="background: #cc0033;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
                     }
                     else {
-                        tablehtml += '<tr><td style="background: #9b0064;">' + data.jsonResult[i].pollutant + '</td><td style="background: #9b0064;">' + data.jsonResult[i].aqi + '</td></tr>';
+                        tablehtml += '<tr><td style="background: #9b0064;">' + data.jsonResult[i].pollutant + '</td><td style="background: #9b0064;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
                     }
                 });
                 $('#tablePollutantsConcentration tbody').empty();
