@@ -92,7 +92,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/LEDScreens/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<LEDScreen>> GetLEDScreen(int id)
         {
@@ -179,7 +179,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/LEDScreens/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<LEDScreen>>> GetLEDScreenCount(string Name,
             int? MonitoringPostId)
