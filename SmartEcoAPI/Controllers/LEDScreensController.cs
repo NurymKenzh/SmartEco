@@ -201,6 +201,77 @@ namespace SmartEcoAPI.Controllers
             return Ok(count);
         }
 
+        //// GET: api/GetAQI
+        ///// <summary>
+        ///// Получение информации по AQI с поста мониторинга.
+        ///// </summary>
+        ///// <param name="ledScreenId">
+        ///// Id LED-экрана.
+        ///// </param>
+        ///// <returns></returns>
+        //[HttpGet("GetAQI")]
+        //public JsonResult GetAQI(int ledScreenId)
+        //{
+        //    dynamic indexResult = null;
+        //    string level = "";
+        //    var jsonResult = Enumerable.Range(0, 0)
+        //        .Select(e => new { AQI = .0m, Level = "" })
+        //        .ToList();
+
+        //    var ledScreens = _context.LEDScreen
+        //        .Where(l => l.Id == ledScreenId)
+        //        .LastOrDefault();
+
+        //    var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
+        //                .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId)
+        //                .OrderBy(m => m.MeasuredParameter.NameRU)
+        //                .Include(m => m.MeasuredParameter)
+        //                .ToList();
+
+        //    foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+        //    {
+        //        var measuredData = _context.MeasuredData
+        //            .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+        //            .LastOrDefault();
+        //        if (measuredData != null)
+        //        {
+        //            decimal index = Convert.ToDecimal(measuredData.Value / measuredData.MeasuredParameter.MPCMaxSingle);
+        //            if (Convert.ToDecimal(indexResult) < index)
+        //            {
+        //                indexResult = index;
+        //            }
+        //        }
+        //    }
+        //    if (indexResult != null)
+        //    {
+        //        if (indexResult <= 0.2m)
+        //        {
+        //            level = "Низкий";
+        //        }
+        //        else if (indexResult <= 0.5m)
+        //        {
+        //            level = "Повышенный";
+        //        }
+        //        else if (indexResult <= 1m)
+        //        {
+        //            level = "Высокий";
+        //        }
+        //        else
+        //        {
+        //            level = "Опасный";
+        //        }
+
+        //        decimal aqi = Convert.ToDecimal(indexResult);
+        //        jsonResult.Add(new { AQI = aqi, Level = level });
+        //    }
+        //    else
+        //    {
+        //        jsonResult.Add(new { AQI = .0m, Level = "Data not found!" });
+        //    }
+
+        //    return new JsonResult(jsonResult);
+        //}
+
         // GET: api/GetAQI
         /// <summary>
         /// Получение информации по AQI с поста мониторинга.
@@ -212,61 +283,28 @@ namespace SmartEcoAPI.Controllers
         [HttpGet("GetAQI")]
         public JsonResult GetAQI(int ledScreenId)
         {
-            dynamic indexResult = null;
-            string level = "";
             var jsonResult = Enumerable.Range(0, 0)
-                .Select(e => new { AQI = .0m, Level = "" })
+                .Select(e => new { fullname = "", index = "", value = .0m })
                 .ToList();
 
             var ledScreens = _context.LEDScreen
                 .Where(l => l.Id == ledScreenId)
                 .LastOrDefault();
 
-            var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
-                        .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId)
-                        .OrderBy(m => m.MeasuredParameter.NameRU)
-                        .Include(m => m.MeasuredParameter)
-                        .ToList();
+            List<int> measuredParameters = new List<int> { 7, 9, 13 };
 
-            foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+            foreach (var measuredParameter in measuredParameters)
             {
                 var measuredData = _context.MeasuredData
-                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                    .Include(m => m.MeasuredParameter)
+                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == measuredParameter && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
                     .LastOrDefault();
                 if (measuredData != null)
                 {
-                    decimal index = Convert.ToDecimal(measuredData.Value / measuredData.MeasuredParameter.MPCMaxSingle);
-                    if (Convert.ToDecimal(indexResult) < index)
-                    {
-                        indexResult = index;
-                    }
+                    string code = $"({measuredData.MeasuredParameter.KazhydrometCode}) мкг/м3";
+                    decimal val = Convert.ToDecimal(measuredData.Value * 1000); //мг в мкг
+                    jsonResult.Add(new { fullname = measuredData.MeasuredParameter.NameRU, index = code, value = val });
                 }
-            }
-            if (indexResult != null)
-            {
-                if (indexResult <= 0.2m)
-                {
-                    level = "Низкий";
-                }
-                else if (indexResult <= 0.5m)
-                {
-                    level = "Повышенный";
-                }
-                else if (indexResult <= 1m)
-                {
-                    level = "Высокий";
-                }
-                else
-                {
-                    level = "Опасный";
-                }
-
-                decimal aqi = Convert.ToDecimal(indexResult);
-                jsonResult.Add(new { AQI = aqi, Level = level });
-            }
-            else
-            {
-                jsonResult.Add(new { AQI = .0m, Level = "Data not found!" });
             }
 
             return new JsonResult(jsonResult);
