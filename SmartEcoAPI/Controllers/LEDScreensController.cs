@@ -291,13 +291,17 @@ namespace SmartEcoAPI.Controllers
                 .Where(l => l.Id == ledScreenId)
                 .LastOrDefault();
 
-            List<int> measuredParameters = new List<int> { 7, 9, 13 };
+            var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
+                        .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId)
+                        .OrderBy(m => m.MeasuredParameter.NameRU)
+                        .Include(m => m.MeasuredParameter)
+                        .ToList();
 
-            foreach (var measuredParameter in measuredParameters)
+            foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
             {
                 var measuredData = _context.MeasuredData
                     .Include(m => m.MeasuredParameter)
-                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == measuredParameter && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
                     .LastOrDefault();
                 if (measuredData != null)
                 {
