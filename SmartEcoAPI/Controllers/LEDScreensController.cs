@@ -314,6 +314,48 @@ namespace SmartEcoAPI.Controllers
             return new JsonResult(jsonResult);
         }
 
+        // GET: api/GetAQIByNumber
+        /// <summary>
+        /// Получение информации по AQI с поста мониторинга.
+        /// </summary>
+        /// <param name="ledScreenNumber">
+        /// Номер LED-экрана.
+        /// </param>
+        /// <returns></returns>
+        [HttpGet("GetAQIByNumber")]
+        public JsonResult GetAQIByNumber(int ledScreenNumber)
+        {
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { fullname = "", index = "", value = .0m })
+                .ToList();
+
+            var ledScreens = _context.LEDScreen
+                .Where(l => l.Number == ledScreenNumber)
+                .LastOrDefault();
+
+            var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
+                        .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId)
+                        .OrderBy(m => m.MeasuredParameter.NameRU)
+                        .Include(m => m.MeasuredParameter)
+                        .ToList();
+
+            foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+            {
+                var measuredData = _context.MeasuredData
+                    .Include(m => m.MeasuredParameter)
+                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                    .LastOrDefault();
+                if (measuredData != null)
+                {
+                    string code = $"({measuredData.MeasuredParameter.KazhydrometCode}) мкг/м3";
+                    decimal val = Convert.ToDecimal(measuredData.Value * 1000); //мг в мкг
+                    jsonResult.Add(new { fullname = measuredData.MeasuredParameter.NameRU, index = code, value = val });
+                }
+            }
+
+            return new JsonResult(jsonResult);
+        }
+
         [HttpGet("GetAQIPosts")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public JsonResult GetAQIPosts()

@@ -62,6 +62,9 @@
                     @Html.Editor("NameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
+                    @Html.DisplayNameFor(model => model.Number)
+                </th>
+                <th>
                     @Html.DisplayNameFor(model => model.NorthLatitude)
                 </th>
                 <th>
@@ -85,6 +88,9 @@
                 <tr>
                     <td>
                         @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Number)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.NorthLatitude)

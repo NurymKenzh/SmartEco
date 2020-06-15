@@ -197,7 +197,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,NorthLatitude,EastLongitude,MonitoringPostId")] LEDScreen ledScreen,
+        public async Task<IActionResult> Create([Bind("Id,Name,Number,NorthLatitude,EastLongitude,MonitoringPostId")] LEDScreen ledScreen,
             string SortOrder,
             string NameFilter,
             int? MonitoringPostIdFilter,
@@ -281,7 +281,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,NorthLatitude,EastLongitude,MonitoringPostId")] LEDScreen ledScreen,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Number,NorthLatitude,EastLongitude,MonitoringPostId")] LEDScreen ledScreen,
             string SortOrder,
             string NameFilter,
             int? MonitoringPostIdFilter,
