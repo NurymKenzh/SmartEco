@@ -32,6 +32,18 @@ namespace SmartEcoAPI.Models
         /// </summary>
         public string NameEN { get; set; }
         /// <summary>
+        /// Короткое название измеряемого параметра на казахском языке.
+        /// </summary>
+        public string NameShortKK { get; set; }
+        /// <summary>
+        /// Короткое название измеряемого параметра на русском языке.
+        /// </summary>
+        public string NameShortRU { get; set; }
+        /// <summary>
+        /// Короткое название измеряемого параметра на английском языке.
+        /// </summary>
+        public string NameShortEN { get; set; }
+        /// <summary>
         /// Ecomon код измеряемого параметра.
         /// </summary>
         public int? EcomonCode { get; set; }

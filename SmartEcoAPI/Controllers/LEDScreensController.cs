@@ -347,9 +347,9 @@ namespace SmartEcoAPI.Controllers
                     .LastOrDefault();
                 if (measuredData != null)
                 {
-                    string code = $"({measuredData.MeasuredParameter.KazhydrometCode}) мкг/м3";
+                    string code = $"{measuredData.MeasuredParameter.KazhydrometCode}";
                     decimal val = Convert.ToDecimal(measuredData.Value * 1000); //мг в мкг
-                    jsonResult.Add(new { fullname = measuredData.MeasuredParameter.NameRU, index = code, value = val });
+                    jsonResult.Add(new { fullname = measuredData.MeasuredParameter.NameShortRU, index = code, value = val });
                 }
             }
 
