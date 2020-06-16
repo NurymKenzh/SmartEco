@@ -600,4 +600,16 @@
   <data name="AllMonitoringPosts" xml:space="preserve">
     <value>Барлық бақылау бекеттері Экосервис-С</value>
   </data>
+  <data name="NameShort" xml:space="preserve">
+    <value>Аты қысқа</value>
+  </data>
+  <data name="NameShortEN" xml:space="preserve">
+    <value>Аты қысқа (ағылшын)</value>
+  </data>
+  <data name="NameShortKK" xml:space="preserve">
+    <value>Аты қысқа (қазақ)</value>
+  </data>
+  <data name="NameShortRU" xml:space="preserve">
+    <value>Аты қысқа (орыс)</value>
+  </data>
 </root>

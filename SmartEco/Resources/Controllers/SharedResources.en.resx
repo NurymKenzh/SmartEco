@@ -600,4 +600,16 @@
   <data name="AllMonitoringPosts" xml:space="preserve">
     <value>All monitoring posts Ecoservice-S</value>
   </data>
+  <data name="NameShort" xml:space="preserve">
+    <value>Name short</value>
+  </data>
+  <data name="NameShortEN" xml:space="preserve">
+    <value>Name short (english)</value>
+  </data>
+  <data name="NameShortKK" xml:space="preserve">
+    <value>Name short (kazakh)</value>
+  </data>
+  <data name="NameShortRU" xml:space="preserve">
+    <value>Name short (russian)</value>
+  </data>
 </root>

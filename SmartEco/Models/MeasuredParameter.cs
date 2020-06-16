@@ -44,6 +44,34 @@ namespace SmartEco.Models
             }
         }
 
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameShortKK")]
+        public string NameShortKK { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameShortRU")]
+        public string NameShortRU { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameShortEN")]
+        public string NameShortEN { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameShort")]
+        public string NameShort
+        {
+            get
+            {
+                string language = new RequestLocalizationOptions().DefaultRequestCulture.Culture.Name,
+                    nameShort = NameShortRU;
+                if (language == "kk")
+                {
+                    nameShort = NameShortKK;
+                }
+                if (language == "en")
+                {
+                    nameShort = NameShortEN;
+                }
+                return nameShort;
+            }
+        }
+
         [Display(Name = "EcomonCode")]
         public int? EcomonCode { get; set; }
 

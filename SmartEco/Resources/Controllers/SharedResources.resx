@@ -600,4 +600,16 @@
   <data name="AllMonitoringPosts" xml:space="preserve">
     <value />
   </data>
+  <data name="NameShort" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameShortEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameShortKK" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameShortRU" xml:space="preserve">
+    <value />
+  </data>
 </root>

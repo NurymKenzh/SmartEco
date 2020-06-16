@@ -1053,6 +1053,42 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string NameShort {
+            get {
+                return ResourceManager.GetString("NameShort", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NameShortEN {
+            get {
+                return ResourceManager.GetString("NameShortEN", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NameShortKK {
+            get {
+                return ResourceManager.GetString("NameShortKK", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NameShortRU {
+            get {
+                return ResourceManager.GetString("NameShortRU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string NitrogenDioxide {
             get {
                 return ResourceManager.GetString("NitrogenDioxide", resourceCulture);
