@@ -585,7 +585,7 @@ namespace GetPostsData
                 if ((DateTime.Now - lastCheckDateTime) > new TimeSpan(0, 1, 0, 0))
                 {
                     List<LogSendMail> logSendMails = new List<LogSendMail>();
-                    DateTime dateTimeLast = DateTime.Now.AddMinutes(-20);
+                    DateTime dateTimeLast = DateTime.Now.AddMinutes(-60);
                     DateTime dateTimeLastMinMax = DateTime.Now.AddMinutes(-60);
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {

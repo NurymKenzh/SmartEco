@@ -78,7 +78,7 @@ namespace SmartEcoAPI.Controllers
         /// </param>
         /// <returns></returns>
         [HttpGet]
-        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys,Almaty")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredData(string SortOrder,
             string Language,
             int? MeasuredParameterId,
@@ -296,7 +296,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredDatas/5
         [HttpGet("{id}")]
-        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<MeasuredData>> GetMeasuredData(long id)
         {
@@ -429,7 +429,7 @@ namespace SmartEcoAPI.Controllers
         /// <param name="Averaged">Данный параметр определяет количество каких данных будет возвращено: усредненных или нет. Если не задан, то будет возвращено количество усредненных данных.</param>
         /// <returns></returns>
         [HttpGet("count")]
-        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys,Almaty")]
         public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredDatasCount(int? MeasuredParameterId,
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
