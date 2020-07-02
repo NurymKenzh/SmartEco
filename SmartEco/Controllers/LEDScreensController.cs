@@ -393,7 +393,7 @@ namespace SmartEco.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> GetAQIPosts()
+        public async Task<IActionResult> GetAQIPosts(string ProjectName)
         {
             Task<string> jsonString = null;
             var jsonResult = Enumerable.Range(0, 0)
@@ -401,6 +401,8 @@ namespace SmartEco.Controllers
                 .ToList();
             string url = "api/LEDScreens/GetAQIPosts",
                 route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"ProjectName={ProjectName.ToString()}";
             HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
             if (response.IsSuccessStatusCode)
             {

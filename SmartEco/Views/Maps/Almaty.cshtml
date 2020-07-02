@@ -1872,7 +1872,6 @@
             success: function (data) {
                 var tablehtml = '';
                 $.each(data.jsonResult, function (i) {
-                    console.log(data.jsonResult);
                     if (data.jsonResult[i].aqi <= 0.2) {
                         tablehtml += '<tr><td>' + data.jsonResult[i].pollutant + '</td><td>' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
                     }
@@ -2433,13 +2432,17 @@
     var durationAQI = 3000;
     var colorPostsId = [],
         colorPostsAQI = [];
+    var projectName = 'Almaty';
     function GetAQI() {
         function getAQI() {
             $.ajax({
                 url: '@Url.Action("GetAQIPosts", "LEDScreens")',
-                dataType: 'json',
+                data: {
+                    ProjectName: projectName,
+                },
+                //dataType: 'json',
                 type: 'POST',
-                contentType: 'application/json',
+                //contentType: 'application/json',
                 success: function (data) {
                     $.each(data.jsonResult, function (i) {
                         colorPostsId[i] = data.jsonResult[i].id;

@@ -92,7 +92,8 @@
     <input id="GeoServerWorkspace" type="text" value="@ViewBag.GeoServerWorkspace" />
     <input id="GeoServerAddress" type="text" value="@ViewBag.GeoServerAddress" />
     <input id="GeoServerPort" type="text" value="@ViewBag.GeoServerPort" />
-    <input id="KazHydrometAirMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsLayerJson" />
+    <input id="KazHydrometAirMonitoringPostsAutomaticLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson" />
+    <input id="KazHydrometAirMonitoringPostsHandsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson" />
     <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
@@ -101,6 +102,8 @@
     <input id="DailyAveraged" type="text" value="@SharedLocalizer["DailyAveraged"]" />
     <input id="KazHydrometAirPost" type="text" value="@SharedLocalizer["KazHydrometAirPost"]" />
     <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
+    <input id="Automatic" type="text" value="@SharedLocalizer["Automatic"]" />
+    <input id="Hands" type="text" value="@SharedLocalizer["Hands"]" />
     <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPost"]" />
     <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirPosts"]" />
     <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
@@ -130,6 +133,24 @@
         </table>
         <br />
         <hr />
+        <label>
+            @SharedLocalizer["KazHydrometAirPosts"]
+        </label>
+        <table>
+            @{
+                MonitoringPost[] kazHydrometAirMonitoringPosts = ViewBag.KazHydrometAirMonitoringPosts;
+            }
+            @foreach (MonitoringPost monitoringPost in kazHydrometAirMonitoringPosts.OrderBy(m => m.Name))
+            {
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name - @monitoringPost.AdditionalInformation</button>
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+        <hr />
         <br />
         <div>
             <input type="button" value="Карта по-умолчанию" class="btn btn-default" onclick="DefaultMap()">
@@ -142,7 +163,7 @@
         <label>
             <input type="checkbox" id="layerEcoserviceAirMonitoringPostsShow" onchange="ChangeLayers()" checked="checked">
             @SharedLocalizer["EcoserviceAirPosts"]
-            <img src="~/images/EcoserviceAirMonitoringPostPanelKaraganda.png" style="width:16px;height:16px;" />
+            <img src="~/images/EcoserviceAirMonitoringPostPanel.png" style="width:16px;height:16px;" />
         </label>
         <br />
         <input id="layerEcoserviceAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -150,7 +171,8 @@
         <label>
             <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()">
             @SharedLocalizer["KazHydrometAirPosts"]
-            <img src="~/images/KazHydrometAirMonitoringPostAutomaticPanelKaraganda.png" style="width:16px;height:16px;" />
+            <img src="~/images/KazHydrometAirMonitoringPostAutoPanel.png" style="width:16px;height:16px;" />
+            <img src="~/images/KazHydrometAirMonitoringPostHandsPanel.png" style="width:16px;height:16px;" />
         </label>
         <br />
         <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -234,10 +256,27 @@
         </table>
         <div id="divEcoserviceAirPost" class="dialog-info-content">
             <ul>
+                <li><a href="#divEcoserviceAirPostAQI">@SharedLocalizer["AQI"]</a></li>
                 <li><a href="#divEcoserviceAirPostInfo">@SharedLocalizer["Info"]</a></li>
                 <li><a href="#divEcoserviceAirPostChart">@SharedLocalizer["Chart"]</a></li>
                 <li><a href="#divEcoserviceAirPostTable">@SharedLocalizer["Table"]</a></li>
             </ul>
+            <div id="divEcoserviceAirPostAQI" class="dialog-info-tab-div">
+                <input id="EcoserviceAirMonitoringMonitoringPostId" type="hidden" />
+                <table id="tablePollutantsConcentration" class="table-bordered dialog-info-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @SharedLocalizer["Pollutants"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["Concentration"]
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
             <div id="divEcoserviceAirPostInfo" class="dialog-info-tab-div">
                 <input id="EcoserviceAirMonitoringMonitoringPostId" type="hidden" />
                 <table class="table-bordered dialog-info-table">
@@ -264,6 +303,12 @@
                             @SharedLocalizer["Name"]
                         </td>
                         <td id="EcoserviceAirMonitoringPostName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["TypeStation"]
+                        </td>
+                        <td id="KazHydrometAirMonitoringPostType"></td>
                     </tr>
                     <tr>
                         <td>
@@ -492,35 +537,185 @@
             '?apikey=6746f4299ea3479aba8726b09f049c1b'
     });
 
-    var KazHydrometAirMonitoringPostsStyle = new ol.style.Style({
-        image: new ol.style.Icon(({
-            src: '/images/KazHydrometAirMonitoringPostAutomaticPanel.png',
-            anchor: [0.5, 0.5],
-            anchorXUnits: 'fraction',
-            anchorYUnits: 'fraction',
-            scale: 0.0625
-        }))
-    });
-    var KazHydrometAirMonitoringPostsLayerJson = $("#KazHydrometAirMonitoringPostsLayerJson").val();
-    var Source_KazHydrometAirMonitoringPosts = new ol.source.Vector({
-        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsLayerJson, {
+    var KazHydrometAirMonitoringPostsAutoStyle = {
+        activeGreen: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeYellow: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoYellow.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeOrange: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoOrange.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeViolet: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoViolet.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        inactive: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoInactive.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        })
+    };
+    function KazHydrometAirMonitoringPostsAutoStyleFunction(feature) {
+        if (inactiveKazHydrometPosts.includes(feature.get('Id'))) {
+            return KazHydrometAirMonitoringPostsAutoStyle.inactive;
+        }
+        else if (colorPostsId.includes(feature.get('Id'))) {
+            var number = colorPostsId.indexOf(feature.get('Id'));
+            var value = colorPostsAQI[number];
+            if (value <= 0.2) {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeGreen;
+            }
+            else if (value <= 0.5) {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeYellow;
+            }
+            else if (value <= 1) {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeOrange;
+            }
+            else {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeViolet;
+            }
+        }
+        else {
+            return KazHydrometAirMonitoringPostsAutoStyle.activeGreen;
+        }
+    }
+    var KazHydrometAirMonitoringPostsAutomaticLayerJson = $("#KazHydrometAirMonitoringPostsAutomaticLayerJson").val();
+    var Source_KazHydrometAirMonitoringPostsAutomatic = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsAutomaticLayerJson, {
 
             dataProjection: 'EPSG:4326',
             featureProjection: 'EPSG:3857'
         })
     });
-    var Layer_KazHydrometAirMonitoringPosts = new ol.layer.Vector({
-        source: Source_KazHydrometAirMonitoringPosts,
-        style: KazHydrometAirMonitoringPostsStyle,
+    var Layer_KazHydrometAirMonitoringPostsAutomatic = new ol.layer.Vector({
+        source: Source_KazHydrometAirMonitoringPostsAutomatic,
+        style: KazHydrometAirMonitoringPostsAutoStyleFunction,
         renderBuffer: 200
     });
-    Layer_KazHydrometAirMonitoringPosts.set('name', 'KazHydrometAirMonitoringPosts');
-    layers.push(Layer_KazHydrometAirMonitoringPosts);
-    Layer_KazHydrometAirMonitoringPosts.setVisible(false);
+    Layer_KazHydrometAirMonitoringPostsAutomatic.set('name', 'KazHydrometAirMonitoringPostsAutomatic');
+    layers.push(Layer_KazHydrometAirMonitoringPostsAutomatic);
+    Layer_KazHydrometAirMonitoringPostsAutomatic.setVisible(false);
+
+    var KazHydrometAirMonitoringPostsHandsStyle = {
+        activeGreen: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeYellow: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsYellow.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeOrange: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsOrange.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeViolet: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsViolet.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        inactive: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsInactive.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        })
+    };
+    function KazHydrometAirMonitoringPostsHandsStyleFunction(feature) {
+        if (inactiveKazHydrometPosts.includes(feature.get('Id'))) {
+            return KazHydrometAirMonitoringPostsHandsStyle.inactive;
+        }
+        else if (colorPostsId.includes(feature.get('Id'))) {
+            var number = colorPostsId.indexOf(feature.get('Id'));
+            var value = colorPostsAQI[number];
+            if (value <= 0.2) {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeGreen;
+            }
+            else if (value <= 0.5) {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeYellow;
+            }
+            else if (value <= 1) {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeOrange;
+            }
+            else {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeViolet;
+            }
+        }
+        else {
+            return KazHydrometAirMonitoringPostsHandsStyle.activeGreen;
+        }
+    }
+    var KazHydrometAirMonitoringPostsHandsLayerJson = $("#KazHydrometAirMonitoringPostsHandsLayerJson").val();
+    var Source_KazHydrometAirMonitoringPostsHands = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsHandsLayerJson, {
+
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometAirMonitoringPostsHands = new ol.layer.Vector({
+        source: Source_KazHydrometAirMonitoringPostsHands,
+        style: KazHydrometAirMonitoringPostsHandsStyleFunction,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometAirMonitoringPostsHands.set('name', 'KazHydrometAirMonitoringPostsHands');
+    layers.push(Layer_KazHydrometAirMonitoringPostsHands);
+    Layer_KazHydrometAirMonitoringPostsHands.setVisible(false)
 
     var EcoserviceAirMonitoringPostsStyle = new ol.style.Style({
         image: new ol.style.Icon(({
-            src: '/images/EcoserviceAirMonitoringPostKaraganda.png',
+            src: '/images/EcoserviceAirMonitoringPostGreen.png',
             anchor: [0.5, 0.5],
             anchorXUnits: 'fraction',
             anchorYUnits: 'fraction',
@@ -541,22 +736,54 @@
     //    renderBuffer: 200
     //});
     var EcoserviceAirMonitoringPostsStyle = {
-        active: new ol.style.Style({
+        activeGreen: new ol.style.Style({
             image: new ol.style.Icon(({
-                src: '/images/EcoserviceAirMonitoringPostKaraganda.png',
+                src: '/images/EcoserviceAirMonitoringPostGreen.png',
                 anchor: [0.5, 0.5],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'fraction',
-                scale: 0.0625
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+        activeYellow: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostYellow.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+        activeOrange: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostOrange.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+        activeViolet: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostViolet.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
             }))
         }),
         inactive: new ol.style.Style({
             image: new ol.style.Icon(({
-                src: '/images/EcoserviceAirMonitoringPostInactiveKaraganda.png',
+                src: '/images/EcoserviceAirMonitoringPostInactive.png',
                 anchor: [0.5, 0.5],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'fraction',
-                scale: 0.0625
+                //scale: 0.0625
+                scale: 0.5
             }))
         }),
     };
@@ -564,8 +791,24 @@
         if (inactivePosts.includes(feature.get('Id'))) {
             return EcoserviceAirMonitoringPostsStyle.inactive;
         }
+        else if (colorPostsId.includes(feature.get('Id'))) {
+            var number = colorPostsId.indexOf(feature.get('Id'));
+            var value = colorPostsAQI[number];
+            if (value <= 0.2) {
+                return EcoserviceAirMonitoringPostsStyle.activeGreen;
+            }
+            else if (value <= 0.5) {
+                return EcoserviceAirMonitoringPostsStyle.activeYellow;
+            }
+            else if (value <= 1) {
+                return EcoserviceAirMonitoringPostsStyle.activeOrange;
+            }
+            else {
+                return EcoserviceAirMonitoringPostsStyle.activeViolet;
+            }
+        }
         else {
-            return EcoserviceAirMonitoringPostsStyle.active;
+            return EcoserviceAirMonitoringPostsStyle.activeGreen;
         }
     }
     var EcoserviceAirMonitoringPostsLayerJson = $("#EcoserviceAirMonitoringPostsLayerJson").val();
@@ -652,7 +895,7 @@
                     layer.setSource(Source_ThunderforestNeighbourhood);
                 }
             }
-            if (layer.get('name') == 'KazHydrometAirMonitoringPosts') {
+            if (layer.get('name') == 'KazHydrometAirMonitoringPostsAutomatic' || layer.get('name') == 'KazHydrometAirMonitoringPostsHands') {
                 layer.setVisible(document.getElementById("layerKazHydrometAirMonitoringPostsShow").checked);
                 layer.setOpacity($('#layerKazHydrometAirMonitoringPostsOpacity').val() / 100)
             }
@@ -848,44 +1091,78 @@
         var layerName = '';
         var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
             layerName = layer.get('name');
-            if (layer.get('name') == 'KazHydrometAirMonitoringPosts'
+            if (layer.get('name') == 'KazHydrometAirMonitoringPostsAutomatic'
+                || layer.get('name') == 'KazHydrometAirMonitoringPostsHands'
                 || layer.get('name') == 'EcoserviceAirMonitoringPosts') {
                 return feature;
             }
         });
         if (feature) {
             $('.dialog-info-content').hide();
-            if (layerName == 'KazHydrometAirMonitoringPosts') {
-                $('#KazHydrometAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
-                $('#KazHydrometAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
-                $('#KazHydrometAirMonitoringPostNumber').text(feature.get('Number'));
-                $('#KazHydrometAirMonitoringPostName').text(feature.get('Name'));
-                $('#KazHydrometAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
-                $('#tableKazHydrometAirMonitoringPost').show();
-                $("#dialogMonitoringPostInfo").dialog({
-                    resize: DialogResize,
-                    title: $('#KazHydrometAirPost').val(),
-                    minHeight: 100,
-                    minWidth: 100
-                });
-            }
-            if (layerName == 'EcoserviceAirMonitoringPosts') {
+            //if (layerName == 'KazHydrometAirMonitoringPosts') {
+            //    $('#KazHydrometAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+            //    $('#KazHydrometAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+            //    $('#KazHydrometAirMonitoringPostNumber').text(feature.get('Number'));
+            //    $('#KazHydrometAirMonitoringPostName').text(feature.get('Name'));
+            //    $('#KazHydrometAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+            //    $('#tableKazHydrometAirMonitoringPost').show();
+            //    $("#dialogMonitoringPostInfo").dialog({
+            //        resize: DialogResize,
+            //        title: $('#KazHydrometAirPost').val(),
+            //        minHeight: 100,
+            //        minWidth: 100
+            //    });
+            //}
+            //if (layerName == 'EcoserviceAirMonitoringPosts') {
+            //    $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
+            //    $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+            //    $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+            //    $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
+            //    $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+            //    $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+            //    $('#divEcoserviceAirPost').show();
+            //    $("#divEcoserviceAirPost").tabs();
+            //    $("#dialogMonitoringPostInfo").dialog({
+            //        resize: DialogResize,
+            //        title: $('#EcoserviceAirPost').val(),
+            //        minHeight: 100,
+            //        minWidth: 100,
+            //        width: 750,
+            //        maxHeight: window.innerHeight
+            //    });
+            //    GetMeasuredParameters();
+            //}
+            if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
                 $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
                 $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
                 $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
                 $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
                 $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+                if (feature.get('Automatic') == true) {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+                }
+                else if (feature.get('Automatic') == false) {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Hands").val());
+                }
+                else {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+                }
                 $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
                 $('#divEcoserviceAirPost').show();
                 $("#divEcoserviceAirPost").tabs();
+                var title = $('#EcoserviceAirPost').val();
+                if (layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
+                    title = $('#KazHydrometAirPost').val();
+                }
                 $("#dialogMonitoringPostInfo").dialog({
                     resize: DialogResize,
-                    title: $('#EcoserviceAirPost').val(),
+                    title: title,
                     minHeight: 100,
                     minWidth: 100,
                     width: 750,
                     maxHeight: window.innerHeight
                 });
+                GetPollutantsConcentration();
                 GetMeasuredParameters();
             }
         } else {
@@ -908,8 +1185,42 @@
     }
 </script>
 
-@* ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
+@* GetPollutantsConcentration, ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
 <script>
+    function GetPollutantsConcentration() {
+        $("#tablePollutantsConcentration").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetPollutantsConcentration", "LEDScreens")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var tablehtml = '';
+                $.each(data.jsonResult, function (i) {
+                    if (data.jsonResult[i].aqi <= 0.2) {
+                        tablehtml += '<tr><td>' + data.jsonResult[i].pollutant + '</td><td>' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                    else if (data.jsonResult[i].aqi <= 0.5) {
+                        tablehtml += '<tr><td style="background: #ff9f33;">' + data.jsonResult[i].pollutant + '</td><td style="background: #ff9f33;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                    else if (data.jsonResult[i].aqi <= 1) {
+                        tablehtml += '<tr><td style="background: #cc0033;">' + data.jsonResult[i].pollutant + '</td><td style="background: #cc0033;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                    else {
+                        tablehtml += '<tr><td style="background: #9b0064;">' + data.jsonResult[i].pollutant + '</td><td style="background: #9b0064;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                });
+                $('#tablePollutantsConcentration tbody').empty();
+                $('#tablePollutantsConcentration tbody').append(tablehtml);
+                $("#tablePollutantsConcentration").LoadingOverlay("hide");
+            },
+            error: function () {
+                $("#tablePollutantsConcentration").LoadingOverlay("hide");
+            }
+        })
+    }
+
     function ChartGetMinMax(data) {
         $.ajax({
             url: '@Url.Action("GetMinMax", "Maps")',
@@ -1423,10 +1734,75 @@
     }
 </script>
 
+@* GetInactiveKazHydrometPosts *@
+<script>
+    var durationKazHydrometInactive = 3000;
+    var inactiveKazHydrometPosts = [];
+    function GetInactiveKazHydrometPosts() {
+        function getInactiveKazHydrometPosts() {
+            $.ajax({
+                url: '@Url.Action("GetInactiveKazHydrometPosts", "MonitoringPosts")',
+                type: 'POST',
+                success: function (data) {
+                    inactiveKazHydrometPosts = data.ids;
+                    Layer_KazHydrometAirMonitoringPostsHands.getSource().changed();
+                    Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().changed();
+                },
+                error: function () {
+                }
+            })
+        }
+        getInactiveKazHydrometPosts();
+        window.setInterval(function () {
+            getInactiveKazHydrometPosts();
+        }, durationKazHydrometInactive * 10);
+    }
+</script>
+
+@* GetAQI *@
+<script>
+    var durationAQI = 3000;
+    var colorPostsId = [],
+        colorPostsAQI = [];
+    var projectName = 'KaragandaRegion';
+    function GetAQI() {
+        function getAQI() {
+            $.ajax({
+                url: '@Url.Action("GetAQIPosts", "LEDScreens")',
+                data: {
+                    ProjectName: projectName
+                },
+                type: 'POST',
+                success: function (data) {
+                    $.each(data.jsonResult, function (i) {
+                        colorPostsId[i] = data.jsonResult[i].id;
+                        colorPostsAQI[i] = data.jsonResult[i].aqi;
+                    });
+                    Layer_EcoserviceAirMonitoringPosts.getSource().changed();
+                    Layer_KazHydrometAirMonitoringPostsHands.getSource().changed();
+                    Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().changed();
+                },
+                error: function () {
+                }
+            })
+        }
+        getAQI();
+        window.setInterval(function () {
+            getAQI();
+        }, durationAQI * 10);
+    }
+</script>
+
 @* SelectPost *@
 <script>
     function SelectPost(id) {
         var features = Layer_EcoserviceAirMonitoringPosts.getSource().getFeatures();
+        $.each(Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().getFeatures(), function (i) {
+            features.push(Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().getFeatures()[i]);
+        });
+        $.each(Layer_KazHydrometAirMonitoringPostsHands.getSource().getFeatures(), function (i) {
+            features.push(Layer_KazHydrometAirMonitoringPostsHands.getSource().getFeatures()[i]);
+        });
         var feature = features.find(f => f.get('Id') === id);
         if (feature) {
             //alert(feature.getGeometry().getExtent());
@@ -1440,6 +1816,15 @@
             $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
             $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
             $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+            if (feature.get('Automatic') == true) {
+                $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+            }
+            else if (feature.get('Automatic') == false) {
+                $('#KazHydrometAirMonitoringPostType').text($("#Hands").val());
+            }
+            else {
+                $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+            }
             $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
             $('#divEcoserviceAirPost').show();
             $("#divEcoserviceAirPost").tabs();
@@ -1473,6 +1858,10 @@
             document.cookie = "coords=" + coords;
         }
     }, 1000);
+
+    window.setInterval(function () {
+        ChangeLayers();
+    }, 1);
 </script>
 
 @* PollutantSpreadChange *@
@@ -1556,7 +1945,7 @@
                     Layer_KaragandaRegionPollutantSpread.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
                     Layer_KaragandaRegionPollutantSpread.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
                     map.getLayers().insertAt(1, Layer_KaragandaRegionPollutantSpread);
-                } 
+                }
             },
             error: function () {
             }
@@ -1570,19 +1959,22 @@
         FlashExceedPosts();
         GetExceedPosts();
         GetInactivePosts();
+        GetInactiveKazHydrometPosts();
+        GetAQI();
+        ChangeLayers();
     }
 </script>
 
 @*<input id="Test" type="text" value="TestValue" name="TestName"/>*@
 @*<input id="Test" type="button" value="TestValue" name="TestName" onclick="Test()" />
 
-<script>
-    function Test() {
-        var layers_count = 0;
-        map.getLayers().forEach(function (layer) {
-            console.log(layer.get('name'));
-            layers_count++;
-        })
-        console.log('layers_count: ' + layers_count);
-    }
-</script>*@
+    <script>
+        function Test() {
+            var layers_count = 0;
+            map.getLayers().forEach(function (layer) {
+                console.log(layer.get('name'));
+                layers_count++;
+            })
+            console.log('layers_count: ' + layers_count);
+        }
+    </script>*@

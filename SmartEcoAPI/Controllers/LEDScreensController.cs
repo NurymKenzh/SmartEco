@@ -358,7 +358,7 @@ namespace SmartEcoAPI.Controllers
 
         [HttpGet("GetAQIPosts")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        public JsonResult GetAQIPosts()
+        public JsonResult GetAQIPosts(string ProjectName)
         {
             dynamic indexResult = null;
             var jsonResult = Enumerable.Range(0, 0)
@@ -369,7 +369,7 @@ namespace SmartEcoAPI.Controllers
             //    .ToList();
 
             var monitoringPosts = _context.MonitoringPost
-                .Where(m => m.Project != null && m.Project.Name == "Almaty" && m.PollutionEnvironmentId == 2 && m.TurnOnOff == true)
+                .Where(m => m.Project != null && m.Project.Name == ProjectName && m.PollutionEnvironmentId == 2 && m.TurnOnOff == true)
                 .ToList();
             foreach (var monitoringPost in monitoringPosts)
             {
