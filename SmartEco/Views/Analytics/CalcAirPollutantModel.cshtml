@@ -1,0 +1,32 @@
+﻿@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = "CalcAirPollutantModel";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="CalcAirPollutantModel">
+            @Html.DropDownList("CrossroadId", (IEnumerable<SelectListItem>)ViewBag.Crossroads, htmlAttributes: new { @class = "form-control info-input-select", @id = "Crossroads" })
+            @Html.TextBox("TimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "TimeFrom" })
+            @Html.TextBox("DateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "DateFrom" })
+            -
+            @Html.TextBox("TimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "TimeTo" })
+            @Html.TextBox("DateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "DateTo" })
+
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["Calculate"]" class="btn btn-primary" />
+            </div>
+        </form>
+        @if (ViewBag.Matrix != null)
+        {
+            foreach (var row in ViewBag.Matrix)
+            {
+                <pre><p style="margin-bottom: 0;">@row</p></pre>
+            }
+        }
+    </div>
+</div>
