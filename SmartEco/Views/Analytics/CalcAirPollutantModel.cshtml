@@ -17,6 +17,182 @@
             @Html.TextBox("TimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "TimeTo" })
             @Html.TextBox("DateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "DateTo" })
 
+            <label for="atim" class="control-label">Cреднее время(мин)</label>
+            <input id="atim" name="atim" class="form-control" value="60" />
+
+            <label for="zo" class="control-label">Шероховатость поверхности(см)</label>
+            <input id="zo" name="zo" class="form-control" value="175" />
+
+            <label for="vs" class="control-label">Скорость оседания(см/с)</label>
+            <input id="vs" name="vs" class="form-control" value="0" />
+
+            <label for="vd" class="control-label">Скорость осаждения(см/с)</label>
+            <input id="vd" name="vd" class="form-control" value="0" />
+
+            <label for="nr" class="control-label">Количество рецепторов</label>
+            <input id="nr" name="nr" class="form-control" value="2" readonly />
+
+            <label for="scal" class="control-label">Коэффициент пересчета шкалы (0.3048 - футы, 1.0 - метры)</label>
+            <input id="scal" name="scal" class="form-control" value="0,3048" />
+
+            <label for="iopt" class="control-label">Метрическое преобразование вывода (1 - футы, 0 - метры)</label>
+            <input id="iopt" name="iopt" class="form-control" value="1" />
+
+            <p>Рецептор 1:</p>
+
+            <label for="cameraName1" class="control-label">Наименование рецептора</label>
+            <input id="cameraName1" name="cameraName" class="form-control" value="REC 1 (SE CORNER)" />
+
+            <label for="cameraCoordX1" class="control-label">Координата X</label>
+            <input id="cameraCoordX1" name="cameraCoordX" class="form-control" value="45" />
+
+            <label for="cameraCoordY1" class="control-label">Координата Y</label>
+            <input id="cameraCoordY1" name="cameraCoordY" class="form-control" value="-35" />
+
+            <label for="cameraCoordZ1" class="control-label">Координата Z</label>
+            <input id="cameraCoordZ1" name="cameraCoordZ" class="form-control" value="6" />
+
+            <p>Рецептор 2:</p>
+
+            <label for="cameraName2" class="control-label">Наименование рецептора</label>
+            <input id="cameraName2" name="cameraName" class="form-control" value="REC 2 (SW CORNER)" />
+
+            <label for="cameraCoordX2" class="control-label">Координата X</label>
+            <input id="cameraCoordX2" name="cameraCoordX" class="form-control" value="-45" />
+
+            <label for="cameraCoordY2" class="control-label">Координата Y</label>
+            <input id="cameraCoordY2" name="cameraCoordY" class="form-control" value="-35" />
+
+            <label for="cameraCoordZ2" class="control-label">Координата Z</label>
+            <input id="cameraCoordZ2" name="cameraCoordZ" class="form-control" value="6" />
+
+            <label for="nl" class="control-label">Количество ссылок</label>
+            <input id="nl" name="nl" class="form-control" value="2" readonly />
+
+            <label for="nm" class="control-label">Количество метровых условий</label>
+            <input id="nm" name="nm" class="form-control" value="1" />
+
+            <label for="mode" class="control-label">Cимвольная переменная («C» для CO или «P» для твердых частиц)</label>
+            <input id="mode" name="mode" class="form-control" value="C" />
+
+            <p>Ссылка 1 (свободный поток):</p>
+
+            <label for="linkName1" class="control-label">Наименование ссылки</label>
+            <input id="linkName1" name="linkName" class="form-control" value="Main St.NB Appr." />
+
+            <input name="linkIQ" class="form-control" value="1" hidden="hidden" />
+
+            <label for="linkType1" class="control-label">Тип ссылки («AG» для «на уровне» или «FL» для «заполнения», «BR» для «моста» и «DP» для «депрессии»)</label>
+            <input id="linkType1" name="linkType" class="form-control" value="AG" />
+
+            <label for="linkCoordX1_1" class="control-label">Координата X1 (для конечной точки 1)</label>
+            <input id="linkCoordX1_1" name="linkCoordX1" class="form-control" value="10" />
+
+            <label for="linkCoordY1_1" class="control-label">Координата Y1 (для конечной точки 1)</label>
+            <input id="linkCoordY1_1" name="linkCoordY1" class="form-control" value="-1000" />
+
+            <label for="linkCoordX2_1" class="control-label">Координата X2 (для конечной точки 2)</label>
+            <input id="linkCoordX2_1" name="linkCoordX2" class="form-control" value="10" />
+
+            <label for="linkCoordY2_1" class="control-label">Координата Y2 (для конечной точки 2)</label>
+            <input id="linkCoordY2_1" name="linkCoordY2" class="form-control" value="0" />
+
+            <label for="vphl1" class="control-label">Объем трафика на линии (автомобилей в час)</label>
+            <input id="vphl1" name="vphl" class="form-control" value="1500" />
+
+            <label for="efl" class="control-label">Коэффициент выбросов (выбросы автомобилей за милю в граммах)</label>
+            <input id="efl" name="efl" class="form-control" value="41,6" />
+
+            <label for="hl1" class="control-label">Высота источника</label>
+            <input id="hl1" name="hl" class="form-control" value="0" />
+
+            <label for="wl1" class="control-label">Ширина зоны смешивания</label>
+            <input id="wl1" name="wl" class="form-control" value="40" />
+
+            <p>Ссылка 2 (поток с очередью):</p>
+
+            <label for="linkName2" class="control-label">Наименование ссылки</label>
+            <input id="linkName2" name="linkName" class="form-control" value="Main St.NB Queue" />
+
+            <input name="linkIQ" class="form-control" value="2" hidden="hidden" />
+
+            <label for="linkType2" class="control-label">Тип ссылки («AG» для «на уровне» или «FL» для «заполнения», «BR» для «моста» и «DP» для «депрессии»)</label>
+            <input id="linkType2" name="linkType" class="form-control" value="AG" />
+
+            <label for="linkCoordX1_2" class="control-label">Координата X1 (для конечной точки 1)</label>
+            <input id="linkCoordX1_2" name="linkCoordX1" class="form-control" value="10" />
+
+            <label for="linkCoordY1_2" class="control-label">Координата Y1 (для конечной точки 1)</label>
+            <input id="linkCoordY1_2" name="linkCoordY1" class="form-control" value="-10" />
+
+            <label for="linkCoordX2_1" class="control-label">Координата X2 (для конечной точки 2)</label>
+            <input id="linkCoordX2_2" name="linkCoordX2" class="form-control" value="10" />
+
+            <label for="linkCoordY2_2" class="control-label">Координата Y2 (для конечной точки 2)</label>
+            <input id="linkCoordY2_2" name="linkCoordY2" class="form-control" value="-1000" />
+
+            <label for="hl2" class="control-label">Высота источника</label>
+            <input id="hl2" name="hl" class="form-control" value="0" />
+
+            <label for="wl2" class="control-label">Ширина зоны смешивания</label>
+            <input id="wl2" name="wl" class="form-control" value="20" />
+
+            <label for="nlanes2" class="control-label">Количество полос движения в линии очереди</label>
+            <input id="nlanes2" name="nlanes" class="form-control" value="2" />
+
+            <label for="cavg2" class="control-label">Средняя общая длительность цикла сигнала</label>
+            <input id="cavg2" name="cavg" class="form-control" value="90" />
+
+            <label for="ravg2" class="control-label">Средняя общая длительность цикла красного сигнала</label>
+            <input id="ravg2" name="ravg" class="form-control" value="40" />
+
+            <label for="yfac2" class="control-label">Потерянное время зазора (часть желтой фазы, которая не используется автомобилистом)</label>
+            <input id="yfac2" name="yfac" class="form-control" value="3,0" />
+
+            <label for="iv2" class="control-label">Объем захода на посадку в очереди (автомобилей в час)</label>
+            <input id="iv2" name="iv" class="form-control" value="1500" />
+
+            <label for="idfac2" class="control-label">Коэффициент выбросов на холостом ходу (выбросы автомобилей за час в граммах)</label>
+            <input id="idfac2" name="idfac" class="form-control" value="735,00" />
+
+            <label for="sfr2" class="control-label">Скорость потока насыщения (автомобилей на полосе в час)</label>
+            <input id="sfr2" name="sfr" class="form-control" value="0" />
+
+            <label for="st2" class="control-label">Тип сигнала (1 - предварительно заданное (по умолчанию), 2 – приведенное в действие, 3 - полуобращенное)</label>
+            <input id="st2" name="st" class="form-control" value="0" />
+
+            <label for="at2" class="control-label">
+                Скорость прибытия (1 - плотный поток прибывает в начале красного цвета, 2 - плотный поток в середине красного, 3 - случайное прибытие (по умолчанию), 4 - плотный поток в середине зеленого цвета, 5 - плотный поток в начале зеленого цвета)
+            </label>
+            <input id="at2" name="at" class="form-control" value="0" />
+
+            <label for="u" class="control-label">Скорость ветра(м/с)</label>
+            <input id="u" name="u" class="form-control" value="1,0" />
+
+            <label for="brg" class="control-label">Направление ветра (угол)</label>
+            <input id="brg" name="brg" class="form-control" value="0" />
+
+            <label for="clas" class="control-label">Класс стабильности</label>
+            <input id="clas" name="clas" class="form-control" value="4" />
+
+            <label for="mixh" class="control-label">Высота смешивания (м)</label>
+            <input id="mixh" name="mixh" class="form-control" value="1000" />
+
+            <label for="amb" class="control-label">Фоновая концентрация окружающей среды(ppm)</label>
+            <input id="amb" name="amb" class="form-control" value="0" />
+
+            <label for="variable" class="control-label">Символьная переменная («Y» - изменение направления ветра, «N» - только одно направление ветра)</label>
+            <input id="variable" name="variable" class="form-control" value="Y" />
+
+            <label for="degr" class="control-label">Метрическое преобразование вывода (1 - футы, 0 - метры)</label>
+            <input id="degr" name="degr" class="form-control" value="10" />
+
+            <label for="vai1" class="control-label">Нижняя граница диапазона вариации</label>
+            <input id="vai1" name="vai1" class="form-control" value="0" />
+
+            <label for="vai2" class="control-label">Верхняя граница диапазона вариации</label>
+            <input id="vai2" name="vai2" class="form-control" value="36" />
+
             <div class="form-group">
                 <input type="submit" value="@SharedLocalizer["Calculate"]" class="btn btn-primary" />
             </div>

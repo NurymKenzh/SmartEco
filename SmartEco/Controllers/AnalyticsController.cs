@@ -515,35 +515,84 @@ namespace SmartEco.Controllers
             DateTime DateFrom,
             DateTime DateTo,
             DateTime TimeFrom,
-            DateTime TimeTo)
+            DateTime TimeTo,
+            decimal atim,
+            decimal zo,
+            decimal vs,
+            decimal vd,
+            int nr,
+            decimal scal,
+            int iopt,
+            List<string> cameraName,
+            List<decimal> cameraCoordX,
+            List<decimal> cameraCoordY,
+            List<decimal> cameraCoordZ,
+            int nl,
+            int nm,
+            string mode,
+            List<string> linkName,
+            List<int> linkIQ,
+            List<string> linkType,
+            List<decimal> linkCoordX1,
+            List<decimal> linkCoordY1,
+            List<decimal> linkCoordX2,
+            List<decimal> linkCoordY2,
+            List<decimal> vphl,
+            List<decimal> efl,
+            List<decimal> hl,
+            List<decimal> wl,
+            List<int> nlanes,
+            List<int> cavg,
+            List<int> ravg,
+            List<decimal> yfac,
+            List<int> iv,
+            List<decimal> idfac,
+            List<int> sfr,
+            List<int> st,
+            List<int> at,
+            decimal u,
+            decimal brg,
+            int clas,
+            decimal mixh,
+            decimal amb,
+            string variable,
+            int degr,
+            int vai1,
+            int vai2)
         {
             string fileDat = Path.Combine(_appEnvironment.WebRootPath, "file.dat");
             string fileBat = Path.Combine(_appEnvironment.WebRootPath, "file.bat");
             string fileOut = Path.Combine(_appEnvironment.WebRootPath, "file.out");
             using (var sw = new StreamWriter(fileDat))
             {
-                var atim = 60; //переменная, представляющая среднее время(мин)
-                var zo = 175; //переменная, представляющая шероховатость поверхности(см)
-                var vs = 0; //переменная, представляющая скорость оседания(см/с)
-                var vd = 0; //реальная скорость осаждения(см/с)
-                var nr = 8; //  целое число, представляющее количество рецепторов (камер)
-                var scal = 0.3048; // коэффициент пересчета шкалы (0.3048 - футы, 1.0 - метры)
-                var iopt = 1; // целое число, метрическое преобразование вывода (1 - футы, 0 - метры)
+                //var atim = 60; //переменная, представляющая среднее время(мин)
+                //var zo = 175; //переменная, представляющая шероховатость поверхности(см)
+                //var vs = 0; //переменная, представляющая скорость оседания(см/с)
+                //var vd = 0; //реальная скорость осаждения(см/с)
+                //var nr = 8; //  целое число, представляющее количество рецепторов (камер)
+                //var scal = 0.3048; // коэффициент пересчета шкалы (0.3048 - футы, 1.0 - метры)
+                //var iopt = 1; // целое число, метрическое преобразование вывода (1 - футы, 0 - метры)
                 var idebug = 1; // целое число, опция отладки
 
-                sw.WriteLine($"'MODEL AIR POLLUTANT CONCENTRATIONS' {atim} {zo} {vs} {vd} {nr} {scal.ToString(CultureInfo.GetCultureInfo("en-US"))} {iopt} {idebug}");
+                sw.WriteLine($"'MODEL AIR POLLUTANT CONCENTRATIONS' {atim.ToString(CultureInfo.GetCultureInfo("en-US"))} {zo.ToString(CultureInfo.GetCultureInfo("en-US"))} {vs.ToString(CultureInfo.GetCultureInfo("en-US"))} {vd.ToString(CultureInfo.GetCultureInfo("en-US"))} {nr} {scal.ToString(CultureInfo.GetCultureInfo("en-US"))} {iopt} {idebug}");
 
-                List<Camera> cameras = new List<Camera>
+                //List<Camera> cameras = new List<Camera>
+                //{
+                //    new Camera{Id = 1, Name = "REC 1 (SE CORNER)", CoordX = 45, CoordY = -35, CoordZ = 6},
+                //    new Camera{Id = 2, Name = "REC 2 (SW CORNER)", CoordX = -45, CoordY = -35, CoordZ = 6},
+                //    new Camera{Id = 3, Name = "REC 3 (NW CORNER)", CoordX = -45, CoordY = 35, CoordZ = 6},
+                //    new Camera{Id = 4, Name = "REC 4 (NE CORNER)", CoordX = 45, CoordY = 35, CoordZ = 6},
+                //    new Camera{Id = 5, Name = "REC 5 (E MID-MAIN)", CoordX = 45, CoordY = -150, CoordZ = 6},
+                //    new Camera{Id = 6, Name = "REC 6 (W MID-MAIN)", CoordX = -45, CoordY = -150, CoordZ = 6},
+                //    new Camera{Id = 7, Name = "REC 7 (N MID-LOCAL)", CoordX = -150, CoordY = 35, CoordZ = 6},
+                //    new Camera{Id = 8, Name = "REC 8 (S MID-LOCAL)", CoordX = -150, CoordY = -35, CoordZ = 6}
+                //};
+
+                List<Camera> cameras = new List<Camera>();
+                for(int i = 0; i < cameraName.Count; i++)
                 {
-                    new Camera{Id = 1, Name = "REC 1 (SE CORNER)", CoordX = 45, CoordY = -35, CoordZ = 6},
-                    new Camera{Id = 2, Name = "REC 2 (SW CORNER)", CoordX = -45, CoordY = -35, CoordZ = 6},
-                    new Camera{Id = 3, Name = "REC 3 (NW CORNER)", CoordX = -45, CoordY = 35, CoordZ = 6},
-                    new Camera{Id = 4, Name = "REC 4 (NE CORNER)", CoordX = 45, CoordY = 35, CoordZ = 6},
-                    new Camera{Id = 5, Name = "REC 5 (E MID-MAIN)", CoordX = 45, CoordY = -150, CoordZ = 6},
-                    new Camera{Id = 6, Name = "REC 6 (W MID-MAIN)", CoordX = -45, CoordY = -150, CoordZ = 6},
-                    new Camera{Id = 7, Name = "REC 7 (N MID-LOCAL)", CoordX = -150, CoordY = 35, CoordZ = 6},
-                    new Camera{Id = 8, Name = "REC 8 (S MID-LOCAL)", CoordX = -150, CoordY = -35, CoordZ = 6}
-                };
+                    cameras.Add(new Camera { Id = i, Name = cameraName[i], CoordX = cameraCoordX[i], CoordY = cameraCoordY[i], CoordZ = cameraCoordY[i] });
+                }
 
                 foreach (var camera in cameras)
                 {
@@ -551,31 +600,60 @@ namespace SmartEco.Controllers
                 }
 
                 var run = "MAIN ST. AND LOCAL ST.INTERSECTION"; //переменная, обозначающая название текущего цикла (перекрёстка)
-                var nl = 9; //целое число, указывающее количество ссылок
-                var nm = 1; //целое число, обозначающее количество метровых условий
+                //var nl = 9; //целое число, указывающее количество ссылок
+                //var nm = 1; //целое число, обозначающее количество метровых условий
                 var print2 = 0; //целое число, 0 - короткий формат, 1 - таблицы матрицы рецептор-ссылка
-                var mode = "C"; //символьная переменная( «C» для CO или «P» для твердых частиц)
+                //var mode = "C"; //символьная переменная («C» для CO или «P» для твердых частиц)
 
                 sw.WriteLine($"'{run}' {nl} {nm} {print2} '{mode}'");
 
+                //List<Link> links = new List<Link>
+                //{
+                //    new Link{Id = 1, Name = "Main St.NB Appr.", IQ = 1, Type = "AG", CoordX1 = 10, CoordY1 = -1000, CoordX2 = 10, CoordY2 = 0, VPHL = 1500, EFL = 41.6m, HL = 0, WL = 40},
+                //    new Link{Id = 2, Name = "Main St.NB Queue", IQ = 2, Type = "AG", CoordX1 = 10, CoordY1 = -10, CoordX2 = 10, CoordY2 = -1000, HL = 0, WL = 20, NLANES = 2 },
+                //    new Link{Id = 3, Name = "Main St.NB Dep.", IQ = 1, Type = "AG", CoordX1 = 10, CoordY1 = 0, CoordX2 = 10, CoordY2 = 1000, VPHL = 1500, EFL = 41.6m, HL = 0, WL = 40},
+                //    new Link{Id = 4, Name = "Main St.SB Appr.", IQ = 1, Type = "AG", CoordX1 = -10, CoordY1 = 1000, CoordX2 = -10, CoordY2 = 0, VPHL = 1200, EFL = 41.6m, HL = 0, WL = 40},
+                //    new Link{Id = 5, Name = "Main St.SB Queue", IQ = 2, Type = "AG", CoordX1 = -10, CoordY1 = 10, CoordX2 = -10, CoordY2 = 1000, HL = 0, WL = 20, NLANES = 2 },
+                //    new Link{Id = 6, Name = "Main St.SB Dep.", IQ = 1, Type = "AG", CoordX1 = -10, CoordY1 = 0, CoordX2 = -10, CoordY2 = -1000, VPHL = 1200, EFL = 41.6m, HL = 0, WL = 40},
+                //    new Link{Id = 7, Name = "Local St.Appr.Lnk.", IQ = 1, Type = "AG", CoordX1 = -1000, CoordY1 = 0, CoordX2 = 0, CoordY2 = 0, VPHL = 1000, EFL = 41.6m, HL = 0, WL = 40},
+                //    new Link{Id = 8, Name = "Local St.Queue Lnk.", IQ = 2, Type = "AG", CoordX1 = -20, CoordY1 = 0, CoordX2 = -1000, CoordY2 = 0, HL = 0, WL = 20, NLANES = 2 },
+                //    new Link{Id = 9, Name = "Main St.NB Appr.", IQ = 1, Type = "AG", CoordX1 = 0, CoordY1 = 0, CoordX2 = 1000, CoordY2 = 0, VPHL = 1000, EFL = 41.6m, HL = 0, WL = 40}
+                //};
+
+                //List<LinkQueue> linkQueues = new List<LinkQueue>
+                //{
+                //    new LinkQueue{Id = 1, LinkId = 2, CAVG = 90, RAVG = 40, YFAC = 3.0m, IV = 1500, IDLFAC = 735.00m, SFR = 0, ST = 0, AT = 0 },
+                //    new LinkQueue{Id = 2, LinkId = 5, CAVG = 90, RAVG = 40, YFAC = 3.0m, IV = 1200, IDLFAC = 735.00m, SFR = 0, ST = 0, AT = 0 },
+                //    new LinkQueue{Id = 3, LinkId = 8, CAVG = 90, RAVG = 50, YFAC = 3.0m, IV = 1000, IDLFAC = 735.00m, SFR = 0, ST = 0, AT = 0 }
+                //};
+
+                //foreach (var link in links)
+                //{
+                //    sw.WriteLine($"{link.IQ}");
+                //    if (link.IQ == 1)
+                //    {
+                //        sw.WriteLine($"'{link.Name}' '{link.Type}' {link.CoordX1.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.CoordY1.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.CoordX2.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.CoordY2.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.VPHL.Value.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.EFL.Value.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.HL.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.WL.ToString(CultureInfo.GetCultureInfo("en-US"))}");
+                //    }
+                //    else
+                //    {
+                //        sw.WriteLine($"'{link.Name}' '{link.Type}' {link.CoordX1.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.CoordY1.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.CoordX2.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.CoordY2.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.HL.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.WL.ToString(CultureInfo.GetCultureInfo("en-US"))} {link.NLANES}");
+                //        var linkQueue = linkQueues.Where(l => l.LinkId == link.Id).FirstOrDefault();
+                //        if (linkQueue != null)
+                //        {
+                //            sw.WriteLine($"{linkQueue.CAVG} {linkQueue.RAVG} {linkQueue.YFAC.ToString(CultureInfo.GetCultureInfo("en-US"))} {linkQueue.IV} {linkQueue.IDLFAC.ToString(CultureInfo.GetCultureInfo("en-US"))} {linkQueue.SFR} {linkQueue.ST} {linkQueue.AT}");
+                //        }
+                //    }
+                //}
+
                 List<Link> links = new List<Link>
                 {
-                    new Link{Id = 1, Name = "Main St.NB Appr.", IQ = 1, Type = "AG", CoordX1 = 10, CoordY1 = -1000, CoordX2 = 10, CoordY2 = 0, VPHL = 1500, EFL = 41.6m, HL = 0, WL = 40},
-                    new Link{Id = 2, Name = "Main St.NB Queue", IQ = 2, Type = "AG", CoordX1 = 10, CoordY1 = -10, CoordX2 = 10, CoordY2 = -1000, HL = 0, WL = 20, NLANES = 2 },
-                    new Link{Id = 3, Name = "Main St.NB Dep.", IQ = 1, Type = "AG", CoordX1 = 10, CoordY1 = 0, CoordX2 = 10, CoordY2 = 1000, VPHL = 1500, EFL = 41.6m, HL = 0, WL = 40},
-                    new Link{Id = 4, Name = "Main St.SB Appr.", IQ = 1, Type = "AG", CoordX1 = -10, CoordY1 = 1000, CoordX2 = -10, CoordY2 = 0, VPHL = 1200, EFL = 41.6m, HL = 0, WL = 40},
-                    new Link{Id = 5, Name = "Main St.SB Queue", IQ = 2, Type = "AG", CoordX1 = -10, CoordY1 = 10, CoordX2 = -10, CoordY2 = 1000, HL = 0, WL = 20, NLANES = 2 },
-                    new Link{Id = 6, Name = "Main St.SB Dep.", IQ = 1, Type = "AG", CoordX1 = -10, CoordY1 = 0, CoordX2 = -10, CoordY2 = -1000, VPHL = 1200, EFL = 41.6m, HL = 0, WL = 40},
-                    new Link{Id = 7, Name = "Local St.Appr.Lnk.", IQ = 1, Type = "AG", CoordX1 = -1000, CoordY1 = 0, CoordX2 = 0, CoordY2 = 0, VPHL = 1000, EFL = 41.6m, HL = 0, WL = 40},
-                    new Link{Id = 8, Name = "Local St.Queue Lnk.", IQ = 2, Type = "AG", CoordX1 = -20, CoordY1 = 0, CoordX2 = -1000, CoordY2 = 0, HL = 0, WL = 20, NLANES = 2 },
-                    new Link{Id = 9, Name = "Main St.NB Appr.", IQ = 1, Type = "AG", CoordX1 = 0, CoordY1 = 0, CoordX2 = 1000, CoordY2 = 0, VPHL = 1000, EFL = 41.6m, HL = 0, WL = 40}
+                    new Link{Id = 0, Name = linkName[0], IQ = linkIQ[0], Type = linkType[0], CoordX1 = linkCoordX1[0], CoordY1 = linkCoordY1[0], CoordX2 = linkCoordX2[0], CoordY2 = linkCoordY2[0], VPHL = vphl[0], EFL = efl[0], HL = hl[0], WL = wl[0]},
+                    new Link{Id = 1, Name = linkName[1], IQ = linkIQ[1], Type = linkType[1], CoordX1 = linkCoordX1[1], CoordY1 = linkCoordY1[1], CoordX2 = linkCoordX2[1], CoordY2 = linkCoordY2[1], HL = hl[1], WL = wl[1], NLANES = nlanes[0] }
                 };
 
                 List<LinkQueue> linkQueues = new List<LinkQueue>
                 {
-                    new LinkQueue{Id = 1, LinkId = 2, CAVG = 90, RAVG = 40, YFAC = 3.0m, IV = 1500, IDLFAC = 735.00m, SFR = 0, ST = 0, AT = 0 },
-                    new LinkQueue{Id = 2, LinkId = 5, CAVG = 90, RAVG = 40, YFAC = 3.0m, IV = 1200, IDLFAC = 735.00m, SFR = 0, ST = 0, AT = 0 },
-                    new LinkQueue{Id = 3, LinkId = 8, CAVG = 90, RAVG = 50, YFAC = 3.0m, IV = 1000, IDLFAC = 735.00m, SFR = 0, ST = 0, AT = 0 }
+                    new LinkQueue{Id = 0, LinkId = 1, CAVG = cavg[0], RAVG = ravg[0], YFAC = yfac[0], IV = iv[0], IDLFAC = idfac[0], SFR = sfr[0], ST = st[0], AT = at[0] }
                 };
 
                 foreach (var link in links)
@@ -596,17 +674,17 @@ namespace SmartEco.Controllers
                     }
                 }
 
-                var u = 1.0; //действительная переменная, указывающая скорость ветра(м/с)
-                var brg = 0; // действительная переменная, указывающая направление ветра (угол)
-                var clas = 4; //целое число, обозначающее класс стабильности
-                var mixh = 1000; //действительная переменная, представляющая высоту смешивания(м)
-                var amb = 0; // действительное значение, указывающее фоновую концентрацию окружающей среды(ppm)
-                var variable = "Y"; // «Y» - изменение направления ветра, «N» - только одно направление ветра
-                var degr = 10; // целое число, метрическое преобразование вывода (1 - футы, 0 - метры)
-                var vai1 = 0; // целое число, обозначающее нижнюю границу диапазона вариации
-                var vai2 = 36; // целое число, которое указывает верхнюю границу диапазона изменения
+                //var u = 1.0; //действительная переменная, указывающая скорость ветра(м/с)
+                //var brg = 0; // действительная переменная, указывающая направление ветра (угол)
+                //var clas = 4; //целое число, обозначающее класс стабильности
+                //var mixh = 1000; //действительная переменная, представляющая высоту смешивания(м)
+                //var amb = 0; // действительное значение, указывающее фоновую концентрацию окружающей среды(ppm)
+                //var variable = "Y"; // «Y» - изменение направления ветра, «N» - только одно направление ветра
+                //var degr = 10; // целое число, метрическое преобразование вывода (1 - футы, 0 - метры)
+                //var vai1 = 0; // целое число, обозначающее нижнюю границу диапазона вариации
+                //var vai2 = 36; // целое число, которое указывает верхнюю границу диапазона изменения
 
-                sw.WriteLine($"{u} {brg} {clas} {mixh} {amb} '{variable}' {degr} {vai1} {vai2}");
+                sw.WriteLine($"{u.ToString(CultureInfo.GetCultureInfo("en-US"))} {brg.ToString(CultureInfo.GetCultureInfo("en-US"))} {clas} {mixh.ToString(CultureInfo.GetCultureInfo("en-US"))} {amb.ToString(CultureInfo.GetCultureInfo("en-US"))} '{variable}' {degr} {vai1} {vai2}");
             }
 
             using (var sw = new StreamWriter(fileBat))
@@ -662,6 +740,7 @@ namespace SmartEco.Controllers
                 while (line != null);
                 ViewBag.Matrix = matrix;
             }
+            System.IO.File.Delete(fileOut);
 
             List<SelectListItem> crossroads = new List<SelectListItem> {
                 new SelectListItem() { Text="MAIN ST. AND LOCAL ST. INTERSECTION", Value="1"}

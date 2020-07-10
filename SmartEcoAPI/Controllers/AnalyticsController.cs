@@ -469,13 +469,21 @@ namespace SmartEcoAPI.Controllers
         public async Task<List<PostData>> GetAllMonitoringPosts()
         {
             List<PostData> postDatas = new List<PostData>();
-            using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+            try
             {
-                connection.Open();
-                var postDatasv = connection.Query<PostData>(
-                    $"SELECT DISTINCT ON (\"MN\") \"MN\", \"DateTimeServer\"" +
-                    $"FROM public.\"Data\" ORDER BY \"MN\", \"DateTimeServer\" DESC;");
-                postDatas = postDatasv.ToList();
+                //List<PostData> postDatas = new List<PostData>();
+                using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                {
+                    connection.Open();
+                    var postDatasv = connection.Query<PostData>(
+                        $"SELECT DISTINCT ON (\"MN\") \"MN\", \"DateTimeServer\"" +
+                        $"FROM public.\"Data\" ORDER BY \"MN\", \"DateTimeServer\" DESC;");
+                    postDatas = postDatasv.ToList();
+                }
+            }
+            catch (Exception ex)
+            {
+                //
             }
 
             return postDatas;
