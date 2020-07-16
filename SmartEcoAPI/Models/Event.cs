@@ -23,5 +23,10 @@ namespace SmartEcoAPI.Models
         /// Название на английском языке.
         /// </summary>
         public string NameEN { get; set; }
+        /// <summary>
+        /// Id проекта.
+        /// </summary>
+        public int? ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }

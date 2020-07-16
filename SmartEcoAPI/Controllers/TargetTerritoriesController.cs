@@ -36,7 +36,20 @@ namespace SmartEcoAPI.Controllers
             var targetTerritories = _context.TargetTerritory
                 .Include(t => t.KATO)
                 .Include(t => t.TerritoryType)
+                .Include(t => t.Project)
                 .Where(k => true);
+
+            var role = _context.Person
+                .Where(p => p.Email == HttpContext.User.Identity.Name)
+                .FirstOrDefault().Role;
+            if (role == "Almaty")
+            {
+                targetTerritories = targetTerritories.Where(t => t.Project.Id == 3);
+            }
+            if (role == "Shymkent")
+            {
+                targetTerritories = targetTerritories.Where(t => t.Project.Id == 4);
+            }
 
             if (!string.IsNullOrEmpty(NameKK))
             {
@@ -104,6 +117,7 @@ namespace SmartEcoAPI.Controllers
                 .Include(t => t.TerritoryType)
                 .Include(t => t.MonitoringPost)
                 .Include(t => t.KazHydrometSoilPost)
+                .Include(t => t.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (targetTerritory == null)

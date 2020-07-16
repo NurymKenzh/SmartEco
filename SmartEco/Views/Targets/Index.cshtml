@@ -13,7 +13,7 @@
 @{
     string Role = Context.Session.GetString("Role");
 }
-@if (Role == "admin" || Role == "moderator" || Role == "Almaty")
+@if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent")
 {
     <p>
         @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })

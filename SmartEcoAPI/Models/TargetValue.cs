@@ -24,5 +24,8 @@ namespace SmartEcoAPI.Models
         public string AdditionalInformationKK { get; set; }
 
         public string AdditionalInformationRU { get; set; }
+
+        public int? ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }

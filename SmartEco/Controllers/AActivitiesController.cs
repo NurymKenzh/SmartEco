@@ -393,6 +393,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.Events = new SelectList(events.OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text");
 
             AActivity model = new AActivity
@@ -408,7 +418,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TargetId,TargetTerritoryId,EventId,Year,ActivityType,ImplementationPercentage,AdditionalInformationKK,AdditionalInformationRU")] AActivity aActivity,
+        public async Task<IActionResult> Create([Bind("Id,TargetId,TargetTerritoryId,EventId,Year,ActivityType,ImplementationPercentage,AdditionalInformationKK,AdditionalInformationRU,ProjectId")] AActivity aActivity,
             string SortOrder,
             int? PollutionEnvironmentIdFilter,
             int? TargetIdFilter,
@@ -547,6 +557,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.Events = new SelectList(events.OrderBy(m => m.Name), "Id", "Name", aActivity.EventId);
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", aActivity.ProjectId);
+
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text", aActivity.Year);
 
             return View(aActivity);
@@ -657,6 +677,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.Events = new SelectList(events.OrderBy(m => m.Name), "Id", "Name", aActivity.EventId);
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", aActivity.ProjectId);
+
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text", aActivity.Year);
 
             aActivity.Target = targets.FirstOrDefault(t => t.Id == aActivity.TargetId);
@@ -670,7 +700,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TargetId,TargetTerritoryId,EventId,Year,ActivityType,ImplementationPercentage,AdditionalInformationKK,AdditionalInformationRU")] AActivity aActivity,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TargetId,TargetTerritoryId,EventId,Year,ActivityType,ImplementationPercentage,AdditionalInformationKK,AdditionalInformationRU,ProjectId")] AActivity aActivity,
             string SortOrder,
             int? PollutionEnvironmentIdFilter,
             int? TargetIdFilter,
@@ -809,6 +839,16 @@ namespace SmartEco.Controllers
                 events = await responseEvents.Content.ReadAsAsync<List<Event>>();
             }
             ViewBag.Events = new SelectList(events.OrderBy(m => m.Name), "Id", "Name", aActivity.EventId);
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", aActivity.ProjectId);
 
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text", aActivity.Year);
 

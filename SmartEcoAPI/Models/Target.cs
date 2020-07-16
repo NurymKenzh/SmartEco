@@ -22,5 +22,8 @@ namespace SmartEcoAPI.Models
         
         public MeasuredParameterUnit MeasuredParameterUnit { get; set; }
         public int MeasuredParameterUnitId { get; set; }
+
+        public int? ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }

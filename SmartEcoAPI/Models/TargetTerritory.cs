@@ -30,5 +30,8 @@ namespace SmartEcoAPI.Models
         
         public KazHydrometSoilPost KazHydrometSoilPost { get; set; }
         public int? KazHydrometSoilPostId { get; set; }
+
+        public int? ProjectId { get; set; }
+        public Project Project { get; set; }
     }
 }

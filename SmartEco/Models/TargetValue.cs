@@ -55,5 +55,10 @@ namespace SmartEco.Models
 
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "AdditionalInformationRU")]
         public string AdditionalInformationRU { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Project")]
+        public Project Project { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Project")]
+        public int? ProjectId { get; set; }
     }
 }

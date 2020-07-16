@@ -70,5 +70,10 @@ namespace SmartEco.Models
         public MeasuredParameterUnit MeasuredParameterUnit { get; set; }
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MeasuredParameterUnit")]
         public int MeasuredParameterUnitId { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Project")]
+        public Project Project { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Project")]
+        public int? ProjectId { get; set; }
     }
 }

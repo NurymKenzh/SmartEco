@@ -249,6 +249,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             ViewBag.CityDistrictCATO = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Code");
             ViewBag.CityDistrictNameKK = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "NameKK");
             ViewBag.CityDistrictNameRU = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "NameRU");
@@ -268,7 +278,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,TerritoryTypeId,KATOId,NameKK,NameRU,GISConnectionCode,AdditionalInformationKK,AdditionalInformationRU,MonitoringPostId,KazHydrometSoilPostId")] TargetTerritory targetTerritory,
+        public async Task<IActionResult> Create([Bind("Id,TerritoryTypeId,KATOId,NameKK,NameRU,GISConnectionCode,AdditionalInformationKK,AdditionalInformationRU,MonitoringPostId,KazHydrometSoilPostId,ProjectId")] TargetTerritory targetTerritory,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -338,7 +348,7 @@ namespace SmartEco.Controllers
             {
                 kazHydrometSoilPosts = await responseKazHydrometSoilPosts.Content.ReadAsAsync<List<KazHydrometSoilPost>>();
             }
-            ViewBag.KazHydrometSoilPosts = new SelectList(kazHydrometSoilPosts.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.KazHydrometSoilPosts = new SelectList(kazHydrometSoilPosts.OrderBy(m => m.Name), "Id", "Name", targetTerritory.KazHydrometSoilPostId);
 
             List<TerritoryType> territoryTypes = new List<TerritoryType>();
             string urlTerritoryTypes = "api/TerritoryTypes",
@@ -348,7 +358,7 @@ namespace SmartEco.Controllers
             {
                 territoryTypes = await responseTerritoryTypes.Content.ReadAsAsync<List<TerritoryType>>();
             }
-            ViewBag.TerritoryTypes = new SelectList(territoryTypes.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.TerritoryTypes = new SelectList(territoryTypes.OrderBy(m => m.Name), "Id", "Name", targetTerritory.TerritoryTypeId);
 
             List<KATO> KATOes = new List<KATO>();
             string urlKATOes = "api/KATOes",
@@ -358,7 +368,17 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", targetTerritory.KATOId);
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", targetTerritory.ProjectId);
 
             return View(targetTerritory);
         }
@@ -429,6 +449,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", targetTerritory.KATOId);
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", targetTerritory.ProjectId);
+
             ViewBag.CityDistrictCATO = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Code");
             ViewBag.CityDistrictNameKK = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "NameKK");
             ViewBag.CityDistrictNameRU = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "NameRU");
@@ -448,7 +478,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,TerritoryTypeId,KATOId,NameKK,NameRU,GISConnectionCode,AdditionalInformationKK,AdditionalInformationRU,MonitoringPostId,KazHydrometSoilPostId")] TargetTerritory targetTerritory,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,TerritoryTypeId,KATOId,NameKK,NameRU,GISConnectionCode,AdditionalInformationKK,AdditionalInformationRU,MonitoringPostId,KazHydrometSoilPostId,ProjectId")] TargetTerritory targetTerritory,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -523,7 +553,7 @@ namespace SmartEco.Controllers
             {
                 kazHydrometSoilPosts = await responseKazHydrometSoilPosts.Content.ReadAsAsync<List<KazHydrometSoilPost>>();
             }
-            ViewBag.KazHydrometSoilPosts = new SelectList(kazHydrometSoilPosts.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.KazHydrometSoilPosts = new SelectList(kazHydrometSoilPosts.OrderBy(m => m.Name), "Id", "Name", targetTerritory.KazHydrometSoilPostId);
 
             List<TerritoryType> territoryTypes = new List<TerritoryType>();
             string urlTerritoryTypes = "api/TerritoryTypes",
@@ -533,7 +563,7 @@ namespace SmartEco.Controllers
             {
                 territoryTypes = await responseTerritoryTypes.Content.ReadAsAsync<List<TerritoryType>>();
             }
-            ViewBag.TerritoryTypes = new SelectList(territoryTypes.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.TerritoryTypes = new SelectList(territoryTypes.OrderBy(m => m.Name), "Id", "Name", targetTerritory.TerritoryTypeId);
 
             List<KATO> KATOes = new List<KATO>();
             string urlKATOes = "api/KATOes",
@@ -543,7 +573,17 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", targetTerritory.KATOId);
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", targetTerritory.ProjectId);
 
             return View(targetTerritory);
         }

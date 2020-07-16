@@ -24,13 +24,6 @@
     <a class="btn btn-default" asp-controller="PollutionSources" asp-action="Index">@SharedLocalizer["PollutionSources"]</a>
     <a class="btn btn-default" asp-controller="Projects" asp-action="Index">@SharedLocalizer["Projects"]</a>
     <a class="btn btn-default" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
-    <a class="btn btn-default" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
-    <a class="btn btn-default" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
-    <a class="btn btn-default" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
-    <a class="btn btn-default" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
     <a class="btn btn-default" asp-controller="LEDScreens" asp-action="Index">@SharedLocalizer["LEDScreens"]</a>
 }
 else if (Role == "KaragandaRegion")
@@ -44,11 +37,8 @@ else if (Role == "Arys")
 else if (Role == "Almaty")
 {
     <a class="btn btn-default" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
-    <a class="btn btn-default" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
-    <a class="btn btn-default" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
-    <a class="btn btn-default" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
-    <br />
-    <br />
-    <a class="btn btn-default" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
-    <a class="btn btn-default" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+}
+else if (Role == "Shymkent")
+{
+    <a class="btn btn-default" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
 }

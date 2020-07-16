@@ -12,6 +12,11 @@
 {
     <a class="btn btn-default" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
     <a class="btn btn-default" asp-controller="Layers" asp-action="Index">@SharedLocalizer["Layers"]</a>
+    <a class="btn btn-default" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+    <a class="btn btn-default" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+    <a class="btn btn-default" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+    <a class="btn btn-default" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+    <a class="btn btn-default" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
 }
 else if (Role == "KaragandaRegion")
 {
@@ -20,6 +25,22 @@ else if (Role == "KaragandaRegion")
 else if (Role == "Arys")
 {
     <a class="btn btn-default" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+}
+else if (Role == "Almaty")
+{
+    <a class="btn btn-default" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+    <a class="btn btn-default" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+    <a class="btn btn-default" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+    <a class="btn btn-default" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+    <a class="btn btn-default" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+}
+else if (Role == "Shymkent")
+{
+    <a class="btn btn-default" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+    <a class="btn btn-default" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+    <a class="btn btn-default" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+    <a class="btn btn-default" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+    <a class="btn btn-default" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
 }
 
 @*

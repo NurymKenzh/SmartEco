@@ -171,7 +171,7 @@ namespace SmartEco.Controllers
         }
 
         // GET: Events/Create
-        public IActionResult Create(string SortOrder,
+        public async Task<IActionResult> Create(string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
             string NameENFilter,
@@ -184,6 +184,17 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             return View();
         }
 
@@ -192,7 +203,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN")] Event eventt,
+        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN,ProjectId")] Event eventt,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -238,6 +249,17 @@ namespace SmartEco.Controllers
                         NameENFilter = ViewBag.NameENFilter
                     });
             }
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", eventt.ProjectId);
+
             return View(eventt);
         }
 
@@ -262,6 +284,17 @@ namespace SmartEco.Controllers
             {
                 eventt = await response.Content.ReadAsAsync<Event>();
             }
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", eventt.ProjectId);
+
             return View(eventt);
         }
 
@@ -270,7 +303,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN")] Event eventt,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,ProjectId")] Event eventt,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -321,6 +354,17 @@ namespace SmartEco.Controllers
                         NameENFilter = ViewBag.NameENFilter
                     });
             }
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", eventt.ProjectId);
+
             return View(eventt);
         }
 

@@ -33,7 +33,20 @@ namespace SmartEcoAPI.Controllers
             int? PageNumber)
         {
             var events = _context.Event
+                .Include(e => e.Project)
                 .Where(k => true);
+
+            var role = _context.Person
+                .Where(p => p.Email == HttpContext.User.Identity.Name)
+                .FirstOrDefault().Role;
+            if (role == "Almaty")
+            {
+                events = events.Where(e => e.Project.Id == 3);
+            }
+            if (role == "Shymkent")
+            {
+                events = events.Where(e => e.Project.Id == 4);
+            }
 
             if (!string.IsNullOrEmpty(NameKK))
             {
@@ -86,7 +99,9 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator,Almaty")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
-            var eventt = await _context.Event.FindAsync(id);
+            var eventt = await _context.Event
+                .Include(e => e.Project)
+                .FirstOrDefaultAsync(e => e.Id == id);
 
             if (eventt == null)
             {

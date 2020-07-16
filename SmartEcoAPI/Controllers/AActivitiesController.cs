@@ -44,7 +44,20 @@ namespace SmartEcoAPI.Controllers
                 .Include(t => t.Target.PollutionEnvironment)
                 .Include(t => t.TargetTerritory)
                 .Include(t => t.TargetTerritory.TerritoryType)
+                .Include(t => t.Project)
                 .Where(k => true);
+
+            var role = _context.Person
+                .Where(p => p.Email == HttpContext.User.Identity.Name)
+                .FirstOrDefault().Role;
+            if (role == "Almaty")
+            {
+                aActivities = aActivities.Where(a => a.Project.Id == 3);
+            }
+            if (role == "Shymkent")
+            {
+                aActivities = aActivities.Where(a => a.Project.Id == 4);
+            }
 
             if (PollutionEnvironmentId != null)
             {
@@ -154,6 +167,7 @@ namespace SmartEcoAPI.Controllers
                 .Include(t => t.Target.PollutionEnvironment)
                 .Include(t => t.TargetTerritory)
                 .Include(t => t.TargetTerritory.TerritoryType)
+                .Include(t => t.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (aActivity == null)

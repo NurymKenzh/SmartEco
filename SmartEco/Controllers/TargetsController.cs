@@ -225,6 +225,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             Target model = new Target
             {
                 TypeOfAchievement = false
@@ -238,7 +248,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,PollutionEnvironmentId,NameKK,NameRU,NameEN,TypeOfAchievement,MeasuredParameterUnitId")] Target target,
+        public async Task<IActionResult> Create([Bind("Id,PollutionEnvironmentId,NameKK,NameRU,NameEN,TypeOfAchievement,MeasuredParameterUnitId,ProjectId")] Target target,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -296,7 +306,7 @@ namespace SmartEco.Controllers
             {
                 pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
             }
-            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name", target.PollutionEnvironmentId);
 
             List<MeasuredParameterUnit> measuredParameterUnits = new List<MeasuredParameterUnit>();
             string urlMeasuredParameterUnits = "api/MeasuredParameterUnits",
@@ -306,7 +316,17 @@ namespace SmartEco.Controllers
             {
                 measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
             }
-            ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name", target.MeasuredParameterUnitId);
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", target.ProjectId);
 
             return View(target);
         }
@@ -356,6 +376,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name", target.MeasuredParameterUnitId);
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", target.ProjectId);
+
             return View(target);
         }
 
@@ -364,7 +394,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,PollutionEnvironmentId,NameKK,NameRU,NameEN,TypeOfAchievement,MeasuredParameterUnitId")] Target target,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,PollutionEnvironmentId,NameKK,NameRU,NameEN,TypeOfAchievement,MeasuredParameterUnitId,ProjectId")] Target target,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -438,6 +468,16 @@ namespace SmartEco.Controllers
                 measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
             }
             ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name", target.MeasuredParameterUnitId);
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", target.ProjectId);
 
             return View(target);
         }

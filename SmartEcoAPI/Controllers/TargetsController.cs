@@ -35,7 +35,20 @@ namespace SmartEcoAPI.Controllers
         {
             var targets = _context.Target
                 .Include(t => t.PollutionEnvironment)
+                .Include(t => t.Project)
                 .Where(m => true);
+
+            var role = _context.Person
+                .Where(p => p.Email == HttpContext.User.Identity.Name)
+                .FirstOrDefault().Role;
+            if (role == "Almaty")
+            {
+                targets = targets.Where(t => t.Project.Id == 3);
+            }
+            if (role == "Shymkent")
+            {
+                targets = targets.Where(t => t.Project.Id == 4);
+            }
 
             if (!string.IsNullOrEmpty(NameKK))
             {
@@ -101,6 +114,7 @@ namespace SmartEcoAPI.Controllers
             var target = await _context.Target
                 .Include(t => t.PollutionEnvironment)
                 .Include(t => t.MeasuredParameterUnit)
+                .Include(t => t.Project)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (target == null)

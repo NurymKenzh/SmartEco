@@ -1,11 +1,15 @@
 ﻿@model SmartEco.Models.Event
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 
 @{
     ViewData["Title"] = SharedLocalizer["Create"];
     Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string Role = Context.Session.GetString("Role");
 }
 
 <h1>@SharedLocalizer["Create"]</h1>
@@ -31,6 +35,27 @@
                 <input asp-for="NameEN" class="form-control" />
                 <span asp-validation-for="NameEN" class="text-danger"></span>
             </div>
+            @if (Role == "admin" || Role == "moderator")
+            {
+                <div class="form-group">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.Projects"></select>
+                </div>
+            }
+            else if (Role == "Almaty")
+            {
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <input asp-for="ProjectId" class="form-control" value="3" />
+                </div>
+            }
+            else if (Role == "Shymkent")
+            {
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <input asp-for="ProjectId" class="form-control" value="4" />
+                </div>
+            }
             <div hidden="hidden">
                 @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
                 @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
