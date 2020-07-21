@@ -480,10 +480,10 @@
   <data name="MobileEmissionSources" xml:space="preserve">
     <value>Передвижные источники выбросов</value>
   </data>
-  <data name="EcoserviceAirPostAlmaty" xml:space="preserve">
+  <data name="EcoserviceAirStation" xml:space="preserve">
     <value>Станция мониторинга атмосферного воздуха</value>
   </data>
-  <data name="EcoserviceAirPostsAlmaty" xml:space="preserve">
+  <data name="EcoserviceAirStations" xml:space="preserve">
     <value>Станции мониторинга атмосферного воздуха</value>
   </data>
   <data name="AdditionalInformationEN" xml:space="preserve">
@@ -611,5 +611,8 @@
   </data>
   <data name="NameShortRU" xml:space="preserve">
     <value>Короткое название (русский)</value>
+  </data>
+  <data name="Shymkent" xml:space="preserve">
+    <value>Шымкент</value>
   </data>
 </root>

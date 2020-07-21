@@ -73,7 +73,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        @if (Role == "admin" || Role == "moderator" || Role == "Almaty")
+                        @if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
@@ -85,7 +85,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Data">@SharedLocalizer["Data"]</a>
                             </li>
                         }
-                        @if (!string.IsNullOrEmpty(Role) && Role != "KaragandaRegion")
+                        @if (!string.IsNullOrEmpty(Role) && (Role == "admin" || Role == "moderator"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Index">@SharedLocalizer["Maps"]</a>
@@ -95,6 +95,18 @@
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["Map"]</a>
+                            </li>
+                        }
+                        @if (Role == "Almaty")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Map"]</a>
+                            </li>
+                        }
+                        @if (Role == "Shymkent")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Map"]</a>
                             </li>
                         }
                         @if (Role == "admin" || Role == "moderator")

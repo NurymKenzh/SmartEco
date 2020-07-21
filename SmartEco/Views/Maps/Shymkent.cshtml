@@ -4,7 +4,7 @@
 @using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
-    ViewData["Title"] = SharedLocalizer["Almaty"];
+    ViewData["Title"] = SharedLocalizer["Shymkent"];
 }
 @{
     string Role = Context.Session.GetString("Role");
@@ -118,7 +118,7 @@
     <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
     <input id="KazHydrometWaterMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometWaterMonitoringPostsLayerJson" />
     <input id="KazHydrometTransportMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometTransportMonitoringPostsLayerJson" />
-    <input id="PollutionSourcesLayerJson" type="text" value="@ViewBag.PollutionSourcesLayerJson" />
+    @*<input id="PollutionSourcesLayerJson" type="text" value="@ViewBag.PollutionSourcesLayerJson" />*@
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
     <input id="MPCMaxSingle" type="text" value="@SharedLocalizer["MPCMaxSingle"]" />
@@ -203,14 +203,14 @@
         <hr />
 
         @*PollutionSources*@
-        <label>
+        @*<label>
             <input type="checkbox" id="layerPollutionSourcesShow" onchange="ChangeLayers()">
             @SharedLocalizer["PollutionSources"]
             <img src="~/images/PollutionSources.png" style="width:16px;height:16px;" />
         </label>
         <br />
         <input id="layerPollutionSourcesOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-        <hr />
+        <hr />*@
 
         <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
         <br />
@@ -296,77 +296,12 @@
         </div>
         <br />
         <hr />
-        <br />
+        @*<br />
         <div class="form-group">
             <input type="button" class="btn btn-primary" id="Calculate" value="Расчет рассеивания" onclick="ShowParametersCalculate();">
         </div>
         <br />
-        <hr />
-        @*<label>
-                <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["KazHydrometWaterPosts"]
-                <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
-            </label>
-            <br />
-            <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["KazHydrometTransportPosts"]
-                <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
-            </label>
-            <br />
-            <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
-                @SharedLocalizer["WaterProtectionStrip"]
-            </label>
-            <br />
-            <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
-                @SharedLocalizer["WaterProtectionZone"]
-            </label>
-            <br />
-            <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["NitrogenDioxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["SulfurDioxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["CarbonOxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
-                @SharedLocalizer["Formaldehyde"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["SummationGroups"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />*@
+        <hr />*@
     </div>
 </div>
 
@@ -532,10 +467,10 @@
             </div>
         </div>
     </div>
-    <div id="dialogCalculateDissipation" class="row">
-        <div class="col-md-4">
+    @*<div id="dialogCalculateDissipation" class="row">
+        <div class="col-md-4">*@
             @*<h5>Расчёт рассеивания</h5>*@
-            <div class="form-group">
+            @*<div class="form-group">
                 <label for="Temperature" class="control-label">Температура</label>
                 <input type="text" id="Temperature" class="form-control" step=",01" value=@ViewBag.Temperature />
             </div>
@@ -599,7 +534,7 @@
                 <input type="button" class="btn btn-primary" id="ToCalculate" value="Расчитать рассеивание" onclick="CalculateDissipation();">
             </div>
         </div>
-    </div>
+    </div>*@
 </div>
 
 @* layers *@
@@ -1208,55 +1143,55 @@
     layers.push(Layer_TotalRTransport7_po__31);
 
     //Pollution Sources
-    var PollutionSourcesStyle = new ol.style.Style({
-        image: new ol.style.Icon(({
-            src: '/images/PollutionSources.png'
-        }))
-    });
-    var PollutionSourcesLayerJson = $("#PollutionSourcesLayerJson").val();
-    var Source_PollutionSources = new ol.source.Vector({
-        features: (new ol.format.GeoJSON()).readFeatures(PollutionSourcesLayerJson, {
-            dataProjection: 'EPSG:4326',
-            featureProjection: 'EPSG:3857'
-        })
-    });
-    var Layer_PollutionSources = new ol.layer.Vector({
-        source: Source_PollutionSources,
-        style: PollutionSourcesStyle,
-        renderBuffer: 200
-    });
-    Layer_PollutionSources.set('name', 'PollutionSources');
-    Layer_PollutionSources.setVisible(false);
-    layers.push(Layer_PollutionSources);
+    //var PollutionSourcesStyle = new ol.style.Style({
+    //    image: new ol.style.Icon(({
+    //        src: '/images/PollutionSources.png'
+    //    }))
+    //});
+    //var PollutionSourcesLayerJson = $("#PollutionSourcesLayerJson").val();
+    //var Source_PollutionSources = new ol.source.Vector({
+    //    features: (new ol.format.GeoJSON()).readFeatures(PollutionSourcesLayerJson, {
+    //        dataProjection: 'EPSG:4326',
+    //        featureProjection: 'EPSG:3857'
+    //    })
+    //});
+    //var Layer_PollutionSources = new ol.layer.Vector({
+    //    source: Source_PollutionSources,
+    //    style: PollutionSourcesStyle,
+    //    renderBuffer: 200
+    //});
+    //Layer_PollutionSources.set('name', 'PollutionSources');
+    //Layer_PollutionSources.setVisible(false);
+    //layers.push(Layer_PollutionSources);
 
     //Isolines
-    var Source_Isolines = new ol.source.Vector({
-        format: new ol.format.GeoJSON()
-    });
+    //var Source_Isolines = new ol.source.Vector({
+    //    format: new ol.format.GeoJSON()
+    //});
 
-    var isolinesLayer = new ol.layer.Vector({
-        source: Source_Isolines,
-        style: (feature, resolution) => {
-            const color = perc2colorForIsolines(
-                parseFloat(feature.get('c_pdk')),
-                1
-            );
-            return new ol.style.Style({
-                stroke: new ol.style.Stroke({
-                    color: color,
-                    width: 2
-                }),
-                text: createTextStyle(feature, resolution, linesProperties)
-            });
-        }
-    });
+    //var isolinesLayer = new ol.layer.Vector({
+    //    source: Source_Isolines,
+    //    style: (feature, resolution) => {
+    //        const color = perc2colorForIsolines(
+    //            parseFloat(feature.get('c_pdk')),
+    //            1
+    //        );
+    //        return new ol.style.Style({
+    //            stroke: new ol.style.Stroke({
+    //                color: color,
+    //                width: 2
+    //            }),
+    //            text: createTextStyle(feature, resolution, linesProperties)
+    //        });
+    //    }
+    //});
 
-    isolinesLayer.set('name', 'Isolines');
-    isolinesLayer.setVisible(false);
-    isolinesLayer.setOpacity(1);
-    layers.push(isolinesLayer);
+    //isolinesLayer.set('name', 'Isolines');
+    //isolinesLayer.setVisible(false);
+    //isolinesLayer.setOpacity(1);
+    //layers.push(isolinesLayer);
 
-    format = new ol.format.GeoJSON();
+    //format = new ol.format.GeoJSON();
 
     //tree
     var $root = $("#tree")
@@ -1379,14 +1314,14 @@
                 layer.setVisible(document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked);
                 layer.setOpacity($('#layerEcoserviceAirMonitoringPostsOpacity').val() / 100)
             }
-            if (layer.get('name') == 'AlmatyPollutantSpread') {
+            if (layer.get('name') == 'ShymkentPollutantSpread') {
                 layer.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
                 layer.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
             }
-            if (layer.get('name') == 'PollutionSources') {
-                layer.setVisible(document.getElementById("layerPollutionSourcesShow").checked);
-                layer.setOpacity($('#layerPollutionSourcesOpacity').val() / 100)
-            }
+            //if (layer.get('name') == 'PollutionSources') {
+            //    layer.setVisible(document.getElementById("layerPollutionSourcesShow").checked);
+            //    layer.setOpacity($('#layerPollutionSourcesOpacity').val() / 100)
+            //}
             if (layer.get('name') == 'KazHydrometWaterMonitoringPosts') {
                 if ($("#layerKazHydrometWaterMonitoringPostsShow").attr("aria-selected") == "true") {
                     layersCheck.layerKazHydrometWaterMonitoringPostsShow = "true";
@@ -1692,19 +1627,19 @@
     }
 
     var getCoords, getZoom;
-    if (GetCookie("zoomAlmaty") == null) {
+    if (GetCookie("zoomShymkent") == null) {
         getZoom = 11;
-        document.cookie = "zoomAlmaty=" + getZoom;
+        document.cookie = "zoomShymkent=" + getZoom;
     }
     else {
-        getZoom = Number.parseFloat(GetCookie("zoomAlmaty"));
+        getZoom = Number.parseFloat(GetCookie("zoomShymkent"));
     }
-    if (GetCookie("coordsAlmaty") == null) {
-        getCoords = [76.93, 43.26];
-        document.cookie = "coordsAlmaty=" + getCoords;
+    if (GetCookie("coordsShymkent") == null) {
+        getCoords = [69.59, 42.32];
+        document.cookie = "coordsShymkent=" + getCoords;
     }
     else {
-        var coordsStringArr = GetCookie("coordsAlmaty").split(',');
+        var coordsStringArr = GetCookie("coordsShymkent").split(',');
         getCoords = [Number.parseFloat(coordsStringArr[0]), Number.parseFloat(coordsStringArr[1])];
     }
 
@@ -1745,39 +1680,6 @@
         });
         if (feature) {
             $('.dialog-info-content').hide();
-            //if (layerName == 'KazHydrometAirMonitoringPosts') {
-            //    $('#KazHydrometAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
-            //    $('#KazHydrometAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
-            //    $('#KazHydrometAirMonitoringPostNumber').text(feature.get('Number'));
-            //    $('#KazHydrometAirMonitoringPostName').text(feature.get('Name'));
-            //    $('#KazHydrometAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
-            //    $('#tableKazHydrometAirMonitoringPost').show();
-            //    $("#dialogMonitoringPostInfo").dialog({
-            //        resize: DialogResize,
-            //        title: $('#KazHydrometAirPost').val(),
-            //        minHeight: 100,
-            //        minWidth: 100
-            //    });
-            //}
-            //if (layerName == 'EcoserviceAirMonitoringPosts') {
-            //    $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
-            //    $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
-            //    $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
-            //    $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
-            //    $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
-            //    $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
-            //    $('#divEcoserviceAirPost').show();
-            //    $("#divEcoserviceAirPost").tabs();
-            //    $("#dialogMonitoringPostInfo").dialog({
-            //        resize: DialogResize,
-            //        title: $('#EcoserviceAirPost').val(),
-            //        minHeight: 100,
-            //        minWidth: 100,
-            //        width: 750,
-            //        maxHeight: window.innerHeight
-            //    });
-            //    GetMeasuredParameters();
-            //}
             if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
                 $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
                 $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
@@ -1853,9 +1755,9 @@
 
     function DefaultMap() {
         map.getView().setZoom(11);
-        map.getView().setCenter([8563808.43, 5351630.60]);
-        document.cookie = "zoomAlmaty=" + 10;
-        document.cookie = "coordsAlmaty=" + [76.93, 43.26];
+        map.getView().setCenter([7746723.36, 5209035.08]);
+        document.cookie = "zoomShymkent=" + 10;
+        document.cookie = "coordsShymkent=" + [69.59, 42.32];
     }
 </script>
 
@@ -2432,7 +2334,7 @@
     var durationAQI = 3000;
     var colorPostsId = [],
         colorPostsAQI = [];
-    var projectName = 'Almaty';
+    var projectName = 'Shymkent';
     function GetAQI() {
         function getAQI() {
             $.ajax({
@@ -2666,13 +2568,13 @@
         var zoom = map.getView().getZoom();
         var coords = map.getView().getCenter();
         coords = ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326').toString();
-        if (Number.parseFloat(zoom) != Number.parseFloat(GetCookie("zoomAlmaty"))) {
-            document.cookie = "zoomAlmaty=" + zoom;
+        if (Number.parseFloat(zoom) != Number.parseFloat(GetCookie("zoomShymkent"))) {
+            document.cookie = "zoomShymkent=" + zoom;
         }
         var coordsArray = coords.split(',');
-        var coordsArrayCookie = GetCookie("coordsAlmaty").split(',');
+        var coordsArrayCookie = GetCookie("coordsShymkent").split(',');
         if (Number.parseFloat(coordsArray[0]) != Number.parseFloat(coordsArrayCookie[0]) || Number.parseFloat(coordsArray[1]) != Number.parseFloat(coordsArrayCookie[1])) {
-            document.cookie = "coordsAlmaty=" + coords;
+            document.cookie = "coordsShymkent=" + coords;
         }
     }, 1000);
 
@@ -2718,13 +2620,13 @@
         // remove old layers
         map.getLayers().forEach(function (layer) {
             if (layer != null) {
-                if (layer.get('name') == 'AlmatyPollutantSpread') {
+                if (layer.get('name') == 'ShymkentPollutantSpread') {
                     map.removeLayer(layer);
                 }
             }
         })
         // add new layers
-        var layer_name = 'AlmatyPollutantSpread_' + $('#PollutantSpreadMeasuredParameterId').val() + '_' +
+        var layer_name = 'ShymkentPollutantSpread_' + $('#PollutantSpreadMeasuredParameterId').val() + '_' +
             (new Date($.now())).getFullYear() +
             ('0' + ((new Date($.now())).getMonth() + 1)).slice(-2) +
             ('0' + (new Date($.now())).getDate()).slice(-2) +
@@ -2739,14 +2641,14 @@
                 // remove old layers
                 map.getLayers().forEach(function (layer) {
                     if (layer != null) {
-                        if (layer.get('name') == 'AlmatyPollutantSpread') {
+                        if (layer.get('name') == 'ShymkentPollutantSpread') {
                             map.removeLayer(layer);
                         }
                     }
                 })
                 for (i = 1; i <= data.count; i++) {
                     var layer_name_current = layer_name + '_' + i.toString();
-                    var Source_AlmatyPollutantSpread = new ol.source.TileWMS({
+                    var Source_ShymkentPollutantSpread = new ol.source.TileWMS({
                         url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/' + geoserverWorkspace + '/wms?',
                         params: {
                             'LAYERS': geoserverWorkspace + ':' + layer_name_current,
@@ -2756,13 +2658,13 @@
                         },
                         serverType: 'geoserver'
                     });
-                    var Layer_AlmatyPollutantSpread = new ol.layer.Tile({
-                        source: Source_AlmatyPollutantSpread
+                    var Layer_ShymkentPollutantSpread = new ol.layer.Tile({
+                        source: Source_ShymkentPollutantSpread
                     });
-                    Layer_AlmatyPollutantSpread.set('name', 'AlmatyPollutantSpread');
-                    Layer_AlmatyPollutantSpread.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
-                    Layer_AlmatyPollutantSpread.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
-                    map.getLayers().insertAt(1, Layer_AlmatyPollutantSpread);
+                    Layer_ShymkentPollutantSpread.set('name', 'ShymkentPollutantSpread');
+                    Layer_ShymkentPollutantSpread.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
+                    Layer_ShymkentPollutantSpread.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
+                    map.getLayers().insertAt(1, Layer_ShymkentPollutantSpread);
                 }
             },
             error: function () {
@@ -2772,7 +2674,7 @@
 </script>
 
 @* Calculate Dissipation *@
-<script>
+@*<script>
     function ShowParametersCalculate() {
         $("#dialogCalculateDissipation").dialog({
             resize: DialogResize,
@@ -2999,7 +2901,7 @@
     var windSpeed = parseFloat(document.getElementById('WindSpeed').value.replace(',', '.'));
     windSpeed = windSpeed.toFixed(2).replace('.', ',');
     $("#WindSpeed").val(windSpeed);
-</script>
+</script>*@
 
 @* window.onload *@
 <script>

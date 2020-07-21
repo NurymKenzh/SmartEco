@@ -450,15 +450,6 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string EcoserviceAirPostAlmaty {
-            get {
-                return ResourceManager.GetString("EcoserviceAirPostAlmaty", resourceCulture);
-            }
-        }
-        
-        /// <summary>
-        ///   Looks up a localized string similar to .
-        /// </summary>
         public static string EcoserviceAirPosts {
             get {
                 return ResourceManager.GetString("EcoserviceAirPosts", resourceCulture);
@@ -468,9 +459,18 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
-        public static string EcoserviceAirPostsAlmaty {
+        public static string EcoserviceAirStation {
             get {
-                return ResourceManager.GetString("EcoserviceAirPostsAlmaty", resourceCulture);
+                return ResourceManager.GetString("EcoserviceAirStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string EcoserviceAirStations {
+            get {
+                return ResourceManager.GetString("EcoserviceAirStations", resourceCulture);
             }
         }
         
@@ -1353,6 +1353,15 @@ namespace SmartEco.Resources.Controllers {
         public static string ShowHideRightPanelText {
             get {
                 return ResourceManager.GetString("ShowHideRightPanelText", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Shymkent {
+            get {
+                return ResourceManager.GetString("Shymkent", resourceCulture);
             }
         }
         
