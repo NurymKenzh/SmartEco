@@ -24,7 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AActivities
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<IEnumerable<AActivity>>> GetAActivity(string SortOrder,
             int? PollutionEnvironmentId,
             int? TargetId,
@@ -32,6 +32,7 @@ namespace SmartEcoAPI.Controllers
             int? TerritoryTypeId,
             int? TargetTerritoryId,
             int? EventId,
+            int? ProjectId,
             int? Year,
             bool? ActivityType,
             int? PageSize,
@@ -83,6 +84,10 @@ namespace SmartEcoAPI.Controllers
             {
                 aActivities = aActivities.Where(t => t.EventId == EventId);
             }
+            if (ProjectId != null)
+            {
+                aActivities = aActivities.Where(t => t.ProjectId == ProjectId);
+            }
             if (Year != null)
             {
                 aActivities = aActivities.Where(t => t.Year == Year);
@@ -130,6 +135,12 @@ namespace SmartEcoAPI.Controllers
                 case "EventIdDesc":
                     aActivities = aActivities.OrderByDescending(t => t.Event);
                     break;
+                case "Project":
+                    aActivities = aActivities.OrderBy(t => t.Project);
+                    break;
+                case "ProjectDesc":
+                    aActivities = aActivities.OrderByDescending(t => t.Project);
+                    break;
                 case "Year":
                     aActivities = aActivities.OrderBy(t => t.Year);
                     break;
@@ -157,7 +168,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AActivities/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<AActivity>> GetAActivity(int id)
         {
             var aActivity = await _context.AActivity
@@ -180,7 +191,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/AActivities/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<IActionResult> PutAActivity(int id, AActivity aActivity)
         {
             if (id != aActivity.Id)
@@ -211,7 +222,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/AActivities
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<AActivity>> PostAActivity(AActivity aActivity)
         {
             _context.AActivity.Add(aActivity);
@@ -222,7 +233,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/AActivities/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<AActivity>> DeleteAActivity(int id)
         {
             var aActivity = await _context.AActivity
@@ -251,7 +262,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AActivities/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<IEnumerable<AActivity>>> GetAActivityCount(int? PollutionEnvironmentId,
             int? TargetId,
             int? MeasuredParameterUnitId,

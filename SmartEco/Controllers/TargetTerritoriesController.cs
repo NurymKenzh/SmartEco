@@ -28,6 +28,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -37,11 +38,13 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
 
             ViewBag.NameKKSort = SortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
             ViewBag.NameRUSort = SortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
             ViewBag.GISConnectionCodeSort = SortOrder == "GISConnectionCode" ? "GISConnectionCodeDesc" : "GISConnectionCode";
             ViewBag.TerritoryTypeSort = SortOrder == "TerritoryType" ? "TerritoryTypeDesc" : "TerritoryType";
+            ViewBag.ProjectSort = SortOrder == "Project" ? "ProjectDesc" : "Project";
 
             string url = "api/TargetTerritories",
                 route = "",
@@ -79,6 +82,13 @@ namespace SmartEco.Controllers
                 route += $"TerritoryTypeId={TerritoryTypeIdFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"TerritoryTypeId={TerritoryTypeIdFilter}";
+            }
+            if (ProjectIdFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"ProjectId={ProjectIdFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"ProjectId={ProjectIdFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -151,6 +161,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.TerritoryTypes = new SelectList(territoryTypes.OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             return View(targetTerritories);
         }
 
@@ -161,6 +181,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -171,6 +192,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (id == null)
             {
                 return NotFound();
@@ -196,6 +218,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -206,6 +229,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
 
             List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
             string urlMonitoringPosts = "api/MonitoringPosts",
@@ -284,6 +308,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -294,6 +319,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
@@ -324,7 +350,8 @@ namespace SmartEco.Controllers
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
                         GISConnectionCodeFilter = ViewBag.GISConnectionCodeFilter,
-                        TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter
+                        TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter
                     });
             }
 
@@ -390,6 +417,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -400,6 +428,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             TargetTerritory targetTerritory = null;
             HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/TargetTerritories/{id.ToString()}");
             if (response.IsSuccessStatusCode)
@@ -484,6 +513,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -494,6 +524,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (id != targetTerritory.Id)
             {
                 return NotFound();
@@ -529,7 +560,8 @@ namespace SmartEco.Controllers
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
                         GISConnectionCodeFilter = ViewBag.GISConnectionCodeFilter,
-                        TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter
+                        TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter
                     });
             }
 
@@ -595,6 +627,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -605,6 +638,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (id == null)
             {
                 return NotFound();
@@ -653,6 +687,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string GISConnectionCodeFilter,
             int? TerritoryTypeIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -663,6 +698,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.GISConnectionCodeFilter = GISConnectionCodeFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
                 $"api/TargetTerritories/{id}");
             return RedirectToAction(nameof(Index),
@@ -674,7 +710,8 @@ namespace SmartEco.Controllers
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
                         GISConnectionCodeFilter = ViewBag.GISConnectionCodeFilter,
-                        TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter
+                        TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter
                     });
         }
     }

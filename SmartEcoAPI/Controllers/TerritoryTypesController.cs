@@ -24,7 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TerritoryTypes
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<IEnumerable<TerritoryType>>> GetTerritoryType(string SortOrder,
             string NameKK,
             string NameRU,
@@ -83,7 +83,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TerritoryTypes/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<TerritoryType>> GetTerritoryType(int id)
         {
             var territoryType = await _context.TerritoryType
@@ -104,7 +104,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TerritoryTypes/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<IEnumerable<TerritoryType>>> GetTerritoryTypeCount(string NameKK,
             string NameRU,
             string NameEN)

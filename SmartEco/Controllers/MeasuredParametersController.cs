@@ -505,5 +505,27 @@ namespace SmartEco.Controllers
         //{
         //    return _context.MeasuredParameter.Any(e => e.Id == id);
         //}
+
+        public async Task<IActionResult> SetMaximumValue()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> SetMaximumValue(decimal? value)
+        {
+            string url = "api/MeasuredParameters/SetMaximumValue",
+                route = "";
+            try
+            {
+                HttpResponseMessage response = await _HttpApiClient.PostAsync(url + route, null);
+                ViewBag.SetMaxValue = "Установка значений прошла успешно";
+            }
+            catch
+            {
+                ViewBag.SetMaxValue = "Установка значений не удалась";
+            }
+            return View();
+        }
     }
 }

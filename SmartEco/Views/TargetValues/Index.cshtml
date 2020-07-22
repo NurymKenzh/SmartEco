@@ -17,10 +17,10 @@
 @if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent")
 {
     <p>
-        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
     </p>
 }
-@using (Html.BeginForm("Index", "TargetValues", new { SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter }, FormMethod.Get))
+@using (Html.BeginForm("Index", "TargetValues", new { SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter }, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
     @if (ViewBag.EndPage > 1)
@@ -30,11 +30,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
             }
 
@@ -42,7 +42,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
             }
 
@@ -50,11 +50,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
             }
         </ul>
@@ -64,43 +64,52 @@
             <tr>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.ToList().FirstOrDefault().Target.PollutionEnvironmentId).ToString(), "Index",
-                        new { SortOrder = ViewBag.PollutionEnvironmentIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.PollutionEnvironmentIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                     <br />
                     @Html.DropDownList("PollutionEnvironmentIdFilter", (IEnumerable<SelectListItem>)ViewBag.PollutionEnvironments, "", htmlAttributes: new { @class = "form-control", @id = "TypeOfTargetId", @onchange = "ChangeTypeOfTarget()" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.ToList().FirstOrDefault().TargetId).ToString(), "Index",
-                        new { SortOrder = ViewBag.TargetIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.TargetIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                     <br />
                     @Html.DropDownList("TargetIdFilter", (IEnumerable<SelectListItem>)ViewBag.Targets, "", htmlAttributes: new { @class = "form-control", @id = "TargetId" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.ToList().FirstOrDefault().Target.MeasuredParameterUnitId).ToString(), "Index",
-                        new { SortOrder = ViewBag.MeasuredParameterUnitIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MeasuredParameterUnitIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                     <br />
                     @Html.DropDownList("MeasuredParameterUnitIdFilter", (IEnumerable<SelectListItem>)ViewBag.MeasuredParameterUnits, "", htmlAttributes: new { @class = "form-control" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.ToList().FirstOrDefault().TargetTerritory.TerritoryTypeId).ToString(), "Index",
-                        new { SortOrder = ViewBag.TerritoryTypeIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.TerritoryTypeIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                     <br />
                     @Html.DropDownList("TerritoryTypeIdFilter", (IEnumerable<SelectListItem>)ViewBag.TerritoryTypes, "", htmlAttributes: new { @class = "form-control", @id = "TerritoryTypeId", @onchange = "ChangeTerritoryType()" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.ToList().FirstOrDefault().TargetTerritoryId).ToString(), "Index",
-                        new { SortOrder = ViewBag.TargetTerritoryIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.TargetTerritoryIdSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                     <br />
                     @Html.DropDownList("TargetTerritoryIdFilter", (IEnumerable<SelectListItem>)ViewBag.TargetTerritories, "", htmlAttributes: new { @class = "form-control", @id = "TargetTerritoryId" })
                 </th>
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    <th>
+                        @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().ProjectId).ToString(), "Index",
+                            new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.ProjectSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                        <br />
+                        @Html.DropDownList("ProjectIdFilter", (IEnumerable<SelectListItem>)ViewBag.Projects, "", htmlAttributes: new { @class = "form-control" })
+                    </th>
+                }
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.ToList().FirstOrDefault().Year).ToString(), "Index",
-                        new { SortOrder = ViewBag.YearSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.YearSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                     <br />
                     @Html.DropDownList("YearFilter", (IEnumerable<SelectListItem>)ViewBag.Year, "", htmlAttributes: new { @class = "form-control" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.ToList().FirstOrDefault().TargetValueType).ToString(), "Index",
-                        new { SortOrder = ViewBag.TargetValueTypeSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.TargetValueTypeSort, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                     <br />
                     @Html.DropDownList("TargetValueTypeFilter", (IEnumerable<SelectListItem>)ViewBag.TargetValueType, "", htmlAttributes: new { @class = "form-control" })
                 </th>
@@ -132,6 +141,12 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.TargetTerritory.Name)
                     </td>
+                    @if (Role == "admin" || Role == "moderator")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Project.Name)
+                        </td>
+                    }
                     <td>
                         @Html.DisplayFor(modelItem => item.Year)
                     </td>
@@ -141,18 +156,18 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.Value)
                     </td>
-                    @if (Role == "admin" || Role == "moderator" || Role == "Almaty")
+                    @if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent")
                     {
                         <td>
-                            @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter }) |
-                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter }) |
-                            @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                            @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter }) |
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter }) |
+                            @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                         </td>
                     }
                     else
                     {
                         <td>
-                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                         </td>
                     }
                 </tr>
@@ -166,11 +181,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
             }
 
@@ -178,7 +193,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
             }
 
@@ -186,11 +201,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
                 </li>
             }
         </ul>

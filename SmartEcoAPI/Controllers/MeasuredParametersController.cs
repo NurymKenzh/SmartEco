@@ -240,5 +240,22 @@ namespace SmartEcoAPI.Controllers
 
             return Ok(count);
         }
+
+        [HttpPost("SetMaximumValue")]
+        public async Task<IActionResult> SetMaximumValue()
+        {
+            var measuredParameters = _context.MeasuredParameter.Where(m => m.MPCMaxSingle != null).ToList();
+            foreach (var measuredParameter in measuredParameters)
+            {
+                var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == measuredParameter.Id && m.Max == null).ToList();
+                foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+                {
+                    monitoringPostMeasuredParameter.Max = measuredParameter.MPCMaxSingle;
+                    _context.Entry(monitoringPostMeasuredParameter).State = EntityState.Modified;
+                }
+            }
+            await _context.SaveChangesAsync();
+            return NoContent();
+        }
     }
 }

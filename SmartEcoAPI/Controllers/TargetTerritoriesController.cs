@@ -24,12 +24,13 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TargetTerritories
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<IEnumerable<TargetTerritory>>> GetTargetTerritory(string SortOrder,
             string NameKK,
             string NameRU,
             string GISConnectionCode,
             int? TerritoryTypeId,
+            int? ProjectId,
             int? PageSize,
             int? PageNumber)
         {
@@ -67,6 +68,10 @@ namespace SmartEcoAPI.Controllers
             {
                 targetTerritories = targetTerritories.Where(m => m.TerritoryTypeId == TerritoryTypeId);
             }
+            if (ProjectId != null)
+            {
+                targetTerritories = targetTerritories.Where(m => m.ProjectId == ProjectId);
+            }
 
             switch (SortOrder)
             {
@@ -94,6 +99,12 @@ namespace SmartEcoAPI.Controllers
                 case "TerritoryTypeDesc":
                     targetTerritories = targetTerritories.OrderByDescending(m => m.TerritoryType);
                     break;
+                case "Project":
+                    targetTerritories = targetTerritories.OrderBy(k => k.Project);
+                    break;
+                case "ProjectDesc":
+                    targetTerritories = targetTerritories.OrderByDescending(k => k.Project);
+                    break;
                 default:
                     targetTerritories = targetTerritories.OrderBy(m => m.Id);
                     break;
@@ -109,7 +120,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TargetTerritories/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<TargetTerritory>> GetTargetTerritory(int id)
         {
             var targetTerritory = await _context.TargetTerritory
@@ -130,7 +141,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/TargetTerritories/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<IActionResult> PutTargetTerritory(int id, TargetTerritory targetTerritory)
         {
             if (id != targetTerritory.Id)
@@ -161,7 +172,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/TargetTerritories
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<TargetTerritory>> PostTargetTerritory(TargetTerritory targetTerritory)
         {
             _context.TargetTerritory.Add(targetTerritory);
@@ -172,7 +183,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/TargetTerritories/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<TargetTerritory>> DeleteTargetTerritory(int id)
         {
             var targetTerritory = await _context.TargetTerritory
@@ -199,7 +210,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TargetTerritories/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
         public async Task<ActionResult<IEnumerable<TargetTerritory>>> GetTargetTerritoryCount(string NameKK,
             string NameRU,
             string GISConnectionCode,

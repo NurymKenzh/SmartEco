@@ -29,6 +29,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -41,6 +42,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
 
@@ -49,6 +51,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdSort = SortOrder == "MeasuredParameterUnitId" ? "MeasuredParameterUnitIdDesc" : "MeasuredParameterUnitId";
             ViewBag.TerritoryTypeIdSort = SortOrder == "TerritoryTypeId" ? "TerritoryTypeIdDesc" : "TerritoryTypeId";
             ViewBag.TargetTerritoryIdSort = SortOrder == "TargetTerritoryId" ? "TargetTerritoryIdDesc" : "TargetTerritoryId";
+            ViewBag.ProjectSort = SortOrder == "Project" ? "ProjectDesc" : "Project";
             ViewBag.YearSort = SortOrder == "Year" ? "YearDesc" : "Year";
             ViewBag.TargetValueTypeSort = SortOrder == "TargetValueType" ? "TargetValueTypeDesc" : "TargetValueType";
 
@@ -95,6 +98,13 @@ namespace SmartEco.Controllers
                 route += $"TargetTerritoryId={TargetTerritoryIdFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"TargetTerritoryId={TargetTerritoryIdFilter}";
+            }
+            if (ProjectIdFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"ProjectId={ProjectIdFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"ProjectId={ProjectIdFilter}";
             }
             if (YearFilter != null)
             {
@@ -222,6 +232,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.TargetTerritories = new SelectList(targetTerritories.OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text");
             ViewBag.TargetValueType = new List<SelectListItem>() {
                 new SelectListItem() { Text=Resources.Controllers.SharedResources.Actual, Value="true"},
@@ -239,6 +259,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -252,6 +273,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
             if (id == null)
@@ -280,6 +302,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -293,6 +316,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
 
@@ -391,6 +415,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -404,6 +429,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
             if (ModelState.IsValid)
@@ -438,6 +464,7 @@ namespace SmartEco.Controllers
                         MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter,
                         TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter,
                         TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter,
                         YearFilter = ViewBag.YearFilter,
                         TargetValueTypeFilter = ViewBag.TargetValueTypeFilter
                     });
@@ -529,6 +556,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -542,6 +570,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
             TargetValue targetValue = null;
@@ -644,6 +673,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -657,6 +687,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
             if (id != targetValue.Id)
@@ -696,6 +727,7 @@ namespace SmartEco.Controllers
                         MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter,
                         TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter,
                         TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter,
                         YearFilter = ViewBag.YearFilter,
                         TargetValueTypeFilter = ViewBag.TargetValueTypeFilter
                     });
@@ -787,6 +819,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -800,6 +833,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
             if (id == null)
@@ -831,6 +865,7 @@ namespace SmartEco.Controllers
             int? MeasuredParameterUnitIdFilter,
             int? TerritoryTypeIdFilter,
             int? TargetTerritoryIdFilter,
+            int? ProjectIdFilter,
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
@@ -844,6 +879,7 @@ namespace SmartEco.Controllers
             ViewBag.MeasuredParameterUnitIdFilter = MeasuredParameterUnitIdFilter;
             ViewBag.TerritoryTypeIdFilter = TerritoryTypeIdFilter;
             ViewBag.TargetTerritoryIdFilter = TargetTerritoryIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             ViewBag.YearFilter = YearFilter;
             ViewBag.TargetValueTypeFilter = TargetValueTypeFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
@@ -859,6 +895,7 @@ namespace SmartEco.Controllers
                         MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter,
                         TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter,
                         TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter,
                         YearFilter = ViewBag.YearFilter,
                         TargetValueTypeFilter = ViewBag.TargetValueTypeFilter
                     });

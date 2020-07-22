@@ -28,6 +28,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -37,11 +38,13 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
 
             ViewBag.NameKKSort = SortOrder == "NameKK" ? "NameKKDesc" : "NameKK";
             ViewBag.NameRUSort = SortOrder == "NameRU" ? "NameRUDesc" : "NameRU";
             ViewBag.NameENSort = SortOrder == "NameEN" ? "NameENDesc" : "NameEN";
             ViewBag.PollutionEnvironmentSort = SortOrder == "PollutionEnvironment" ? "PollutionEnvironmentDesc" : "PollutionEnvironment";
+            ViewBag.ProjectSort = SortOrder == "Project" ? "ProjectDesc" : "Project";
 
             string url = "api/Targets",
                 route = "",
@@ -78,6 +81,13 @@ namespace SmartEco.Controllers
                 route += $"PollutionEnvironmentId={PollutionEnvironmentIdFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"PollutionEnvironmentId={PollutionEnvironmentIdFilter}";
+            }
+            if (ProjectIdFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"ProjectId={ProjectIdFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"ProjectId={ProjectIdFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -149,6 +159,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
 
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
             return View(targets);
         }
 
@@ -159,6 +179,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -169,6 +190,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (id == null)
             {
                 return NotFound();
@@ -194,6 +216,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -204,6 +227,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
 
             List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
             string urlPollutionEnvironments = "api/PollutionEnvironments",
@@ -254,6 +278,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -264,6 +289,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
@@ -294,7 +320,8 @@ namespace SmartEco.Controllers
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
                         NameENFilter = ViewBag.NameENFilter,
-                        PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter
+                        PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter
                     });
             }
 
@@ -338,6 +365,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -348,6 +376,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
 
             Target target = null;
             HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Targets/{id.ToString()}");
@@ -400,6 +429,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -410,6 +440,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (id != target.Id)
             {
                 return NotFound();
@@ -445,7 +476,8 @@ namespace SmartEco.Controllers
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
                         NameENFilter = ViewBag.NameENFilter,
-                        PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter
+                        PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter
                     });
             }
 
@@ -489,6 +521,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -499,6 +532,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             if (id == null)
             {
                 return NotFound();
@@ -547,6 +581,7 @@ namespace SmartEco.Controllers
             string NameRUFilter,
             string NameENFilter,
             int? PollutionEnvironmentIdFilter,
+            int? ProjectIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -557,6 +592,7 @@ namespace SmartEco.Controllers
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
             ViewBag.PollutionEnvironmentIdFilter = PollutionEnvironmentIdFilter;
+            ViewBag.ProjectIdFilter = ProjectIdFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
                 $"api/Targets/{id}");
             return RedirectToAction(nameof(Index),
@@ -568,7 +604,8 @@ namespace SmartEco.Controllers
                         NameKKFilter = ViewBag.NameKKFilter,
                         NameRUFilter = ViewBag.NameRUFilter,
                         NameENFilter = ViewBag.NameENFilter,
-                        PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter
+                        PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter,
+                        ProjectIdFilter = ViewBag.ProjectIdFilter
                     });
         }
     }
