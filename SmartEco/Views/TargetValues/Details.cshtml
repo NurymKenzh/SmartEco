@@ -93,6 +93,22 @@
                 @Html.DisplayFor(model => model.Project.Name)
             </dd>
         }
+        <dt class="col-sm-2">
+            @SharedLocalizer["AActivities"]
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var aActivity in ((List<AActivity>)ViewBag.AActivitiesList))
+            {
+                if (((List<AActivity>)ViewBag.AActivitiesList).Count == 1 || ((List<AActivity>)ViewBag.AActivitiesList).Last() == aActivity)
+                {
+                    <span>@aActivity.Name</span>
+                }
+                else
+                {
+                    <span>@aActivity.Name,</span>
+                }
+            }
+        </dd>
     </dl>
 </div>
 @if (Role == "admin" || Role == "moderator" || Role == "Almaty")

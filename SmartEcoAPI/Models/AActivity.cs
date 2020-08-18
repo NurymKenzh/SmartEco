@@ -9,6 +9,14 @@ namespace SmartEcoAPI.Models
     {
         public int Id { get; set; }
 
+        public string Name { get; set; }
+
+        public DateTime? StartPeriod { get; set; }
+        public DateTime? EndPeriod { get; set; }
+
+        public TargetValue TargetValue { get; set; }
+        public int? TargetValueId { get; set; }
+
         public Target Target { get; set; }
         public int TargetId { get; set; }
 
@@ -23,6 +31,8 @@ namespace SmartEcoAPI.Models
         public bool ActivityType { get; set; }
 
         public decimal ImplementationPercentage { get; set; }
+
+        public decimal Efficiency { get; set; }
 
         public string AdditionalInformationKK { get; set; }
 

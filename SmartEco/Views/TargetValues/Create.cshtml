@@ -12,6 +12,10 @@
     string Role = Context.Session.GetString("Role");
 }
 
+<div hidden="hidden">
+    <input id="Delete" type="text" value="@SharedLocalizer["Delete"]" />
+</div>
+
 <h1>@SharedLocalizer["Create"]</h1>
 
 <h4>@SharedLocalizer["TargetValue"]</h4>
@@ -47,8 +51,8 @@
             <div class="form-group">
                 <label asp-for="TargetValueType" class="control-label"></label>
                 <div class="form-control">
-                    @Html.RadioButtonFor(model => model.TargetValueType, true) @SharedLocalizer["Actual"]
-                    @Html.RadioButtonFor(model => model.TargetValueType, false) @SharedLocalizer["Planned"]
+                    @Html.RadioButtonFor(model => model.TargetValueType, true, new { @name = "TargetValueType", @onclick = "ChangeTargetValueType()" }) @SharedLocalizer["Actual"]
+                    @Html.RadioButtonFor(model => model.TargetValueType, false, new { @name = "TargetValueType", @onclick = "ChangeTargetValueType()" }) @SharedLocalizer["Planned"]
                 </div>
                 <span asp-validation-for="TargetValueType" class="text-danger"></span>
             </div>
@@ -88,6 +92,25 @@
                     <input asp-for="ProjectId" class="form-control" value="4" />
                 </div>
             }
+            <div>
+                <a href="@Url.Action("Index", "AActivities")" class="font-weight-bold">@SharedLocalizer["AActivities"]</a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>@SharedLocalizer["Name"]</th>
+                    <th>@SharedLocalizer["EfficiencyContribution"]</th>
+                    <th></th>
+                </tr>
+                <tbody id="BodyActivities">
+                    <tr>
+                        <td colspan="2"><select id="AActivities" class="form-control" asp-items="ViewBag.AActivities"></select></td>
+                        <td><input type="button" value="@SharedLocalizer["Add"]" class="btn btn-primary" onclick="AddActivity();" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="ContributionExceeds" hidden>
+                <p class="text-danger">@SharedLocalizer["ContributionExceeds"]</p>
+            </div>
             <div hidden="hidden">
                 @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
                 @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
@@ -101,7 +124,7 @@
                 @Html.Editor("TargetValueTypeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
             </div>
             <div class="form-group">
-                <input type="submit" value="@SharedLocalizer["Create"]" class="btn btn-primary" />
+                <input id="CreateBtn" type="submit" value="@SharedLocalizer["Create"]" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -112,6 +135,10 @@
 </div>
 
 <script>
+    $(document).ready(function () {
+        ChangeTargetValueType();
+    });
+
     $.validator.methods.range = function (value, element, param) {
         var globalizedValue = value.replace(",", ".");
         return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
@@ -170,6 +197,109 @@
                 });
                 $("#TargetTerritoryId").empty();
                 $('#TargetTerritoryId').append(optionhtml);
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeTargetValueType() {
+        if ($("input[name='TargetValueType']:checked").val() == "True") {
+            $('.efficiency').prop('disabled', false);
+        }
+        else {
+            $('.efficiency').prop('disabled', true);
+            $('.efficiency').val('');
+        }
+    };
+
+    function ChangeEfficiency() {
+        var efficiency = [],
+            sum = 0;
+        $("input[name='EfficiencyActivities']").each(function () {
+            efficiency.push($(this).val());
+        });
+        $.each(efficiency, function () {
+            sum += parseFloat(this) || 0;
+        });
+        if (sum > 100) {
+            $('#ContributionExceeds').prop("hidden", false);
+            $('#CreateBtn').prop('disabled', true);
+        }
+        else {
+            $('#ContributionExceeds').prop("hidden", true);
+            $('#CreateBtn').prop('disabled', false);
+        }
+    };
+
+    function DeleteActivity(id) {
+        $('#' + id).remove();
+        var IDs = $("tr[id]")         // find spans with ID attribute
+            .map(function () { return this.id; }) // convert to set of IDs
+            .get(); // convert to instance of Array (optional)
+        $.ajax({
+            url: '@Url.Action("GetAActivities")',
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    if (IDs.indexOf(data[i]['id'].toString()) == -1 || IDs.length == 0) {
+                        optionhtml += '<option value="' + data[i]['id'] + '"' +
+                            (data[i]['id'] == $('#AActivities').val() ? 'selected' : '') +
+                            '>' + data[i]['name'] +
+                            '</option>';
+                    }
+                });
+                $("#AActivities").empty();
+                $('#AActivities').append(optionhtml);
+                ChangeTargetValueType();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function AddActivity() {
+        var id = $('#AActivities').val();
+        var IDs = $("tr[id]")         // find spans with ID attribute
+            .map(function () { return this.id; }) // convert to set of IDs
+            .get(); // convert to instance of Array (optional)
+        IDs.push(id);
+         $.ajax({
+            url: '@Url.Action("GetEfficiencyById")',
+            data: { Id: id },
+            type: 'POST',
+            success: function (efficiency) {
+                var optionhtml = '';
+                optionhtml += '<tr name="IdActivities" id="' + id + '">' +
+                    '<td name="NameActivities">' + $('#AActivities option:selected').text() +
+                    '<input name="IdActivities" type="hidden" value="' + id +'" />' +
+                    '</td>' +
+                    '<td><input name="EfficiencyActivities" class="form-control efficiency" value="' + efficiency + '" onkeyup="ChangeEfficiency();" /></td>' +
+                    '<td><input type="button" value="' + $('#Delete').val() + '" class="btn btn-danger" onclick="DeleteActivity(' + id + ');" /></td>' +
+                    '</tr>';
+                $('#BodyActivities').append(optionhtml);
+                $.ajax({
+                    url: '@Url.Action("GetAActivities")',
+                    type: 'POST',
+                    success: function (data) {
+                        optionhtml = '';
+                        $.each(data, function (i) {
+                            if (IDs.indexOf(data[i]['id'].toString()) == -1 || IDs.length == 0) {
+                                optionhtml += '<option value="' + data[i]['id'] + '"' +
+                                    (data[i]['id'] == $('#AActivities').val() ? 'selected' : '') +
+                                    '>' + data[i]['name'] +
+                                    '</option>';
+                            }
+                        });
+                        $("#AActivities").empty();
+                        $('#AActivities').append(optionhtml);
+                        ChangeTargetValueType();
+                        ChangeEfficiency();
+                    },
+                    error: function () {
+                    }
+                });
             },
             error: function () {
             }

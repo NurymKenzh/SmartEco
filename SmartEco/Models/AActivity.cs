@@ -11,6 +11,19 @@ namespace SmartEco.Models
     {
         public int Id { get; set; }
 
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Name")]
+        public string Name { get; set; }
+
+        [DisplayFormat(DataFormatString = "{0:d}")]
+        public DateTime? StartPeriod { get; set; }
+        [DisplayFormat(DataFormatString = "{0:d}")]
+        public DateTime? EndPeriod { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "TargetValue")]
+        public TargetValue TargetValue { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "TargetValue")]
+        public int? TargetValueId { get; set; }
+
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Target")]
         public Target Target { get; set; }
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Target")]
@@ -55,6 +68,10 @@ namespace SmartEco.Models
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "ImplementationPercentage")]
         [Range(0, 100, ErrorMessageResourceType = typeof(Resources.Controllers.SharedResources), ErrorMessageResourceName = "ErrorNumberRangeMustBe")]
         public decimal? ImplementationPercentage { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "EfficiencyContribution")]
+        [Range(0, 100, ErrorMessageResourceType = typeof(Resources.Controllers.SharedResources), ErrorMessageResourceName = "ErrorNumberRangeMustBe")]
+        public decimal? Efficiency { get; set; }
 
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "AdditionalInformationKK")]
         public string AdditionalInformationKK { get; set; }

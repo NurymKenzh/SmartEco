@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using SmartEco.Data;
 using SmartEco.Models;
 
@@ -292,6 +293,16 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
+            List<AActivity> aActivities = new List<AActivity>();
+            string urlAActivities = "api/AActivities",
+                routeAActivities = "";
+            HttpResponseMessage responseAActivities = await _HttpApiClient.GetAsync(urlAActivities + routeAActivities);
+            if (responseAActivities.IsSuccessStatusCode)
+            {
+                aActivities = await responseAActivities.Content.ReadAsAsync<List<AActivity>>();
+            }
+            ViewBag.AActivitiesList = aActivities.Where(a => a.TargetValueId == id).OrderBy(m => m.Name).ToList();
+
             return View(targetValue);
         }
 
@@ -393,6 +404,16 @@ namespace SmartEco.Controllers
             }
             ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
 
+            List<AActivity> aActivities = new List<AActivity>();
+            string urlAActivities = "api/AActivities",
+                routeAActivities = "";
+            HttpResponseMessage responseAActivities = await _HttpApiClient.GetAsync(urlAActivities + routeAActivities);
+            if (responseAActivities.IsSuccessStatusCode)
+            {
+                aActivities = await responseAActivities.Content.ReadAsAsync<List<AActivity>>();
+            }
+            ViewBag.AActivities = new SelectList(aActivities.Where(a => a.TargetValueId == null && !String.IsNullOrEmpty(a.Name)).OrderBy(m => m.Name), "Id", "Name");
+
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text");
 
             TargetValue model = new TargetValue
@@ -419,7 +440,9 @@ namespace SmartEco.Controllers
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
-            int? PageNumber)
+            int? PageNumber,
+            List<int> IdActivities,
+            List<decimal?> EfficiencyActivities)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
@@ -441,7 +464,37 @@ namespace SmartEco.Controllers
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
                 try
                 {
+                    dynamic jsonOutput = JObject.Parse(OutputViewText);
                     response.EnsureSuccessStatusCode();
+                    int id = jsonOutput.id;
+
+                    string url = "api/AActivities/SetTargetValueId",
+                        route = "";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"TargetValueId={id.ToString()}";
+
+                    foreach (var idActivity in IdActivities)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"Ids={idActivity.ToString()}".Replace(',', '.');
+                    }
+
+                    foreach (var efficiencyActivity in EfficiencyActivities)
+                    {
+                        if (efficiencyActivity == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Efficiencies=0.0";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Efficiencies={efficiencyActivity.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    HttpResponseMessage responseAActivities = await _HttpApiClient.PostAsync(url + route, null);
                 }
                 catch
                 {
@@ -653,6 +706,17 @@ namespace SmartEco.Controllers
             }
             ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name", targetValue.ProjectId);
 
+            List<AActivity> aActivities = new List<AActivity>();
+            string urlAActivities = "api/AActivities",
+                routeAActivities = "";
+            HttpResponseMessage responseAActivities = await _HttpApiClient.GetAsync(urlAActivities + routeAActivities);
+            if (responseAActivities.IsSuccessStatusCode)
+            {
+                aActivities = await responseAActivities.Content.ReadAsAsync<List<AActivity>>();
+            }
+            ViewBag.AActivitiesList = aActivities.Where(a => a.TargetValueId == id).OrderBy(m => m.Name).ToList();
+            ViewBag.AActivities = new SelectList(aActivities.Where(a => a.TargetValueId == null && !String.IsNullOrEmpty(a.Name)).OrderBy(m => m.Name), "Id", "Name");
+
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text", targetValue.Year);
 
             targetValue.Target = targets.FirstOrDefault(t => t.Id == targetValue.TargetId);
@@ -677,7 +741,9 @@ namespace SmartEco.Controllers
             int? YearFilter,
             bool? TargetValueTypeFilter,
             int? PageSize,
-            int? PageNumber)
+            int? PageNumber,
+            List<int> IdActivities,
+            List<decimal?> EfficiencyActivities)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
@@ -704,6 +770,34 @@ namespace SmartEco.Controllers
                 try
                 {
                     response.EnsureSuccessStatusCode();
+
+                    string url = "api/AActivities/SetTargetValueId",
+                        route = "";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"TargetValueId={id.ToString()}";
+
+                    foreach (var idActivity in IdActivities)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"Ids={idActivity.ToString()}".Replace(',', '.');
+                    }
+
+                    foreach (var efficiencyActivity in EfficiencyActivities)
+                    {
+                        if (efficiencyActivity == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Efficiencies=0.0";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Efficiencies={efficiencyActivity.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    HttpResponseMessage responseAActivities = await _HttpApiClient.PostAsync(url + route, null);
                 }
                 catch
                 {
@@ -852,6 +946,16 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
+            List<AActivity> aActivities = new List<AActivity>();
+            string urlAActivities = "api/AActivities",
+                routeAActivities = "";
+            HttpResponseMessage responseAActivities = await _HttpApiClient.GetAsync(urlAActivities + routeAActivities);
+            if (responseAActivities.IsSuccessStatusCode)
+            {
+                aActivities = await responseAActivities.Content.ReadAsAsync<List<AActivity>>();
+            }
+            ViewBag.AActivitiesList = aActivities.Where(a => a.TargetValueId == id).OrderBy(m => m.Name).ToList();
+
             return View(targetValue);
         }
 
@@ -957,6 +1061,42 @@ namespace SmartEco.Controllers
             var target = targets
                 .FirstOrDefault(t => t.Id == TargetId);
             JsonResult result = new JsonResult(target == null ? 0 : target.MeasuredParameterUnitId);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetAActivities()
+        {
+            List<AActivity> aActivities = new List<AActivity>();
+            string urlAActivities = "api/AActivities",
+                routeAActivities = "";
+            HttpResponseMessage responseAActivities = await _HttpApiClient.GetAsync(urlAActivities + routeAActivities);
+            if (responseAActivities.IsSuccessStatusCode)
+            {
+                aActivities = await responseAActivities.Content.ReadAsAsync<List<AActivity>>();
+            }
+
+            var aActivitiesArray = aActivities
+                .Where(a => !String.IsNullOrEmpty(a.Name)).ToArray().OrderBy(t => t.Name);
+            JsonResult result = new JsonResult(aActivitiesArray);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetEfficiencyById(int Id)
+        {
+            List<AActivity> aActivities = new List<AActivity>();
+            string urlAActivities = "api/AActivities",
+                routeAActivities = "";
+            HttpResponseMessage responseAActivities = await _HttpApiClient.GetAsync(urlAActivities + routeAActivities);
+            if (responseAActivities.IsSuccessStatusCode)
+            {
+                aActivities = await responseAActivities.Content.ReadAsAsync<List<AActivity>>();
+            }
+
+            var efficiency = aActivities
+                .Where(a => a.Id == Id).FirstOrDefault().Efficiency;
+            JsonResult result = new JsonResult(efficiency);
             return result;
         }
     }

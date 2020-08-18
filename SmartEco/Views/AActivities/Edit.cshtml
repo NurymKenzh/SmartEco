@@ -22,6 +22,22 @@
             <div asp-validation-summary="All" class="text-danger"></div>
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label class="control-label">@SharedLocalizer["PeriodActivity"]</label>
+                <br />
+                @Html.TextBox("StartPeriod", (Model.StartPeriod == null) ? DateTime.Now.ToString("yyyy-MM-dd") : Model.StartPeriod.Value.ToString("yyyy-MM-dd"), new { type = "date", @class = "form-control info-input", @id = "StartPeriod" })
+                -
+                @Html.TextBox("EndPeriod", (Model.EndPeriod == null) ? DateTime.Now.ToString("yyyy-MM-dd") : Model.EndPeriod.Value.ToString("yyyy-MM-dd"), new { type = "date", @class = "form-control info-input", @id = "EndPeriod" })
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetValueId" class="control-label"></label>
+                <select id="TargetValueId" asp-for="TargetValueId" class="form-control" asp-items="ViewBag.TargetValues" onchange="ChangeTargetValue()"></select>
+            </div>
+            <div class="form-group">
                 <label asp-for="Target.PollutionEnvironmentId" class="control-label"></label>
                 <select id="PollutionEnvironmentId" asp-for="Target.PollutionEnvironmentId" class="form-control" asp-items="ViewBag.PollutionEnvironments" onchange="ChangePollutionEnvironment()"></select>
             </div>
@@ -61,6 +77,18 @@
                 <label asp-for="ImplementationPercentage" class="control-label"></label>
                 <input id="ImplementationPercentage" asp-for="ImplementationPercentage" class="form-control" />
                 <span asp-validation-for="ImplementationPercentage" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Efficiency" class="control-label"></label>
+                @if (Model.TargetValue.TargetValueType == true)
+                {
+                    <input id="Efficiency" asp-for="Efficiency" class="form-control" />
+                }
+                else
+                {
+                    <input id="Efficiency" asp-for="Efficiency" class="form-control" value="" disabled />
+                }
+                <span asp-validation-for="Efficiency" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="AdditionalInformationKK" class="control-label"></label>
@@ -118,6 +146,11 @@
 </div>
 
 <script>
+    $(document).ready(function () {
+        ChangeActivityType();
+        ChangeTargetValue();
+    });
+
     $.validator.methods.range = function (value, element, param) {
         var globalizedValue = value.replace(",", ".");
         return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
@@ -192,7 +225,22 @@
         }
     };
 
-    $(document).ready(function () {
-        ChangeActivityType();
-    });
+    function ChangeTargetValue() {
+        $.ajax({
+            url: '@Url.Action("GetTargetValueTypeById")',
+            data: { TargetValueId: $('#TargetValueId').val() },
+            type: 'POST',
+            success: function (data) {
+                if (data.toString() == "true") {
+                    $('#Efficiency').prop('disabled', false);
+                }
+                else {
+                    $('#Efficiency').prop('disabled', true);
+                    $('#Efficiency').val('');
+                }
+            },
+            error: function () {
+            }
+        });
+    };
 </script>

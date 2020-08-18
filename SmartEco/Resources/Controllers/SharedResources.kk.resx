@@ -517,10 +517,10 @@
     <value>Мақсаттар</value>
   </data>
   <data name="Event" xml:space="preserve">
-    <value>Оқиға</value>
+    <value>Оқиға атауы</value>
   </data>
   <data name="Events" xml:space="preserve">
-    <value>Оқиғалар</value>
+    <value>Оқиға атаулары</value>
   </data>
   <data name="KazHydrometTransportPost" xml:space="preserve">
     <value>Көлік көлеміне арналған бейнебақылау посты</value>
@@ -614,5 +614,20 @@
   </data>
   <data name="Shymkent" xml:space="preserve">
     <value>Шымкент</value>
+  </data>
+  <data name="Efficiency" xml:space="preserve">
+    <value>Тиімділік</value>
+  </data>
+  <data name="PeriodActivity" xml:space="preserve">
+    <value>Кезең</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Қосу</value>
+  </data>
+  <data name="EfficiencyContribution" xml:space="preserve">
+    <value>Тиімділік (мақсатты мәнге салым)</value>
+  </data>
+  <data name="ContributionExceeds" xml:space="preserve">
+    <value>Жалпы салым 100% -дан асады</value>
   </data>
 </root>

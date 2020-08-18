@@ -99,6 +99,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Add {
+            get {
+                return ResourceManager.GetString("Add", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string AdditionalInformation {
             get {
                 return ResourceManager.GetString("AdditionalInformation", resourceCulture);
@@ -297,6 +306,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string ContributionExceeds {
+            get {
+                return ResourceManager.GetString("ContributionExceeds", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Create {
             get {
                 return ResourceManager.GetString("Create", resourceCulture);
@@ -489,6 +507,24 @@ namespace SmartEco.Resources.Controllers {
         public static string Edit {
             get {
                 return ResourceManager.GetString("Edit", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Efficiency {
+            get {
+                return ResourceManager.GetString("Efficiency", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string EfficiencyContribution {
+            get {
+                return ResourceManager.GetString("EfficiencyContribution", resourceCulture);
             }
         }
         
@@ -1119,6 +1155,15 @@ namespace SmartEco.Resources.Controllers {
         public static string ParentEgovId {
             get {
                 return ResourceManager.GetString("ParentEgovId", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PeriodActivity {
+            get {
+                return ResourceManager.GetString("PeriodActivity", resourceCulture);
             }
         }
         

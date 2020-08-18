@@ -615,4 +615,19 @@
   <data name="Shymkent" xml:space="preserve">
     <value />
   </data>
+  <data name="Efficiency" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PeriodActivity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EfficiencyContribution" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ContributionExceeds" xml:space="preserve">
+    <value />
+  </data>
 </root>

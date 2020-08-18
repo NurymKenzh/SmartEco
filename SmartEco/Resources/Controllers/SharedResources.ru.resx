@@ -517,10 +517,10 @@
     <value>Целевые показатели</value>
   </data>
   <data name="Event" xml:space="preserve">
-    <value>Мероприятие</value>
+    <value>Название мероприятия</value>
   </data>
   <data name="Events" xml:space="preserve">
-    <value>Мероприятия</value>
+    <value>Названия мероприятий</value>
   </data>
   <data name="KazHydrometTransportPost" xml:space="preserve">
     <value>Пост видеонаблюдения за количеством транспорта</value>
@@ -614,5 +614,20 @@
   </data>
   <data name="Shymkent" xml:space="preserve">
     <value>Шымкент</value>
+  </data>
+  <data name="Efficiency" xml:space="preserve">
+    <value>Эффективность</value>
+  </data>
+  <data name="PeriodActivity" xml:space="preserve">
+    <value>Период проведения</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Добавить</value>
+  </data>
+  <data name="EfficiencyContribution" xml:space="preserve">
+    <value>Эффективность (вклад в значение ЦП)</value>
+  </data>
+  <data name="ContributionExceeds" xml:space="preserve">
+    <value>Суммарный вклад превышает 100%</value>
   </data>
 </root>

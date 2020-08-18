@@ -18,6 +18,8 @@
     <Compile Remove="Migrations\20190910150614_MonitoringPostMeasuredParameters_20190910_00.Designer.cs" />
     <Compile Remove="Migrations\20200616105251_MeasuredParameter_20200616_00.cs" />
     <Compile Remove="Migrations\20200616105251_MeasuredParameter_20200616_00.Designer.cs" />
+    <Compile Remove="Migrations\20200813122945_AActivity_20200813_01.cs" />
+    <Compile Remove="Migrations\20200813122945_AActivity_20200813_01.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

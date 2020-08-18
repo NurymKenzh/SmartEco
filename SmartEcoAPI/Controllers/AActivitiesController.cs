@@ -41,6 +41,7 @@ namespace SmartEcoAPI.Controllers
             var aActivities = _context.AActivity
                 .Include(a => a.Event)
                 .Include(t => t.Target)
+                .Include(t => t.TargetValue)
                 .Include(t => t.Target.MeasuredParameterUnit)
                 .Include(t => t.Target.PollutionEnvironment)
                 .Include(t => t.TargetTerritory)
@@ -174,6 +175,7 @@ namespace SmartEcoAPI.Controllers
             var aActivity = await _context.AActivity
                 .Include(a => a.Event)
                 .Include(t => t.Target)
+                .Include(t => t.TargetValue)
                 .Include(t => t.Target.MeasuredParameterUnit)
                 .Include(t => t.Target.PollutionEnvironment)
                 .Include(t => t.TargetTerritory)
@@ -239,6 +241,7 @@ namespace SmartEcoAPI.Controllers
             var aActivity = await _context.AActivity
                 .Include(a => a.Event)
                 .Include(t => t.Target)
+                .Include(t => t.TargetValue)
                 .Include(t => t.Target.MeasuredParameterUnit)
                 .Include(t => t.Target.PollutionEnvironment)
                 .Include(t => t.TargetTerritory)
@@ -307,6 +310,38 @@ namespace SmartEcoAPI.Controllers
             int count = await aActivities.CountAsync();
 
             return Ok(count);
+        }
+
+        // POST: api/AActivities/SetTargetValueId
+        [HttpPost("SetTargetValueId")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        public async Task SetTargetValueId(
+            int TargetValueId,
+            [FromQuery(Name = "Ids")] List<int> Ids,
+            [FromQuery(Name = "Efficiencies")] List<decimal> Efficiencies)
+        {
+            var aActivities = _context.AActivity
+                .Where(a => a.TargetValueId == TargetValueId)
+                .ToList();
+            foreach (var aActivity in aActivities)
+            {
+                if (!Ids.Contains(aActivity.Id))
+                {
+                    aActivity.TargetValueId = null;
+                }
+            }
+
+            for (int i = 0; i < Ids.Count; i++)
+            {
+                var aActivity = _context.AActivity
+                    .Where(a => a.Id == Ids[i])
+                    .FirstOrDefault();
+
+                aActivity.TargetValueId = TargetValueId;
+                aActivity.Efficiency = Efficiencies[i];
+            }
+
+            await _context.SaveChangesAsync();
         }
     }
 }

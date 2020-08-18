@@ -517,10 +517,10 @@
     <value>Targets</value>
   </data>
   <data name="Event" xml:space="preserve">
-    <value>Event</value>
+    <value>Event name</value>
   </data>
   <data name="Events" xml:space="preserve">
-    <value>Events</value>
+    <value>Event names</value>
   </data>
   <data name="KazHydrometTransportPost" xml:space="preserve">
     <value>Video surveillance post for the amount of transport</value>
@@ -614,5 +614,20 @@
   </data>
   <data name="Shymkent" xml:space="preserve">
     <value>Shymkent</value>
+  </data>
+  <data name="Efficiency" xml:space="preserve">
+    <value>Efficiency</value>
+  </data>
+  <data name="PeriodActivity" xml:space="preserve">
+    <value>Period</value>
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value>Add</value>
+  </data>
+  <data name="EfficiencyContribution" xml:space="preserve">
+    <value>Efficiency (contribution to the target value)</value>
+  </data>
+  <data name="ContributionExceeds" xml:space="preserve">
+    <value>The total contribution exceeds 100%</value>
   </data>
 </root>
