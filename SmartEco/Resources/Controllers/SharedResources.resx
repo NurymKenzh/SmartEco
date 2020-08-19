@@ -630,4 +630,19 @@
   <data name="ContributionExceeds" xml:space="preserve">
     <value />
   </data>
+  <data name="Executor" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Executors" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Contribution" xml:space="preserve">
+    <value />
+  </data>
 </root>

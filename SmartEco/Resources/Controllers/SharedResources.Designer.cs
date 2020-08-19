@@ -306,6 +306,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Contribution {
+            get {
+                return ResourceManager.GetString("Contribution", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string ContributionExceeds {
             get {
                 return ResourceManager.GetString("ContributionExceeds", resourceCulture);
@@ -567,6 +576,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Executor {
+            get {
+                return ResourceManager.GetString("Executor", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Executors {
+            get {
+                return ResourceManager.GetString("Executors", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Find {
             get {
                 return ResourceManager.GetString("Find", resourceCulture);
@@ -579,6 +606,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Formaldehyde {
             get {
                 return ResourceManager.GetString("Formaldehyde", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string FullName {
+            get {
+                return ResourceManager.GetString("FullName", resourceCulture);
             }
         }
         
@@ -1263,6 +1299,15 @@ namespace SmartEco.Resources.Controllers {
         public static string PollutionSources {
             get {
                 return ResourceManager.GetString("PollutionSources", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Position {
+            get {
+                return ResourceManager.GetString("Position", resourceCulture);
             }
         }
         

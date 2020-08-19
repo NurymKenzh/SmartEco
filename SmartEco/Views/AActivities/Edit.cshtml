@@ -12,6 +12,10 @@
     string Role = Context.Session.GetString("Role");
 }
 
+<div hidden="hidden">
+    <input id="Delete" type="text" value="@SharedLocalizer["Delete"]" />
+</div>
+
 <h1>@SharedLocalizer["Edit"]</h1>
 
 <h4>@SharedLocalizer["AActivity"]</h4>
@@ -121,6 +125,36 @@
                     <input asp-for="ProjectId" class="form-control" value="4" />
                 </div>
             }
+            <div>
+                <a href="@Url.Action("Index", "Executors")" class="font-weight-bold">@SharedLocalizer["Executors"]</a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>@SharedLocalizer["FullName"]</th>
+                    <th>@SharedLocalizer["Contribution"]</th>
+                    <th></th>
+                </tr>
+                <tbody id="BodyExecutors">
+                    <tr>
+                        <td colspan="2"><select id="Executors" class="form-control" asp-items="ViewBag.Executors"></select></td>
+                        <td><input type="button" value="@SharedLocalizer["Add"]" class="btn btn-primary" onclick="AddExecutor();" /></td>
+                    </tr>
+                    @foreach (var executor in ((List<Executor>)ViewBag.ExecutorsList))
+                    {
+                        <tr id="@executor.Id">
+                            <td>
+                                @executor.FullName
+                                <input name="IdExecutors" type="hidden" value="@executor.Id" />
+                            </td>
+                            <td><input name="ContributionExecutors" class="form-control contribution" value="@(((List<AActivityExecutor>)ViewBag.Contributions).Where(a => a.ExecutorId == executor.Id).FirstOrDefault().Contribution)" onkeyup="ChangeContribution();" /></td>
+                            <td><input type="button" value="@SharedLocalizer["Delete"]" class="btn btn-danger" onclick="DeleteExecutor(@executor.Id);" /></td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+            <div id="ContributionExceeds" hidden>
+                <p class="text-danger">@SharedLocalizer["ContributionExceeds"]</p>
+            </div>
             <div hidden="hidden">
                 @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
                 @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
@@ -135,7 +169,7 @@
                 @Html.Editor("ActivityTypeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
             </div>
             <div class="form-group">
-                <input type="submit" value="@SharedLocalizer["Save"]" class="btn btn-primary" />
+                <input id="SaveBtn" type="submit" value="@SharedLocalizer["Save"]" class="btn btn-primary" />
             </div>
         </form>
     </div>
@@ -238,6 +272,88 @@
                     $('#Efficiency').prop('disabled', true);
                     $('#Efficiency').val('');
                 }
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeContribution() {
+        var contribution = [],
+            sum = 0;
+        $("input[name='ContributionExecutors']").each(function () {
+            contribution.push($(this).val());
+        });
+        $.each(contribution, function () {
+            sum += parseFloat(this) || 0;
+        });
+        if (sum > 100) {
+            $('#ContributionExceeds').prop("hidden", false);
+            $('#SaveBtn').prop('disabled', true);
+        }
+        else {
+            $('#ContributionExceeds').prop("hidden", true);
+            $('#SaveBtn').prop('disabled', false);
+        }
+    };
+
+    function DeleteExecutor(id) {
+        $('#' + id).remove();
+        var IDs = $("tr[id]")         // find spans with ID attribute
+            .map(function () { return this.id; }) // convert to set of IDs
+            .get(); // convert to instance of Array (optional)
+        $.ajax({
+            url: '@Url.Action("GetExecutors")',
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    if (IDs.indexOf(data[i]['id'].toString()) == -1 || IDs.length == 0) {
+                        optionhtml += '<option value="' + data[i]['id'] + '"' +
+                            (data[i]['id'] == $('#Executors').val() ? 'selected' : '') +
+                            '>' + data[i]['fullName'] +
+                            '</option>';
+                    }
+                });
+                $("#Executors").empty();
+                $('#Executors').append(optionhtml);
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function AddExecutor() {
+        var id = $('#Executors').val();
+        var IDs = $("tr[id]")         // find spans with ID attribute
+            .map(function () { return this.id; }) // convert to set of IDs
+            .get(); // convert to instance of Array (optional)
+        IDs.push(id);
+        var optionhtml = '';
+        optionhtml += '<tr name="IdExecutors" id="' + id + '">' +
+            '<td name="NameExecutors">' + $('#Executors option:selected').text() +
+            '<input name="IdExecutors" type="hidden" value="' + id + '" />' +
+            '</td>' +
+            '<td><input name="ContributionExecutors" class="form-control contribution" onkeyup="ChangeContribution();" /></td>' +
+            '<td><input type="button" value="' + $('#Delete').val() + '" class="btn btn-danger" onclick="DeleteExecutor(' + id + ');" /></td>' +
+            '</tr>';
+        $('#BodyExecutors').append(optionhtml);
+        $.ajax({
+            url: '@Url.Action("GetExecutors")',
+            type: 'POST',
+            success: function (data) {
+                optionhtml = '';
+                $.each(data, function (i) {
+                    if (IDs.indexOf(data[i]['id'].toString()) == -1 || IDs.length == 0) {
+                        optionhtml += '<option value="' + data[i]['id'] + '"' +
+                            (data[i]['id'] == $('#Executors').val() ? 'selected' : '') +
+                            '>' + data[i]['fullName'] +
+                            '</option>';
+                    }
+                });
+                $("#Executors").empty();
+                $('#Executors').append(optionhtml);
+                ChangeContribution();
             },
             error: function () {
             }

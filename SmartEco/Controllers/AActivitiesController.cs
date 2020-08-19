@@ -766,6 +766,32 @@ namespace SmartEco.Controllers
             }
             ViewBag.TargetValues = new SelectList(targetValues.OrderBy(m => m.Value), "Id", "Value", aActivity.TargetValueId);
 
+            List<Executor> executors = new List<Executor>();
+            string urlExecutors = "api/Executors",
+                routeExecutors = "";
+            HttpResponseMessage responseExecutors = await _HttpApiClient.GetAsync(urlExecutors + routeExecutors);
+            if (responseExecutors.IsSuccessStatusCode)
+            {
+                executors = await responseExecutors.Content.ReadAsAsync<List<Executor>>();
+            }
+
+            List<AActivityExecutor> aActivityExecutors = new List<AActivityExecutor>();
+            string urlAActivityExecutors = "api/AActivityExecutors",
+                routeAActivityExecutors = "";
+            HttpResponseMessage responseAActivityExecutors = await _HttpApiClient.GetAsync(urlAActivityExecutors + routeAActivityExecutors);
+            if (responseAActivityExecutors.IsSuccessStatusCode)
+            {
+                aActivityExecutors = await responseAActivityExecutors.Content.ReadAsAsync<List<AActivityExecutor>>();
+            }
+
+            var executorsRelated = executors
+                .Join(aActivityExecutors
+                .Where(a => a.AActivityId == id), e => e.Id, a => a.ExecutorId, (e, a) => e)
+                .ToList();
+            ViewBag.ExecutorsList = executorsRelated;
+            ViewBag.Contributions = aActivityExecutors.Where(a => a.AActivityId == id).ToList();
+            ViewBag.Executors = new SelectList(executors.Except(executorsRelated).OrderBy(m => m.FullName), "Id", "FullName");
+
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text", aActivity.Year);
 
             aActivity.Target = targets.FirstOrDefault(t => t.Id == aActivity.TargetId);
@@ -791,7 +817,9 @@ namespace SmartEco.Controllers
             int? YearFilter,
             bool? ActivityTypeFilter,
             int? PageSize,
-            int? PageNumber)
+            int? PageNumber,
+            List<int> IdExecutors,
+            List<decimal?> ContributionExecutors)
         {
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
@@ -827,6 +855,34 @@ namespace SmartEco.Controllers
                 try
                 {
                     response.EnsureSuccessStatusCode();
+
+                    string url = "api/AActivityExecutors/SetRelated",
+                        route = "";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"AActivityId={id.ToString()}";
+
+                    foreach (var idExecutor in IdExecutors)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"idExecutors={idExecutor.ToString()}".Replace(',', '.');
+                    }
+
+                    foreach (var contributionExecutor in ContributionExecutors)
+                    {
+                        if (contributionExecutor == null)
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Contribution=0.0";
+                        }
+                        else
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"Contribution={contributionExecutor.ToString()}".Replace(',', '.');
+                        }
+                    }
+
+                    HttpResponseMessage responseAActivityExec = await _HttpApiClient.PostAsync(url + route, null);
                 }
                 catch
                 {
@@ -949,6 +1005,31 @@ namespace SmartEco.Controllers
                 targetValues = await responseTargetValues.Content.ReadAsAsync<List<TargetValue>>();
             }
             ViewBag.TargetValues = new SelectList(targetValues.OrderBy(m => m.Value), "Id", "Value", aActivity.TargetValueId);
+
+            List<Executor> executors = new List<Executor>();
+            string urlExecutors = "api/Executors",
+                routeExecutors = "";
+            HttpResponseMessage responseExecutors = await _HttpApiClient.GetAsync(urlExecutors + routeExecutors);
+            if (responseExecutors.IsSuccessStatusCode)
+            {
+                executors = await responseExecutors.Content.ReadAsAsync<List<Executor>>();
+            }
+
+            List<AActivityExecutor> aActivityExecutors = new List<AActivityExecutor>();
+            string urlAActivityExecutors = "api/AActivityExecutors",
+                routeAActivityExecutors = "";
+            HttpResponseMessage responseAActivityExecutors = await _HttpApiClient.GetAsync(urlAActivityExecutors + routeAActivityExecutors);
+            if (responseAActivityExecutors.IsSuccessStatusCode)
+            {
+                aActivityExecutors = await responseAActivityExecutors.Content.ReadAsAsync<List<AActivityExecutor>>();
+            }
+
+            var executorsRelated = executors
+                .Join(aActivityExecutors
+                .Where(a => a.AActivityId == id), e => e.Id, a => a.AActivityId, (e, a) => e)
+                .ToList();
+            ViewBag.ExecutorsList = executorsRelated;
+            ViewBag.Executors = new SelectList(executors.Except(executorsRelated).OrderBy(m => m.FullName), "Id", "FullName");
 
             ViewBag.Year = new SelectList(Enumerable.Range(Constants.YearMin, Constants.YearMax - Constants.YearMin + 1).Select(i => new SelectListItem { Text = i.ToString(), Value = i.ToString() }), "Value", "Text", aActivity.Year);
 
@@ -1124,6 +1205,23 @@ namespace SmartEco.Controllers
             var targetValueType = targetValues
                 .Where(t => t.Id == TargetValueId).FirstOrDefault().TargetValueType;
             JsonResult result = new JsonResult(targetValueType);
+            return result;
+        }
+
+        [HttpPost]
+        public async Task<JsonResult> GetExecutors()
+        {
+            List<Executor> executors = new List<Executor>();
+            string urlExecutors = "api/Executors",
+                routeExecutors = "";
+            HttpResponseMessage responseExecutors = await _HttpApiClient.GetAsync(urlExecutors + routeExecutors);
+            if (responseExecutors.IsSuccessStatusCode)
+            {
+                executors = await responseExecutors.Content.ReadAsAsync<List<Executor>>();
+            }
+
+            var executorsArray = executors.OrderBy(t => t.FullName);
+            JsonResult result = new JsonResult(executorsArray);
             return result;
         }
     }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200818131914_Executor_20200818_00")]
+    partial class Executor_20200818_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -65,26 +67,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasIndex("TargetValueId");
 
                     b.ToTable("AActivity");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.AActivityExecutor", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("AActivityId");
-
-                    b.Property<decimal?>("Contribution");
-
-                    b.Property<int>("ExecutorId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AActivityId");
-
-                    b.HasIndex("ExecutorId");
-
-                    b.ToTable("AActivityExecutor");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
@@ -701,19 +683,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.TargetValue", "TargetValue")
                         .WithMany()
                         .HasForeignKey("TargetValueId");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.AActivityExecutor", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.AActivity", "AActivity")
-                        .WithMany()
-                        .HasForeignKey("AActivityId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.Executor", "Executor")
-                        .WithMany()
-                        .HasForeignKey("ExecutorId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.Event", b =>

@@ -72,5 +72,9 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.AActivity> AActivity { get; set; }
 
         public DbSet<SmartEcoAPI.Models.LEDScreen> LEDScreen { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.Executor> Executor { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.AActivityExecutor> AActivityExecutor { get; set; }
     }
 }
