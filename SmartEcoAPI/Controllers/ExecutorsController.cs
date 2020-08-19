@@ -171,5 +171,23 @@ namespace SmartEcoAPI.Controllers
 
             return Ok(count);
         }
+
+        [HttpGet("CalcEfficiency")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        public async Task<ActionResult<decimal>> CalcEfficiency(int ExecutorId) 
+        {
+            var aActivities = _context.AActivity
+                .Join(_context.AActivityExecutor
+                .Where(ae => ae.ExecutorId == ExecutorId), a => a.Id, ae => ae.AActivityId, (a, ae) => a)
+                .ToList();
+            List<decimal> multiplContrib = new List<decimal>();
+            foreach (var aActivity in aActivities) 
+            {
+                var contribExecutor = _context.AActivityExecutor.Where(ae => ae.AActivityId == aActivity.Id && ae.ExecutorId == ExecutorId).FirstOrDefault().Contribution;
+                multiplContrib.Add(Convert.ToDecimal((aActivity.Efficiency / 100) * (contribExecutor / 100)));
+            }
+            decimal efficiency = (multiplContrib.Sum() / aActivities.Count()) * 100;
+            return efficiency;
+        }
     }
 }

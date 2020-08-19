@@ -125,6 +125,22 @@
                 @Html.DisplayFor(model => model.Project.Name)
             </dd>
         }
+        <dt class="col-sm-2">
+            @SharedLocalizer["Executors"]
+        </dt>
+        <dd class="col-sm-10">
+            @foreach (var executor in ((List<Executor>)ViewBag.ExecutorsList))
+            {
+                if (((List<Executor>)ViewBag.ExecutorsList).Count == 1 || ((List<Executor>)ViewBag.ExecutorsList).Last() == executor)
+                {
+                    <span>@executor.FullName</span>
+                }
+                else
+                {
+                    <span>@executor.FullName,</span>
+                }
+            }
+        </dd>
     </dl>
 </div>
 @if (Role == "admin" || Role == "moderator" || Role == "Almaty")

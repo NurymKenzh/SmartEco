@@ -151,6 +151,21 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
+            decimal efficiency = 0m;
+            string urlExecutors = "api/Executors/CalcEfficiency",
+                routeExecutors = "";
+
+            routeExecutors += string.IsNullOrEmpty(routeExecutors) ? "?" : "&";
+            routeExecutors += $"ExecutorId={id.ToString()}";
+
+            HttpResponseMessage responseExecutors = await _HttpApiClient.GetAsync(urlExecutors + routeExecutors);
+            if (responseExecutors.IsSuccessStatusCode)
+            {
+                efficiency = await responseExecutors.Content.ReadAsAsync<decimal>();
+            }
+
+            ViewBag.Efficiency = efficiency;
+
             return View(executor);
         }
 
@@ -239,6 +254,22 @@ namespace SmartEco.Controllers
             {
                 executor = await response.Content.ReadAsAsync<Executor>();
             }
+
+            decimal efficiency = 0m;
+            string urlExecutors = "api/Executors/CalcEfficiency",
+                routeExecutors = "";
+
+            routeExecutors += string.IsNullOrEmpty(routeExecutors) ? "?" : "&";
+            routeExecutors += $"ExecutorId={id.ToString()}";
+
+            HttpResponseMessage responseExecutors = await _HttpApiClient.GetAsync(urlExecutors + routeExecutors);
+            if (responseExecutors.IsSuccessStatusCode)
+            {
+                efficiency = await responseExecutors.Content.ReadAsAsync<decimal>();
+            }
+
+            ViewBag.Efficiency = efficiency;
+
             return View(executor);
         }
 
@@ -295,6 +326,22 @@ namespace SmartEco.Controllers
                         PositionFilter = ViewBag.PositionFilter
                     });
             }
+
+            decimal efficiency = 0m;
+            string urlExecutors = "api/Executors/CalcEfficiency",
+                routeExecutors = "";
+
+            routeExecutors += string.IsNullOrEmpty(routeExecutors) ? "?" : "&";
+            routeExecutors += $"ExecutorId={id.ToString()}";
+
+            HttpResponseMessage responseExecutors = await _HttpApiClient.GetAsync(urlExecutors + routeExecutors);
+            if (responseExecutors.IsSuccessStatusCode)
+            {
+                efficiency = await responseExecutors.Content.ReadAsAsync<decimal>();
+            }
+
+            ViewBag.Efficiency = efficiency;
+
             return View(executor);
         }
 
@@ -327,6 +374,21 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
+            decimal efficiency = 0m;
+            string urlExecutors = "api/Executors/CalcEfficiency",
+                routeExecutors = "";
+
+            routeExecutors += string.IsNullOrEmpty(routeExecutors) ? "?" : "&";
+            routeExecutors += $"ExecutorId={id.ToString()}";
+
+            HttpResponseMessage responseExecutors = await _HttpApiClient.GetAsync(urlExecutors + routeExecutors);
+            if (responseExecutors.IsSuccessStatusCode)
+            {
+                efficiency = await responseExecutors.Content.ReadAsAsync<decimal>();
+            }
+
+            ViewBag.Efficiency = efficiency;
+
             return View(executor);
         }
 
@@ -356,6 +418,7 @@ namespace SmartEco.Controllers
                         FullNameFilter = ViewBag.FullNameFilter,
                         PositionFilter = ViewBag.PositionFilter
                     });
+
         }
     }
 }
