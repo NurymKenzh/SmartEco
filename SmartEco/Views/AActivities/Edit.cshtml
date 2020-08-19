@@ -84,9 +84,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="Efficiency" class="control-label"></label>
-                @if (Model.TargetValue.TargetValueType == true)
+                @if (Model.TargetValue != null)
                 {
-                    <input id="Efficiency" asp-for="Efficiency" class="form-control" />
+                    if (Model.TargetValue.TargetValueType == true)
+                    {
+                        <input id="Efficiency" asp-for="Efficiency" class="form-control" />
+                    }
+                    else
+                    {
+                        <input id="Efficiency" asp-for="Efficiency" class="form-control" value="" disabled />
+                    }
                 }
                 else
                 {

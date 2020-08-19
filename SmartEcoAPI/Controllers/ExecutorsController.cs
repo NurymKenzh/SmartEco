@@ -138,8 +138,18 @@ namespace SmartEcoAPI.Controllers
                 return NotFound();
             }
 
-            _context.Executor.Remove(executor);
-            await _context.SaveChangesAsync();
+            try
+            {
+                _context.AActivityExecutor.RemoveRange(_context.AActivityExecutor.Where(m => m.ExecutorId == id));
+                await _context.SaveChangesAsync();
+
+                _context.Executor.Remove(executor);
+                await _context.SaveChangesAsync();
+            }
+            catch (Exception ex)
+            {
+
+            }
 
             return executor;
         }
