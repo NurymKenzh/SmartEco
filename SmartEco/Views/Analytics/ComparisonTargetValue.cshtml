@@ -1,0 +1,245 @@
+﻿@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = "ComparisonTargetValue";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@{
+    string Role = Context.Session.GetString("Role");
+}
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
+<script src="~/lib/chart.js/dist/Chart.js"></script>
+<script src="~/lib/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js"></script>
+
+<div hidden="hidden">
+    <input id="Year" type="text" value="@SharedLocalizer["Year"]" />
+    <input id="ImplementationPercentage" type="text" value="@SharedLocalizer["ImplementationPercentage"]" />
+    <input id="Actual" type="text" value="@SharedLocalizer["Actual"]" />
+    <input id="Planned" type="text" value="@SharedLocalizer["Planned"]" />
+</div>
+
+<div class="row">
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayName(SharedLocalizer["PollutionEnvironment"])
+                    @Html.DropDownList("PollutionEnvironmentId", (IEnumerable<SelectListItem>)ViewBag.PollutionEnvironments, htmlAttributes: new { @class = "form-control info-input-select", @id = "PollutionEnvironmentId", @onchange = "GetAActivity();" })
+                </th>
+                <th>
+                    @Html.DisplayName(SharedLocalizer["Target"])
+                    @Html.DropDownList("TargetId", (IEnumerable<SelectListItem>)ViewBag.Targets, htmlAttributes: new { @class = "form-control info-input-select", @id = "TargetId", @onchange = "GetAActivity();" })
+                </th>
+                <th>
+                    @Html.DisplayName(SharedLocalizer["TargetTerritory"])
+                    @Html.DropDownList("TargetTerritoryId", (IEnumerable<SelectListItem>)ViewBag.TargetTerritories, htmlAttributes: new { @class = "form-control info-input-select", @id = "TargetTerritoryId", @onchange = "GetAActivity();" })
+                </th>
+                <th>
+                    @Html.DisplayName(SharedLocalizer["Event"])
+                    @Html.DropDownList("EventId", (IEnumerable<SelectListItem>)ViewBag.Events, htmlAttributes: new { @class = "form-control info-input-select", @id = "EventId", @onchange = "GetAActivity();" })
+                </th>
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    <th>
+                        @Html.DisplayName(SharedLocalizer["Project"])
+                        @Html.DropDownList("ProjectId", (IEnumerable<SelectListItem>)ViewBag.Projects, htmlAttributes: new { @class = "form-control info-input-select", @id = "ProjectId", @onchange = "GetAActivity();" })
+                    </th>
+                }
+            </tr>
+        </thead>
+    </table>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#chartTab">@SharedLocalizer["Chart"]</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#tableTab">@SharedLocalizer["Table"]</a>
+        </li>
+    </ul>
+    <div class="tab-content col-md-12">
+        <div class="tab-pane fade show active" id="chartTab">
+            <div>
+                <canvas id="Chart"></canvas>
+            </div>
+        </div>
+        <div class="tab-pane fade" id="tableTab">
+            <div>
+                <table id="table" class="table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @SharedLocalizer["Year"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["ActivityType"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["ImplementationPercentage"]
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    function GetAActivity() {
+        $("#Chart").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetAActivity", "Analytics")',
+            data: {
+                PollutionEnvironmentId: $('#PollutionEnvironmentId').val(),
+                TargetId: $('#TargetId').val(),
+                TargetTerritoryId: $('#TargetTerritoryId').val(),
+                EventId: $('#EventId').val(),
+                ProjectId: $('#ProjectId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                ChangeChart(data);
+                ChangeTable(data);
+            },
+            error: function () {
+                $("#Chart").LoadingOverlay("hide");
+            }
+        })
+    };
+
+    var ChartDatas = null;
+    function ChangeChart(data) {
+        if (ChartDatas != null) {
+            ChartDatas.destroy();
+        }
+        var data1 = [],
+            data2 = [],
+            datasets = [],
+            labels = [];
+        if (data.length > 0) {
+            for (var i = 0; i < data.length; i++) {
+                labels.push(parseFloat(data[i].year));
+            }
+        }
+        $.unique(labels);
+
+        if (labels.length > 0) {
+            for (var i = 0; i < labels.length; i++) {
+                for (var j = 0; j < data.length; j++) {
+                    if (data[j].year == labels[i]) {
+                        if (data[j].activityType == true) {
+                            data1.push({
+                                'x': parseFloat(data[j].year),
+                                'y': parseFloat(data[j].implementationPercentage)
+                            });
+                        }
+                        else {
+                            data2.push({
+                                'x': parseFloat(data[j].year),
+                                'y': parseFloat(data[j].implementationPercentage)
+                            });
+                        }
+                    }
+                }
+                if (data1.length > data2.length) {
+                    data2.push({
+                        'x': parseFloat(labels[i]),
+                        'y': parseFloat(0)
+                    });
+                }
+                if (data2.length > data1.length) {
+                    data1.push({
+                        'x': parseFloat(labels[i]),
+                        'y': parseFloat(0)
+                    });
+                }
+            }
+        }
+
+        if (data1.length != 0) {
+            var color = ColorRandom();
+            datasets.push({
+                label: $("#Actual").val(),
+                data: data1,
+                backgroundColor: color,
+                borderColor: color,
+                borderWidth: 3
+            });
+        }
+        if (data2.length != 0) {
+            var color = ColorRandom();
+            datasets.push({
+                label: $("#Planned").val(),
+                data: data2,
+                backgroundColor: color,
+                borderColor: color,
+                borderWidth: 3
+            });
+        }
+        var ctx1 = document.getElementById("Chart").getContext('2d');
+        ChartDatas = new Chart(ctx1, {
+            type: 'bar',
+            data: {
+                labels: labels,
+                datasets: datasets
+            },
+            options: {
+                //title: {
+                //    display: true,
+                //    text: $("#Year").text()
+                //},
+                scales: {
+                    xAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#Year").val()
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#ImplementationPercentage").val()
+                        }
+                    }]
+                }
+            }
+        });
+        $("#Chart").LoadingOverlay("hide");
+    }
+
+    function ChangeTable(data) {
+        var tableBodyHtml = '';
+        for (var i = 0; i < data.length; i++) {
+            tableBodyHtml += '<tr><td>' + data[i].year + '</td>' +
+                '<td>' + data[i].activityTypeName + '</td>' +
+                '<td>' + data[i].implementationPercentage + '</td></tr>';
+        }
+        $('#table tbody').empty();
+        $('#table tbody').append(tableBodyHtml);
+    }
+
+    function ColorRandom() {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var k = 0; k < 6; k++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        return color;
+    }
+</script>
+
+@* window.onload *@
+<script>
+    window.onload = function start() {
+        GetAActivity();
+    }
+</script>

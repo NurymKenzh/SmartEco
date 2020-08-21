@@ -645,4 +645,7 @@
   <data name="Contribution" xml:space="preserve">
     <value>Вклад</value>
   </data>
+  <data name="ComparisonTargetValue" xml:space="preserve">
+    <value>Сравнение фактических и плановых значений</value>
+  </data>
 </root>

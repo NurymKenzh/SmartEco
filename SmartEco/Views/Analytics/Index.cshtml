@@ -22,6 +22,8 @@
     <a class="btn btn-default" asp-controller="Analytics" asp-action="AllMonitoringPosts">@SharedLocalizer["AllMonitoringPosts"]</a>
 
     <a class="btn btn-default" asp-controller="Analytics" asp-action="CalcAirPollutantModel">@SharedLocalizer["AirPollutantModel"]</a>
+
+    <a class="btn btn-default" asp-controller="Analytics" asp-action="ComparisonTargetValue">@SharedLocalizer["ComparisonTargetValue"]</a>
 }
 else if (Role == "KaragandaRegion")
 {
@@ -34,4 +36,6 @@ else if (Role == "KaragandaRegion")
 else if (Role == "Almaty")
 {
     <a class="btn btn-default" asp-controller="Analytics" asp-action="PostAnalyticsAlmaty">@SharedLocalizer["PostAnalyticsAlmaty"]</a>
+
+    <a class="btn btn-default" asp-controller="Analytics" asp-action="ComparisonTargetValue">@SharedLocalizer["ComparisonTargetValue"]</a>
 }

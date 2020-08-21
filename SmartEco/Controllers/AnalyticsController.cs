@@ -753,5 +753,90 @@ namespace SmartEco.Controllers
 
             return View();
         }
+
+        public async Task<IActionResult> ComparisonTargetValue()
+        {
+            List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
+            string urlPollutionEnvironments = "api/PollutionEnvironments",
+                routePollutionEnvironments = "";
+            HttpResponseMessage responsePollutionEnvironments = await _HttpApiClient.GetAsync(urlPollutionEnvironments + routePollutionEnvironments);
+            if (responsePollutionEnvironments.IsSuccessStatusCode)
+            {
+                pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
+            }
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
+
+            List<Target> targets = new List<Target>();
+            string urlTargets = "api/Targets",
+                routeTargets = "";
+            HttpResponseMessage responseTargets = await _HttpApiClient.GetAsync(urlTargets + routeTargets);
+            if (responseTargets.IsSuccessStatusCode)
+            {
+                targets = await responseTargets.Content.ReadAsAsync<List<Target>>();
+            }
+            ViewBag.Targets = new SelectList(targets.OrderBy(m => m.Name), "Id", "Name");
+
+            List<TargetTerritory> targetTerritories = new List<TargetTerritory>();
+            string urlTargetTerritories = "api/TargetTerritories",
+                routeTargetTerritories = "";
+            HttpResponseMessage responseTargetTerritories = await _HttpApiClient.GetAsync(urlTargetTerritories + routeTargetTerritories);
+            if (responseTargetTerritories.IsSuccessStatusCode)
+            {
+                targetTerritories = await responseTargetTerritories.Content.ReadAsAsync<List<TargetTerritory>>();
+            }
+            ViewBag.TargetTerritories = new SelectList(targetTerritories.OrderBy(m => m.Name), "Id", "Name");
+
+            List<Event> events = new List<Event>();
+            string urlEvents = "api/Events",
+                routeEvents = "";
+            HttpResponseMessage responseEvents = await _HttpApiClient.GetAsync(urlEvents + routeEvents);
+            if (responseEvents.IsSuccessStatusCode)
+            {
+                events = await responseEvents.Content.ReadAsAsync<List<Event>>();
+            }
+            ViewBag.Events = new SelectList(events.OrderBy(m => m.Name), "Id", "Name");
+
+            List<Project> projects = new List<Project>();
+            string urlProjects = "api/Projects",
+                routeProjects = "";
+            HttpResponseMessage responseProjects = await _HttpApiClient.GetAsync(urlProjects + routeProjects);
+            if (responseProjects.IsSuccessStatusCode)
+            {
+                projects = await responseProjects.Content.ReadAsAsync<List<Project>>();
+            }
+            ViewBag.Projects = new SelectList(projects.OrderBy(m => m.Name), "Id", "Name");
+
+            return View();
+        }
+
+        public async Task<IActionResult> GetAActivity(
+            int PollutionEnvironmentId,
+            int TargetId,
+            int TargetTerritoryId,
+            int EventId,
+            int? ProjectId)
+        {
+            List<AActivity> aActivities = new List<AActivity>();
+            string urlAActivities = "api/AActivities",
+                routeAActivities = "";
+            HttpResponseMessage responseAActivities = await _HttpApiClient.GetAsync(urlAActivities + routeAActivities);
+            if (responseAActivities.IsSuccessStatusCode)
+            {
+                aActivities = await responseAActivities.Content.ReadAsAsync<List<AActivity>>();
+            }
+            if(ProjectId != null)
+            {
+                aActivities = aActivities.Where(a => a.Target.PollutionEnvironmentId == PollutionEnvironmentId && a.TargetId == TargetId && a.TargetTerritoryId == TargetTerritoryId && a.EventId == EventId && a.ProjectId == ProjectId).OrderBy(a => a.Year).ToList();
+            }
+            else
+            {
+                aActivities = aActivities.Where(a => a.Target.PollutionEnvironmentId == PollutionEnvironmentId && a.TargetId == TargetId && a.TargetTerritoryId == TargetTerritoryId && a.EventId == EventId).OrderBy(a => a.Year).ToList();
+            }
+            var result = aActivities.OrderBy(m => m.Name);
+
+            return Json(
+                result
+            );
+        }
     }
 }
