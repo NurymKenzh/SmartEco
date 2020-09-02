@@ -24,7 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Targets
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<Target>>> GetTarget(string SortOrder,
             string NameKK,
             string NameRU,
@@ -42,6 +42,10 @@ namespace SmartEcoAPI.Controllers
             var role = _context.Person
                 .Where(p => p.Email == HttpContext.User.Identity.Name)
                 .FirstOrDefault().Role;
+            if (role == "KaragandaRegion")
+            {
+                targets = targets.Where(t => t.Project.Id == 1);
+            }
             if (role == "Almaty")
             {
                 targets = targets.Where(t => t.Project.Id == 3);
@@ -119,7 +123,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Targets/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Target>> GetTarget(int id)
         {
             var target = await _context.Target
@@ -138,7 +142,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/Targets/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<IActionResult> PutTarget(int id, Target target)
         {
             if (id != target.Id)
@@ -169,7 +173,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/Targets
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Target>> PostTarget(Target target)
         {
             _context.Target.Add(target);
@@ -180,7 +184,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/Targets/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Target>> DeleteTarget(int id)
         {
             var target = await _context.Target
@@ -205,7 +209,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Targets/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<Target>>> GetTargetCount(string NameKK,
             string NameRU,
             string NameEN,

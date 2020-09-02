@@ -24,7 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AActivities
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<AActivity>>> GetAActivity(string SortOrder,
             int? PollutionEnvironmentId,
             int? TargetId,
@@ -52,6 +52,10 @@ namespace SmartEcoAPI.Controllers
             var role = _context.Person
                 .Where(p => p.Email == HttpContext.User.Identity.Name)
                 .FirstOrDefault().Role;
+            if (role == "KaragandaRegion")
+            {
+                aActivities = aActivities.Where(a => a.Project.Id == 1);
+            }
             if (role == "Almaty")
             {
                 aActivities = aActivities.Where(a => a.Project.Id == 3);
@@ -169,7 +173,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AActivities/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<AActivity>> GetAActivity(int id)
         {
             var aActivity = await _context.AActivity
@@ -193,7 +197,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/AActivities/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<IActionResult> PutAActivity(int id, AActivity aActivity)
         {
             if (id != aActivity.Id)
@@ -224,7 +228,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/AActivities
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<AActivity>> PostAActivity(AActivity aActivity)
         {
             _context.AActivity.Add(aActivity);
@@ -235,7 +239,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/AActivities/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<AActivity>> DeleteAActivity(int id)
         {
             var aActivity = await _context.AActivity
@@ -265,7 +269,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AActivities/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<AActivity>>> GetAActivityCount(int? PollutionEnvironmentId,
             int? TargetId,
             int? MeasuredParameterUnitId,
@@ -314,7 +318,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/AActivities/SetTargetValueId
         [HttpPost("SetTargetValueId")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task SetTargetValueId(
             int TargetValueId,
             [FromQuery(Name = "Ids")] List<int> Ids,

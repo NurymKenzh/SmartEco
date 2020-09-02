@@ -24,7 +24,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Events
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEvent(string SortOrder,
             string NameKK,
             string NameRU,
@@ -40,6 +40,10 @@ namespace SmartEcoAPI.Controllers
             var role = _context.Person
                 .Where(p => p.Email == HttpContext.User.Identity.Name)
                 .FirstOrDefault().Role;
+            if (role == "KaragandaRegion")
+            {
+                events = events.Where(e => e.Project.Id == 1);
+            }
             if (role == "Almaty")
             {
                 events = events.Where(e => e.Project.Id == 3);
@@ -107,7 +111,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Events/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Event>> GetEvent(int id)
         {
             var eventt = await _context.Event
@@ -124,7 +128,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/Events/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<IActionResult> PutEvent(int id, Event eventt)
         {
             if (id != eventt.Id)
@@ -155,7 +159,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/Events
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Event>> PostEvent(Event eventt)
         {
             _context.Event.Add(eventt);
@@ -166,7 +170,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/Events/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Event>> DeleteEvent(int id)
         {
             var eventt = await _context.Event.FindAsync(id);
@@ -188,7 +192,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Events/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<IEnumerable<Event>>> GetEventCount(string NameKK,
             string NameRU,
             string NameEN)

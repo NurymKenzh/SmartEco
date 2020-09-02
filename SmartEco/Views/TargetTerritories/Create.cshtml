@@ -88,6 +88,13 @@
                     <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.Projects"></select>
                 </div>
             }
+            else if (Role == "KaragandaRegion")
+            {
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <input asp-for="ProjectId" class="form-control" value="1" />
+                </div>
+            }
             else if (Role == "Almaty")
             {
                 <div class="form-group" hidden="hidden">

@@ -143,7 +143,7 @@
         </dd>
     </dl>
 </div>
-@if (Role == "admin" || Role == "moderator" || Role == "Almaty")
+@if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent" || Role == "KaragandaRegion")
 {
 <div>
     @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, EventIdFilter = ViewBag.EventIdFilter, YearFilter = ViewBag.YearFilter, ActivityTypeFilter = ViewBag.ActivityTypeFilter }) |

@@ -99,7 +99,7 @@
                     <td>
                         @Html.DisplayFor(modelItem => item.NameEN)
                     </td>
-                    @if (Role == "admin" || Role == "moderator" || Role == "Almaty")
+                    @if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent" || Role == "KaragandaRegion")
                     {
                         <td>
                             @*@Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter}) |*@
