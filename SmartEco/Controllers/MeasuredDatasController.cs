@@ -558,6 +558,104 @@ namespace SmartEco.Controllers
         }
 
         [HttpPost]
+        public async Task<IActionResult> GetMeasuredDatasPollutionSource(
+            int? PollutionSourceId,
+            int? MeasuredParameterId,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo,
+            bool? Averaged = true)
+        {
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            List<MeasuredData> measureddatas = new List<MeasuredData>();
+            List<MeasuredData> measuredDatasDailyAverage = new List<MeasuredData>();
+            List<MeasuredData> measureddatasDailyAverage = new List<MeasuredData>();
+            decimal? dailyAverage = null;
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            string url = "api/MeasuredDatas/pollutionSource",
+                route = "",
+                routeDailyAverage = "";
+            // First condition - for select chart and table
+            if (MeasuredParameterId != null)
+            {
+                // SortOrder=DateTime
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"SortOrder=DateTime";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"SortOrder=DateTime";
+                }
+                // PollutionSourceId
+                if (PollutionSourceId != null)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"PollutionSourceId={PollutionSourceId}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"PollutionSourceId={PollutionSourceId}";
+                }
+                // MeasuredParameterId
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MeasuredParameterId={MeasuredParameterId}";
+
+                routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                routeDailyAverage += $"MeasuredParameterId={MeasuredParameterId}";
+                // AveragedFilter
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"Averaged={Averaged}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"Averaged={Averaged}";
+                }
+                // dateTimeFrom
+                {
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"DateTimeFrom={DateTime.Now.AddDays(-1).ToString(dateTimeFormatInfo)}";
+                }
+                // dateTimeTo
+                {
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+
+                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                    routeDailyAverage += $"DateTimeTo={DateTime.Now.ToString(dateTimeFormatInfo)}";
+                }
+                HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+                if (response.IsSuccessStatusCode)
+                {
+                    measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+                }
+                measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToList();
+
+                HttpResponseMessage responseDailyAverage = await _HttpApiClient.GetAsync(url + routeDailyAverage);
+                if (responseDailyAverage.IsSuccessStatusCode)
+                {
+                    measuredDatasDailyAverage = await responseDailyAverage.Content.ReadAsAsync<List<MeasuredData>>();
+                }
+                measureddatasDailyAverage = measuredDatasDailyAverage.OrderByDescending(m => m.DateTime).ToList();
+
+                if (measureddatasDailyAverage.Count != 0)
+                {
+                    dailyAverage = measureddatasDailyAverage.Sum(m => m.Value) / measureddatasDailyAverage.Count();
+                }
+            }
+            return Json(new
+            {
+                measureddatas,
+                dailyAverage
+            });
+        }
+
+        [HttpPost]
         public async Task<IActionResult> GetMeasuredDatasAnalytic(
             int? MonitoringPostId,
             int? MeasuredParameterId,

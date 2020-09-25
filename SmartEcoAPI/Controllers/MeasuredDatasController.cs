@@ -294,6 +294,90 @@ namespace SmartEcoAPI.Controllers
             return measuredDatasR;
         }
 
+        [HttpGet("pollutionSource")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Kazakhtelecom,Arys,Almaty")]
+        public async Task<ActionResult<IEnumerable<MeasuredData>>> GetMeasuredDataPollutionSource(string SortOrder,
+            int? MeasuredParameterId,
+            DateTime? DateTimeFrom,
+            DateTime? DateTimeTo,
+            int? PollutionSourceId,
+            bool? Averaged = true)
+        {
+
+            Person person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
+            if (!(new string[] { "admin", "moderator" }).Contains(person?.Role))
+            {
+                Averaged = true;
+            }
+
+            var measuredDatas = _context.MeasuredData
+                .Include(m => m.MeasuredParameter)
+                .Include(m => m.PollutionSource)
+                .Where(m => true);
+
+            if (PollutionSourceId != null)
+            {
+                measuredDatas = measuredDatas.Where(m => m.PollutionSourceId == PollutionSourceId);
+            }
+            if (MeasuredParameterId != null)
+            {
+                measuredDatas = measuredDatas.Where(m => m.MeasuredParameterId == MeasuredParameterId);
+            }
+            if (DateTimeFrom != null)
+            {
+                measuredDatas = measuredDatas.Where(m => (m.DateTime != null && m.DateTime >= DateTimeFrom) ||
+                    (m.Year != null && m.Month == null && m.Year >= DateTimeFrom.Value.Year) ||
+                    (m.Year != null && m.Month != null && m.Year >= DateTimeFrom.Value.Year && m.Month >= DateTimeFrom.Value.Month));
+            }
+            if (DateTimeTo != null)
+            {
+                measuredDatas = measuredDatas.Where(m => (m.DateTime != null && m.DateTime <= DateTimeTo) ||
+                    (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
+                    (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
+            }
+            if (Averaged == true)
+            {
+                measuredDatas = measuredDatas.Where(m => m.Averaged == Averaged);
+            }
+            else
+            {
+                measuredDatas = measuredDatas.Where(m => m.Averaged == null || m.Averaged == false);
+            }
+
+            switch (SortOrder)
+            {
+                case "DateTime":
+                    measuredDatas = measuredDatas.OrderBy(m => m.DateYear)
+                        .ThenBy(m => m.DateMonth)
+                        .ThenBy(m => m.DateDay)
+                        .ThenBy(m => m.DateHour)
+                        .ThenBy(m => m.DateMinute)
+                        .ThenBy(m => m.DateSecond);
+                    break;
+                case "DateTimeDesc":
+                    measuredDatas = measuredDatas.OrderByDescending(m => m.DateYear)
+                        .ThenByDescending(m => m.DateMonth)
+                        .ThenByDescending(m => m.DateDay)
+                        .ThenByDescending(m => m.DateHour)
+                        .ThenByDescending(m => m.DateMinute)
+                        .ThenByDescending(m => m.DateSecond);
+                    break;
+                case "PollutionSource":
+                    measuredDatas = measuredDatas.OrderBy(k => k.PollutionSource);
+                    break;
+                case "PollutionSourceDesc":
+                    measuredDatas = measuredDatas.OrderByDescending(k => k.PollutionSource);
+                    break;
+                default:
+                    measuredDatas = measuredDatas.OrderBy(m => m.Id);
+                    break;
+            }
+
+            List<MeasuredData> measuredDatasR = measuredDatas.ToList();
+
+            return measuredDatasR;
+        }
+
         // GET: api/MeasuredDatas/5
         [HttpGet("{id}")]
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
