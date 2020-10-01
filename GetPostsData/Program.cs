@@ -8,11 +8,6 @@ using System.IO;
 using System.Threading.Tasks;
 using MimeKit;
 using MailKit.Net.Smtp;
-using MailKit.Net.Pop3;
-using MailKit.Net.Imap;
-using MailKit;
-using MailKit.Search;
-using System.Globalization;
 
 namespace GetPostsData
 {
@@ -22,10 +17,8 @@ namespace GetPostsData
             Theme = "SmartEco",
             FromEmail = "smartecokz@gmail.com",
             Password = "Qwerty123_",
-            SMTPServer = "smtp.gmail.com",
-            POPServer = "pop.gmail.com";
-        const int SMTPPort = 465,
-            POPPort = 995;
+            SMTPServer = "smtp.gmail.com";
+        const int SMTPPort = 465;
 
         public class MeasuredParameter
         {
@@ -412,7 +405,7 @@ namespace GetPostsData
                 if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
                 {
                     NewLog($"Backup. Get Data from MeasuredData (SmartEcoAPI) started");
-                    DateTime dateTimeLast = DateTime.Now.AddDays(-30);
+                    DateTime dateTimeLast = DateTime.Now.AddDays(-14);
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
                         connection.Open();
@@ -667,14 +660,14 @@ namespace GetPostsData
                             if (checkLogSendMail)
                             {
                                 message = "Нет данных по всем постам!";
-                                CreateMail(message, persons);
+                                Task.WaitAll(SendEmailAsync(persons, Heading, message));
                                 NewLogSendMail(null, null, message);
                             }
                         }
                         else
                         {
                             message = "Нет данных по всем постам!";
-                            CreateMail(message, persons);
+                            Task.WaitAll(SendEmailAsync(persons, Heading, message));
                             NewLogSendMail(null, null, message);
                         }
                     }
@@ -884,146 +877,10 @@ namespace GetPostsData
                         }
                         if (message != "")
                         {
-                            CreateMail(message, persons);
+                            Task.WaitAll(SendEmailAsync(persons, Heading, message));
                         }
                     }
                     lastCheckDateTime = DateTime.Now;
-                }
-                //=================================================================================================================================================================
-                // Get Data For 138 Source
-                if ((DateTime.Now - lastGetSourceDateTime) > new TimeSpan(0, 0, 20, 0))
-                {
-                    List<MeasuredData> measuredDatasPost = new List<MeasuredData>();
-                    List<MeasuredData> measuredDatasSourceDB = new List<MeasuredData>();
-                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                    {
-                        connection.Open();
-                        var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"PollutionSourceId\" " +
-                            $"FROM public.\"MeasuredData\" " +
-                            $"WHERE \"PollutionSourceId\" = '5' AND \"DateTime\" is not null " +
-                            $"ORDER BY \"DateTime\"", commandTimeout: 86400);
-                        measuredDatasSourceDB = measuredDatasv.ToList();
-
-                        var measuredDatasPostv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\" " +
-                            $"FROM public.\"MeasuredData\" " +
-                            $"WHERE \"MonitoringPostId\" = '53' AND \"Averaged\" = 'true' AND \"DateTime\" is not null " + //Пост - Школа №10 (Balhash-001)
-                            $"ORDER BY \"DateTime\"", commandTimeout: 86400);
-                        measuredDatasPost = measuredDatasPostv.ToList();
-                    }
-                    List<MeasuredData> measuredDatasSource = new List<MeasuredData>();
-                    List<int> measuredParametersId = new List<int> { 1, 5, 6, 19 };
-
-                    NewLog("Get. Get Data for Pollution Source started");
-                    if(measuredDatasSourceDB.Count != 0)
-                    {
-                        var measuredDatasSO2 = measuredDatasSourceDB
-                            .Where(m => m.MeasuredParameterId == 9)
-                            .LastOrDefault();
-                        if (measuredDatasSO2 == null)
-                        {
-                            measuredDatasSource = ReceiveEmailAsync(null);
-                        }
-                        else
-                        {
-                            measuredDatasSource = ReceiveEmailAsync(measuredDatasSO2.DateTime);
-                        }
-
-                        foreach (var measuredParameterId in measuredParametersId)
-                        {
-                            var measuredDataSourceDB = measuredDatasSourceDB
-                                .Where(m => m.MeasuredParameterId == measuredParameterId)
-                                .LastOrDefault();
-                            if (measuredDataSourceDB == null)
-                            {
-                                measuredDatasSource.AddRange(measuredDatasPost
-                                    .Where(m => m.MeasuredParameterId == measuredParameterId)
-                                    .Select(m => new MeasuredData
-                                    {
-                                        MonitoringPostId = null,
-                                        PollutionSourceId = 5,
-                                        Value = m.Value,
-                                        DateTime = m.DateTime,
-                                        MeasuredParameterId = m.MeasuredParameterId,
-                                        Averaged = m.Averaged
-                                    }));
-                            }
-                            else
-                            {
-                                measuredDatasSource.AddRange(measuredDatasPost
-                                    .Where(m => m.MeasuredParameterId == measuredParameterId && m.DateTime > measuredDataSourceDB.DateTime)
-                                    .Select(m => new MeasuredData
-                                    {
-                                        MonitoringPostId = null,
-                                        PollutionSourceId = 5,
-                                        Value = m.Value,
-                                        DateTime = m.DateTime,
-                                        MeasuredParameterId = m.MeasuredParameterId,
-                                        Averaged = m.Averaged
-                                    }));
-                            }
-                        }
-
-                        measuredDatasSource = measuredDatasSource
-                            .OrderBy(m => m.DateTime)
-                            .ToList();
-                    }
-                    else
-                    {
-                        measuredDatasSource = ReceiveEmailAsync(null);
-
-                        foreach (var measuredParameterId in measuredParametersId)
-                        {
-                            measuredDatasSource.AddRange(measuredDatasPost
-                                .Where(m => m.MeasuredParameterId == measuredParameterId)
-                                .Select(m => new MeasuredData
-                                {
-                                    MonitoringPostId = null,
-                                    PollutionSourceId = 5,
-                                    Value = m.Value,
-                                    DateTime = m.DateTime,
-                                    MeasuredParameterId = m.MeasuredParameterId,
-                                    Averaged = m.Averaged
-                                }));
-                        }
-
-                        measuredDatasSource = measuredDatasSource
-                            .OrderBy(m => m.DateTime)
-                            .ToList();
-                    }
-                    NewLog($"Get. Get Data for Pollution Source finished. Data count: {measuredDatasSource.Count.ToString()}");
-
-                    // Insert MeasuredDatas into SmartEcoAPI
-                    NewLog($"Insert data for Pollution Source to MeasuredDatas started");
-                    try
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            foreach (var measuredData in measuredDatasSource)
-                            {
-                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"PollutionSourceId\", \"Averaged\")" +
-                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                    $"make_timestamptz(" +
-                                        $"{measuredData.DateTime?.Year.ToString()}, " +
-                                        $"{measuredData.DateTime?.Month.ToString()}, " +
-                                        $"{measuredData.DateTime?.Day.ToString()}, " +
-                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                        $"{measuredData.DateTime?.Second.ToString()})," +
-                                    $"{measuredData.Value.ToString().Replace(",", ".")}," +
-                                    $"{measuredData.PollutionSourceId.ToString()}," +
-                                    $"{measuredData.Averaged.ToString()});";
-                                connection2.Execute(execute);
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        NewLog($"Error - Insert data for Pollution Source to MeasuredDatas");
-                    }
-                    NewLog($"Insert data for Pollution Source to MeasuredDatas finished");
-
-                    lastGetSourceDateTime = DateTime.Now;
                 }
 
                 Thread.Sleep(30000);
@@ -1054,14 +911,20 @@ namespace GetPostsData
             }
         }
 
-        public static async Task SendEmailAsync(string email, string subject, string message)
+        public static async Task SendEmailAsync(List<Person> persons, string subject, string message)
         {
             try
             {
                 var emailMessage = new MimeMessage();
 
                 emailMessage.From.Add(new MailboxAddress(Theme, FromEmail));
-                emailMessage.To.Add(new MailboxAddress("", email));
+                foreach (var person in persons)
+                {
+                    if (IsValidEmail(person.Email))
+                    {
+                        emailMessage.To.Add(new MailboxAddress("", person.Email));
+                    }
+                }
                 emailMessage.Subject = subject;
                 emailMessage.Body = new TextPart(MimeKit.Text.TextFormat.Html)
                 {
@@ -1083,65 +946,6 @@ namespace GetPostsData
             }
         }
 
-        public static List<MeasuredData> ReceiveEmailAsync(DateTime? dateTime)
-        {
-            try
-            {
-                List<MeasuredData> measuredDatas = new List<MeasuredData>();
-
-                using (ImapClient client = new ImapClient())
-                {
-                    client.Connect("imap.gmail.com", 993, true);
-                    client.Authenticate(FromEmail, Password);
-                    IMailFolder inbox = client.Inbox;
-                    inbox.Open(FolderAccess.ReadOnly);
-                    dynamic query;
-                    if (dateTime == null)
-                    {
-                        query = SearchQuery.FromContains("balpisystem");
-                    }
-                    else
-                    {
-                        query = SearchQuery.DeliveredAfter(DateTime.Parse(dateTime.Value.AddHours(-24).ToString())) //Message sending time
-                            .And(SearchQuery.FromContains("balpisystem"));
-                    }
-                    foreach (var uid in inbox.Search(query))
-                    {
-                        List<string> text = new List<string>();
-                        var message = inbox.GetMessage(uid);
-                        var html = new HtmlAgilityPack.HtmlDocument();
-                        html.LoadHtml(message.HtmlBody);
-                        html.DocumentNode.SelectNodes("//span/text()").ToList().ForEach(x => text.Add(x.InnerHtml.Replace("\t","")));
-                        
-                        var value = text[text.FindIndex(x => x.Contains("Значение")) + 1];
-                        var date = text[text.FindIndex(x => x.Contains("среднего")) + 1];
-                        date = date.Substring(0, date.IndexOf("Central") - 1);
-                        var dateTimeServer = DateTime.ParseExact(date, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                        if (dateTimeServer > dateTime || dateTime == null)
-                        {
-                            int MeasuredParameterId = 9,
-                                PollutionSourceId = 5;
-                            bool Averaged = true;
-                            measuredDatas.Add(new MeasuredData
-                            {
-                                Value = Convert.ToDecimal(value.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)),
-                                DateTime = dateTimeServer,
-                                MeasuredParameterId = MeasuredParameterId,
-                                PollutionSourceId = PollutionSourceId,
-                                Averaged = Averaged
-                            });
-                        }
-                    }
-                }
-
-                return measuredDatas;
-            }
-            catch (Exception ex)
-            {
-                return null;
-            }
-        }
-
         private static bool IsValidEmail(string email)
         {
             try
@@ -1155,18 +959,18 @@ namespace GetPostsData
             }
         }
 
-        public static void CreateMail(
-            string message,
-            List<Person> persons)
-        {
-            foreach (var person in persons)
-            {
-                if (IsValidEmail(person.Email))
-                {
-                    Task.WaitAll(SendEmailAsync(person.Email, Heading, message));
-                }
-            }
-        }
+        //public static void CreateMail(
+        //    string message,
+        //    List<Person> persons)
+        //{
+        //    foreach (var person in persons)
+        //    {
+        //        if (IsValidEmail(person.Email))
+        //        {
+        //            Task.WaitAll(SendEmailAsync(person.Email, Heading, message));
+        //        }
+        //    }
+        //}
 
         public static void NewLogSendMail(
             int? MonitoringPostId,
