@@ -263,7 +263,7 @@ namespace GetPollutersData
             }
             catch (Exception ex)
             {
-                return null;
+                return new List<MeasuredData>();
             }
         }
     }
