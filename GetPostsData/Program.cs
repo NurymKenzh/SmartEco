@@ -930,19 +930,24 @@ namespace GetPostsData
                 {
                     Text = message
                 };
+                NewLog($"Send Email. Email Generated");
 
                 using (var client = new SmtpClient())
                 {
                     await client.ConnectAsync(SMTPServer, SMTPPort, true);
+                    NewLog($"Send Email. Connect Successful");
                     await client.AuthenticateAsync(FromEmail, Password);
+                    NewLog($"Send Email. Authenticate Successful");
                     await client.SendAsync(emailMessage);
+                    NewLog($"Send Email. Send Successful");
 
                     await client.DisconnectAsync(true);
+                    NewLog($"Send Email. Disconnect Successful");
                 }
             }
-            catch
+            catch (Exception ex)
             {
-
+                NewLog($"Send Email. Error: {ex.Message}");
             }
         }
 
