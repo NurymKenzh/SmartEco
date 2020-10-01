@@ -239,7 +239,7 @@ namespace GetPollutersData
                         var value = text[text.FindIndex(x => x.Contains("Значение")) + 1];
                         var date = text[text.FindIndex(x => x.Contains("среднего")) + 1];
                         date = date.Substring(0, date.IndexOf("Central") - 1);
-                        var dateTimeServer = DateTime.ParseExact(date, "M/dd/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                        var dateTimeServer = DateTime.ParseExact(date, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
                         if (dateTimeServer > dateTime || dateTime == null)
                         {
                             int MeasuredParameterId = 9,
