@@ -381,14 +381,14 @@
                 }
                 <table id="tableMeasuredDatas" class="table-bordered dialog-info-tab-table">
                     <thead>
-                        <tr>
+                        @*<tr>
                             <th>
                                 @SharedLocalizer["DateTime"]
                             </th>
                             <th>
                                 @SharedLocalizer["Value"]
                             </th>
-                        </tr>
+                        </tr>*@
                     </thead>
                     <tbody></tbody>
                 </table>
@@ -1173,6 +1173,8 @@
             //    GetMeasuredParameters();
             //}
             if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
+                $("#TableMeasuredParameterId").prop('hidden', false);
+
                 $("#ChartMeasuredParameterId").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatas();
                 });
@@ -1237,13 +1239,16 @@
                     title: title,
                     minHeight: 100,
                     minWidth: 100,
-                    width: 750,
-                    maxHeight: window.innerHeight
+                    width: window.innerWidth - (window.innerWidth / 100 * 30),
+                    maxHeight: window.innerHeight,
+                    position: { my: "center", at: "top+20%" }
                 });
                 GetPollutantsConcentration();
                 GetMeasuredParameters();
             }
             else if (layerName == 'PollutionSources') {
+                $("#TableMeasuredParameterId").prop('hidden', true);
+
                 $("#ChartMeasuredParameterId").unbind("change").bind("change", function() {
                     ChartGetMeasuredDatasPollutionSource();
                 });
@@ -1298,8 +1303,9 @@
                     title: title,
                     minHeight: 100,
                     minWidth: 100,
-                    width: 750,
-                    maxHeight: window.innerHeight
+                    width: window.innerWidth - (window.innerWidth / 100 * 30),
+                    maxHeight: window.innerHeight,
+                    position: { my: "center", at: "top+20%" }
                 });
                 GetMeasuredParametersPollutionSource();
             }
@@ -1446,7 +1452,6 @@
             //},
             type: 'POST',
             success: function (data) {
-                console.log(data);
                 var optionhtmlChart = '';
                 var optionhtmlTable = '';
                 $.each(data, function (i) {
@@ -1612,7 +1617,8 @@
                     borderWidth: 3,
                     fill: false,
                     showLine: true,
-                    lineTension: 0
+                    lineTension: 0,
+                    hidden: true
                 });
             }
             // add daily averaged
@@ -1625,7 +1631,8 @@
                     borderWidth: 3,
                     fill: false,
                     showLine: true,
-                    lineTension: 0
+                    lineTension: 0,
+                    hidden: true
                 });
             }
             if (data.measureddatas[0].measuredParameter.mpcDailyAverage != null) {
@@ -1638,7 +1645,8 @@
                     borderWidth: 3,
                     fill: false,
                     showLine: true,
-                    lineTension: 0
+                    lineTension: 0,
+                    hidden: true
                 });
             }
         }
@@ -1805,7 +1813,7 @@
             url: '@Url.Action("GetMeasuredDatasPollutionSource", "MeasuredDatas")',
             data: {
                 PollutionSourceId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
-                MeasuredParameterId: $('#TableMeasuredParameterId').val(),
+                //MeasuredParameterId: $('#TableMeasuredParameterId').val(),
                 DateFrom: $('#TableDateFrom').val(),
                 TimeFrom: $('#TableTimeFrom').val(),
                 DateTo: $('#TableDateTo').val(),
@@ -1814,7 +1822,7 @@
             },
             type: 'POST',
             success: function (data) {
-                ChangeTable(data, null, null);
+                ChangeTablePollutionSource(data);
             },
             error: function () {
                 $("#tableMeasuredDatas").LoadingOverlay("hide");
@@ -1848,7 +1856,8 @@
     }
 
     function ChangeTable(data, minMeasured, maxMeasured) {
-        $("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        //$("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        $("#tableMeasuredDatas").find("tr").remove();
         if (minMeasured != null || maxMeasured != null)
         for (var i = 0; i < data.measureddatas.length; i++) {
             if (minMeasured != null && data.measureddatas[i].value < minMeasured) {
@@ -1861,10 +1870,35 @@
                 data.measureddatas[i].value = parseFloat(data.measureddatas[i].value).toFixed(2);
             }
         }
-        var tablehtml = '';
+        var tablehtml = '',
+            tableHead = '';
+        tableHead += '<tr><th>' + $('#DateTime').val() + '</th><th>' + $('#Value').val() + '</th></tr>';
         for (var i = 0; i < data.measureddatas.length; i++) {
             tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + data.measureddatas[i].value + '</td></tr>';
         }
+        $('#tableMeasuredDatas thead').append(tableHead);
+        $('#tableMeasuredDatas tbody').append(tablehtml);
+        $("#tableMeasuredDatas").LoadingOverlay("hide");
+    };
+
+    function ChangeTablePollutionSource(data) {
+        //$("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        $("#tableMeasuredDatas").find("tr").remove();
+        var tablehtml = '',
+            tableHead = '';
+        tableHead += '<tr><th>' + $('#DateTime').val() + '</th>';
+        for (var i = 0; i < data.measuredParameters.length; i++) {
+            tableHead += '<th>' + data.measuredParameters[i].name + '</th>';
+        }
+        tableHead += '</tr>';
+        for (var i = 0; i < data.array.length; i++) {
+            tablehtml += '<tr>';
+            for (var j = 0; j < data.array[i].length; j++) {
+                tablehtml += '<td>' + data.array[i][j] + '</td>';
+            }
+            tablehtml += '</tr>';
+        }
+        $('#tableMeasuredDatas thead').append(tableHead);
         $('#tableMeasuredDatas tbody').append(tablehtml);
         $("#tableMeasuredDatas").LoadingOverlay("hide");
     };
@@ -2064,8 +2098,9 @@
                 title: $('#EcoserviceAirPost').val(),
                 minHeight: 100,
                 minWidth: 100,
-                width: 750,
-                maxHeight: window.innerHeight
+                width: window.innerWidth - (window.innerWidth / 100 * 30),
+                maxHeight: window.innerHeight,
+                position: { my: "center", at: "top+20%" }
             });
             GetMeasuredParameters();
             ChartGetMeasuredDatas();

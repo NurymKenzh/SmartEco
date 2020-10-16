@@ -65,9 +65,11 @@ namespace GetPollutersData
                     List<MeasuredData> measuredDatasSource = new List<MeasuredData>();
                     List<int> measuredParametersId = new List<int> { 1, 4, 5, 6, 19 }; //Атм. давл., Темп., Скор. ветра, Напр. ветра, Влажность
 
+                    // Get Datas for Pollution Source
                     NewLog("Get. Get Data for Pollution Source started");
                     if (measuredDatasSourceDB.Count != 0)
                     {
+                        // Get Datas from Email
                         var measuredDatasSO2 = measuredDatasSourceDB
                             .Where(m => m.MeasuredParameterId == 9)
                             .LastOrDefault();
@@ -80,6 +82,7 @@ namespace GetPollutersData
                             measuredDatasSource = ReceiveEmailAsync(measuredDatasSO2.DateTime).Result;
                         }
 
+                        // Get Datas from Post
                         foreach (var measuredParameterId in measuredParametersId)
                         {
                             var measuredDataSourceDB = measuredDatasSourceDB
@@ -115,6 +118,73 @@ namespace GetPollutersData
                             }
                         }
 
+                        // Get Datas by Formula
+                        var measuredDataSourceDBFormula = measuredDatasSourceDB
+                                .Where(m => m.MeasuredParameterId == 25)
+                                .LastOrDefault();
+                        if (measuredDataSourceDBFormula == null)
+                        {
+                            DateTime? dateTime = new DateTime(2000, 1, 1);
+                            do
+                            {
+                                try
+                                {
+                                    dateTime = measuredDatasSourceDB.Where(m => m.DateTime > dateTime).FirstOrDefault().DateTime;
+
+                                    var temp = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 4 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var pres = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 1 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var so2 = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var value = GetValueByFormula(temp, pres, so2);
+
+                                    measuredDatasSource.Add(new MeasuredData
+                                    {
+                                        PollutionSourceId = 5,
+                                        Value = value,
+                                        DateTime = dateTime,
+                                        MeasuredParameterId = 25,
+                                        Averaged = true
+                                    });
+                                }
+                                catch
+                                {
+
+                                }
+
+                            //} while (measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9).Last().DateTime != dateTime);
+                            } while (measuredDatasSourceDB.LastOrDefault().DateTime != dateTime);
+                        }
+                        else
+                        {
+                            DateTime? dateTime = measuredDataSourceDBFormula.DateTime;
+                            do
+                            {
+                                try
+                                {
+                                    dateTime = measuredDatasSourceDB.Where(m => m.DateTime > dateTime).FirstOrDefault().DateTime;
+
+                                    var temp = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 4 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var pres = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 1 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var so2 = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var value = GetValueByFormula(temp, pres, so2);
+
+                                    measuredDatasSource.Add(new MeasuredData
+                                    {
+                                        PollutionSourceId = 5,
+                                        Value = value,
+                                        DateTime = dateTime,
+                                        MeasuredParameterId = 25,
+                                        Averaged = true
+                                    });
+                                }
+                                catch
+                                {
+
+                                }
+
+                            //} while (measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9).Last().DateTime != dateTime);
+                            } while (measuredDatasSourceDB.LastOrDefault().DateTime != dateTime);
+                        }
+
                         measuredDatasSource = measuredDatasSource
                             .OrderBy(m => m.DateTime)
                             .ToList();
@@ -137,6 +207,35 @@ namespace GetPollutersData
                                     Averaged = m.Averaged
                                 }));
                         }
+
+                        DateTime? dateTime = new DateTime(2000, 1, 1);
+                        do
+                        {
+                            try
+                            {
+                                dateTime = measuredDatasPost.Where(m => m.DateTime > dateTime).FirstOrDefault().DateTime;
+
+                                var temp = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 4 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                var pres = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 1 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                var so2 = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                var value = GetValueByFormula(temp, pres, so2);
+
+                                measuredDatasSource.Add(new MeasuredData
+                                {
+                                    PollutionSourceId = 5,
+                                    Value = value,
+                                    DateTime = dateTime,
+                                    MeasuredParameterId = 25,
+                                    Averaged = true
+                                });
+                            }
+                            catch
+                            {
+
+                            }
+
+                        //} while (measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9).Last().DateTime != dateTime);
+                        } while (measuredDatasSourceDB.LastOrDefault().DateTime != dateTime);
 
                         measuredDatasSource = measuredDatasSource
                             .OrderBy(m => m.DateTime)
@@ -182,6 +281,17 @@ namespace GetPollutersData
             }
         }
 
+        public static decimal? GetValueByFormula(decimal? t, decimal? P, decimal? K)
+        {
+            var Vt = 200000; // м3/час
+            var V0 = (Vt * 273 * P) / ((273 + t) * 760); // м3/час
+            K = K / 1000; // мг/м3 --> г/м3
+            V0 = V0 / 3600; // м3/час --> м3/с
+            var F = K * V0; // г/с
+
+            return F;
+        }
+
         public static void NewLog(string Log)
         {
             Console.WriteLine($"{DateTime.Now.ToString()} >> {Log}{Environment.NewLine}");
@@ -208,9 +318,9 @@ namespace GetPollutersData
 
         public static async Task<List<MeasuredData>> ReceiveEmailAsync(DateTime? dateTime)
         {
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
             try
             {
-                List<MeasuredData> measuredDatas = new List<MeasuredData>();
 
                 using (ImapClient client = new ImapClient())
                 {
@@ -230,29 +340,36 @@ namespace GetPollutersData
                     }
                     foreach (var uid in await inbox.SearchAsync(query))
                     {
-                        List<string> text = new List<string>();
-                        var message = await inbox.GetMessageAsync(uid);
-                        var html = new HtmlAgilityPack.HtmlDocument();
-                        html.LoadHtml(message.HtmlBody);
-                        html.DocumentNode.SelectNodes("//span/text()").ToList().ForEach(x => text.Add(x.InnerHtml.Replace("\t", "")));
-
-                        var value = text[text.FindIndex(x => x.Contains("Значение")) + 1];
-                        var date = text[text.FindIndex(x => x.Contains("среднего")) + 1];
-                        date = date.Substring(0, date.IndexOf("Central") - 1);
-                        var dateTimeServer = DateTime.ParseExact(date, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
-                        if (dateTimeServer > dateTime || dateTime == null)
+                        try
                         {
-                            int MeasuredParameterId = 9,
-                                PollutionSourceId = 5;
-                            bool Averaged = true;
-                            measuredDatas.Add(new MeasuredData
+                            List<string> text = new List<string>();
+                            var message = await inbox.GetMessageAsync(uid);
+                            var html = new HtmlAgilityPack.HtmlDocument();
+                            html.LoadHtml(message.HtmlBody);
+                            html.DocumentNode.SelectNodes("//span/text()").ToList().ForEach(x => text.Add(x.InnerHtml.Replace("\t", "")));
+
+                            var value = text[text.FindIndex(x => x.Contains("Значение")) + 1];
+                            var date = text[text.FindIndex(x => x.Contains("среднего")) + 1];
+                            date = date.Substring(0, date.IndexOf("Central") - 1);
+                            var dateTimeServer = DateTime.ParseExact(date, "M/d/yyyy h:mm:ss tt", CultureInfo.InvariantCulture);
+                            if (dateTimeServer > dateTime || dateTime == null)
                             {
-                                Value = Convert.ToDecimal(value.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)),
-                                DateTime = dateTimeServer,
-                                MeasuredParameterId = MeasuredParameterId,
-                                PollutionSourceId = PollutionSourceId,
-                                Averaged = Averaged
-                            });
+                                int MeasuredParameterId = 9,
+                                    PollutionSourceId = 5;
+                                bool Averaged = true;
+                                measuredDatas.Add(new MeasuredData
+                                {
+                                    Value = Convert.ToDecimal(value.Replace(".", CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator)),
+                                    DateTime = dateTimeServer,
+                                    MeasuredParameterId = MeasuredParameterId,
+                                    PollutionSourceId = PollutionSourceId,
+                                    Averaged = Averaged
+                                });
+                            }
+                        }
+                        catch
+                        {
+
                         }
                     }
 
@@ -263,7 +380,7 @@ namespace GetPollutersData
             }
             catch (Exception ex)
             {
-                return new List<MeasuredData>();
+                return measuredDatas;
             }
         }
     }

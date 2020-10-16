@@ -577,65 +577,68 @@ namespace SmartEco.Controllers
             string url = "api/MeasuredDatas/pollutionSource",
                 route = "",
                 routeDailyAverage = "";
-            // First condition - for select chart and table
+            // SortOrder=DateTime
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"SortOrder=DateTime";
+
+                routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                routeDailyAverage += $"SortOrder=DateTime";
+            }
+            // PollutionSourceId
+            if (PollutionSourceId != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"PollutionSourceId={PollutionSourceId}";
+
+                routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                routeDailyAverage += $"PollutionSourceId={PollutionSourceId}";
+            }
+            // MeasuredParameterId
             if (MeasuredParameterId != null)
             {
-                // SortOrder=DateTime
-                {
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"SortOrder=DateTime";
-
-                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
-                    routeDailyAverage += $"SortOrder=DateTime";
-                }
-                // PollutionSourceId
-                if (PollutionSourceId != null)
-                {
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"PollutionSourceId={PollutionSourceId}";
-
-                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
-                    routeDailyAverage += $"PollutionSourceId={PollutionSourceId}";
-                }
-                // MeasuredParameterId
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
                 route += $"MeasuredParameterId={MeasuredParameterId}";
 
                 routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
                 routeDailyAverage += $"MeasuredParameterId={MeasuredParameterId}";
-                // AveragedFilter
-                {
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"Averaged={Averaged}";
+            }
+            // AveragedFilter
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"Averaged={Averaged}";
 
-                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
-                    routeDailyAverage += $"Averaged={Averaged}";
-                }
-                // dateTimeFrom
-                {
-                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+                routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                routeDailyAverage += $"Averaged={Averaged}";
+            }
+            // dateTimeFrom
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
 
-                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
-                    routeDailyAverage += $"DateTimeFrom={DateTime.Now.AddDays(-1).ToString(dateTimeFormatInfo)}";
-                }
-                // dateTimeTo
-                {
-                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+                routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                routeDailyAverage += $"DateTimeFrom={DateTime.Now.AddDays(-1).ToString(dateTimeFormatInfo)}";
+            }
+            // dateTimeTo
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
 
-                    routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
-                    routeDailyAverage += $"DateTimeTo={DateTime.Now.ToString(dateTimeFormatInfo)}";
-                }
-                HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
-                if (response.IsSuccessStatusCode)
-                {
-                    measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
-                }
-                measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToList();
+                routeDailyAverage += string.IsNullOrEmpty(routeDailyAverage) ? "?" : "&";
+                routeDailyAverage += $"DateTimeTo={DateTime.Now.ToString(dateTimeFormatInfo)}";
+            }
+            HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
+            if (response.IsSuccessStatusCode)
+            {
+                measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
+            }
+            measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToList();
 
+            // For select chart
+            if (MeasuredParameterId != null)
+            {
                 HttpResponseMessage responseDailyAverage = await _HttpApiClient.GetAsync(url + routeDailyAverage);
                 if (responseDailyAverage.IsSuccessStatusCode)
                 {
@@ -647,6 +650,44 @@ namespace SmartEco.Controllers
                 {
                     dailyAverage = measureddatasDailyAverage.Sum(m => m.Value) / measureddatasDailyAverage.Count();
                 }
+            }
+            // For select table
+            else
+            {
+                var measuredParameters = measureddatas
+                    .Where(m => m.MeasuredParameterId != 5 && m.MeasuredParameterId != 6) //Скор. ветра, Напр. ветра
+                    .Select(m => new { m.MeasuredParameter.Id, m.MeasuredParameter.Name })
+                    .Distinct()
+                    .ToList();
+                var dateTimes = measureddatas
+                    .Select(m => new { m.DateTime })
+                    .Distinct()
+                    .ToList();
+                string[,] array = new string[dateTimes.Count, measuredParameters.Count + 1];
+
+                for (int i = 0; i < dateTimes.Count; i++)
+                {
+                    var measuredData = measureddatas.Where(m => m.DateTime == dateTimes[i].DateTime);
+                    array[i, 0] = dateTimes[i].DateTime.ToString();
+                    for (int j = 0; j < measuredParameters.Count; j++)
+                    {
+                        var data = measuredData.Where(m => m.MeasuredParameterId == measuredParameters[j].Id).FirstOrDefault();
+                        if(data != null)
+                        {
+                            array[i, j + 1] = Math.Round(Convert.ToDecimal(data.Value), 3).ToString();
+                        }
+                        else
+                        {
+                            array[i, j + 1] = "";
+                        }
+                    }
+                }
+
+                return Json(new
+                {
+                    array,
+                    measuredParameters
+                });
             }
             return Json(new
             {

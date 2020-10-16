@@ -19,7 +19,8 @@
 <script src="~/lib/moment.js/moment.js"></script>
 <link href="~/lib/jstree/dist/themes/default/style.css" rel="stylesheet" />
 <script src="~/lib/jstree/dist/jstree.js"></script>
-<script src="~/lib/turf.js/turf515.min.js"></script>
+@*<script src="~/lib/turf.js/turf515.min.js"></script>*@
+<script src="~/lib/turf.js/turf516.min.js"></script>
 
 <style>
     /*.map {
@@ -2847,6 +2848,7 @@
             type: 'POST',
             success: function (data) {
                 var turfFeatureCollection = JSON.parse(data.answer);
+                console.log(turfFeatureCollection);
                 const minAndMax = turfFeatureCollection.features.reduce(
                     (values, feature) => {
                         const c = feature.properties['c_pdk'];
