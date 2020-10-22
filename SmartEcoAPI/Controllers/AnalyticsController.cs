@@ -53,7 +53,7 @@ namespace SmartEcoAPI.Controllers
         {
             var measuredDatas = GetMeasuredData(DateTimeFrom, DateTimeTo, true).ToList();
             measuredDatas = measuredDatas
-                .Where(m => !string.IsNullOrEmpty(m.MonitoringPost.MN) && !string.IsNullOrEmpty(m.MeasuredParameter.OceanusCode))
+                .Where(m => !string.IsNullOrEmpty(m.MonitoringPost?.MN) && !string.IsNullOrEmpty(m.MeasuredParameter?.OceanusCode))
                 .OrderBy(m => m.DateTime)
                 .ToList();
 
