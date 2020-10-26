@@ -813,7 +813,7 @@ namespace SmartEco.Controllers
             int PollutionEnvironmentId,
             int TargetId,
             int TargetTerritoryId,
-            int EventId,
+            int? EventId,
             int? ProjectId)
         {
             List<AActivity> aActivities = new List<AActivity>();
@@ -826,11 +826,13 @@ namespace SmartEco.Controllers
             }
             if(ProjectId != null)
             {
-                aActivities = aActivities.Where(a => a.Target.PollutionEnvironmentId == PollutionEnvironmentId && a.TargetId == TargetId && a.TargetTerritoryId == TargetTerritoryId && a.EventId == EventId && a.ProjectId == ProjectId).OrderBy(a => a.Year).ToList();
+                aActivities = aActivities.Where(a => a.Target.PollutionEnvironmentId == PollutionEnvironmentId
+                && a.TargetId == TargetId && a.TargetTerritoryId == TargetTerritoryId && (a.EventId == EventId || EventId == null) && a.ProjectId == ProjectId).OrderBy(a => a.Year).ToList();
             }
             else
             {
-                aActivities = aActivities.Where(a => a.Target.PollutionEnvironmentId == PollutionEnvironmentId && a.TargetId == TargetId && a.TargetTerritoryId == TargetTerritoryId && a.EventId == EventId).OrderBy(a => a.Year).ToList();
+                aActivities = aActivities.Where(a => a.Target.PollutionEnvironmentId == PollutionEnvironmentId
+                && a.TargetId == TargetId && a.TargetTerritoryId == TargetTerritoryId && (a.EventId == EventId || EventId == null)).OrderBy(a => a.Year).ToList();
             }
             var result = aActivities.OrderBy(m => m.Name);
 

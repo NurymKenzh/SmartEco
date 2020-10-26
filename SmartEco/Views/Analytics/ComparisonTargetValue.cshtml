@@ -42,7 +42,7 @@
                 </th>
                 <th>
                     @Html.DisplayName(SharedLocalizer["Event"])
-                    @Html.DropDownList("EventId", (IEnumerable<SelectListItem>)ViewBag.Events, htmlAttributes: new { @class = "form-control info-input-select", @id = "EventId", @onchange = "GetAActivity();" })
+                    @Html.DropDownList("EventId", (IEnumerable<SelectListItem>)ViewBag.Events, "", htmlAttributes: new { @class = "form-control info-input-select", @id = "EventId", @onchange = "GetAActivity();" })
                 </th>
                 @if (Role == "admin" || Role == "moderator")
                 {
