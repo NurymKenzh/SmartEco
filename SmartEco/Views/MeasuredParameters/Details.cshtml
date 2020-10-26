@@ -64,6 +64,12 @@
         <dd class="col-sm-10">
             @Html.DisplayFor(model => model.KazhydrometCode)
         </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PollutionEnvironment)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PollutionEnvironment.Name)
+        </dd>
     </dl>
 </div>
 @if (Role == "admin" || Role == "moderator")

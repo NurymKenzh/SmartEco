@@ -88,5 +88,10 @@ namespace SmartEco.Models
         [DisplayFormat(DataFormatString = "{0:G}", ApplyFormatInEditMode = true)]
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "MPCMaxSingle")]
         public decimal? MPCMaxSingle { get; set; }
+
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "PollutionEnvironment")]
+        public int? PollutionEnvironmentId { get; set; }
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "PollutionEnvironment")]
+        public PollutionEnvironment PollutionEnvironment { get; set; }
     }
 }

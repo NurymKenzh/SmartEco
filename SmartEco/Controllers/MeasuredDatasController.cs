@@ -536,6 +536,29 @@ namespace SmartEco.Controllers
                 {
                     measuredDatas = await response.Content.ReadAsAsync<List<MeasuredData>>();
                 }
+                var measuredData = measuredDatas.FirstOrDefault();
+                if (measuredData != null)
+                {
+                    //Water
+                    if (measuredData.MonitoringPost.PollutionEnvironmentId == 3)
+                    {
+                        measuredDatas = measuredDatas
+                            .Select(m => new MeasuredData
+                            {
+                                Averaged = m.Averaged,
+                                DateTime = Convert.ToDateTime(m.DateTimeOrYearMonth),
+                                Id = m.Id,
+                                MeasuredParameter = m.MeasuredParameter,
+                                MeasuredParameterId = m.MeasuredParameterId,
+                                MonitoringPost = m.MonitoringPost,
+                                MonitoringPostId = m.MonitoringPostId,
+                                Month = m.Month,
+                                Value = m.Value,
+                                Year = m.Year
+                            })
+                            .ToList();
+                    }
+                }
                 measureddatas = measuredDatas.OrderByDescending(m => m.DateTime).ToList();
 
                 HttpResponseMessage responseDailyAverage = await _HttpApiClient.GetAsync(url + routeDailyAverage);

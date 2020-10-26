@@ -324,6 +324,7 @@ namespace SmartEcoAPI.Controllers
         public void PostMonitoringPostMeasuredParameter(
             int MonitoringPostId,
             int DataProviderId,
+            int PollutionEnvironmentId,
             string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
@@ -334,17 +335,27 @@ namespace SmartEcoAPI.Controllers
         {
             List<int> idMeasuredParameters = new List<int>();
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            if (DataProviderId == 1)
+            //Water
+            if (PollutionEnvironmentId == 3)
             {
-                measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
-            }
-            else if (DataProviderId == 3 || DataProviderId == 2)
-            {
-                measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
+                measuredParameters = _context.MeasuredParameter.Where(m => m.PollutionEnvironmentId == 3).ToList();
             }
             else
             {
-                measuredParameters = _context.MeasuredParameter.ToList();
+                //Kazhydromet
+                if (DataProviderId == 1)
+                {
+                    measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
+                }
+                //Ecoservice, Urus
+                else if (DataProviderId == 3 || DataProviderId == 2)
+                {
+                    measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
+                }
+                else
+                {
+                    measuredParameters = _context.MeasuredParameter.ToList();
+                }
             }
 
             if (CultureName == "ru")
@@ -460,6 +471,7 @@ namespace SmartEcoAPI.Controllers
         public async Task<ActionResult<MonitoringPostMeasuredParameters>> EditMonitoringPostMeasuredParameter(
             int MonitoringPostId,
             int DataProviderId,
+            int PollutionEnvironmentId,
             string CultureName,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             [FromQuery(Name = "Min")] List<string> Min,
@@ -470,17 +482,27 @@ namespace SmartEcoAPI.Controllers
         {
             List<int> idMeasuredParameters = new List<int>();
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            if (DataProviderId == 1)
+            //Water
+            if (PollutionEnvironmentId == 3)
             {
-                measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
-            }
-            else if (DataProviderId == 3 || DataProviderId == 2)
-            {
-                measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
+                measuredParameters = _context.MeasuredParameter.Where(m => m.PollutionEnvironmentId == 3).ToList();
             }
             else
             {
-                measuredParameters = _context.MeasuredParameter.ToList();
+                //Kazhydromet
+                if (DataProviderId == 1)
+                {
+                    measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
+                }
+                //Ecoservice, Urus
+                else if (DataProviderId == 3 || DataProviderId == 2)
+                {
+                    measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
+                }
+                else
+                {
+                    measuredParameters = _context.MeasuredParameter.ToList();
+                }
             }
 
             if (CultureName == "ru")
@@ -666,7 +688,8 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
         public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParameters(
             int MonitoringPostId,
-            int DataProviderId)
+            int DataProviderId,
+            int PollutionEnvironmentId)
         {
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters
                 .Where(m => m.MonitoringPostId == MonitoringPostId)
@@ -675,18 +698,32 @@ namespace SmartEcoAPI.Controllers
                 .OrderBy(m => m.MonitoringPostId)
                 .ToList();
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            if (DataProviderId == 1)
+
+            //Water
+            if (PollutionEnvironmentId == 3)
             {
-                measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).OrderBy(m => m.Id).ToList();
-            }
-            else if (DataProviderId == 3 || DataProviderId == 2)
-            {
-                measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).OrderBy(m => m.Id).ToList();
+                measuredParameters = _context.MeasuredParameter.Where(m => m.PollutionEnvironmentId == 3).ToList();
             }
             else
             {
-                measuredParameters = _context.MeasuredParameter.OrderBy(m => m.Id).ToList();
+                //Kazhydromet
+                if (DataProviderId == 1)
+                {
+                    measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
+                }
+                //Ecoservice, Urus
+                else if (DataProviderId == 3 || DataProviderId == 2)
+                {
+                    measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
+                }
+                else
+                {
+                    measuredParameters = _context.MeasuredParameter.ToList();
+                }
             }
+
+            measuredParameters = measuredParameters.OrderBy(m => m.Id).ToList();
+
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameterWithNull = new List<MonitoringPostMeasuredParameters>();
             bool check = false;
             for (int i = 0; i < measuredParameters.Count; i++)

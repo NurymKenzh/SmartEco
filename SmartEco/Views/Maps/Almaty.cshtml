@@ -127,6 +127,7 @@
     <input id="DailyAveraged" type="text" value="@SharedLocalizer["DailyAveraged"]" />
     <input id="KazHydrometAirPost" type="text" value="@SharedLocalizer["KazHydrometAirPost"]" />
     <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
+    <input id="KazHydrometWaterPost" type="text" value="@SharedLocalizer["KazHydrometWaterPost"]" />
     <input id="Automatic" type="text" value="@SharedLocalizer["Automatic"]" />
     <input id="Hands" type="text" value="@SharedLocalizer["Hands"]" />
     <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirStation"]" />
@@ -795,7 +796,8 @@
         }),
         inactive: new ol.style.Style({
             image: new ol.style.Icon(({
-                src: '/images/KazHydrometAirMonitoringPostAutoInactive.png',
+                //src: '/images/KazHydrometAirMonitoringPostAutoInactive.png',
+                src: '/images/KazHydrometAirMonitoringPostAutoGreen.png',
                 anchor: [0.5, 0.5],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'fraction',
@@ -883,7 +885,8 @@
         }),
         inactive: new ol.style.Style({
             image: new ol.style.Icon(({
-                src: '/images/KazHydrometAirMonitoringPostHandsInactive.png',
+                //src: '/images/KazHydrometAirMonitoringPostHandsInactive.png',
+                src: '/images/KazHydrometAirMonitoringPostHandsGreen.png',
                 anchor: [0.5, 0.5],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'fraction',
@@ -997,7 +1000,8 @@
         }),
         inactive: new ol.style.Style({
             image: new ol.style.Icon(({
-                src: '/images/EcoserviceAirMonitoringPostInactive.png',
+                //src: '/images/EcoserviceAirMonitoringPostInactive.png',
+                src: '/images/EcoserviceAirMonitoringPostGreen.png',
                 anchor: [0.5, 0.5],
                 anchorXUnits: 'fraction',
                 anchorYUnits: 'fraction',
@@ -1740,7 +1744,8 @@
             layerName = layer.get('name');
             if (layer.get('name') == 'KazHydrometAirMonitoringPostsAutomatic'
                 || layer.get('name') == 'KazHydrometAirMonitoringPostsHands'
-                || layer.get('name') == 'EcoserviceAirMonitoringPosts') {
+                || layer.get('name') == 'EcoserviceAirMonitoringPosts'
+                || layer.get('name') == 'KazHydrometWaterMonitoringPosts') {
                 return feature;
             }
         });
@@ -1779,7 +1784,7 @@
             //    });
             //    GetMeasuredParameters();
             //}
-            if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
+            if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands' || layerName == 'KazHydrometWaterMonitoringPosts') {
                 $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
                 $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
                 $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
@@ -1800,6 +1805,13 @@
                 var title = $('#EcoserviceAirPost').val();
                 if (layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
                     title = $('#KazHydrometAirPost').val();
+                }
+                if (layerName == 'KazHydrometWaterMonitoringPosts') {
+                    title = $('#KazHydrometWaterPost').val();
+                    //Create date for water post
+                    $("#ChartDateFrom").val("2017-05-01");
+                    $("#ChartDateTo").val("2017-06-01");
+                    $("#ChartAveraged").prop('checked', false);
                 }
                 $("#dialogMonitoringPostInfo").dialog({
                     resize: DialogResize,
@@ -2010,7 +2022,7 @@
             data4 = [],
             values = [];
         for (var i = 0; i < data.measureddatas.length; i++) {
-            values.push(parseFloat(data.measureddatas[i].value).toFixed(2));
+            values.push(parseFloat(data.measureddatas[i].value).toFixed(3));
             if (data.measureddatas[0].measuredParameter.mpcMaxSingle != null) {
                 values.push(parseFloat(data.measureddatas[i].measuredParameter.mpcMaxSingle).toFixed(3));
             }
@@ -2018,18 +2030,18 @@
                 values.push(parseFloat(data.measureddatas[i].measuredParameter.mpcDailyAverage).toFixed(3));
             }
         }
-        if (min == null) {
+        //if (min == null) {
             min = Math.min.apply(null, values);
             if (min > 1) {
                 min = Math.floor(min);
             }
-        }
-        if (max == null) {
+        //}
+        //if (max == null) {
             max = Math.max.apply(null, values);
             if (max > 1) {
                 max = Math.ceil(max);
             }
-        }
+        //}
         for (var i = 0; i < data.measureddatas.length; i++) {
             data1.push({
                 'x': moment(data.measureddatas[i].dateTime),
@@ -2037,7 +2049,7 @@
             });
             data2.push({
                 'x': moment(data.measureddatas[i].dateTime),
-                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcMaxSingle).toFixed(2)
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcMaxSingle).toFixed(3)
             });
             data3.push({
                 'x': moment(data.measureddatas[i].dateTime),
@@ -2045,7 +2057,7 @@
             });
             data4.push({
                 'x': moment(data.measureddatas[i].dateTime),
-                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcDailyAverage).toFixed(2)
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcDailyAverage).toFixed(3)
             });
         }
         var datasets = [];
@@ -2064,7 +2076,7 @@
         });
         if (data.measureddatas.length > 0) {
             if (data.measureddatas[0].measuredParameter.mpcMaxSingle != null) {
-                MPCMaxSingle = parseFloat(data.measureddatas[0].measuredParameter.mpcMaxSingle).toFixed(2);
+                MPCMaxSingle = parseFloat(data.measureddatas[0].measuredParameter.mpcMaxSingle).toFixed(3);
                 datasets.push({
                     label: $("#MPCMaxSingle").val(),
                     data: data2,
@@ -2090,7 +2102,7 @@
                 });
             }
             if (data.measureddatas[0].measuredParameter.mpcDailyAverage != null) {
-                MPCDailyAverage = parseFloat(data.measureddatas[0].measuredParameter.mpcDailyAverage).toFixed(2);
+                MPCDailyAverage = parseFloat(data.measureddatas[0].measuredParameter.mpcDailyAverage).toFixed(3);
                 datasets.push({
                     label: $("#MPCDailyAverage").val(),
                     data: data4,

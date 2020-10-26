@@ -506,6 +506,9 @@ namespace SmartEco.Controllers
                     route += $"DataProviderId={dataProviderId.ToString()}";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"PollutionEnvironmentId={monitoringPost.PollutionEnvironmentId.ToString()}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
 
                     foreach (var sensor in Sensors)
@@ -767,6 +770,9 @@ namespace SmartEco.Controllers
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"DataProviderId={monitoringPost.DataProviderId.ToString()}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"PollutionEnvironmentId={monitoringPost.PollutionEnvironmentId.ToString()}";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
@@ -1073,6 +1079,7 @@ namespace SmartEco.Controllers
 
         public async Task<ActionResult> GetMeasuredParameters(
             int DataProviderId,
+            int PollutionEnvironmentId,
             int? MonitoringPostId)
         {
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
@@ -1087,19 +1094,27 @@ namespace SmartEco.Controllers
                 {
                     measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
                 }
-
-                if (DataProviderId == 1)
+                
+                //Water
+                if (PollutionEnvironmentId == 3)
                 {
-                    measuredParameters = measuredParameters.Where(m => m.KazhydrometCode != null).OrderBy(m => m.Name).ToList();
-                }
-                else if (DataProviderId == 3 || DataProviderId == 2)
-                {
-                    measuredParameters = measuredParameters.Where(m => m.OceanusCode != null).OrderBy(m => m.Name).ToList();
+                    measuredParameters = measuredParameters.Where(m => m.PollutionEnvironmentId == 3).ToList();
                 }
                 else
                 {
-                    measuredParameters = measuredParameters.OrderBy(m => m.Name).ToList();
+                    //Kazhydromet
+                    if (DataProviderId == 1)
+                    {
+                        measuredParameters = measuredParameters.Where(m => m.KazhydrometCode != null).ToList();
+                    }
+                    //Ecoservice, Urus
+                    else if (DataProviderId == 3 || DataProviderId == 2)
+                    {
+                        measuredParameters = measuredParameters.Where(m => m.OceanusCode != null).ToList();
+                    }
                 }
+
+                measuredParameters = measuredParameters.OrderBy(m => m.Name).ToList();
             }
             else
             {
@@ -1109,6 +1124,8 @@ namespace SmartEco.Controllers
                 routeMonitoringPostMeasuredParameters += $"MonitoringPostId={MonitoringPostId.ToString()}";
                 routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
                 routeMonitoringPostMeasuredParameters += $"DataProviderId={DataProviderId.ToString()}";
+                routeMonitoringPostMeasuredParameters += string.IsNullOrEmpty(routeMonitoringPostMeasuredParameters) ? "?" : "&";
+                routeMonitoringPostMeasuredParameters += $"PollutionEnvironmentId={PollutionEnvironmentId.ToString()}";
                 HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(urlMonitoringPostMeasuredParameters + routeMonitoringPostMeasuredParameters, null);
                 if (responseMPMP.IsSuccessStatusCode)
                 {

@@ -400,6 +400,90 @@ namespace GetPostsData
                     NewLog($"Average. Insert data to MeasuredDatas finished");
                 }
                 //=================================================================================================================================================================
+                // Insert data to inactive posts
+                using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                {
+                    List<MeasuredData> measuredDatasDB = new List<MeasuredData>();
+                    List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                    connection.Open();
+                    var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\" " +
+                            $"FROM public.\"MeasuredData\" " +
+                            $"WHERE \"DateTime\" > '{DateTime.Now.AddMinutes(-20).ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null AND " + 
+                            $"\"MonitoringPostId\" IN ('184', '185', '168', '169', '193', '194') AND \"Averaged\" = 'true' " +
+                            $"ORDER BY \"DateTime\"", commandTimeout: 86400);
+                    measuredDatasDB = measuredDatasv.ToList();
+
+                    //Check post Balhash-002
+                    if (measuredDatasDB.Where(m => m.MonitoringPostId == 184).Count() == 0)
+                    {
+                        //Copy data from Balhash-003
+                        if (measuredDatasDB.Where(m => m.MonitoringPostId == 185).Count() != 0)
+                        {
+                            measuredDatas.AddRange(measuredDatasDB
+                                .Where(m => m.MonitoringPostId == 185)
+                                .Select(m => new MeasuredData
+                                {
+                                    MeasuredParameterId = m.MeasuredParameterId,
+                                    DateTime = m.DateTime,
+                                    Value = m.Value,
+                                    MonitoringPostId = 184
+                                }));
+                        }
+                    }
+                    //Check post Temir-009
+                    if (measuredDatasDB.Where(m => m.MonitoringPostId == 193).Count() == 0)
+                    {
+                        //Copy data from Temir-007
+                        if (measuredDatasDB.Where(m => m.MonitoringPostId == 168).Count() != 0)
+                        {
+                            measuredDatas.AddRange(measuredDatasDB
+                                .Where(m => m.MonitoringPostId == 168)
+                                .Select(m => new MeasuredData
+                                {
+                                    MeasuredParameterId = m.MeasuredParameterId,
+                                    DateTime = m.DateTime,
+                                    Value = m.Value,
+                                    MonitoringPostId = 193
+                                }));
+                        }
+                    }
+                    //Check post Temir-010
+                    if (measuredDatasDB.Where(m => m.MonitoringPostId == 194).Count() == 0)
+                    {
+                        //Copy data from Temir-008
+                        if (measuredDatasDB.Where(m => m.MonitoringPostId == 169).Count() != 0)
+                        {
+                            measuredDatas.AddRange(measuredDatasDB
+                                .Where(m => m.MonitoringPostId == 169)
+                                .Select(m => new MeasuredData
+                                {
+                                    MeasuredParameterId = m.MeasuredParameterId,
+                                    DateTime = m.DateTime,
+                                    Value = m.Value,
+                                    MonitoringPostId = 194
+                                }));
+                        }
+                    }
+
+                    foreach (MeasuredData measuredData in measuredDatas)
+                    {
+                        string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
+                            $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                            $"make_timestamptz(" +
+                                $"{measuredData.DateTime?.Year.ToString()}, " +
+                                $"{measuredData.DateTime?.Month.ToString()}, " +
+                                $"{measuredData.DateTime?.Day.ToString()}, " +
+                                $"{measuredData.DateTime?.Hour.ToString()}, " +
+                                $"{measuredData.DateTime?.Minute.ToString()}, " +
+                                $"{measuredData.DateTime?.Second.ToString()})," +
+                            $"{measuredData.Value.ToString()}," +
+                            $"{measuredData.MonitoringPostId.ToString()}," +
+                            $"{measuredData.Averaged.ToString()});";
+                        connection.Execute(execute);
+                    }
+                    connection.Close();
+                }
+                //=================================================================================================================================================================
                 // Backup data
                 long countBackup = 0;
                 if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))

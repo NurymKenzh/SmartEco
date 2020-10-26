@@ -230,6 +230,17 @@ namespace SmartEco.Controllers
                 measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
             }
             ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name");
+
+            List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
+            string urlPollutionEnvironments = "api/PollutionEnvironments",
+                routePollutionEnvironments = "";
+            HttpResponseMessage responsePollutionEnvironments = await _HttpApiClient.GetAsync(urlPollutionEnvironments + routePollutionEnvironments);
+            if (responsePollutionEnvironments.IsSuccessStatusCode)
+            {
+                pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
+            }
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
+
             return View();
         }
 
@@ -238,7 +249,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,NameShortKK,NameShortRU,NameShortEN,MPCDailyAverage,MPCMaxSingle,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Create([Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,NameShortKK,NameShortRU,NameShortEN,MPCDailyAverage,MPCMaxSingle,EcomonCode,OceanusCode,KazhydrometCode,PollutionEnvironmentId")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -302,6 +313,17 @@ namespace SmartEco.Controllers
                 measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
             }
             ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name");
+
+            List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
+            string urlPollutionEnvironments = "api/PollutionEnvironments",
+                routePollutionEnvironments = "";
+            HttpResponseMessage responsePollutionEnvironments = await _HttpApiClient.GetAsync(urlPollutionEnvironments + routePollutionEnvironments);
+            if (responsePollutionEnvironments.IsSuccessStatusCode)
+            {
+                pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
+            }
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name");
+
             return View(measuredParameter);
         }
 
@@ -341,6 +363,17 @@ namespace SmartEco.Controllers
                 measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
             }
             ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name", measuredParameter.MeasuredParameterUnitId);
+
+            List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
+            string urlPollutionEnvironments = "api/PollutionEnvironments",
+                routePollutionEnvironments = "";
+            HttpResponseMessage responsePollutionEnvironments = await _HttpApiClient.GetAsync(urlPollutionEnvironments + routePollutionEnvironments);
+            if (responsePollutionEnvironments.IsSuccessStatusCode)
+            {
+                pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
+            }
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name", measuredParameter.PollutionEnvironmentId);
+
             return View(measuredParameter);
         }
 
@@ -349,7 +382,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,NameShortKK,NameShortRU,NameShortEN,MPCDailyAverage,MPCMaxSingle,EcomonCode,OceanusCode,KazhydrometCode")] MeasuredParameter measuredParameter,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,MeasuredParameterUnitId,NameKK,NameRU,NameEN,NameShortKK,NameShortRU,NameShortEN,MPCDailyAverage,MPCMaxSingle,EcomonCode,OceanusCode,KazhydrometCode,PollutionEnvironmentId")] MeasuredParameter measuredParameter,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -418,6 +451,17 @@ namespace SmartEco.Controllers
                 measuredParameterUnits = await responseMeasuredParameterUnits.Content.ReadAsAsync<List<MeasuredParameterUnit>>();
             }
             ViewBag.MeasuredParameterUnits = new SelectList(measuredParameterUnits.OrderBy(m => m.Name), "Id", "Name", measuredParameter.MeasuredParameterUnitId);
+
+            List<PollutionEnvironment> pollutionEnvironments = new List<PollutionEnvironment>();
+            string urlPollutionEnvironments = "api/PollutionEnvironments",
+                routePollutionEnvironments = "";
+            HttpResponseMessage responsePollutionEnvironments = await _HttpApiClient.GetAsync(urlPollutionEnvironments + routePollutionEnvironments);
+            if (responsePollutionEnvironments.IsSuccessStatusCode)
+            {
+                pollutionEnvironments = await responsePollutionEnvironments.Content.ReadAsAsync<List<PollutionEnvironment>>();
+            }
+            ViewBag.PollutionEnvironments = new SelectList(pollutionEnvironments.OrderBy(m => m.Name), "Id", "Name", measuredParameter.PollutionEnvironmentId);
+
             return View(measuredParameter);
         }
 

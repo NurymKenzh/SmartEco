@@ -63,5 +63,10 @@ namespace SmartEcoAPI.Models
         /// Максимально разовое ПДК измеряемого параметра.
         /// </summary>
         public decimal? MPCMaxSingle { get; set; }
+        /// <summary>
+        /// Среда загрязнения.
+        /// </summary>
+        public int? PollutionEnvironmentId { get; set; }
+        public PollutionEnvironment PollutionEnvironment { get; set; }
     }
 }
