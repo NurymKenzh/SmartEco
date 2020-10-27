@@ -120,6 +120,7 @@
     <input id="KazHydrometWaterMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometWaterMonitoringPostsLayerJson" />
     <input id="KazHydrometTransportMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometTransportMonitoringPostsLayerJson" />
     <input id="PollutionSourcesLayerJson" type="text" value="@ViewBag.PollutionSourcesLayerJson" />
+    <input id="LEDScreensLayerJson" type="text" value="@ViewBag.LEDScreensLayerJson" />
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
     <input id="MPCMaxSingle" type="text" value="@SharedLocalizer["MPCMaxSingle"]" />
@@ -214,6 +215,16 @@
         <input id="layerPollutionSourcesOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
         <hr />
 
+        @*LEDScreens*@
+        <label>
+            <input type="checkbox" id="layerLEDScreensShow" onchange="ChangeLayers()">
+            @SharedLocalizer["LEDScreens"]
+            <img src="~/images/LEDScreenPanel.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerLEDScreensOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
         <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
         <br />
         <input id="layerBaseOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -305,70 +316,70 @@
         <br />
         <hr />
         @*<label>
-                <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["KazHydrometWaterPosts"]
-                <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
-            </label>
-            <br />
-            <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["KazHydrometTransportPosts"]
-                <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
-            </label>
-            <br />
-            <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
-                @SharedLocalizer["WaterProtectionStrip"]
-            </label>
-            <br />
-            <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
-                @SharedLocalizer["WaterProtectionZone"]
-            </label>
-            <br />
-            <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["NitrogenDioxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["SulfurDioxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
-                @SharedLocalizer["CarbonOxide"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
-                @SharedLocalizer["Formaldehyde"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />
-            <label>
-                <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
-                @SharedLocalizer["SummationGroups"]
-            </label>
-            <br />
-            <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
-            <hr />*@
+            <input type="checkbox" id="layerKazHydrometWaterMonitoringPostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["KazHydrometWaterPosts"]
+            <img src="~/images/KazHydrometWaterMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometWaterMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerKazHydrometTransportMonitoringPostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["KazHydrometTransportPosts"]
+            <img src="~/images/KazHydrometTransportMonitoringPost.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometTransportMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerWaterProtectionStripShow" onchange="ChangeLayers()">
+            @SharedLocalizer["WaterProtectionStrip"]
+        </label>
+        <br />
+        <input id="layerWaterProtectionStripOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerWaterProtectionZoneShow" onchange="ChangeLayers()">
+            @SharedLocalizer["WaterProtectionZone"]
+        </label>
+        <br />
+        <input id="layerWaterProtectionZoneOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportNitrogenDioxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["NitrogenDioxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportNitrogenDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportSulfurDioxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["SulfurDioxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportSulfurDioxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportCarbonOxideShow" onchange="ChangeLayers()">
+            @SharedLocalizer["CarbonOxide"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportCarbonOxideOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportFormaldehydeShow" onchange="ChangeLayers()">
+            @SharedLocalizer["Formaldehyde"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportFormaldehydeOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerTotalRTransportSummationGroupsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["SummationGroups"]
+        </label>
+        <br />
+        <input id="layerTotalRTransportSummationGroupsOpacity" type="range" min="0" max="100" value="50" oninput="ChangeLayers()" />
+        <hr />*@
     </div>
 </div>
 
@@ -1234,6 +1245,33 @@
     Layer_PollutionSources.setVisible(false);
     layers.push(Layer_PollutionSources);
 
+    //LEDScreens
+    var LEDScreensStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/LEDScreen.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            //scale: 0.0625
+            scale: 0.5
+        }))
+    });
+    var LEDScreensLayerJson = $("#LEDScreensLayerJson").val();
+    var Source_LEDScreens = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(LEDScreensLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_LEDScreens = new ol.layer.Vector({
+        source: Source_LEDScreens,
+        style: LEDScreensStyle,
+        renderBuffer: 200
+    });
+    Layer_LEDScreens.set('name', 'LEDScreens');
+    Layer_LEDScreens.setVisible(false);
+    layers.push(Layer_LEDScreens);
+
     //Isolines
     var Source_Isolines = new ol.source.Vector({
         format: new ol.format.GeoJSON()
@@ -1391,6 +1429,10 @@
             if (layer.get('name') == 'PollutionSources') {
                 layer.setVisible(document.getElementById("layerPollutionSourcesShow").checked);
                 layer.setOpacity($('#layerPollutionSourcesOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'LEDScreens') {
+                layer.setVisible(document.getElementById("layerLEDScreensShow").checked);
+                layer.setOpacity($('#layerLEDScreensOpacity').val() / 100)
             }
             if (layer.get('name') == 'KazHydrometWaterMonitoringPosts') {
                 if ($("#layerKazHydrometWaterMonitoringPostsShow").attr("aria-selected") == "true") {
@@ -1808,10 +1850,13 @@
                 }
                 if (layerName == 'KazHydrometWaterMonitoringPosts') {
                     title = $('#KazHydrometWaterPost').val();
-                    //Create date for water post
+                    //Change date for water post
                     $("#ChartDateFrom").val("2017-05-01");
                     $("#ChartDateTo").val("2017-06-01");
                     $("#ChartAveraged").prop('checked', false);
+                    $("#TableDateFrom").val("2017-05-01");
+                    $("#TableDateTo").val("2017-06-01");
+                    $("#TableAveraged").prop('checked', false);
                 }
                 $("#dialogMonitoringPostInfo").dialog({
                     resize: DialogResize,

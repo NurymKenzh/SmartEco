@@ -496,98 +496,189 @@ namespace SmartEco.Controllers
                     int id = jsonOutput.id;
                     int dataProviderId = jsonOutput.dataProviderId;
 
+                    //url = "api/MonitoringPosts/monitoringPostMeasuredParameter";
+                    //route = "";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"MonitoringPostId={id.ToString()}";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"DataProviderId={dataProviderId.ToString()}";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"PollutionEnvironmentId={monitoringPost.PollutionEnvironmentId.ToString()}";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
+
+                    //foreach (var sensor in Sensors)
+                    //{
+                    //    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //    route += $"MeasuredParametersId={sensor.ToString()}".Replace(',', '.');
+                    //}
+
+                    //foreach (var min in Minimum)
+                    //{
+                    //    if (min == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Min=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Min={min.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var max in Maximum)
+                    //{
+                    //    if (max == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Max=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Max={max.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var minV in MinMeasuredValue)
+                    //{
+                    //    if (minV == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MinMeasuredValue=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MinMeasuredValue={minV.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var maxV in MaxMeasuredValue)
+                    //{
+                    //    if (maxV == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MaxMeasuredValue=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MaxMeasuredValue={maxV.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var coef in Coefficient)
+                    //{
+                    //    if (coef == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Coefficient=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Coefficient={coef.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url + route, null);
+
+                    dynamic content = new JObject();
+
                     url = "api/MonitoringPosts/monitoringPostMeasuredParameter";
-                    route = "";
 
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"MonitoringPostId={id.ToString()}";
+                    content.Add(new JProperty("MonitoringPostId", id));
+                    content.Add(new JProperty("DataProviderId", dataProviderId));
+                    content.Add(new JProperty("PollutionEnvironmentId", monitoringPost.PollutionEnvironmentId));
+                    content.Add(new JProperty("CultureName", HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()));
 
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"DataProviderId={dataProviderId.ToString()}";
-
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"PollutionEnvironmentId={monitoringPost.PollutionEnvironmentId.ToString()}";
-
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
-
+                    var measuredParametersIds = new JArray();
                     foreach (var sensor in Sensors)
                     {
-                        route += string.IsNullOrEmpty(route) ? "?" : "&";
-                        route += $"MeasuredParametersId={sensor.ToString()}".Replace(',', '.');
+                        measuredParametersIds.Add(sensor);
                     }
+                    content.Add(new JProperty("MeasuredParametersId", measuredParametersIds));
 
+                    var mins = new JArray();
                     foreach (var min in Minimum)
                     {
                         if (min == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Min=null";
+                            mins.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Min={min.ToString()}".Replace(',', '.');
+                            mins.Add(min.ToString());
                         }
                     }
+                    content.Add(new JProperty("Min", mins));
 
+                    var maxs = new JArray();
                     foreach (var max in Maximum)
                     {
                         if (max == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Max=null";
+                            maxs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Max={max.ToString()}".Replace(',', '.');
+                            maxs.Add(max.ToString());
                         }
                     }
+                    content.Add(new JProperty("Max", maxs));
 
+                    var minVs = new JArray();
                     foreach (var minV in MinMeasuredValue)
                     {
                         if (minV == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MinMeasuredValue=null";
+                            minVs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MinMeasuredValue={minV.ToString()}".Replace(',', '.');
+                            minVs.Add(minV.ToString());
                         }
                     }
+                    content.Add(new JProperty("MinMeasuredValue", minVs));
 
+                    var maxVs = new JArray();
                     foreach (var maxV in MaxMeasuredValue)
                     {
                         if (maxV == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MaxMeasuredValue=null";
+                            maxVs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MaxMeasuredValue={maxV.ToString()}".Replace(',', '.');
+                            maxVs.Add(maxV.ToString());
                         }
                     }
+                    content.Add(new JProperty("MaxMeasuredValue", maxVs));
 
+                    var coefs = new JArray();
                     foreach (var coef in Coefficient)
                     {
                         if (coef == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Coefficient=null";
+                            coefs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Coefficient={coef.ToString()}".Replace(',', '.');
+                            coefs.Add(coef.ToString());
                         }
                     }
+                    content.Add(new JProperty("Coefficient", coefs));
 
-                    HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url + route, null);
+                    string json = JsonConvert.SerializeObject(content);
+                    HttpContent contentString = new StringContent(json);
+                    contentString.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url, contentString);
                 }
                 catch
                 {
@@ -762,98 +853,190 @@ namespace SmartEco.Controllers
                 {
                     response.EnsureSuccessStatusCode();
 
+                    //url = "api/MonitoringPosts/editMonitoringPostMeasuredParameter";
+                    //route = "";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"MonitoringPostId={id.ToString()}";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"DataProviderId={monitoringPost.DataProviderId.ToString()}";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"PollutionEnvironmentId={monitoringPost.PollutionEnvironmentId.ToString()}";
+
+                    //route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
+
+                    //foreach (var sensor in Sensors)
+                    //{
+                    //    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //    route += $"MeasuredParametersId={sensor.ToString()}".Replace(',', '.');
+                    //}
+
+                    //foreach (var min in Minimum)
+                    //{
+                    //    if (min == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Min=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Min={min.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var max in Maximum)
+                    //{
+                    //    if (max == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Max=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Max={max.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var minV in MinMeasuredValue)
+                    //{
+                    //    if (minV == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MinMeasuredValue=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MinMeasuredValue={minV.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var maxV in MaxMeasuredValue)
+                    //{
+                    //    if (maxV == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MaxMeasuredValue=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"MaxMeasuredValue={maxV.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //foreach (var coef in Coefficient)
+                    //{
+                    //    if (coef == null)
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Coefficient=null";
+                    //    }
+                    //    else
+                    //    {
+                    //        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    //        route += $"Coefficient={coef.ToString()}".Replace(',', '.');
+                    //    }
+                    //}
+
+                    //HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url + route, null);
+
+                    dynamic content = new JObject();
+                    response.EnsureSuccessStatusCode();
+
                     url = "api/MonitoringPosts/editMonitoringPostMeasuredParameter";
-                    route = "";
 
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"MonitoringPostId={id.ToString()}";
+                    content.Add(new JProperty("MonitoringPostId", id));
+                    content.Add(new JProperty("DataProviderId", monitoringPost.DataProviderId));
+                    content.Add(new JProperty("PollutionEnvironmentId", monitoringPost.PollutionEnvironmentId));
+                    content.Add(new JProperty("CultureName", HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()));
 
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"DataProviderId={monitoringPost.DataProviderId.ToString()}";
-
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"PollutionEnvironmentId={monitoringPost.PollutionEnvironmentId.ToString()}";
-
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"CultureName={HttpContext.Features.Get<IRequestCultureFeature>().RequestCulture.UICulture.Name.ToString()}";
-
+                    var measuredParametersIds = new JArray();
                     foreach (var sensor in Sensors)
                     {
-                        route += string.IsNullOrEmpty(route) ? "?" : "&";
-                        route += $"MeasuredParametersId={sensor.ToString()}".Replace(',', '.');
+                        measuredParametersIds.Add(sensor);
                     }
+                    content.Add(new JProperty("MeasuredParametersId", measuredParametersIds));
 
+                    var mins = new JArray();
                     foreach (var min in Minimum)
                     {
                         if (min == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Min=null";
+                            mins.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Min={min.ToString()}".Replace(',', '.');
+                            mins.Add(min.ToString());
                         }
                     }
+                    content.Add(new JProperty("Min", mins));
 
+                    var maxs = new JArray();
                     foreach (var max in Maximum)
                     {
                         if (max == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Max=null";
+                            maxs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Max={max.ToString()}".Replace(',', '.');
+                            maxs.Add(max.ToString());
                         }
                     }
+                    content.Add(new JProperty("Max", maxs));
 
+                    var minVs = new JArray();
                     foreach (var minV in MinMeasuredValue)
                     {
                         if (minV == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MinMeasuredValue=null";
+                            minVs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MinMeasuredValue={minV.ToString()}".Replace(',', '.');
+                            minVs.Add(minV.ToString());
                         }
                     }
+                    content.Add(new JProperty("MinMeasuredValue", minVs));
 
+                    var maxVs = new JArray();
                     foreach (var maxV in MaxMeasuredValue)
                     {
                         if (maxV == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MaxMeasuredValue=null";
+                            maxVs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"MaxMeasuredValue={maxV.ToString()}".Replace(',', '.');
+                            maxVs.Add(maxV.ToString());
                         }
                     }
+                    content.Add(new JProperty("MaxMeasuredValue", maxVs));
 
+                    var coefs = new JArray();
                     foreach (var coef in Coefficient)
                     {
                         if (coef == null)
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Coefficient=null";
+                            coefs.Add("null");
                         }
                         else
                         {
-                            route += string.IsNullOrEmpty(route) ? "?" : "&";
-                            route += $"Coefficient={coef.ToString()}".Replace(',', '.');
+                            coefs.Add(coef.ToString());
                         }
                     }
+                    content.Add(new JProperty("Coefficient", coefs));
 
-                    HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url + route, null);
+                    string json = JsonConvert.SerializeObject(content);
+                    HttpContent contentString = new StringContent(json);
+                    contentString.Headers.ContentType = new System.Net.Http.Headers.MediaTypeHeaderValue("application/json");
+                    HttpResponseMessage responseMPMP = await _HttpApiClient.PostAsync(url, contentString);
                 }
                 catch
                 {

@@ -798,6 +798,43 @@ namespace SmartEco.Controllers
             });
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
+            string urlLEDScreens = "api/LEDScreens";
+            List<LEDScreen> ledScreens = new List<LEDScreen>();
+            HttpResponseMessage responseLEDScreens = await _HttpApiClient.GetAsync(urlLEDScreens);
+            ledScreens = await responseLEDScreens.Content.ReadAsAsync<List<LEDScreen>>();
+            JObject objectLEDScreens = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from ledScreen in ledScreens
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = ledScreen.Id,
+                                   Name = ledScreen.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                   {
+                                    Convert.ToDecimal(ledScreen.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                    Convert.ToDecimal(ledScreen.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                   },
+                               }
+                           }
+            });
+            ViewBag.LEDScreensLayerJson = objectLEDScreens.ToString();
+
             //Data for calculate dissipation
             string urlMeasuredDatas = "api/MeasuredDatas",
                  route = "";

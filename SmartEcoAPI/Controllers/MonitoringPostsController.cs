@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json.Linq;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models;
 
@@ -318,21 +319,147 @@ namespace SmartEcoAPI.Controllers
             return monitoringPostsInactive.ToList();
         }
 
-        // POST: api/MonitoringPosts/MonitoringPostMeasuredParameter
+        //// POST: api/MonitoringPosts/MonitoringPostMeasuredParameter
+        //[HttpPost("monitoringPostMeasuredParameter")]
+        //[Authorize(Roles = "admin,moderator")]
+        //public void PostMonitoringPostMeasuredParameter(
+        //    int MonitoringPostId,
+        //    int DataProviderId,
+        //    int PollutionEnvironmentId,
+        //    string CultureName,
+        //    [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
+        //    [FromQuery(Name = "Min")] List<string> Min,
+        //    [FromQuery(Name = "Max")] List<string> Max,
+        //    [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
+        //    [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue,
+        //    [FromQuery(Name = "Coefficient")] List<string> Coefficient)
+        //{
+        //    List<int> idMeasuredParameters = new List<int>();
+        //    List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+        //    //Water
+        //    if (PollutionEnvironmentId == 3)
+        //    {
+        //        measuredParameters = _context.MeasuredParameter.Where(m => m.PollutionEnvironmentId == 3).ToList();
+        //    }
+        //    else
+        //    {
+        //        //Kazhydromet
+        //        if (DataProviderId == 1)
+        //        {
+        //            measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
+        //        }
+        //        //Ecoservice, Urus
+        //        else if (DataProviderId == 3 || DataProviderId == 2)
+        //        {
+        //            measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
+        //        }
+        //        else
+        //        {
+        //            measuredParameters = _context.MeasuredParameter.ToList();
+        //        }
+        //    }
+
+        //    if (CultureName == "ru")
+        //    {
+        //        idMeasuredParameters = measuredParameters.OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+        //    }
+        //    else if (CultureName == "kk")
+        //    {
+        //        idMeasuredParameters = measuredParameters.OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+        //    }
+        //    else
+        //    {
+        //        idMeasuredParameters = measuredParameters.OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+        //    }
+
+        //    for (int i = 0; i < idMeasuredParameters.Count; i++)
+        //    {
+        //        foreach (var id in MeasuredParametersId)
+        //        {
+        //            if (idMeasuredParameters[i] == id)
+        //            {
+        //                decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef;
+        //                if (Min[i] == "null")
+        //                {
+        //                    minDec = null;
+        //                }
+        //                else
+        //                {
+        //                    minDec = Decimal.Parse(Min[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (Max[i] == "null")
+        //                {
+        //                    maxDec = null;
+        //                }
+        //                else
+        //                {
+        //                    maxDec = Decimal.Parse(Max[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (MinMeasuredValue[i] == "null")
+        //                {
+        //                    minMeasuredDec = null;
+        //                }
+        //                else
+        //                {
+        //                    minMeasuredDec = Decimal.Parse(MinMeasuredValue[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (MaxMeasuredValue[i] == "null")
+        //                {
+        //                    maxMeasuredDec = null;
+        //                }
+        //                else
+        //                {
+        //                    maxMeasuredDec = Decimal.Parse(MaxMeasuredValue[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (Coefficient[i] == "null")
+        //                {
+        //                    coef = null;
+        //                }
+        //                else
+        //                {
+        //                    coef = Decimal.Parse(Coefficient[i], CultureInfo.InvariantCulture);
+        //                }
+
+        //                Task.WaitAll(MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
+
+        //                //if (Min[i] == "null" && Max[i] != "null")
+        //                //{
+        //                //    MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+        //                //}
+        //                //else if (Max[i] == "null" && Min[i] != "null")
+        //                //{
+        //                //    MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+        //                //}
+        //                //else if (Max[i] == "null" && Min[i] == "null")
+        //                //{
+        //                //    MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+        //                //}
+        //                //else
+        //                //{
+        //                //    MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+        //                //}
+        //            }
+        //        }
+        //    }
+        //}
+
+                    // POST: api/MonitoringPosts/MonitoringPostMeasuredParameter
         [HttpPost("monitoringPostMeasuredParameter")]
         [Authorize(Roles = "admin,moderator")]
-        public void PostMonitoringPostMeasuredParameter(
-            int MonitoringPostId,
-            int DataProviderId,
-            int PollutionEnvironmentId,
-            string CultureName,
-            [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
-            [FromQuery(Name = "Min")] List<string> Min,
-            [FromQuery(Name = "Max")] List<string> Max,
-            [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
-            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue,
-            [FromQuery(Name = "Coefficient")] List<string> Coefficient)
+        public void PostMonitoringPostMeasuredParameter([FromBody] JObject content)
         {
+            dynamic datas = content;
+            int MonitoringPostId = datas.MonitoringPostId;
+            int DataProviderId = datas.DataProviderId;
+            int PollutionEnvironmentId = datas.PollutionEnvironmentId;
+            string CultureName = datas.CultureName;
+            List<int> MeasuredParametersId = datas.MeasuredParametersId.ToObject<List<int>>();
+            List<string> Min = datas.Min.ToObject<List<string>>();
+            List<string> Max = datas.Max.ToObject<List<string>>();
+            List<string> MinMeasuredValue = datas.MinMeasuredValue.ToObject<List<string>>();
+            List<string> MaxMeasuredValue = datas.MaxMeasuredValue.ToObject<List<string>>();
+            List<string> Coefficient = datas.Coefficient.ToObject<List<string>>();
+
             List<int> idMeasuredParameters = new List<int>();
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
             //Water
@@ -420,23 +547,6 @@ namespace SmartEcoAPI.Controllers
                         }
 
                         Task.WaitAll(MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
-
-                        //if (Min[i] == "null" && Max[i] != "null")
-                        //{
-                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                        //}
-                        //else if (Max[i] == "null" && Min[i] != "null")
-                        //{
-                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
-                        //}
-                        //else if (Max[i] == "null" && Min[i] == "null")
-                        //{
-                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
-                        //}
-                        //else
-                        //{
-                        //    MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                        //}
                     }
                 }
             }
@@ -465,21 +575,207 @@ namespace SmartEcoAPI.Controllers
             await _context.SaveChangesAsync();
         }
 
+        //// POST: api/MonitoringPosts/EditMonitoringPostMeasuredParameter
+        //[HttpPost("editMonitoringPostMeasuredParameter")]
+        //[Authorize(Roles = "admin,moderator")]
+        //public async Task<ActionResult<MonitoringPostMeasuredParameters>> EditMonitoringPostMeasuredParameter(
+        //    int MonitoringPostId,
+        //    int DataProviderId,
+        //    int PollutionEnvironmentId,
+        //    string CultureName,
+        //    [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
+        //    [FromQuery(Name = "Min")] List<string> Min,
+        //    [FromQuery(Name = "Max")] List<string> Max,
+        //    [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
+        //    [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue,
+        //    [FromQuery(Name = "Coefficient")] List<string> Coefficient)
+        //{
+        //    List<int> idMeasuredParameters = new List<int>();
+        //    List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+        //    //Water
+        //    if (PollutionEnvironmentId == 3)
+        //    {
+        //        measuredParameters = _context.MeasuredParameter.Where(m => m.PollutionEnvironmentId == 3).ToList();
+        //    }
+        //    else
+        //    {
+        //        //Kazhydromet
+        //        if (DataProviderId == 1)
+        //        {
+        //            measuredParameters = _context.MeasuredParameter.Where(m => m.KazhydrometCode != null).ToList();
+        //        }
+        //        //Ecoservice, Urus
+        //        else if (DataProviderId == 3 || DataProviderId == 2)
+        //        {
+        //            measuredParameters = _context.MeasuredParameter.Where(m => m.OceanusCode != null).ToList();
+        //        }
+        //        else
+        //        {
+        //            measuredParameters = _context.MeasuredParameter.ToList();
+        //        }
+        //    }
+
+        //    if (CultureName == "ru")
+        //    {
+        //        idMeasuredParameters = measuredParameters.OrderBy(m => m.NameRU).Select(m => m.Id).ToList();
+        //    }
+        //    else if (CultureName == "kk")
+        //    {
+        //        idMeasuredParameters = measuredParameters.OrderBy(m => m.NameKK).Select(m => m.Id).ToList();
+        //    }
+        //    else
+        //    {
+        //        idMeasuredParameters = measuredParameters.OrderBy(m => m.NameEN).Select(m => m.Id).ToList();
+        //    }
+
+        //    List<int> idMonitoringPostMeasuredParametersId = _context.MonitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId).OrderBy(m => m.MeasuredParameterId).Select(m => m.MeasuredParameterId).ToList();
+        //    for (int i = 0; i < idMeasuredParameters.Count; i++)
+        //    {
+        //        foreach (var id in MeasuredParametersId)
+        //        {
+        //            if (idMeasuredParameters[i] == id)
+        //            {
+        //                decimal? minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef;
+        //                if (Min[i] == "null")
+        //                {
+        //                    minDec = null;
+        //                }
+        //                else
+        //                {
+        //                    minDec = Decimal.Parse(Min[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (Max[i] == "null")
+        //                {
+        //                    maxDec = null;
+        //                }
+        //                else
+        //                {
+        //                    maxDec = Decimal.Parse(Max[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (MinMeasuredValue[i] == "null")
+        //                {
+        //                    minMeasuredDec = null;
+        //                }
+        //                else
+        //                {
+        //                    minMeasuredDec = Decimal.Parse(MinMeasuredValue[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (MaxMeasuredValue[i] == "null")
+        //                {
+        //                    maxMeasuredDec = null;
+        //                }
+        //                else
+        //                {
+        //                    maxMeasuredDec = Decimal.Parse(MaxMeasuredValue[i], CultureInfo.InvariantCulture);
+        //                }
+        //                if (Coefficient[i] == "null")
+        //                {
+        //                    coef = null;
+        //                }
+        //                else
+        //                {
+        //                    coef = Decimal.Parse(Coefficient[i], CultureInfo.InvariantCulture);
+        //                }
+
+        //                try
+        //                {
+        //                    Task.WaitAll(PutMonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
+        //                }
+        //                catch (Exception ex)
+        //                {
+        //                    Task.WaitAll(MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
+        //                }
+
+        //                //if (Min[i] == "null" && Max[i] != "null")
+        //                //{
+        //                //    try
+        //                //    {
+        //                //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+        //                //    }
+        //                //    catch
+        //                //    {
+        //                //        MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+        //                //    }
+        //                //}
+        //                //else if (Max[i] == "null" && Min[i] != "null")
+        //                //{
+        //                //    try
+        //                //    {
+        //                //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+        //                //    }
+        //                //    catch
+        //                //    {
+        //                //        MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
+        //                //    }
+        //                //}
+        //                //else if (Max[i] == "null" && Min[i] == "null")
+        //                //{
+        //                //    try
+        //                //    {
+        //                //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+        //                //    }
+        //                //    catch
+        //                //    {
+        //                //        MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
+        //                //    }
+        //                //}
+        //                //else
+        //                //{
+        //                //    try
+        //                //    {
+        //                //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+        //                //    }
+        //                //    catch
+        //                //    {
+        //                //        MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
+        //                //    }
+        //                //}
+        //            }
+        //        }
+        //    }
+        //    bool check = false;
+        //    foreach (var idAll in idMonitoringPostMeasuredParametersId)
+        //    {
+        //        foreach (var id in MeasuredParametersId)
+        //        {
+        //            if (idAll == id)
+        //            {
+        //                check = true;
+        //                break;
+        //            }
+        //            else
+        //            {
+        //                check = false;
+        //            }
+        //        }
+        //        if (!check)
+        //        {
+        //            var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == idAll && m.MonitoringPostId == MonitoringPostId).First();
+        //            //DeleteMonitoringPostMeasuredParameter(monitoringPostMeasuredParameters);
+        //            _context.MonitoringPostMeasuredParameters.Remove(monitoringPostMeasuredParameters);
+        //            await _context.SaveChangesAsync();
+        //        }
+        //    }
+        //    return Ok(1);
+        //}
+
         // POST: api/MonitoringPosts/EditMonitoringPostMeasuredParameter
         [HttpPost("editMonitoringPostMeasuredParameter")]
         [Authorize(Roles = "admin,moderator")]
-        public async Task<ActionResult<MonitoringPostMeasuredParameters>> EditMonitoringPostMeasuredParameter(
-            int MonitoringPostId,
-            int DataProviderId,
-            int PollutionEnvironmentId,
-            string CultureName,
-            [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
-            [FromQuery(Name = "Min")] List<string> Min,
-            [FromQuery(Name = "Max")] List<string> Max,
-            [FromQuery(Name = "MinMeasuredValue")] List<string> MinMeasuredValue,
-            [FromQuery(Name = "MaxMeasuredValue")] List<string> MaxMeasuredValue,
-            [FromQuery(Name = "Coefficient")] List<string> Coefficient)
+        public async Task<ActionResult<MonitoringPostMeasuredParameters>> EditMonitoringPostMeasuredParameter([FromBody] JObject content)
         {
+            dynamic datas = content;
+            int MonitoringPostId = datas.MonitoringPostId;
+            int DataProviderId = datas.DataProviderId;
+            int PollutionEnvironmentId = datas.PollutionEnvironmentId;
+            string CultureName = datas.CultureName;
+            List<int> MeasuredParametersId = datas.MeasuredParametersId.ToObject<List<int>>();
+            List<string> Min = datas.Min.ToObject<List<string>>();
+            List<string> Max = datas.Max.ToObject<List<string>>();
+            List<string> MinMeasuredValue = datas.MinMeasuredValue.ToObject<List<string>>();
+            List<string> MaxMeasuredValue = datas.MaxMeasuredValue.ToObject<List<string>>();
+            List<string> Coefficient = datas.Coefficient.ToObject<List<string>>();
+
             List<int> idMeasuredParameters = new List<int>();
             List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
             //Water
@@ -575,51 +871,6 @@ namespace SmartEcoAPI.Controllers
                         {
                             Task.WaitAll(MonitoringPostMeasuredParameter(MonitoringPostId, id, minDec, maxDec, minMeasuredDec, maxMeasuredDec, coef));
                         }
-
-                        //if (Min[i] == "null" && Max[i] != "null")
-                        //{
-                        //    try
-                        //    {
-                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                        //    }
-                        //    catch
-                        //    {
-                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, null, Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                        //    }
-                        //}
-                        //else if (Max[i] == "null" && Min[i] != "null")
-                        //{
-                        //    try
-                        //    {
-                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
-                        //    }
-                        //    catch
-                        //    {
-                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), null);
-                        //    }
-                        //}
-                        //else if (Max[i] == "null" && Min[i] == "null")
-                        //{
-                        //    try
-                        //    {
-                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
-                        //    }
-                        //    catch
-                        //    {
-                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, null, null);
-                        //    }
-                        //}
-                        //else
-                        //{
-                        //    try
-                        //    {
-                        //        PutMonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                        //    }
-                        //    catch
-                        //    {
-                        //        MonitoringPostMeasuredParameter(MonitoringPostId, id, Decimal.Parse(Min[i], CultureInfo.InvariantCulture), Decimal.Parse(Max[i], CultureInfo.InvariantCulture));
-                        //    }
-                        //}
                     }
                 }
             }
