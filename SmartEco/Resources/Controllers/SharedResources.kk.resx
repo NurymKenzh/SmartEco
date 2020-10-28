@@ -648,4 +648,16 @@
   <data name="ComparisonTargetValue" xml:space="preserve">
     <value>Нақты және жоспарланған шамаларды салыстыру</value>
   </data>
+  <data name="PlantationsType" xml:space="preserve">
+    <value>Планшеттер түрі</value>
+  </data>
+  <data name="PlantationsTypes" xml:space="preserve">
+    <value>Өсімдіктердің түрлері</value>
+  </data>
+  <data name="PlantationsStateType" xml:space="preserve">
+    <value>Жасыл желектер жайының түрі</value>
+  </data>
+  <data name="PlantationsStateTypes" xml:space="preserve">
+    <value>Жасыл желектер жайының түрлері</value>
+  </data>
 </root>

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201028150807_PlantationsType_20201028_00")]
+    partial class PlantationsType_20201028_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -473,22 +475,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Person");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.PlantationsStateType", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("NameEN");
-
-                    b.Property<string>("NameKK");
-
-                    b.Property<string>("NameRU");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("PlantationsStateType");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.PlantationsType", b =>
