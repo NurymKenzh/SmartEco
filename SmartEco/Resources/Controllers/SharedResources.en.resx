@@ -648,6 +648,18 @@
   <data name="ComparisonTargetValue" xml:space="preserve">
     <value>Comparison of actual and planned values</value>
   </data>
+  <data name="PlantationsType" xml:space="preserve">
+    <value>Plantations Type</value>
+  </data>
+  <data name="PlantationsTypes" xml:space="preserve">
+    <value>Plantations Types</value>
+  </data>
+  <data name="PlantationsStateType" xml:space="preserve">
+    <value>Plantations State Type</value>
+  </data>
+  <data name="PlantationsStateTypes" xml:space="preserve">
+    <value>Plantations State Types</value>
+  </data>
   <data name="AuthorizedAuthorities" xml:space="preserve">
     <value>Authorized Authorities</value>
   </data>

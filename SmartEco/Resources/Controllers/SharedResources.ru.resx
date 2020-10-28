@@ -857,4 +857,16 @@
   <data name="Urns" xml:space="preserve">
     <value>Урны, шт.</value>
   </data>
+  <data name="PlantationsType" xml:space="preserve">
+    <value>Тип насаждений</value>
+  </data>
+  <data name="PlantationsTypes" xml:space="preserve">
+    <value>Типы насаждений</value>
+  </data>
+  <data name="PlantationsStateType" xml:space="preserve">
+    <value>Тип состояния зеленых насаждений</value>
+  </data>
+  <data name="PlantationsStateTypes" xml:space="preserve">
+    <value>Типы состояний зеленых насаждений</value>
+  </data>
 </root>

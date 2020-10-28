@@ -32,6 +32,8 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.AActivity> AActivity { get; set; }
         public DbSet<SmartEco.Models.LEDScreen> LEDScreen { get; set; }
         public DbSet<SmartEco.Models.Executor> Executor { get; set; }
+        public DbSet<SmartEco.Models.PlantationsType> PlantationsType { get; set; }
+        public DbSet<SmartEco.Models.PlantationsStateType> PlantationsStateType { get; set; }
         public DbSet<SmartEco.Models.AuthorizedAuthority> AuthorizedAuthority { get; set; }
         public DbSet<SmartEco.Models.SpeciallyProtectedNaturalTerritory> SpeciallyProtectedNaturalTerritory { get; set; }
         public DbSet<SmartEco.Models.GreemPlantsPassport> GreemPlantsPassport { get; set; }

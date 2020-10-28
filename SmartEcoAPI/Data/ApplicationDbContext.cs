@@ -77,6 +77,10 @@ namespace SmartEcoAPI.Data
 
         public DbSet<SmartEcoAPI.Models.AActivityExecutor> AActivityExecutor { get; set; }
 
+        public DbSet<SmartEcoAPI.Models.PlantationsType> PlantationsType { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.PlantationsStateType> PlantationsStateType { get; set; }
+
         public DbSet<SmartEcoAPI.Models.AuthorizedAuthority> AuthorizedAuthority { get; set; }
 
         public DbSet<SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory> SpeciallyProtectedNaturalTerritory { get; set; }
