@@ -1,0 +1,149 @@
+﻿@model IEnumerable<SmartEco.Models.GreemPlantsPassport>
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["LEDScreens"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["GreemPlantsPassports"]</h1>
+
+<p>
+    @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+</p>
+@using (Html.BeginForm("Index", "GreemPlantsPassports", new { SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(t => t.FirstOrDefault().GreenObject).ToString(), "Index",
+                        new { SortOrder = ViewBag.GreenObjectSort, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                    <br />
+                    @Html.Editor("GreenObject", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(t => t.FirstOrDefault().KATOId).ToString(), "Index",
+                        new { SortOrder = ViewBag.KATOIdSort, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                    <br />
+                    @Html.DropDownList("CityDistrictId", (IEnumerable<SelectListItem>)ViewBag.CityDistrictId, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(t => t.FirstOrDefault().NameOfRegistrationObject)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(t => t.FirstOrDefault().AccountNumber)
+                </th>
+                <th>
+                    @Html.DisplayNameFor(t => t.FirstOrDefault().NameAndLocation)
+                </th>
+                <th>
+                    @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.GreenObject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.KATO.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NameOfRegistrationObject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.AccountNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NameAndLocation)
+                    </td>
+                    <td>
+                        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
+                </li>
+            }
+        </ul>
+    }
+}

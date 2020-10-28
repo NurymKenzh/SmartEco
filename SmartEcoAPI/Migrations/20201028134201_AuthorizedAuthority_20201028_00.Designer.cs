@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201028134201_AuthorizedAuthority_20201028_00")]
+    partial class AuthorizedAuthority_20201028_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -569,28 +571,6 @@ namespace SmartEcoAPI.Migrations
                     b.ToTable("Project");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<decimal>("Areahectares");
-
-                    b.Property<int>("AuthorizedAuthorityId");
-
-                    b.Property<string>("NameEN");
-
-                    b.Property<string>("NameKK");
-
-                    b.Property<string>("NameRU");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("AuthorizedAuthorityId");
-
-                    b.ToTable("SpeciallyProtectedNaturalTerritory");
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.Target", b =>
                 {
                     b.Property<int>("Id")
@@ -851,14 +831,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.PollutionSource", "PollutionSource")
                         .WithMany()
                         .HasForeignKey("PollutionSourceId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.AuthorizedAuthority", "AuthorizedAuthority")
-                        .WithMany()
-                        .HasForeignKey("AuthorizedAuthorityId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

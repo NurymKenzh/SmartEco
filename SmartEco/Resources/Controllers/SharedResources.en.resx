@@ -648,4 +648,211 @@
   <data name="ComparisonTargetValue" xml:space="preserve">
     <value>Comparison of actual and planned values</value>
   </data>
+  <data name="AuthorizedAuthorities" xml:space="preserve">
+    <value>Authorized Authorities</value>
+  </data>
+  <data name="AuthorizedAuthority" xml:space="preserve">
+    <value>Authorized Authority</value>
+  </data>
+  <data name="Areahectares" xml:space="preserve">
+    <value>Areahectares</value>
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritories" xml:space="preserve">
+    <value>Specially Protected Natural Territories</value>
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritory" xml:space="preserve">
+    <value>Specially Protected Natural Territory</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>Account Number</value>
+  </data>
+  <data name="AmountArbours" xml:space="preserve">
+    <value>Amount Arbours</value>
+  </data>
+  <data name="AmountBenches" xml:space="preserve">
+    <value>Amount Benches</value>
+  </data>
+  <data name="AmountBillboards" xml:space="preserve">
+    <value>Amount Billboards</value>
+  </data>
+  <data name="AmountConiferousTrees" xml:space="preserve">
+    <value>Amount Coniferous Trees</value>
+  </data>
+  <data name="AmountDeciduousTrees" xml:space="preserve">
+    <value>Amount Deciduous Trees</value>
+  </data>
+  <data name="AmountEquippedPlaygrounds" xml:space="preserve">
+    <value>Amount Equipped Playgrounds</value>
+  </data>
+  <data name="AmountEquippedSportsgrounds" xml:space="preserve">
+    <value>Amount Equipped Sportsgrounds</value>
+  </data>
+  <data name="AmountFormedTrees" xml:space="preserve">
+    <value>Amount Formed Trees</value>
+  </data>
+  <data name="AmountMonument" xml:space="preserve">
+    <value>Amount Monument</value>
+  </data>
+  <data name="AmountOutdoorLighting" xml:space="preserve">
+    <value>Amount Outdoor Lighting</value>
+  </data>
+  <data name="AmountShrubs" xml:space="preserve">
+    <value>Amount Shrubs</value>
+  </data>
+  <data name="AmountSofas" xml:space="preserve">
+    <value>Amount Sofas</value>
+  </data>
+  <data name="AmountSofasAndBenches" xml:space="preserve">
+    <value>Amount Sofas and Benches</value>
+  </data>
+  <data name="AmountToilets" xml:space="preserve">
+    <value>Amount Toilets</value>
+  </data>
+  <data name="AreaUndeFlowerbeds" xml:space="preserve">
+    <value>Area under Flowerbeds</value>
+  </data>
+  <data name="AreaUnderGreenery" xml:space="preserve">
+    <value>Area under Greenery</value>
+  </data>
+  <data name="AreaUnderGroundlawn" xml:space="preserve">
+    <value>Area under Groundlawn</value>
+  </data>
+  <data name="AreaUnderLawn" xml:space="preserve">
+    <value>Area under Lawn</value>
+  </data>
+  <data name="AreaUnderMeadowlawn" xml:space="preserve">
+    <value>Area under Meadowlawn</value>
+  </data>
+  <data name="AreaUnderOrdinarylawn" xml:space="preserve">
+    <value>Area under Ordinarylawn</value>
+  </data>
+  <data name="AreaUnderShrubs" xml:space="preserve">
+    <value>Area under Shrubs</value>
+  </data>
+  <data name="AreaUnderTrees" xml:space="preserve">
+    <value>Area under Trees</value>
+  </data>
+  <data name="AreaUndeTracksAndPlatforms" xml:space="preserve">
+    <value>Area under Tracks and Platforms</value>
+  </data>
+  <data name="Asphalted" xml:space="preserve">
+    <value>Asphalted</value>
+  </data>
+  <data name="Betwen10_20yearsConiferous" xml:space="preserve">
+    <value>Beetwen 10-20 years</value>
+  </data>
+  <data name="Betwen10_20yearsDeciduous" xml:space="preserve">
+    <value>Beetwen 10-20 years</value>
+  </data>
+  <data name="Billboards" xml:space="preserve">
+    <value>Billboards</value>
+  </data>
+  <data name="EquippedPlaygrounds" xml:space="preserve">
+    <value>Equipped Playgrounds</value>
+  </data>
+  <data name="EquippedSportsgrounds" xml:space="preserve">
+    <value>Equipped Sportsgrounds</value>
+  </data>
+  <data name="Flowerbeds" xml:space="preserve">
+    <value>Flowerbeds</value>
+  </data>
+  <data name="GreemPlantsPassport" xml:space="preserve">
+    <value>Greem Plants Passport</value>
+  </data>
+  <data name="GreemPlantsPassports" xml:space="preserve">
+    <value>Greem Plants Passports</value>
+  </data>
+  <data name="GreenObject" xml:space="preserve">
+    <value>Green Object</value>
+  </data>
+  <data name="GreenTotalArea" xml:space="preserve">
+    <value>Green Total Area</value>
+  </data>
+  <data name="GreenTotalAreaGa" xml:space="preserve">
+    <value>Green Total Area, Ga</value>
+  </data>
+  <data name="Lawns" xml:space="preserve">
+    <value>Lawns</value>
+  </data>
+  <data name="LegalEntityUse" xml:space="preserve">
+    <value>Legal Entity Use</value>
+  </data>
+  <data name="LengthOfHedges" xml:space="preserve">
+    <value>Length of Hedges</value>
+  </data>
+  <data name="LengthOfTrays" xml:space="preserve">
+    <value>Length of Trays</value>
+  </data>
+  <data name="ListOfTreesByObjectBreedsCondition" xml:space="preserve">
+    <value>List of Trees by Object Breeds Condition</value>
+  </data>
+  <data name="ListOfTreesByObjectEconomicMeasures" xml:space="preserve">
+    <value>List of Trees by Object Economic Measures</value>
+  </data>
+  <data name="ListOfTreesConiferous" xml:space="preserve">
+    <value>List of Trees Coniferous</value>
+  </data>
+  <data name="ListOfTreesDeciduous" xml:space="preserve">
+    <value>List of Trees Deciduous</value>
+  </data>
+  <data name="Monument" xml:space="preserve">
+    <value>Monument</value>
+  </data>
+  <data name="NameAndLocation" xml:space="preserve">
+    <value>Name and Location</value>
+  </data>
+  <data name="NameOfPowersAttributed" xml:space="preserve">
+    <value>Name of Powers Attributed</value>
+  </data>
+  <data name="NameOfRegistrationObject" xml:space="preserve">
+    <value>Name of Registration Object</value>
+  </data>
+  <data name="OtherCapitalStructures" xml:space="preserve">
+    <value>Other Capital Structures</value>
+  </data>
+  <data name="OutdoorLighting" xml:space="preserve">
+    <value>Outdoor Lighting</value>
+  </data>
+  <data name="Over10yearsConiferous" xml:space="preserve">
+    <value>Over 10 years</value>
+  </data>
+  <data name="Over10yearsDeciduous" xml:space="preserve">
+    <value>Over 10 years</value>
+  </data>
+  <data name="PassportGeneralInformation" xml:space="preserve">
+    <value>Passport General Information</value>
+  </data>
+  <data name="PavingBlocks" xml:space="preserve">
+    <value>Paving Blocks</value>
+  </data>
+  <data name="PresenceOfHistoricalObject" xml:space="preserve">
+    <value>Presence of Historical Object</value>
+  </data>
+  <data name="Shrubs" xml:space="preserve">
+    <value>Shrubs</value>
+  </data>
+  <data name="SofasAndBenches" xml:space="preserve">
+    <value>Sofas and Benches</value>
+  </data>
+  <data name="Toilets" xml:space="preserve">
+    <value>Toilets</value>
+  </data>
+  <data name="TotallAmountShrubs" xml:space="preserve">
+    <value>Totall Amount Shrubs</value>
+  </data>
+  <data name="TracksAndPlatforms" xml:space="preserve">
+    <value>Tracks and Platforms</value>
+  </data>
+  <data name="Tree" xml:space="preserve">
+    <value>Tree</value>
+  </data>
+  <data name="Upto10yearsConiferous" xml:space="preserve">
+    <value>Up to 10 years</value>
+  </data>
+  <data name="Upto10yearsDeciduous" xml:space="preserve">
+    <value>Up to 10 years</value>
+  </data>
+  <data name="Urns" xml:space="preserve">
+    <value>Urns</value>
+  </data>
 </root>

@@ -1,0 +1,424 @@
+﻿@model SmartEco.Models.GreemPlantsPassport
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["Details"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Details"]</h1>
+@{
+    string Role = Context.Session.GetString("Role");
+}
+<div>
+    <h4 id="KazHydrometAirPost">@SharedLocalizer["GreemPlantsPassport"]</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GreenObject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GreenObject)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.KATO)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.KATO.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NameOfPowersAttributed)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameOfPowersAttributed)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NameOfRegistrationObject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameOfRegistrationObject)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LegalEntityUse)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LegalEntityUse)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AccountNumber)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AccountNumber)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NameAndLocation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameAndLocation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PresenceOfHistoricalObject)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PresenceOfHistoricalObject)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GreenTotalAreaGa)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GreenTotalAreaGa)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Lawns)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Lawns)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Flowerbeds)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Flowerbeds)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TracksAndPlatforms)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TracksAndPlatforms)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Tree)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Tree)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Shrubs)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Shrubs)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.SofasAndBenches)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.SofasAndBenches)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Urns)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Urns)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EquippedPlaygrounds)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EquippedPlaygrounds)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EquippedSportsgrounds)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EquippedSportsgrounds)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Monument)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Monument)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Toilets)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Toilets)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OutdoorLighting)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OutdoorLighting)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Billboards)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Billboards)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.OtherCapitalStructures)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.OtherCapitalStructures)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GreenTotalArea)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GreenTotalArea)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUnderGreenery)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUnderGreenery)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUnderLawn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUnderLawn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUnderGroundlawn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUnderGroundlawn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUnderOrdinarylawn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUnderOrdinarylawn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUnderMeadowlawn)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUnderMeadowlawn)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUnderTrees)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUnderTrees)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUnderShrubs)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUnderShrubs)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUndeFlowerbeds)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUndeFlowerbeds)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AreaUndeTracksAndPlatforms)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AreaUndeTracksAndPlatforms)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Asphalted)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Asphalted)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PavingBlocks)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PavingBlocks)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LengthOfTrays)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LengthOfTrays)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountConiferousTrees)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountConiferousTrees)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ListOfTreesConiferous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ListOfTreesConiferous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Upto10yearsConiferous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Upto10yearsConiferous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Betwen10_20yearsConiferous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Betwen10_20yearsConiferous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Over10yearsConiferous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Over10yearsConiferous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountDeciduousTrees)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountDeciduousTrees)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ListOfTreesDeciduous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ListOfTreesDeciduous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Upto10yearsDeciduous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Upto10yearsDeciduous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Betwen10_20yearsDeciduous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Betwen10_20yearsDeciduous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Over10yearsDeciduous)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Over10yearsDeciduous)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountFormedTrees)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountFormedTrees)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TotallAmountShrubs)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TotallAmountShrubs)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountShrubs)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountShrubs)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.LengthOfHedges)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.LengthOfHedges)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountEquippedPlaygrounds)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountEquippedPlaygrounds)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountEquippedSportsgrounds)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountEquippedSportsgrounds)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountSofasAndBenches)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountSofasAndBenches)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountBenches)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountBenches)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountSofas)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountSofas)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountArbours)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountArbours)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountOutdoorLighting)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountOutdoorLighting)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountToilets)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountToilets)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountMonument)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountMonument)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AmountBillboards)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AmountBillboards)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ListOfTreesByObjectBreedsCondition)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ListOfTreesByObjectBreedsCondition)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.ListOfTreesByObjectEconomicMeasures)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.ListOfTreesByObjectEconomicMeasures)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.PassportGeneralInformation)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.PassportGeneralInformation)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NorthLatitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NorthLatitude)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EastLongitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EastLongitude)
+        </dd>
+    </dl>
+</div>
+@if (Role == "admin" || Role == "moderator")
+{
+<div>
+    @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObjectFilter = ViewBag.GreenObjectFilter, KATOIdFilter = ViewBag.KATOIdFilter })
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObjectFilter = ViewBag.GreenObjectFilter, KATOIdFilter = ViewBag.KATOIdFilter })
+</div>
+}
+else
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreenObjectFilter = ViewBag.GreenObjectFilter, KATOIdFilter = ViewBag.KATOIdFilter })
+    </div>
+}

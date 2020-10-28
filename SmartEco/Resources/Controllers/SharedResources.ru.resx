@@ -648,4 +648,213 @@
   <data name="ComparisonTargetValue" xml:space="preserve">
     <value>Сравнение фактических и плановых значений</value>
   </data>
+  <data name="AuthorizedAuthorities" xml:space="preserve">
+    <value>Уполномоченные органы</value>
+  </data>
+  <data name="AuthorizedAuthority" xml:space="preserve">
+    <value>Уполномоченный орган</value>
+  </data>
+  <data name="Areahectares" xml:space="preserve">
+    <value>Площадь, га</value>
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritories" xml:space="preserve">
+    <value>Особо охраняемые природные территории</value>
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritory" xml:space="preserve">
+    <value>Особо охраняемая природная территория</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>Номер учетного объекта</value>
+  </data>
+  <data name="AmountArbours" xml:space="preserve">
+    <value>Количество беседок, шт.</value>
+  </data>
+  <data name="AmountBenches" xml:space="preserve">
+    <value>Количество скамеек, шт.</value>
+  </data>
+  <data name="AmountBillboards" xml:space="preserve">
+    <value>Количество рекламно-информационных щитов, шт.</value>
+  </data>
+  <data name="AmountConiferousTrees" xml:space="preserve">
+    <value>Количество хвойных деревьев по видам ,шт</value>
+  </data>
+  <data name="AmountDeciduousTrees" xml:space="preserve">
+    <value>Количество лиственных деревьев по видам ,шт</value>
+  </data>
+  <data name="AmountEquippedPlaygrounds" xml:space="preserve">
+    <value>Количество оборудованных детских площадок, шт.</value>
+  </data>
+  <data name="AmountEquippedSportsgrounds" xml:space="preserve">
+    <value>Количество оборудованных спортивных площадок, шт.</value>
+  </data>
+  <data name="AmountFormedTrees" xml:space="preserve">
+    <value>в т. ч. Количество формированных деревьев, шт</value>
+  </data>
+  <data name="AmountMonument" xml:space="preserve">
+    <value>Количество МАФ, шт.</value>
+  </data>
+  <data name="AmountOutdoorLighting" xml:space="preserve">
+    <value>Количество фонарей, шт.</value>
+  </data>
+  <data name="AmountShrubs" xml:space="preserve">
+    <value>Количество кустарников одиночных и в группах</value>
+  </data>
+  <data name="AmountSofas" xml:space="preserve">
+    <value>Количество диванов, шт.</value>
+  </data>
+  <data name="AmountSofasAndBenches" xml:space="preserve">
+    <value>Количество скамеек и диванов, шт</value>
+  </data>
+  <data name="AmountToilets" xml:space="preserve">
+    <value>Количество туалетов, шт.</value>
+  </data>
+  <data name="AreaUndeFlowerbeds" xml:space="preserve">
+    <value>Площадь под цветниками, м2</value>
+  </data>
+  <data name="AreaUnderGreenery" xml:space="preserve">
+    <value>Площадь под зелеными насаждениями, м2</value>
+  </data>
+  <data name="AreaUnderGroundlawn" xml:space="preserve">
+    <value>Площадь под партерными газонами, м2</value>
+  </data>
+  <data name="AreaUnderLawn" xml:space="preserve">
+    <value>Площадь под газонами, м2</value>
+  </data>
+  <data name="AreaUnderMeadowlawn" xml:space="preserve">
+    <value>Площадь под луговыми газонами и прочих, м2</value>
+  </data>
+  <data name="AreaUnderOrdinarylawn" xml:space="preserve">
+    <value>Площадь под обыкновенными газонами, м2</value>
+  </data>
+  <data name="AreaUnderShrubs" xml:space="preserve">
+    <value>Площадь под кустарниками, м2</value>
+  </data>
+  <data name="AreaUnderTrees" xml:space="preserve">
+    <value>Площадь под деревьями, м2</value>
+  </data>
+  <data name="AreaUndeTracksAndPlatforms" xml:space="preserve">
+    <value>Площадь под дорожками и площадками, м2</value>
+  </data>
+  <data name="Asphalted" xml:space="preserve">
+    <value>Асфальтированный</value>
+  </data>
+  <data name="Betwen10_20yearsConiferous" xml:space="preserve">
+    <value>10-20 лет</value>
+  </data>
+  <data name="Betwen10_20yearsDeciduous" xml:space="preserve">
+    <value>10-20 лет</value>
+  </data>
+  <data name="Billboards" xml:space="preserve">
+    <value>Визуальная информация (рекламные щиты), шт.</value>
+  </data>
+  <data name="EquippedPlaygrounds" xml:space="preserve">
+    <value>Оборудованные детские площадки, шт.</value>
+  </data>
+  <data name="EquippedSportsgrounds" xml:space="preserve">
+    <value>Оборудованные спортивные площадки, шт.</value>
+  </data>
+  <data name="Flowerbeds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreemPlantsPassport" xml:space="preserve">
+    <value>Паспорт территории зеленых насаждений</value>
+  </data>
+  <data name="GreemPlantsPassports" xml:space="preserve">
+    <value>Паспортa территории зеленых насаждений</value>
+  </data>
+  <data name="GreenObject" xml:space="preserve">
+    <value>Объект</value>
+  </data>
+  <data name="GreenTotalArea" xml:space="preserve">
+    <value>Общая площадь, м2</value>
+  </data>
+  <data name="GreenTotalAreaGa" xml:space="preserve">
+    <value>Общая площадь, га.</value>
+  </data>
+  <data name="Lawns" xml:space="preserve">
+    <value>Газоны, м2</value>
+  </data>
+  <data name="LegalEntityUse" xml:space="preserve">
+    <value>Юридическое лицо, в пользовании которого находится территория зеленых насаждений (форма собственности объекта, балансодержатель и прочие)</value>
+  </data>
+  <data name="LengthOfHedges" xml:space="preserve">
+    <value>Протяженность живой изгороди, п.м.</value>
+  </data>
+  <data name="LengthOfTrays" xml:space="preserve">
+    <value>Протяженность лотков арыков, п.м.</value>
+  </data>
+  <data name="ListOfTreesByObjectBreedsCondition" xml:space="preserve">
+    <value>Перечень деревьев по объекту  таблица  породы, состояние</value>
+  </data>
+  <data name="ListOfTreesByObjectEconomicMeasures" xml:space="preserve">
+    <value>Перечень деревьев по объекту, хоз. меры</value>
+  </data>
+  <data name="ListOfTreesConiferous" xml:space="preserve">
+    <value>Перечень деревьев (см. таб. породы), шт. из них:</value>
+  </data>
+  <data name="ListOfTreesDeciduous" xml:space="preserve">
+    <value>Перечень деревьев, (см. таб. породы), шт. из них:</value>
+  </data>
+  <data name="Monument" xml:space="preserve">
+    <value>МАФ, шт. (памятник)</value>
+  </data>
+  <data name="NameAndLocation" xml:space="preserve">
+    <value>Наименование, местоположение территории зеленых насаждений</value>
+  </data>
+  <data name="NameOfPowersAttributed" xml:space="preserve">
+    <value>Наименование государственного органа 
+г.Алматы, к полномочиям которого отнесено
+содержание территории зеленых насаждений</value>
+  </data>
+  <data name="NameOfRegistrationObject" xml:space="preserve">
+    <value>Наименование учетного объекта</value>
+  </data>
+  <data name="OtherCapitalStructures" xml:space="preserve">
+    <value>Прочие капитальные строение, шт</value>
+  </data>
+  <data name="OutdoorLighting" xml:space="preserve">
+    <value>Наружное освещение (фонари) шт.</value>
+  </data>
+  <data name="Over10yearsConiferous" xml:space="preserve">
+    <value>Св. 20 лет</value>
+  </data>
+  <data name="Over10yearsDeciduous" xml:space="preserve">
+    <value>Св. 20 лет</value>
+  </data>
+  <data name="PassportGeneralInformation" xml:space="preserve">
+    <value>Обшие сведения</value>
+  </data>
+  <data name="PavingBlocks" xml:space="preserve">
+    <value>Брусчатки и прочие</value>
+  </data>
+  <data name="PresenceOfHistoricalObject" xml:space="preserve">
+    <value>Наличие объекта историко - культурного наследия и его статус</value>
+  </data>
+  <data name="Shrubs" xml:space="preserve">
+    <value>Кустарники, шт.</value>
+  </data>
+  <data name="SofasAndBenches" xml:space="preserve">
+    <value>Диваны и скамейки, шт.</value>
+  </data>
+  <data name="Toilets" xml:space="preserve">
+    <value>Туалеты, шт.</value>
+  </data>
+  <data name="TotallAmountShrubs" xml:space="preserve">
+    <value>Общее количество кустарников, шт.</value>
+  </data>
+  <data name="TracksAndPlatforms" xml:space="preserve">
+    <value>Дорожки и площадки, м2</value>
+  </data>
+  <data name="Tree" xml:space="preserve">
+    <value>Деревья, шт.</value>
+  </data>
+  <data name="Upto10yearsConiferous" xml:space="preserve">
+    <value>До 10 лет</value>
+  </data>
+  <data name="Upto10yearsDeciduous" xml:space="preserve">
+    <value>До 10 лет</value>
+  </data>
+  <data name="Urns" xml:space="preserve">
+    <value>Урны, шт.</value>
+  </data>
 </root>

@@ -648,4 +648,211 @@
   <data name="ComparisonTargetValue" xml:space="preserve">
     <value>Нақты және жоспарланған шамаларды салыстыру</value>
   </data>
+  <data name="AuthorizedAuthorities" xml:space="preserve">
+    <value>Уәкілетті органдар</value>
+  </data>
+  <data name="AuthorizedAuthority" xml:space="preserve">
+    <value>Уәкілетті орган</value>
+  </data>
+  <data name="Areahectares" xml:space="preserve">
+    <value>Ауданы, гектар</value>
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritories" xml:space="preserve">
+    <value>Ерекше қорғалатын табиғи аумақтар</value>
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritory" xml:space="preserve">
+    <value>Ерекше қорғалатын табиғи аумақ</value>
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value>Шот нөмірі</value>
+  </data>
+  <data name="AmountArbours" xml:space="preserve">
+    <value>Арбалар саны, дана.</value>
+  </data>
+  <data name="AmountBenches" xml:space="preserve">
+    <value>Орын саны, дана.</value>
+  </data>
+  <data name="AmountBillboards" xml:space="preserve">
+    <value>Жарнамалық және ақпараттық тақталар саны, дана.</value>
+  </data>
+  <data name="AmountConiferousTrees" xml:space="preserve">
+    <value>Түрі бойынша қылқан жапырақты ағаштардың саны, дана.</value>
+  </data>
+  <data name="AmountDeciduousTrees" xml:space="preserve">
+    <value>Түрлері бойынша жапырақты ағаштардың саны, дана.</value>
+  </data>
+  <data name="AmountEquippedPlaygrounds" xml:space="preserve">
+    <value>Балалар алаңдарының саны, дана.</value>
+  </data>
+  <data name="AmountEquippedSportsgrounds" xml:space="preserve">
+    <value>Жабдықталған спорт алаңдарының саны, дана.</value>
+  </data>
+  <data name="AmountFormedTrees" xml:space="preserve">
+    <value>Соның ішінде ағаштар саны, дана.</value>
+  </data>
+  <data name="AmountMonument" xml:space="preserve">
+    <value>IAF саны, дана.</value>
+  </data>
+  <data name="AmountOutdoorLighting" xml:space="preserve">
+    <value>Шамның саны, дана.</value>
+  </data>
+  <data name="AmountShrubs" xml:space="preserve">
+    <value>Бұталар саны жеке және топтарда</value>
+  </data>
+  <data name="AmountSofas" xml:space="preserve">
+    <value>Дивандардың саны, дана.</value>
+  </data>
+  <data name="AmountSofasAndBenches" xml:space="preserve">
+    <value>Дөңгелектер мен дивандардың саны, дана.</value>
+  </data>
+  <data name="AmountToilets" xml:space="preserve">
+    <value>Дәретханалар саны, дана.</value>
+  </data>
+  <data name="AreaUndeFlowerbeds" xml:space="preserve">
+    <value>Гүлді төсек орындары, м2</value>
+  </data>
+  <data name="AreaUnderGreenery" xml:space="preserve">
+    <value>Жасыл аймақ, м2</value>
+  </data>
+  <data name="AreaUnderGroundlawn" xml:space="preserve">
+    <value>Жер теліміндегі алаң, м2</value>
+  </data>
+  <data name="AreaUnderLawn" xml:space="preserve">
+    <value>Шұңқырлар алаңы, м2</value>
+  </data>
+  <data name="AreaUnderMeadowlawn" xml:space="preserve">
+    <value>Шалғынды шабындықтар және басқа жерлердегі алаң, м2</value>
+  </data>
+  <data name="AreaUnderOrdinarylawn" xml:space="preserve">
+    <value>Қарапайым жайылымдардағы алаң, м2</value>
+  </data>
+  <data name="AreaUnderShrubs" xml:space="preserve">
+    <value>Төсек астында жер, м2</value>
+  </data>
+  <data name="AreaUnderTrees" xml:space="preserve">
+    <value>Ағаш астында, м2</value>
+  </data>
+  <data name="AreaUndeTracksAndPlatforms" xml:space="preserve">
+    <value>Жолдар мен аудандардағы алаң, м2</value>
+  </data>
+  <data name="Asphalted" xml:space="preserve">
+    <value>Асфальтталған</value>
+  </data>
+  <data name="Betwen10_20yearsConiferous" xml:space="preserve">
+    <value>10-20 жаста</value>
+  </data>
+  <data name="Betwen10_20yearsDeciduous" xml:space="preserve">
+    <value>10-20 жаста</value>
+  </data>
+  <data name="Billboards" xml:space="preserve">
+    <value>Көрнекі ақпарат (билбордтар), дана.</value>
+  </data>
+  <data name="EquippedPlaygrounds" xml:space="preserve">
+    <value>Ойын алаңдары, дана.</value>
+  </data>
+  <data name="EquippedSportsgrounds" xml:space="preserve">
+    <value>Спорт алаңдары, дана.</value>
+  </data>
+  <data name="Flowerbeds" xml:space="preserve">
+    <value>Гүлдер, м2</value>
+  </data>
+  <data name="GreemPlantsPassport" xml:space="preserve">
+    <value>Жасыл өсімдіктер дүниесі аумағының паспорты</value>
+  </data>
+  <data name="GreemPlantsPassports" xml:space="preserve">
+    <value>Жасыл өсімдіктер дүниесі аумағының паспорттары</value>
+  </data>
+  <data name="GreenObject" xml:space="preserve">
+    <value>Нысан</value>
+  </data>
+  <data name="GreenTotalArea" xml:space="preserve">
+    <value>Жалпы ауданы, м2.</value>
+  </data>
+  <data name="GreenTotalAreaGa" xml:space="preserve">
+    <value>Жалпы ауданы, га.</value>
+  </data>
+  <data name="Lawns" xml:space="preserve">
+    <value>Мнодер, м2</value>
+  </data>
+  <data name="LegalEntityUse" xml:space="preserve">
+    <value>«Қолданыстағы заңды тұлға яғни жасыл кеңістіктің аумағы (объектінің мүлкі, баланстық ұстаушы және басқалар) «</value>
+  </data>
+  <data name="LengthOfHedges" xml:space="preserve">
+    <value>Хеджирлеу ұзындығы, м.</value>
+  </data>
+  <data name="LengthOfTrays" xml:space="preserve">
+    <value>Суармалы су айдындарының ұзындығы, м.</value>
+  </data>
+  <data name="ListOfTreesByObjectBreedsCondition" xml:space="preserve">
+    <value>Тұқымның нысан кестесімен ағаштардың тізімі, мемлекет</value>
+  </data>
+  <data name="ListOfTreesByObjectEconomicMeasures" xml:space="preserve">
+    <value>Тұрғын үйлер, үй шаруашылықтары бойынша ағаштардың тізімі</value>
+  </data>
+  <data name="ListOfTreesConiferous" xml:space="preserve">
+    <value>Ағаштар тізімі (кестелік жыныстарды қараңыз), дана. Олардың ішінен:</value>
+  </data>
+  <data name="ListOfTreesDeciduous" xml:space="preserve">
+    <value>Ағаштардың тізімі (кестедегі тастарды қараңыз), дана. Олардың ішінен:</value>
+  </data>
+  <data name="Monument" xml:space="preserve">
+    <value>IAF, дана. (ескерткіш)</value>
+  </data>
+  <data name="NameAndLocation" xml:space="preserve">
+    <value>Жасыл екпелердің атауы, орналасқан жері</value>
+  </data>
+  <data name="NameOfPowersAttributed" xml:space="preserve">
+    <value>«Мемлекеттік органның атауы Алматы, оның өкілеттігі жасыл кеңістіктің аумағын ұстау «Тіркеу объектісінің атауы</value>
+  </data>
+  <data name="NameOfRegistrationObject" xml:space="preserve">
+    <value>Тіркеу объектісінің атауы</value>
+  </data>
+  <data name="OtherCapitalStructures" xml:space="preserve">
+    <value>Басқа капитал құрылымдары, дана.</value>
+  </data>
+  <data name="OutdoorLighting" xml:space="preserve">
+    <value>Сыртқы жарықтандыру (шам) дана.</value>
+  </data>
+  <data name="Over10yearsConiferous" xml:space="preserve">
+    <value>20 жаста</value>
+  </data>
+  <data name="Over10yearsDeciduous" xml:space="preserve">
+    <value>20 жаста</value>
+  </data>
+  <data name="PassportGeneralInformation" xml:space="preserve">
+    <value>Жалпы ақпарат</value>
+  </data>
+  <data name="PavingBlocks" xml:space="preserve">
+    <value>Жаяу блоктар және басқалар</value>
+  </data>
+  <data name="PresenceOfHistoricalObject" xml:space="preserve">
+    <value>Тарихи-мәдени мұраның объектісінің болуы және оның мәртебесі</value>
+  </data>
+  <data name="Shrubs" xml:space="preserve">
+    <value>Бұталар, дана.</value>
+  </data>
+  <data name="SofasAndBenches" xml:space="preserve">
+    <value>Дивандар мен орындықтар, дана.</value>
+  </data>
+  <data name="Toilets" xml:space="preserve">
+    <value>Дәретханалар, дана.</value>
+  </data>
+  <data name="TotallAmountShrubs" xml:space="preserve">
+    <value>Бұталардың жалпы саны, дана.</value>
+  </data>
+  <data name="TracksAndPlatforms" xml:space="preserve">
+    <value>Тректер мен платформалар, м2</value>
+  </data>
+  <data name="Tree" xml:space="preserve">
+    <value>Ағаштар, дана.</value>
+  </data>
+  <data name="Upto10yearsConiferous" xml:space="preserve">
+    <value>10 жасқа дейін</value>
+  </data>
+  <data name="Upto10yearsDeciduous" xml:space="preserve">
+    <value>10 жасқа дейін</value>
+  </data>
+  <data name="Urns" xml:space="preserve">
+    <value>Шоқтар, дана.</value>
+  </data>
 </root>
