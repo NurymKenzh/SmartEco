@@ -19,7 +19,7 @@ namespace SmartEco.Resources.Controllers {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SharedResources {
@@ -1764,6 +1764,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string PlantationsState {
+            get {
+                return ResourceManager.GetString("PlantationsState", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string PlantationsStates {
+            get {
+                return ResourceManager.GetString("PlantationsStates", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string PlantationsStateType {
             get {
                 return ResourceManager.GetString("PlantationsStateType", resourceCulture);
@@ -2115,6 +2133,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string SpeciesDiversities {
+            get {
+                return ResourceManager.GetString("SpeciesDiversities", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SpeciesDiversity {
+            get {
+                return ResourceManager.GetString("SpeciesDiversity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string StateOfCSR15 {
             get {
                 return ResourceManager.GetString("StateOfCSR15", resourceCulture);
@@ -2307,6 +2343,15 @@ namespace SmartEco.Resources.Controllers {
         public static string TreesByObjectTableOfTheBreedStateLists {
             get {
                 return ResourceManager.GetString("TreesByObjectTableOfTheBreedStateLists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TreesNumber {
+            get {
+                return ResourceManager.GetString("TreesNumber", resourceCulture);
             }
         }
         

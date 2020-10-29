@@ -900,4 +900,19 @@
   <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
     <value>Trees by Facility Management Measures Lists</value>
   </data>
+  <data name="PlantationsState" xml:space="preserve">
+    <value>Plantations State</value>
+  </data>
+  <data name="PlantationsStates" xml:space="preserve">
+    <value>Plantations States</value>
+  </data>
+  <data name="TreesNumber" xml:space="preserve">
+    <value>Trees Number</value>
+  </data>
+  <data name="SpeciesDiversities" xml:space="preserve">
+    <value>Species Diversities</value>
+  </data>
+  <data name="SpeciesDiversity" xml:space="preserve">
+    <value>Species Diversity</value>
+  </data>
 </root>

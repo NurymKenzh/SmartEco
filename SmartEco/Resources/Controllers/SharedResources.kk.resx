@@ -900,4 +900,19 @@
   <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
     <value>Нысан бойынша ағаш кесу, басқару шаралары</value>
   </data>
+  <data name="PlantationsState" xml:space="preserve">
+    <value>Жасыл желектер жағдайы</value>
+  </data>
+  <data name="PlantationsStates" xml:space="preserve">
+    <value>Жасыл желектер жағдайы</value>
+  </data>
+  <data name="TreesNumber" xml:space="preserve">
+    <value>Ағаштардың саны</value>
+  </data>
+  <data name="SpeciesDiversities" xml:space="preserve">
+    <value>Түрдің әртүрлілігі</value>
+  </data>
+  <data name="SpeciesDiversity" xml:space="preserve">
+    <value>Түрдің әртүрлілігі</value>
+  </data>
 </root>

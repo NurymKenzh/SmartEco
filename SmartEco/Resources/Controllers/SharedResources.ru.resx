@@ -902,4 +902,19 @@
   <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
     <value>Перечени деревьев по объекту, хозяйственные мероприятия</value>
   </data>
+  <data name="PlantationsState" xml:space="preserve">
+    <value>Состояние зеленых насаждений</value>
+  </data>
+  <data name="PlantationsStates" xml:space="preserve">
+    <value>Состояния зеленых насаждений</value>
+  </data>
+  <data name="TreesNumber" xml:space="preserve">
+    <value>Количество деревьев</value>
+  </data>
+  <data name="SpeciesDiversities" xml:space="preserve">
+    <value>Видовые разнообразия</value>
+  </data>
+  <data name="SpeciesDiversity" xml:space="preserve">
+    <value>Видовое разнообразие</value>
+  </data>
 </root>
