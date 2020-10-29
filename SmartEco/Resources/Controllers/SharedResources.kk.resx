@@ -915,4 +915,10 @@
   <data name="SpeciesDiversity" xml:space="preserve">
     <value>Түрдің әртүрлілігі</value>
   </data>
+  <data name="Ecopost" xml:space="preserve">
+    <value>Экопост</value>
+  </data>
+  <data name="Ecoposts" xml:space="preserve">
+    <value>Экопосттар</value>
+  </data>
 </root>

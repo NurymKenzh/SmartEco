@@ -912,4 +912,10 @@
   <data name="SpeciesDiversity" xml:space="preserve">
     <value />
   </data>
+  <data name="Ecopost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Ecoposts" xml:space="preserve">
+    <value />
+  </data>
 </root>

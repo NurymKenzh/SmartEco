@@ -41,6 +41,7 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.TreesByFacilityManagementMeasuresList> TreesByFacilityManagementMeasuresList { get; set; }
         public DbSet<SmartEco.Models.PlantationsState> PlantationsState { get; set; }
         public DbSet<SmartEco.Models.SpeciesDiversity> SpeciesDiversity { get; set; }
+        public DbSet<SmartEco.Models.Ecopost> Ecopost { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }
