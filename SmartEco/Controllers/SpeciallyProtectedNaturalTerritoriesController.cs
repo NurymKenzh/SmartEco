@@ -272,6 +272,17 @@ namespace SmartEco.Controllers
                         AuthorizedAuthorityIdFilter = ViewBag.AuthorizedAuthorityIdFilter
                     });
             }
+
+            List<AuthorizedAuthority> authorizedAuthorities = new List<AuthorizedAuthority>();
+            string urlAuthorizedAuthorities = "api/AuthorizedAuthorities",
+                routeAuthorizedAuthorities = "";
+            HttpResponseMessage responseAuthorizedAuthorities = await _HttpApiClient.GetAsync(urlAuthorizedAuthorities + routeAuthorizedAuthorities);
+            if (responseAuthorizedAuthorities.IsSuccessStatusCode)
+            {
+                authorizedAuthorities = await responseAuthorizedAuthorities.Content.ReadAsAsync<List<AuthorizedAuthority>>();
+            }
+            ViewBag.AuthorizedAuthorities = new SelectList(authorizedAuthorities.OrderBy(m => m.Name), "Id", "Name", speciallyProtectedNaturalTerritory.AuthorizedAuthorityId);
+
             return View(speciallyProtectedNaturalTerritory);
         }
 
@@ -307,7 +318,7 @@ namespace SmartEco.Controllers
             {
                 authorizedAuthorities = await responseAuthorizedAuthorities.Content.ReadAsAsync<List<AuthorizedAuthority>>();
             }
-            ViewBag.AuthorizedAuthorities = new SelectList(authorizedAuthorities.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.AuthorizedAuthorities = new SelectList(authorizedAuthorities.OrderBy(m => m.Name), "Id", "Name", speciallyProtectedNaturalTerritory.AuthorizedAuthorityId);
 
             return View(speciallyProtectedNaturalTerritory);
         }
@@ -317,7 +328,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Number,NorthLatitude,EastLongitude,AuthorizedAuthorityId")] SpeciallyProtectedNaturalTerritory speciallyProtectedNaturalTerritory,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN,AuthorizedAuthorityId,Areahectares")] SpeciallyProtectedNaturalTerritory speciallyProtectedNaturalTerritory,
             string SortOrder,
             string NameENFilter,
             string NameRUFilter,
@@ -371,6 +382,17 @@ namespace SmartEco.Controllers
                         AuthorizedAuthorityIdFilter = ViewBag.AuthorizedAuthorityIdFilter
                     });
             }
+
+            List<AuthorizedAuthority> authorizedAuthorities = new List<AuthorizedAuthority>();
+            string urlAuthorizedAuthorities = "api/AuthorizedAuthorities",
+                routeAuthorizedAuthorities = "";
+            HttpResponseMessage responseAuthorizedAuthorities = await _HttpApiClient.GetAsync(urlAuthorizedAuthorities + routeAuthorizedAuthorities);
+            if (responseAuthorizedAuthorities.IsSuccessStatusCode)
+            {
+                authorizedAuthorities = await responseAuthorizedAuthorities.Content.ReadAsAsync<List<AuthorizedAuthority>>();
+            }
+            ViewBag.AuthorizedAuthorities = new SelectList(authorizedAuthorities.OrderBy(m => m.Name), "Id", "Name", speciallyProtectedNaturalTerritory.AuthorizedAuthorityId);
+
             return View(speciallyProtectedNaturalTerritory);
         }
 

@@ -1,0 +1,139 @@
+﻿@model IEnumerable<SmartEco.Models.TreesByObjectTableOfTheBreedStateList>
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</h1>
+
+<p>
+    @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+</p>
+@using (Html.BeginForm("Index", "TreesByObjectTableOfTheBreedStateLists", new { SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(t => t.FirstOrDefault().GreemPlantsPassportId).ToString(), "Index",
+                      new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.GreemPlantsPassportSort, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                    <br />
+                    @Html.DropDownList("GreemPlantsPassportIdFilter", (IEnumerable<SelectListItem>)ViewBag.GreemPlantsPassports, "", htmlAttributes: new { @class = "form-control", @id = "TypeOfTargetId", @onchange = "ChangeTypeOfTarget()" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(t => t.FirstOrDefault().PlantationsTypeId).ToString(), "Index",
+                      new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.PlantationsTypeSort, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                    <br />
+                    @Html.DropDownList("PlantationsTypeIdFilter", (IEnumerable<SelectListItem>)ViewBag.PlantationsTypes, "", htmlAttributes: new { @class = "form-control", @id = "TargetId" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(t => t.FirstOrDefault().Quantity).ToString(), "Index",
+                      new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.QuantitySort, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                    <br />
+                </th>
+                <th>
+                    @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                   <td>
+                        @Html.DisplayFor(modelItem => item.GreemPlantsPassport.GreenObject)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PlantationsType.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Quantity)
+                    </td>
+                    <td>
+                        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+        </ul>
+    }
+}

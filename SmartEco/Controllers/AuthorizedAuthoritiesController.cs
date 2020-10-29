@@ -230,7 +230,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Number,NorthLatitude,EastLongitude,MonitoringPostId")] AuthorizedAuthority authorizedAuthority,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] AuthorizedAuthority authorizedAuthority,
             string SortOrder,
             string NameFilter,
             int? PageSize,

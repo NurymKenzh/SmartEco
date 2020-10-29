@@ -869,4 +869,37 @@
   <data name="PlantationsStateTypes" xml:space="preserve">
     <value>Типы состояний зеленых насаждений</value>
   </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Количество (шт.)</value>
+  </data>
+  <data name="StateOfCSR15" xml:space="preserve">
+    <value>Состояние КСО-1-5</value>
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateList" xml:space="preserve">
+    <value>Перечень деревьев по объекту таблица породы, состояние</value>
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateLists" xml:space="preserve">
+    <value>Перечени деревьев по объекту таблица породы, состояние</value>
+  </data>
+  <data name="BusinessEvents" xml:space="preserve">
+    <value>Хозяйственные мероприятия</value>
+  </data>
+  <data name="CrownFormation" xml:space="preserve">
+    <value>Формирование кроны</value>
+  </data>
+  <data name="MaintenanceWork" xml:space="preserve">
+    <value>Уходные работы</value>
+  </data>
+  <data name="SanitaryFelling" xml:space="preserve">
+    <value>Санитарная рубка</value>
+  </data>
+  <data name="SanitaryPruning" xml:space="preserve">
+    <value>Санитарная обрезка</value>
+  </data>
+  <data name="TreesByFacilityManagementMeasuresList" xml:space="preserve">
+    <value>Перечень деревьев по объекту, хозяйственные мероприятия</value>
+  </data>
+  <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
+    <value>Перечени деревьев по объекту, хозяйственные мероприятия</value>
+  </data>
 </root>

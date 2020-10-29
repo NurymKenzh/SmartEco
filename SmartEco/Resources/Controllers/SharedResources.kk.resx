@@ -867,4 +867,37 @@
   <data name="PlantationsStateTypes" xml:space="preserve">
     <value>Жасыл желектер жайының түрлері</value>
   </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Саны (дана)</value>
+  </data>
+  <data name="StateOfCSR15" xml:space="preserve">
+    <value>КӘЖ-1-5 жағдайы</value>
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateList" xml:space="preserve">
+    <value>Тұқымның нысан кестесімен ағаштардың тізімі, мемлекет</value>
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateLists" xml:space="preserve">
+    <value>Ағаштан нысанға өту, тұқымдық кесте, күй</value>
+  </data>
+  <data name="BusinessEvents" xml:space="preserve">
+    <value>Іс-шаралар</value>
+  </data>
+  <data name="CrownFormation" xml:space="preserve">
+    <value>Crown қалыптастыру</value>
+  </data>
+  <data name="MaintenanceWork" xml:space="preserve">
+    <value>Техникалық қызмет көрсету</value>
+  </data>
+  <data name="SanitaryFelling" xml:space="preserve">
+    <value>Санитарлық кесу</value>
+  </data>
+  <data name="SanitaryPruning" xml:space="preserve">
+    <value>Санитарлық кесу</value>
+  </data>
+  <data name="TreesByFacilityManagementMeasuresList" xml:space="preserve">
+    <value>Мекеме арқылы ағаштар тізімі, басқару шаралары</value>
+  </data>
+  <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
+    <value>Нысан бойынша ағаш кесу, басқару шаралары</value>
+  </data>
 </root>

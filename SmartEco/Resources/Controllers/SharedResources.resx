@@ -864,4 +864,37 @@
   <data name="PlantationsStateTypes" xml:space="preserve">
     <value />
   </data>
+  <data name="Quantity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="StateOfCSR15" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateLists" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BusinessEvents" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CrownFormation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaintenanceWork" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SanitaryFelling" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SanitaryPruning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByFacilityManagementMeasuresList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
+    <value />
+  </data>
 </root>

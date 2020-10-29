@@ -195,7 +195,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,Number,NorthLatitude,EastLongitude,KATOId")] GreemPlantsPassport greemPlantsPassport,
+        public async Task<IActionResult> Create([Bind("Id,GreenObject,KATOId,NameOfPowersAttributed,NameOfRegistrationObject,LegalEntityUse,AccountNumber,NameAndLocation,PresenceOfHistoricalObject,GreenTotalAreaGa,Lawns,Flowerbeds,TracksAndPlatforms,Tree,Shrubs,SofasAndBenches,Urns,EquippedPlaygrounds,EquippedSportsgrounds,Monument,Toilets,OutdoorLighting,Billboards,OtherCapitalStructures,GreenTotalArea,AreaUnderGreenery,AreaUnderLawn,AreaUnderGroundlawn,AreaUnderOrdinarylawn,AreaUnderMeadowlawn,AreaUnderTrees,AreaUnderShrubs,AreaUndeFlowerbeds,AreaUndeTracksAndPlatforms,Asphalted,PavingBlocks,LengthOfTrays,AmountConiferousTrees,ListOfTreesConiferous,Upto10yearsConiferous,Betwen10_20yearsConiferous,Over10yearsConiferous,AmountDeciduousTrees,ListOfTreesDeciduous,Upto10yearsDeciduous,Betwen10_20yearsDeciduous,Over10yearsDeciduous,AmountFormedTrees,TotallAmountShrubs,AmountShrubs,LengthOfHedges,AmountEquippedPlaygrounds,AmountEquippedSportsgrounds,AmountSofasAndBenches,AmountBenches,AmountSofas,AmountArbours,AmountOutdoorLighting,AmountToilets,AmountMonument,AmountBillboards,ListOfTreesByObjectBreedsCondition,ListOfTreesByObjectEconomicMeasures,PassportGeneralInformation,NorthLatitude,EastLongitude")] GreemPlantsPassport greemPlantsPassport,
             string SortOrder,
             string GreenObjectFilter,
             int? KATOIdFilter,
@@ -238,6 +238,17 @@ namespace SmartEco.Controllers
                         KATOIdFilter = ViewBag.KATOIdFilter
                     });
             }
+
+            List<KATO> KATOes = new List<KATO>();
+            string urlKATOes = "api/KATOes",
+                routeKATOes = "";
+            HttpResponseMessage responseKATOes = await _HttpApiClient.GetAsync(urlKATOes + routeKATOes);
+            if (responseKATOes.IsSuccessStatusCode)
+            {
+                KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
+            }
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", greemPlantsPassport.KATOId);
+
             return View(greemPlantsPassport);
         }
 
@@ -269,7 +280,7 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", greemPlantsPassport.KATOId);
 
             return View(greemPlantsPassport);
         }
@@ -279,7 +290,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,Number,NorthLatitude,EastLongitude,KATOId")] GreemPlantsPassport greemPlantsPassport,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,GreenObject,KATOId,NameOfPowersAttributed,NameOfRegistrationObject,LegalEntityUse,AccountNumber,NameAndLocation,PresenceOfHistoricalObject,GreenTotalAreaGa,Lawns,Flowerbeds,TracksAndPlatforms,Tree,Shrubs,SofasAndBenches,Urns,EquippedPlaygrounds,EquippedSportsgrounds,Monument,Toilets,OutdoorLighting,Billboards,OtherCapitalStructures,GreenTotalArea,AreaUnderGreenery,AreaUnderLawn,AreaUnderGroundlawn,AreaUnderOrdinarylawn,AreaUnderMeadowlawn,AreaUnderTrees,AreaUnderShrubs,AreaUndeFlowerbeds,AreaUndeTracksAndPlatforms,Asphalted,PavingBlocks,LengthOfTrays,AmountConiferousTrees,ListOfTreesConiferous,Upto10yearsConiferous,Betwen10_20yearsConiferous,Over10yearsConiferous,AmountDeciduousTrees,ListOfTreesDeciduous,Upto10yearsDeciduous,Betwen10_20yearsDeciduous,Over10yearsDeciduous,AmountFormedTrees,TotallAmountShrubs,AmountShrubs,LengthOfHedges,AmountEquippedPlaygrounds,AmountEquippedSportsgrounds,AmountSofasAndBenches,AmountBenches,AmountSofas,AmountArbours,AmountOutdoorLighting,AmountToilets,AmountMonument,AmountBillboards,ListOfTreesByObjectBreedsCondition,ListOfTreesByObjectEconomicMeasures,PassportGeneralInformation,NorthLatitude,EastLongitude")] GreemPlantsPassport greemPlantsPassport,
             string SortOrder,
             string GreenObjectFilter,
             int? KATOIdFilter,
@@ -327,6 +338,17 @@ namespace SmartEco.Controllers
                         KATOIdFilter = ViewBag.KATOIdFilter
                     });
             }
+
+            List<KATO> KATOes = new List<KATO>();
+            string urlKATOes = "api/KATOes",
+                routeKATOes = "";
+            HttpResponseMessage responseKATOes = await _HttpApiClient.GetAsync(urlKATOes + routeKATOes);
+            if (responseKATOes.IsSuccessStatusCode)
+            {
+                KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
+            }
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", greemPlantsPassport.KATOId);
+
             return View(greemPlantsPassport);
         }
 

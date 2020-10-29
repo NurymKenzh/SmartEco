@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201028183316_TreesByObjectTableOfTheBreedStateList_20201028_00")]
+    partial class TreesByObjectTableOfTheBreedStateList_20201028_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -889,38 +891,6 @@ namespace SmartEcoAPI.Migrations
                     b.ToTable("TerritoryType");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.TreesByFacilityManagementMeasuresList", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int?>("BusinessEventsPlantationsTypeId");
-
-                    b.Property<int?>("CrownFormation");
-
-                    b.Property<int>("GreemPlantsPassportId");
-
-                    b.Property<string>("MaintenanceWork");
-
-                    b.Property<int>("PlantationsTypeId");
-
-                    b.Property<string>("Quantity");
-
-                    b.Property<int?>("SanitaryFelling");
-
-                    b.Property<int?>("SanitaryPruning");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("BusinessEventsPlantationsTypeId");
-
-                    b.HasIndex("GreemPlantsPassportId");
-
-                    b.HasIndex("PlantationsTypeId");
-
-                    b.ToTable("TreesByFacilityManagementMeasuresList");
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.TreesByObjectTableOfTheBreedStateList", b =>
                 {
                     b.Property<int>("Id")
@@ -1165,23 +1135,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.TargetTerritory", "TargetTerritory")
                         .WithMany()
                         .HasForeignKey("TargetTerritoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.TreesByFacilityManagementMeasuresList", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.PlantationsType", "BusinessEventsPlantationsType")
-                        .WithMany()
-                        .HasForeignKey("BusinessEventsPlantationsTypeId");
-
-                    b.HasOne("SmartEcoAPI.Models.GreemPlantsPassport", "GreemPlantsPassport")
-                        .WithMany()
-                        .HasForeignKey("GreemPlantsPassportId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.PlantationsType", "PlantationsType")
-                        .WithMany()
-                        .HasForeignKey("PlantationsTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
