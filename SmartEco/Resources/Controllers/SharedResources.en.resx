@@ -867,6 +867,39 @@
   <data name="Urns" xml:space="preserve">
     <value>Urns</value>
   </data>
+  <data name="Quantity" xml:space="preserve">
+    <value>Quantity</value>
+  </data>
+  <data name="StateOfCSR15" xml:space="preserve">
+    <value>State of KSO-1-5</value>
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateList" xml:space="preserve">
+    <value>Trees by Object Table of the Breed State List</value>
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateLists" xml:space="preserve">
+    <value>Trees by Object Table of the Breed State Lists</value>
+  </data>
+  <data name="BusinessEvents" xml:space="preserve">
+    <value>Business Events</value>
+  </data>
+  <data name="CrownFormation" xml:space="preserve">
+    <value>Crown Formation</value>
+  </data>
+  <data name="MaintenanceWork" xml:space="preserve">
+    <value>Maintenance Work</value>
+  </data>
+  <data name="SanitaryFelling" xml:space="preserve">
+    <value>Sanitary Felling</value>
+  </data>
+  <data name="SanitaryPruning" xml:space="preserve">
+    <value>Sanitary Pruning</value>
+  </data>
+  <data name="TreesByFacilityManagementMeasuresList" xml:space="preserve">
+    <value>Trees by Facility Management Measures List</value>
+  </data>
+  <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
+    <value>Trees by Facility Management Measures Lists</value>
+  </data>
   <data name="PlantationsState" xml:space="preserve">
     <value>Plantations State</value>
   </data>

@@ -37,6 +37,8 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.AuthorizedAuthority> AuthorizedAuthority { get; set; }
         public DbSet<SmartEco.Models.SpeciallyProtectedNaturalTerritory> SpeciallyProtectedNaturalTerritory { get; set; }
         public DbSet<SmartEco.Models.GreemPlantsPassport> GreemPlantsPassport { get; set; }
+        public DbSet<SmartEco.Models.TreesByObjectTableOfTheBreedStateList> TreesByObjectTableOfTheBreedStateList { get; set; }
+        public DbSet<SmartEco.Models.TreesByFacilityManagementMeasuresList> TreesByFacilityManagementMeasuresList { get; set; }
         public DbSet<SmartEco.Models.PlantationsState> PlantationsState { get; set; }
         public DbSet<SmartEco.Models.SpeciesDiversity> SpeciesDiversity { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }

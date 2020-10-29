@@ -19,7 +19,7 @@ namespace SmartEco.Resources.Controllers {
     // class via a tool like ResGen or Visual Studio.
     // To add or remove a member, edit your .ResX file then rerun ResGen
     // with the /str option, or rebuild your VS project.
-    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "16.0.0.0")]
+    [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Resources.Tools.StronglyTypedResourceBuilder", "15.0.0.0")]
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
     public class SharedResources {
@@ -531,6 +531,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string BusinessEvents {
+            get {
+                return ResourceManager.GetString("BusinessEvents", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string CarbonOxide {
             get {
                 return ResourceManager.GetString("CarbonOxide", resourceCulture);
@@ -606,6 +615,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Create {
             get {
                 return ResourceManager.GetString("Create", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string CrownFormation {
+            get {
+                return ResourceManager.GetString("CrownFormation", resourceCulture);
             }
         }
         
@@ -1305,6 +1323,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string MaintenanceWork {
+            get {
+                return ResourceManager.GetString("MaintenanceWork", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Map {
             get {
                 return ResourceManager.GetString("Map", resourceCulture);
@@ -1944,6 +1971,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Quantity {
+            get {
+                return ResourceManager.GetString("Quantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Register {
             get {
                 return ResourceManager.GetString("Register", resourceCulture);
@@ -1965,6 +2001,24 @@ namespace SmartEco.Resources.Controllers {
         public static string Reverse {
             get {
                 return ResourceManager.GetString("Reverse", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SanitaryFelling {
+            get {
+                return ResourceManager.GetString("SanitaryFelling", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SanitaryPruning {
+            get {
+                return ResourceManager.GetString("SanitaryPruning", resourceCulture);
             }
         }
         
@@ -2073,6 +2127,15 @@ namespace SmartEco.Resources.Controllers {
         public static string SpeciallyProtectedNaturalTerritory {
             get {
                 return ResourceManager.GetString("SpeciallyProtectedNaturalTerritory", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string StateOfCSR15 {
+            get {
+                return ResourceManager.GetString("StateOfCSR15", resourceCulture);
             }
         }
         
@@ -2226,6 +2289,42 @@ namespace SmartEco.Resources.Controllers {
         public static string Tree {
             get {
                 return ResourceManager.GetString("Tree", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TreesByFacilityManagementMeasuresList {
+            get {
+                return ResourceManager.GetString("TreesByFacilityManagementMeasuresList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TreesByFacilityManagementMeasuresLists {
+            get {
+                return ResourceManager.GetString("TreesByFacilityManagementMeasuresLists", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TreesByObjectTableOfTheBreedStateList {
+            get {
+                return ResourceManager.GetString("TreesByObjectTableOfTheBreedStateList", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TreesByObjectTableOfTheBreedStateLists {
+            get {
+                return ResourceManager.GetString("TreesByObjectTableOfTheBreedStateLists", resourceCulture);
             }
         }
         

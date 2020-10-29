@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20201029104656_TreesByFacilityManagementMeasuresLists_20201029_00")]
+    partial class TreesByFacilityManagementMeasuresLists_20201029_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -629,26 +631,6 @@ namespace SmartEcoAPI.Migrations
                     b.ToTable("Person");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.PlantationsState", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("KATOId");
-
-                    b.Property<int>("PlantationsStateTypeId");
-
-                    b.Property<decimal>("TreesNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KATOId");
-
-                    b.HasIndex("PlantationsStateTypeId");
-
-                    b.ToTable("PlantationsState");
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.PlantationsStateType", b =>
                 {
                     b.Property<int>("Id")
@@ -783,26 +765,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasIndex("AuthorizedAuthorityId");
 
                     b.ToTable("SpeciallyProtectedNaturalTerritory");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SpeciesDiversity", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<int>("KATOId");
-
-                    b.Property<int>("PlantationsTypeId");
-
-                    b.Property<int>("TreesNumber");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("KATOId");
-
-                    b.HasIndex("PlantationsTypeId");
-
-                    b.ToTable("SpeciesDiversity");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.Target", b =>
@@ -1129,19 +1091,6 @@ namespace SmartEcoAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.PlantationsState", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.KATO", "KATO")
-                        .WithMany()
-                        .HasForeignKey("KATOId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.PlantationsStateType", "PlantationsStateType")
-                        .WithMany()
-                        .HasForeignKey("PlantationsStateTypeId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.PollutionSourceData", b =>
                 {
                     b.HasOne("SmartEcoAPI.Models.Pollutant", "Pollutant")
@@ -1160,19 +1109,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.AuthorizedAuthority", "AuthorizedAuthority")
                         .WithMany()
                         .HasForeignKey("AuthorizedAuthorityId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SpeciesDiversity", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.KATO", "KATO")
-                        .WithMany()
-                        .HasForeignKey("KATOId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.PlantationsType", "PlantationsType")
-                        .WithMany()
-                        .HasForeignKey("PlantationsTypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

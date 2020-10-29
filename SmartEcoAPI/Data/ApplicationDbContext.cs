@@ -87,6 +87,10 @@ namespace SmartEcoAPI.Data
 
         public DbSet<SmartEcoAPI.Models.GreemPlantsPassport> GreemPlantsPassport { get; set; }
 
+        public DbSet<SmartEcoAPI.Models.TreesByObjectTableOfTheBreedStateList> TreesByObjectTableOfTheBreedStateList { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.TreesByFacilityManagementMeasuresList> TreesByFacilityManagementMeasuresList { get; set; }
+
         public DbSet<SmartEcoAPI.Models.PlantationsState> PlantationsState { get; set; }
 
         public DbSet<SmartEcoAPI.Models.SpeciesDiversity> SpeciesDiversity { get; set; }
