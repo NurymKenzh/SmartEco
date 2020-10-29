@@ -1,0 +1,138 @@
+﻿@model IEnumerable<SmartEco.Models.SpeciesDiversity>
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["SpeciesDiversities"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["SpeciesDiversities"]</h1>
+
+<p>
+    @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+</p>
+@using (Html.BeginForm("Index", "SpeciesDiversities", new { SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().KATOId).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MonitoringPostSort, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                    <br />
+                    @Html.DropDownList("KATOIdFilter", (IEnumerable<SelectListItem>)ViewBag.MonitoringPosts, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().PlantationsTypeId).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MonitoringPostSort, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                    <br />
+                    @Html.DropDownList("PlantationsTypeIdFilter", (IEnumerable<SelectListItem>)ViewBag.MonitoringPosts, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.TreesNumber)
+                </th>
+                <th>
+                    @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.KATO.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.PlantationsType.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.TreesNumber)
+                    </td>
+                    <td>
+                        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                    </td>
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, KATOIdFilter = ViewBag.KATOIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+                </li>
+            }
+        </ul>
+    }
+}

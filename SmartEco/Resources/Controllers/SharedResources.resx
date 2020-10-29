@@ -864,4 +864,13 @@
   <data name="PlantationsStateTypes" xml:space="preserve">
     <value />
   </data>
+  <data name="PlantationsState" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlantationsStates" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesNumber" xml:space="preserve">
+    <value />
+  </data>
 </root>

@@ -86,5 +86,9 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory> SpeciallyProtectedNaturalTerritory { get; set; }
 
         public DbSet<SmartEcoAPI.Models.GreemPlantsPassport> GreemPlantsPassport { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.PlantationsState> PlantationsState { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.SpeciesDiversity> SpeciesDiversity { get; set; }
     }
 }

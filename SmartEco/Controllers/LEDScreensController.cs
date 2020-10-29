@@ -240,6 +240,17 @@ namespace SmartEco.Controllers
                         MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter
                     });
             }
+
+            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+            string urlMonitoringPosts = "api/MonitoringPosts",
+                routeMonitoringPosts = "";
+            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts + routeMonitoringPosts);
+            if (responseMonitoringPosts.IsSuccessStatusCode)
+            {
+                monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            }
+            ViewBag.MonitoringPosts = new SelectList(monitoringPosts.OrderBy(m => m.Name), "Id", "Name", ledScreen.MonitoringPostId);
+
             return View(ledScreen);
         }
 
@@ -271,7 +282,7 @@ namespace SmartEco.Controllers
             {
                 monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
             }
-            ViewBag.MonitoringPosts = new SelectList(monitoringPosts.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.MonitoringPosts = new SelectList(monitoringPosts.OrderBy(m => m.Name), "Id", "Name", ledScreen.MonitoringPostId);
 
             return View(ledScreen);
         }
@@ -329,6 +340,17 @@ namespace SmartEco.Controllers
                         MonitoringPostIdFilter = ViewBag.MonitoringPostIdFilter
                     });
             }
+
+            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+            string urlMonitoringPosts = "api/MonitoringPosts",
+                routeMonitoringPosts = "";
+            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts + routeMonitoringPosts);
+            if (responseMonitoringPosts.IsSuccessStatusCode)
+            {
+                monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            }
+            ViewBag.MonitoringPosts = new SelectList(monitoringPosts.OrderBy(m => m.Name), "Id", "Name", ledScreen.MonitoringPostId);
+
             return View(ledScreen);
         }
 

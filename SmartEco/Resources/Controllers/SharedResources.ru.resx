@@ -869,4 +869,13 @@
   <data name="PlantationsStateTypes" xml:space="preserve">
     <value>Типы состояний зеленых насаждений</value>
   </data>
+  <data name="PlantationsState" xml:space="preserve">
+    <value>Состояние зеленых насаждений</value>
+  </data>
+  <data name="PlantationsStates" xml:space="preserve">
+    <value>Состояния зеленых насаждений</value>
+  </data>
+  <data name="TreesNumber" xml:space="preserve">
+    <value>Количество деревьев</value>
+  </data>
 </root>
