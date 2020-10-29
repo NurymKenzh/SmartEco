@@ -909,4 +909,10 @@
   <data name="TreesNumber" xml:space="preserve">
     <value>Ағаштардың саны</value>
   </data>
+  <data name="SpeciesDiversities" xml:space="preserve">
+    <value>Түрдің әртүрлілігі</value>
+  </data>
+  <data name="SpeciesDiversity" xml:space="preserve">
+    <value>Түрдің әртүрлілігі</value>
+  </data>
 </root>

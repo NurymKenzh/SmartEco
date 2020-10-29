@@ -911,4 +911,10 @@
   <data name="TreesNumber" xml:space="preserve">
     <value>Количество деревьев</value>
   </data>
+  <data name="SpeciesDiversities" xml:space="preserve">
+    <value>Видовые разнообразия</value>
+  </data>
+  <data name="SpeciesDiversity" xml:space="preserve">
+    <value>Видовое разнообразие</value>
+  </data>
 </root>

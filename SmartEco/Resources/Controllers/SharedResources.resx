@@ -906,4 +906,10 @@
   <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
     <value />
   </data>
+  <data name="SpeciesDiversities" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpeciesDiversity" xml:space="preserve">
+    <value />
+  </data>
 </root>
