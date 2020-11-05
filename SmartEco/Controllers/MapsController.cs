@@ -216,7 +216,7 @@ namespace SmartEco.Controllers
         public async Task<IActionResult> KaragandaRegion()
         {
             string role = HttpContext.Session.GetString("Role");
-            if (!(role == "admin" || role == "moderator" || role == "KaragandaRegion"))
+            if (!(role == "admin" || role == "moderator" || role == "KaragandaRegion" || role == "Kazhydromet"))
             {
                 return Redirect("/");
             }
@@ -505,7 +505,7 @@ namespace SmartEco.Controllers
         public async Task<IActionResult> Almaty()
         {
             string role = HttpContext.Session.GetString("Role");
-            if (!(role == "admin" || role == "moderator" || role == "Almaty"))
+            if (!(role == "admin" || role == "moderator" || role == "Almaty" || role == "Kazhydromet"))
             {
                 return Redirect("/");
             }
@@ -936,7 +936,7 @@ namespace SmartEco.Controllers
         public async Task<IActionResult> Shymkent()
         {
             string role = HttpContext.Session.GetString("Role");
-            if (!(role == "admin" || role == "moderator" || role == "Shymkent"))
+            if (!(role == "admin" || role == "moderator" || role == "Shymkent" || role == "Kazhydromet"))
             {
                 return Redirect("/");
             }

@@ -28,7 +28,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Kazhydromet")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPost(string SortOrder,
             int? Number,
             string Name,
@@ -234,7 +234,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Exceed
         [HttpGet("exceed")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Kazhydromet")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsExceed(int MPCExceedPastMinutes,
             int? DataProviderId)
         {
@@ -287,7 +287,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/Exceed
         [HttpGet("inactive")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Kazhydromet")]
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetEcoserviceMonitoringPostsInactive(int InactivePastMinutes,
             int? DataProviderId)
         {
@@ -936,7 +936,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/GetMonitoringPostMeasuredParameter
         [HttpPost("getMonitoringPostMeasuredParameters")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Kazhydromet")]
         public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParameters(
             int MonitoringPostId,
             int DataProviderId,
@@ -1024,7 +1024,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/GetMonitoringPostMeasuredParameterForMap
         [HttpPost("getMonitoringPostMeasuredParametersForMap")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Kazhydromet")]
         public List<MonitoringPostMeasuredParameters> GetMonitoringPostMeasuredParametersForMap(int MonitoringPostId)
         {
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameter = _context.MonitoringPostMeasuredParameters

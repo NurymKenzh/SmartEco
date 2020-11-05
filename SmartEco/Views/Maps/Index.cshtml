@@ -33,3 +33,9 @@ else if (Role == "Shymkent")
 {
     <a class="btn btn-default" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
 }
+else if (Role == "Kazhydromet")
+{
+    <a class="btn btn-default" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["KaragandaRegion"]</a>
+    <a class="btn btn-default" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Almaty"]</a>
+    <a class="btn btn-default" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
+}
