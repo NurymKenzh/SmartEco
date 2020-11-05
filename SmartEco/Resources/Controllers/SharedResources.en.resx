@@ -921,4 +921,13 @@
   <data name="Ecoposts" xml:space="preserve">
     <value>Ecoposts</value>
   </data>
+  <data name="AssessmentVegetationСover" xml:space="preserve">
+    <value>Assessment of the current state of the vegetation cover</value>
+  </data>
+  <data name="GreenSpacesNow" xml:space="preserve">
+    <value>Green spaces (current state)</value>
+  </data>
+  <data name="GreenSpacesPlanned" xml:space="preserve">
+    <value>Green spaces (planned)</value>
+  </data>
 </root>

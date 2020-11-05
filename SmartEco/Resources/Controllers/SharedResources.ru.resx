@@ -754,7 +754,7 @@
     <value>Оборудованные спортивные площадки, шт.</value>
   </data>
   <data name="Flowerbeds" xml:space="preserve">
-    <value />
+    <value>Площадь под цветниками, м2</value>
   </data>
   <data name="GreemPlantsPassport" xml:space="preserve">
     <value>Паспорт территории зеленых насаждений</value>
@@ -922,5 +922,14 @@
   </data>
   <data name="Ecoposts" xml:space="preserve">
     <value>Экопосты</value>
+  </data>
+  <data name="AssessmentVegetationСover" xml:space="preserve">
+    <value>Оценка современного состояния растительного покрова</value>
+  </data>
+  <data name="GreenSpacesNow" xml:space="preserve">
+    <value>Зелёные насаждения (современного состояния)</value>
+  </data>
+  <data name="GreenSpacesPlanned" xml:space="preserve">
+    <value>Зелёные насаждения (плановые)</value>
   </data>
 </root>

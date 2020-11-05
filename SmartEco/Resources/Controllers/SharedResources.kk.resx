@@ -921,4 +921,13 @@
   <data name="Ecoposts" xml:space="preserve">
     <value>Экопосттар</value>
   </data>
+  <data name="AssessmentVegetationСover" xml:space="preserve">
+    <value>Өсімдік жамылғысының қазіргі жағдайын бағалау</value>
+  </data>
+  <data name="GreenSpacesNow" xml:space="preserve">
+    <value>Жасыл кеңістіктер (қазіргі күй)</value>
+  </data>
+  <data name="GreenSpacesPlanned" xml:space="preserve">
+    <value>Жасыл алаңдар (жоспарланған)</value>
+  </data>
 </root>

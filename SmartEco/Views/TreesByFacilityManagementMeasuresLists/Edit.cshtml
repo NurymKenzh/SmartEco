@@ -19,12 +19,12 @@
             <input type="hidden" asp-for="Id" />
             <div class="form-group">
                 <label asp-for="GreemPlantsPassportId" class="control-label"></label>
-                <select asp-for="GreemPlantsPassportId" class="form-control" asp-items="ViewBag.GreemPlantsPassportId"></select>
+                <select asp-for="GreemPlantsPassportId" class="form-control" asp-items="ViewBag.GreemPlantsPassports"></select>
                 <span asp-validation-for="GreemPlantsPassportId" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="PlantationsTypeId" class="control-label"></label>
-                <select asp-for="PlantationsTypeId" class="form-control" asp-items="ViewBag.PlantationsTypeId"></select>
+                <select asp-for="PlantationsTypeId" class="form-control" asp-items="ViewBag.PlantationsTypes"></select>
                 <span asp-validation-for="PlantationsTypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
@@ -37,7 +37,7 @@
             </div>
             <div class="form-group PlantationsType">
                 <label asp-for="BusinessEventsPlantationsTypeId" class="control-label"></label>
-                <select asp-for="BusinessEventsPlantationsTypeId" class="form-control" asp-items="ViewBag.BusinessEventsPlantationsTypeId"></select>
+                <select asp-for="BusinessEventsPlantationsTypeId" class="form-control" asp-items="ViewBag.PlantationsTypes"></select>
             </div>
             <div class="form-group BusinessEvents">
                 <label asp-for="SanitaryPruning" class="control-label"></label>

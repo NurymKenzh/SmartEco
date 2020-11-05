@@ -918,4 +918,13 @@
   <data name="Ecoposts" xml:space="preserve">
     <value />
   </data>
+  <data name="AssessmentVegetationСover" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenSpacesNow" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenSpacesPlanned" xml:space="preserve">
+    <value />
+  </data>
 </root>

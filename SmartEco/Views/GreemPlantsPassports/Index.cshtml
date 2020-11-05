@@ -4,7 +4,7 @@
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
-    ViewData["Title"] = SharedLocalizer["LEDScreens"];
+    ViewData["Title"] = SharedLocalizer["GreemPlantsPassports"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -59,13 +59,13 @@
                     @Html.ActionLink(Html.DisplayNameFor(t => t.FirstOrDefault().GreenObject).ToString(), "Index",
                         new { SortOrder = ViewBag.GreenObjectSort, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
                     <br />
-                    @Html.Editor("GreenObject", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                    @Html.Editor("GreenObjectFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(t => t.FirstOrDefault().KATOId).ToString(), "Index",
                         new { SortOrder = ViewBag.KATOIdSort, GreenObject = ViewBag.GreenObjectFilter, KATOId = ViewBag.KATOIdFilter })
                     <br />
-                    @Html.DropDownList("CityDistrictId", (IEnumerable<SelectListItem>)ViewBag.CityDistrictId, "", htmlAttributes: new { @class = "form-control" })
+                    @Html.DropDownList("KATOIdFilter", (IEnumerable<SelectListItem>)ViewBag.KATOes, "", htmlAttributes: new { @class = "form-control" })
                 </th>
                 <th>
                     @Html.DisplayNameFor(t => t.FirstOrDefault().NameOfRegistrationObject)

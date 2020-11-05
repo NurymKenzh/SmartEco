@@ -835,6 +835,43 @@ namespace SmartEco.Controllers
             });
             ViewBag.LEDScreensLayerJson = objectLEDScreens.ToString();
 
+            string urlEcoposts = "api/Ecoposts";
+            List<Ecopost> ecoposts = new List<Ecopost>();
+            HttpResponseMessage responseEcoposts = await _HttpApiClient.GetAsync(urlEcoposts);
+            ecoposts = await responseEcoposts.Content.ReadAsAsync<List<Ecopost>>();
+            JObject objectEcoposts = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from ecopost in ecoposts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = ecopost.Id,
+                                   Name = ecopost.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                   {
+                                    Convert.ToDecimal(ecopost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                    Convert.ToDecimal(ecopost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                   },
+                               }
+                           }
+            });
+            ViewBag.EcopostsLayerJson = objectEcoposts.ToString();
+
             //Data for calculate dissipation
             string urlMeasuredDatas = "api/MeasuredDatas",
                  route = "";
