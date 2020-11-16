@@ -10,7 +10,7 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    [Migration("20201029112722_GreemPlantsPassport_20201029_00")]
+    [Migration("20201028171013_GreemPlantsPassport_20201029_00")]
     partial class GreemPlantsPassport_20201029_00
     {
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
