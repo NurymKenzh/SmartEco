@@ -121,6 +121,7 @@
     <input id="KazHydrometTransportMonitoringPostsLayerJson" type="text" value="@ViewBag.KazHydrometTransportMonitoringPostsLayerJson" />
     <input id="PollutionSourcesLayerJson" type="text" value="@ViewBag.PollutionSourcesLayerJson" />
     <input id="LEDScreensLayerJson" type="text" value="@ViewBag.LEDScreensLayerJson" />
+    <input id="EcopostsLayerJson" type="text" value="@ViewBag.EcopostsLayerJson" />
     <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
     <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
     <input id="MPCMaxSingle" type="text" value="@SharedLocalizer["MPCMaxSingle"]" />
@@ -225,6 +226,16 @@
         <input id="layerLEDScreensOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
         <hr />
 
+        @*Ecoposts*@
+        <label>
+            <input type="checkbox" id="layerEcopostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["Ecoposts"]
+            <img src="~/images/EcopostPanel.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerEcopostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
         <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
         <br />
         <input id="layerBaseOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
@@ -303,6 +314,13 @@
                         </li>
                         <li class="is-checkbox" id="layerWaterProtectionStripShow" onclick="ChangeLayers()">@SharedLocalizer["WaterProtectionStrip"]</li>
                         <li class="is-checkbox" id="layerWaterProtectionZoneShow" onclick="ChangeLayers()">@SharedLocalizer["WaterProtectionZone"]</li>
+                    </ul>
+                </li>
+                <li class="no-checkbox">
+                    @SharedLocalizer["AssessmentVegetationСover"]
+                    <ul>
+                        <li class="is-checkbox" id="layerGreenSpacesNowShow" onclick="ChangeLayers()">@SharedLocalizer["GreenSpacesNow"]</li>
+                        <li class="is-checkbox" id="layerGreenSpacesPlannedShow" onclick="ChangeLayers()">@SharedLocalizer["GreenSpacesPlanned"]</li>
                     </ul>
                 </li>
             </ul>
@@ -1144,6 +1162,38 @@
     layers.push(Layer_WaterProtectionZone);
     Layer_WaterProtectionZone.setVisible(false);
 
+    var Source_GreenSpacesNow = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':vegpol',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_GreenSpacesNow = new ol.layer.Image({
+        source: Source_GreenSpacesNow
+    });
+    Layer_GreenSpacesNow.set('name', 'GreenSpacesNow');
+    layers.push(Layer_GreenSpacesNow);
+    Layer_GreenSpacesNow.setVisible(false);
+
+    var Source_GreenSpacesPlanned = new ol.source.ImageWMS({
+        url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
+        params: {
+            'LAYERS': $('#GeoServerWorkspace').val() + ':planvegpol',
+            'VERSION': '1.1.0',
+            'FORMAT': 'image/png'
+        },
+        serverType: 'geoserver'
+    });
+    var Layer_GreenSpacesPlanned = new ol.layer.Image({
+        source: Source_GreenSpacesPlanned
+    });
+    Layer_GreenSpacesPlanned.set('name', 'GreenSpacesPlanned');
+    layers.push(Layer_GreenSpacesPlanned);
+    Layer_GreenSpacesPlanned.setVisible(false);
+
     var Source_TotalRTransport7_po0301 = new ol.source.ImageWMS({
         url: 'http://' + $('#GeoServerAddress').val() + ':' + $('#GeoServerPort').val() + '/geoserver/' + $('#GeoServerWorkspace').val() + '/wms?',
         params: {
@@ -1272,6 +1322,33 @@
     Layer_LEDScreens.setVisible(false);
     layers.push(Layer_LEDScreens);
 
+    //Ecoposts
+    var EcopostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/Ecopost.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            //scale: 0.0625
+            scale: 0.5
+        }))
+    });
+    var EcopostsLayerJson = $("#EcopostsLayerJson").val();
+    var Source_Ecoposts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(EcopostsLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_Ecoposts = new ol.layer.Vector({
+        source: Source_Ecoposts,
+        style: EcopostsStyle,
+        renderBuffer: 200
+    });
+    Layer_Ecoposts.set('name', 'Ecoposts');
+    Layer_Ecoposts.setVisible(false);
+    layers.push(Layer_Ecoposts);
+
     //Isolines
     var Source_Isolines = new ol.source.Vector({
         format: new ol.format.GeoJSON()
@@ -1329,6 +1406,8 @@
         layerKazHydrometTransportMonitoringPostsShow: null,
         layerWaterProtectionStripShow: null,
         layerWaterProtectionZoneShow: null,
+        layerGreenSpacesNowShow: null,
+        layerGreenSpacesPlannedShow: null,
         layerTotalRTransportNitrogenDioxideShow: null,
         layerTotalRTransportSulfurDioxideShow: null,
         layerTotalRTransportCarbonOxideShow: null,
@@ -1338,6 +1417,8 @@
         layerKazHydrometTransportMonitoringPostsOpacity: null,
         layerWaterProtectionStripOpacity: null,
         layerWaterProtectionZoneOpacity: null,
+        layerGreenSpacesNowOpacity: null,
+        layerGreenSpacesPlannedOpacity: null,
         layerTotalRTransportNitrogenDioxideOpacity: null,
         layerTotalRTransportSulfurDioxideOpacity: null,
         layerTotalRTransportCarbonOxideOpacity: null,
@@ -1434,6 +1515,10 @@
                 layer.setVisible(document.getElementById("layerLEDScreensShow").checked);
                 layer.setOpacity($('#layerLEDScreensOpacity').val() / 100)
             }
+            if (layer.get('name') == 'Ecoposts') {
+                layer.setVisible(document.getElementById("layerEcopostsShow").checked);
+                layer.setOpacity($('#layerEcopostsOpacity').val() / 100)
+            }
             if (layer.get('name') == 'KazHydrometWaterMonitoringPosts') {
                 if ($("#layerKazHydrometWaterMonitoringPostsShow").attr("aria-selected") == "true") {
                     layersCheck.layerKazHydrometWaterMonitoringPostsShow = "true";
@@ -1509,6 +1594,42 @@
                     layer.setVisible(false);
                 }
                 layer.setOpacity(layersCheck.layerWaterProtectionZoneOpacity / 100)
+            }
+            if (layer.get('name') == 'GreenSpacesNow') {
+                if ($("#layerGreenSpacesNowShow").attr("aria-selected") == "true") {
+                    layersCheck.layerGreenSpacesNowShow = "true";
+                    layer.setVisible(true);
+                }
+                else if ($("#layerGreenSpacesNowShow").attr("aria-selected") == "false") {
+                    layersCheck.layerGreenSpacesNowShow = "false";
+                    layer.setVisible(false);
+                }
+                else if (layersCheck.layerGreenSpacesNowShow == "true") {
+                    layer.setVisible(true);
+                }
+                else {
+                    layersCheck.layerGreenSpacesNowShow = "false";
+                    layer.setVisible(false);
+                }
+                layer.setOpacity(layersCheck.layerGreenSpacesNowOpacity / 100)
+            }
+            if (layer.get('name') == 'GreenSpacesPlanned') {
+                if ($("#layerGreenSpacesPlannedShow").attr("aria-selected") == "true") {
+                    layersCheck.layerGreenSpacesPlannedShow = "true";
+                    layer.setVisible(true);
+                }
+                else if ($("#layerGreenSpacesPlannedShow").attr("aria-selected") == "false") {
+                    layersCheck.layerGreenSpacesPlannedShow = "false";
+                    layer.setVisible(false);
+                }
+                else if (layersCheck.layerGreenSpacesPlannedShow == "true") {
+                    layer.setVisible(true);
+                }
+                else {
+                    layersCheck.layerGreenSpacesPlannedShow = "false";
+                    layer.setVisible(false);
+                }
+                layer.setOpacity(layersCheck.layerGreenSpacesPlannedOpacity / 100)
             }
             if (layer.get('name') == 'TotalRTransport7_po0301') {
                 if ($("#layerTotalRTransportNitrogenDioxideShow").attr("aria-selected") == "true") {
@@ -1872,32 +1993,68 @@
         } else {
         }
 
+        //var viewResolution = (map.getView().getResolution());
+        //var url = Layer_WaterProtectionStrip.getSource().getGetFeatureInfoUrl(
+        //    evt.coordinate, viewResolution, 'EPSG:3857',
+        //    {
+        //        'INFO_FORMAT': 'text/javascript',
+        //        'FEATURE_COUNT': '10000'
+        //    });
+        ////console.log(url);
+        //if (url) {
+        //    var parser = new ol.format.GeoJSON();
+        //    $.ajax({
+        //        //jsonp: false,
+        //        //jsonpCallback: 'getJson',
+        //        //type: 'GET',
+        //        url: url,
+        //        //async: false,
+        //        dataType: 'jsonp',
+        //        jsonpCallback: 'parseResponse',
+        //        error: function (xhr, status, error) {
+        //        }
+        //    }).then(function (response) {
+        //        var result = parser.readFeatures(response);
+        //        if (result.length > 0) {
+        //            //console.log(result);
+        //        }
+        //    })
+        //}
         var viewResolution = (map.getView().getResolution());
-        var url = Layer_WaterProtectionStrip.getSource().getGetFeatureInfoUrl(
+        var layerAlmatyPollutantSpread = null;
+        map.getLayers().forEach(function (layer) {
+            if (layer != null) {
+                if (layer.get('name') == 'AlmatyPollutantSpread') {
+                    layerAlmatyPollutantSpread = layer;
+                }
+            }
+        })
+        var url = layerAlmatyPollutantSpread.getSource().getGetFeatureInfoUrl(
             evt.coordinate, viewResolution, 'EPSG:3857',
             {
-                'INFO_FORMAT': 'text/javascript',
-                'FEATURE_COUNT': '10000'
+                'INFO_FORMAT': 'text/javascript'
+                //'FEATURE_COUNT': '10000'
             });
-        //console.log(url);
-        if (url) {
-            var parser = new ol.format.GeoJSON();
-            $.ajax({
-                //jsonp: false,
-                //jsonpCallback: 'getJson',
-                //type: 'GET',
-                url: url,
-                //async: false,
-                dataType: 'jsonp',
-                jsonpCallback: 'parseResponse',
-                error: function (xhr, status, error) {
-                }
-            }).then(function (response) {
-                var result = parser.readFeatures(response);
-                if (result.length > 0) {
-                    //console.log(result);
-                }
-            })
+        if ($('#layerPollutantSpreadShow').is(':checked')) {
+            if (url) {
+                var parser = new ol.format.GeoJSON();
+                $.ajax({
+                    jsonp: false,
+                    jsonpCallback: 'getJson',
+                    type: 'GET',
+                    url: url + "&format_options=callback:getJson",
+                    async: false,
+                    dataType: 'jsonp',
+                    //jsonpCallback: 'parseResponse',
+                    error: function (xhr, status, error) {
+                    }
+                }).then(function (response) {
+                    var result = parser.readFeatures(response);
+                    if (result.length > 0) {
+                        console.log(response);
+                    }
+                });
+            }
         }
     });
 
@@ -2640,6 +2797,40 @@
             }
             else {
                 layersCheck.layerWaterProtectionZoneOpacity = $('#layerWaterProtectionZoneOpacity').val();
+            }
+
+            if (document.getElementById("layerGreenSpacesNowOpacity") == null) {
+                var _node = document.getElementById("layerGreenSpacesNowShow");
+                if (_node != null) {
+                    _temp3.setAttribute('id', 'layerGreenSpacesNowOpacity');
+                    if (layersCheck.layerGreenSpacesNowOpacity != null) {
+                        _temp3.setAttribute('value', layersCheck.layerGreenSpacesNowOpacity);
+                    }
+                    else {
+                        _temp3.setAttribute('value', '50');
+                    }
+                    _node.appendChild(_temp3);
+                }
+            }
+            else {
+                layersCheck.layerGreenSpacesNowOpacity = $('#layerGreenSpacesNowOpacity').val();
+            }
+
+            if (document.getElementById("layerGreenSpacesPlannedOpacity") == null) {
+                var _node = document.getElementById("layerGreenSpacesPlannedShow");
+                if (_node != null) {
+                    _temp3.setAttribute('id', 'layerGreenSpacesPlannedOpacity');
+                    if (layersCheck.layerGreenSpacesPlannedOpacity != null) {
+                        _temp3.setAttribute('value', layersCheck.layerGreenSpacesPlannedOpacity);
+                    }
+                    else {
+                        _temp3.setAttribute('value', '50');
+                    }
+                    _node.appendChild(_temp3);
+                }
+            }
+            else {
+                layersCheck.layerGreenSpacesPlannedOpacity = $('#layerGreenSpacesPlannedOpacity').val();
             }
 
             if (document.getElementById("layerTotalRTransportNitrogenDioxideOpacity") == null) {

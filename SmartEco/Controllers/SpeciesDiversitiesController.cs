@@ -127,7 +127,7 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name");
 
             List<PlantationsType> plantationsTypes = new List<PlantationsType>();
             string urlPlantationsTypes = "api/PlantationsTypes",
@@ -195,7 +195,7 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name");
 
             List<PlantationsType> plantationsTypes = new List<PlantationsType>();
             string urlPlantationsTypes = "api/PlantationsTypes",
@@ -215,7 +215,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,KATOId,PlantationsTypeId")] SpeciesDiversity speciesDiversity,
+        public async Task<IActionResult> Create([Bind("Id,KATOId,PlantationsTypeId,TreesNumber")] SpeciesDiversity speciesDiversity,
             string SortOrder,
             int? KATOIdFilter,
             int? PlantationsTypeIdFilter,
@@ -267,7 +267,7 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.OrderBy(m => m.Name), "Id", "Name", speciesDiversity.KATOId);
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", speciesDiversity.KATOId);
 
             List<PlantationsType> plantationsTypes = new List<PlantationsType>();
             string urlPlantationsTypes = "api/PlantationsTypes",
@@ -310,7 +310,7 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.OrderBy(m => m.Name), "Id", "Name", speciesDiversity.KATOId);
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", speciesDiversity.KATOId);
 
             List<PlantationsType> plantationsTypes = new List<PlantationsType>();
             string urlPlantationsTypes = "api/PlantationsTypes",
@@ -330,7 +330,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,KATOId,PlantationsTypeId")] SpeciesDiversity speciesDiversity,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,KATOId,PlantationsTypeId,TreesNumber")] SpeciesDiversity speciesDiversity,
             string SortOrder,
             int? KATOIdFilter,
             int? PlantationsTypeIdFilter,
@@ -387,7 +387,7 @@ namespace SmartEco.Controllers
             {
                 KATOes = await responseKATOes.Content.ReadAsAsync<List<KATO>>();
             }
-            ViewBag.KATOes = new SelectList(KATOes.OrderBy(m => m.Name), "Id", "Name", speciesDiversity.KATOId);
+            ViewBag.KATOes = new SelectList(KATOes.Where(k => k.ParentEgovId == 17112).OrderBy(m => m.Name), "Id", "Name", speciesDiversity.KATOId);
 
             List<PlantationsType> plantationsTypes = new List<PlantationsType>();
             string urlPlantationsTypes = "api/PlantationsTypes",

@@ -25,7 +25,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredParameters
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Kazhydromet")]
         public async Task<ActionResult<IEnumerable<MeasuredParameter>>> GetMeasuredParameter(string SortOrder,
             string NameKK,
             string NameRU,

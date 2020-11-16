@@ -30,7 +30,7 @@ namespace SmartEco.Controllers
             int? PageSize,
             int? PageNumber)
         {
-            List<PlantationsType> plantationsStateTypes = new List<PlantationsType>();
+            List<PlantationsStateType> plantationsStateTypes = new List<PlantationsStateType>();
 
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
@@ -102,7 +102,7 @@ namespace SmartEco.Controllers
                 responseCount = await _HttpApiClient.GetAsync(url + "/count" + routeCount);
             if (response.IsSuccessStatusCode)
             {
-                plantationsStateTypes = await response.Content.ReadAsAsync<List<PlantationsType>>();
+                plantationsStateTypes = await response.Content.ReadAsAsync<List<PlantationsStateType>>();
             }
             int plantationsStateTypeCount = 0;
             if (responseCount.IsSuccessStatusCode)
@@ -152,11 +152,11 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
-            PlantationsType plantationsStateType = null;
+            PlantationsStateType plantationsStateType = null;
             HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/PlantationsStateTypes/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                plantationsStateType = await response.Content.ReadAsAsync<PlantationsType>();
+                plantationsStateType = await response.Content.ReadAsAsync<PlantationsStateType>();
             }
             if (plantationsStateType == null)
             {
@@ -189,7 +189,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN")] PlantationsType plantationsStateType,
+        public async Task<IActionResult> Create([Bind("Id,NameKK,NameRU,NameEN")] PlantationsStateType plantationsStateType,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -253,11 +253,11 @@ namespace SmartEco.Controllers
             ViewBag.NameKKFilter = NameKKFilter;
             ViewBag.NameRUFilter = NameRUFilter;
             ViewBag.NameENFilter = NameENFilter;
-            PlantationsType plantationsStateType = null;
+            PlantationsStateType plantationsStateType = null;
             HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/PlantationsStateTypes/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                plantationsStateType = await response.Content.ReadAsAsync<PlantationsType>();
+                plantationsStateType = await response.Content.ReadAsAsync<PlantationsStateType>();
             }
 
             return View(plantationsStateType);
@@ -268,7 +268,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN")] PlantationsType plantationsStateType,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,NameKK,NameRU,NameEN")] PlantationsStateType plantationsStateType,
             string SortOrder,
             string NameKKFilter,
             string NameRUFilter,
@@ -307,7 +307,7 @@ namespace SmartEco.Controllers
                     return View(plantationsStateType);
                 }
 
-                plantationsStateType = await response.Content.ReadAsAsync<PlantationsType>();
+                plantationsStateType = await response.Content.ReadAsAsync<PlantationsStateType>();
                 return RedirectToAction(nameof(Index),
                     new
                     {
@@ -342,11 +342,11 @@ namespace SmartEco.Controllers
                 return NotFound();
             }
 
-            PlantationsType plantationsStateType = null;
+            PlantationsStateType plantationsStateType = null;
             HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/PlantationsStateTypes/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                plantationsStateType = await response.Content.ReadAsAsync<PlantationsType>();
+                plantationsStateType = await response.Content.ReadAsAsync<PlantationsStateType>();
             }
             if (plantationsStateType == null)
             {

@@ -580,6 +580,16 @@ namespace SmartEco.Controllers
             });
         }
 
+        public class PollutionSourceTable
+        {
+            public DateTime? dateTime;
+            public decimal? volumetricFlow;
+            public decimal? sulphurDioxide;
+            public decimal? flow;
+            public decimal? mpc;
+            public decimal? excess;
+        }
+
         [HttpPost]
         public async Task<IActionResult> GetMeasuredDatasPollutionSource(
             int? PollutionSourceId,
@@ -677,8 +687,12 @@ namespace SmartEco.Controllers
             // For select table
             else
             {
+                List<PollutionSourceTable> pollutionSourceTables = new List<PollutionSourceTable>();
+
                 var measuredParameters = measureddatas
-                    .Where(m => m.MeasuredParameterId != 5 && m.MeasuredParameterId != 6) //Скор. ветра, Напр. ветра
+                    //.Where(m => m.MeasuredParameterId != 5 && m.MeasuredParameterId != 6) //Скор. ветра, Напр. ветра
+                    .Where(m => m.MeasuredParameterId == 9 || m.MeasuredParameterId == 25) //Диоксид серы, Расход
+                    .OrderBy(m => m.MeasuredParameterId)
                     .Select(m => new { m.MeasuredParameter.Id, m.MeasuredParameter.Name })
                     .Distinct()
                     .ToList();
@@ -686,30 +700,82 @@ namespace SmartEco.Controllers
                     .Select(m => new { m.DateTime })
                     .Distinct()
                     .ToList();
-                string[,] array = new string[dateTimes.Count, measuredParameters.Count + 1];
+                string[,] array = new string[dateTimes.Count, measuredParameters.Count + 4];
+
+                //for (int i = 0; i < dateTimes.Count; i++)
+                //{
+                //    var measuredData = measureddatas.Where(m => m.DateTime == dateTimes[i].DateTime);
+                //    array[i, 0] = dateTimes[i].DateTime.ToString();
+                //    array[i, 1] = "99.805"; //V - Объемный расход м3/с
+                //    for (int j = 0; j < measuredParameters.Count; j++)
+                //    {
+                //        var data = measuredData.Where(m => m.MeasuredParameterId == measuredParameters[j].Id).FirstOrDefault();
+                //        if(data != null)
+                //        {
+                //            array[i, j + 2] = Math.Round(Convert.ToDecimal(data.Value), 3).ToString();
+                //        }
+                //        else
+                //        {
+                //            array[i, j + 2] = "";
+                //        }
+                //    }
+                //    array[i, 4] = measureddatas.Where(m => m.MeasuredParameterId == 25).FirstOrDefault().MeasuredParameter.MPCMaxSingle.ToString(); //ПДКм.р. г/с
+                //    if (array[i, 3] == "")
+                //    {
+                //        array[i, 5] = "-";
+                //    }
+                //    else if (Convert.ToDecimal(array[i, 3]) > Convert.ToDecimal(array[i, 4]))
+                //    {
+                //        array[i, 5] = (Convert.ToDecimal(array[i, 3]) - Convert.ToDecimal(array[i, 4])).ToString(); //Превышение г/с
+                //    }
+                //    else
+                //    {
+                //        array[i, 5] = "-";
+                //    }
+                //}
+                //var header = new List<string>() { "Дата и время", "Объемный расход" };
+                //header.AddRange(measuredParameters.Select(m => m.Name));
+                //header.AddRange(new List<string>() { "ПДКм.р.", "Превышение" });
 
                 for (int i = 0; i < dateTimes.Count; i++)
                 {
+                    PollutionSourceTable pollutionSourceTable = new PollutionSourceTable();
+
                     var measuredData = measureddatas.Where(m => m.DateTime == dateTimes[i].DateTime);
-                    array[i, 0] = dateTimes[i].DateTime.ToString();
+                    pollutionSourceTable.dateTime = dateTimes[i].DateTime;
+                    pollutionSourceTable.volumetricFlow = 99.805m; //V - Объемный расход м3/с
                     for (int j = 0; j < measuredParameters.Count; j++)
                     {
                         var data = measuredData.Where(m => m.MeasuredParameterId == measuredParameters[j].Id).FirstOrDefault();
-                        if(data != null)
+                        if (data != null)
                         {
-                            array[i, j + 1] = Math.Round(Convert.ToDecimal(data.Value), 3).ToString();
-                        }
-                        else
-                        {
-                            array[i, j + 1] = "";
+                            if (data.MeasuredParameterId == 9)
+                            {
+                                pollutionSourceTable.sulphurDioxide = Math.Round(Convert.ToDecimal(data.Value), 3);
+                            }
+                            if (data.MeasuredParameterId == 25)
+                            {
+                                pollutionSourceTable.flow = Math.Round(Convert.ToDecimal(data.Value), 3);
+                            }
                         }
                     }
+                    pollutionSourceTable.mpc = measureddatas.Where(m => m.MeasuredParameterId == 25).FirstOrDefault().MeasuredParameter.MPCMaxSingle; //ПДКм.р. г/с
+                    if (pollutionSourceTable.flow > pollutionSourceTable.mpc)
+                    {
+                        pollutionSourceTable.excess = pollutionSourceTable.flow - pollutionSourceTable.mpc; //Превышение г/с
+                    }
+                    pollutionSourceTables.Add(pollutionSourceTable);
                 }
+
+                //return Json(new
+                //{
+                //    array,
+                //    header
+                //});
 
                 return Json(new
                 {
-                    array,
-                    measuredParameters
+                    pollutionSourceTables
                 });
             }
             return Json(new

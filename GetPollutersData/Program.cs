@@ -281,15 +281,19 @@ namespace GetPollutersData
             }
         }
 
-        public static decimal? GetValueByFormula(decimal? t, decimal? P, decimal? K)
+        public static decimal? GetValueByFormula(decimal? t, decimal? P, decimal? C)
         {
-            var Vt = 200000; // м3/час
-            var V0 = (Vt * 273 * P) / ((273 + t) * 760); // м3/час
-            K = K / 1000; // мг/м3 --> г/м3
-            V0 = V0 / 3600; // м3/час --> м3/с
-            var F = K * V0; // г/с
+            //var Vt = 200000; // м3/час
+            //var V0 = (Vt * 273 * P) / ((273 + t) * 760); // м3/час
+            //K = K / 1000; // мг/м3 --> г/м3
+            //V0 = V0 / 3600; // м3/час --> м3/с
+            //var F = K * V0; // г/с
 
-            return F;
+            var V = 99.805m; // м3/с
+            var V0 = V * 273 * (P / ((273 + t) * 760)); // м3/с
+            var G = V0 * C / 1000; // г/с
+
+            return G;
         }
 
         public static void NewLog(string Log)

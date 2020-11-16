@@ -441,6 +441,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AssessmentVegetationСover {
+            get {
+                return ResourceManager.GetString("AssessmentVegetationСover", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string AssessmentWater {
             get {
                 return ResourceManager.GetString("AssessmentWater", resourceCulture);
@@ -1011,6 +1020,24 @@ namespace SmartEco.Resources.Controllers {
         public static string GreenObject {
             get {
                 return ResourceManager.GetString("GreenObject", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string GreenSpacesNow {
+            get {
+                return ResourceManager.GetString("GreenSpacesNow", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string GreenSpacesPlanned {
+            get {
+                return ResourceManager.GetString("GreenSpacesPlanned", resourceCulture);
             }
         }
         

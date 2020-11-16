@@ -4,16 +4,16 @@
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
-    ViewData["Title"] = SharedLocalizer["LEDScreens"];
+    ViewData["Title"] = SharedLocalizer["SpeciallyProtectedNaturalTerritories"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer["LEDScreens"]</h1>
+<h1>@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</h1>
 
 <p>
     @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameENFilter = ViewBag.NameENFilter, NameRUFilter = ViewBag.NameRUFilter, NameKKFilter = ViewBag.NameKKFilter, AuthorizedAuthorityIdFilter = ViewBag.AuthorizedAuthorityIdFilter })
 </p>
-@using (Html.BeginForm("Index", "LEDScreens", new { SortOrder = ViewBag.SortOrder, NameENFilter = ViewBag.NameENFilter, NameRUFilter = ViewBag.NameRUFilter, NameKKFilter = ViewBag.NameKKFilter, AuthorizedAuthorityIdFilter = ViewBag.AuthorizedAuthorityIdFilter }, FormMethod.Get))
+@using (Html.BeginForm("Index", "SpeciallyProtectedNaturalTerritories", new { SortOrder = ViewBag.SortOrder, NameENFilter = ViewBag.NameENFilter, NameRUFilter = ViewBag.NameRUFilter, NameKKFilter = ViewBag.NameKKFilter, AuthorizedAuthorityIdFilter = ViewBag.AuthorizedAuthorityIdFilter }, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
     @if (ViewBag.EndPage > 1)

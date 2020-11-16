@@ -203,7 +203,9 @@ namespace SmartEco.Controllers
             }
             ViewBag.GreemPlantsPassports = new SelectList(greemPlantsPassports.OrderBy(m => m.GreenObject), "Id", "GreenObject");
 
-            return View();
+            TreesByObjectTableOfTheBreedStateList model = new TreesByObjectTableOfTheBreedStateList();
+
+            return View(model);
         }
 
         // POST: TreesByObjectTableOfTheBreedStateLists/Create
@@ -225,6 +227,19 @@ namespace SmartEco.Controllers
             ViewBag.PlantationsTypeIdFilter = PlantationsTypeIdFilter;
             if (ModelState.IsValid)
             {
+                if (treesByObjectTableOfTheBreedStateList.StateOfCSR15Type)
+                {
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15PlantationsTypeId = null;
+                }
+                else
+                {
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_1 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_2 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_3 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_4 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_5 = null;
+                }
+
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
                     "api/TreesByObjectTableOfTheBreedStateLists", treesByObjectTableOfTheBreedStateList);
 
@@ -298,6 +313,15 @@ namespace SmartEco.Controllers
                 treesByObjectTableOfTheBreedStateList = await response.Content.ReadAsAsync<TreesByObjectTableOfTheBreedStateList>();
             }
 
+            if (treesByObjectTableOfTheBreedStateList.StateOfCSR15PlantationsTypeId == null)
+            {
+                treesByObjectTableOfTheBreedStateList.StateOfCSR15Type = true;
+            }
+            else
+            {
+                treesByObjectTableOfTheBreedStateList.StateOfCSR15Type = false;
+            }
+
             List<PlantationsType> plantationsTypes = new List<PlantationsType>();
             string urlPlantationsTypes = "api/PlantationsTypes",
                 routePlantationsTypes = "";
@@ -344,6 +368,19 @@ namespace SmartEco.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (treesByObjectTableOfTheBreedStateList.StateOfCSR15Type)
+                {
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15PlantationsTypeId = null;
+                }
+                else
+                {
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_1 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_2 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_3 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_4 = null;
+                    treesByObjectTableOfTheBreedStateList.StateOfCSR15_5 = null;
+                }
+
                 HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
                     $"api/TreesByObjectTableOfTheBreedStateLists/{treesByObjectTableOfTheBreedStateList.Id}", treesByObjectTableOfTheBreedStateList);
 

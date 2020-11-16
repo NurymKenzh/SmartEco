@@ -203,7 +203,9 @@ namespace SmartEco.Controllers
             }
             ViewBag.GreemPlantsPassports = new SelectList(greemPlantsPassports.OrderBy(m => m.GreenObject), "Id", "GreenObject");
 
-            return View();
+            TreesByFacilityManagementMeasuresList model = new TreesByFacilityManagementMeasuresList();
+
+            return View(model);
         }
 
         // POST: TreesByFacilityManagementMeasuresLists/Create
@@ -225,6 +227,17 @@ namespace SmartEco.Controllers
             ViewBag.PlantationsTypeIdFilter = PlantationsTypeIdFilter;
             if (ModelState.IsValid)
             {
+                if (treesByFacilityManagementMeasuresList.BusinessEvents)
+                {
+                    treesByFacilityManagementMeasuresList.BusinessEventsPlantationsTypeId = null;
+                }
+                else
+                {
+                    treesByFacilityManagementMeasuresList.SanitaryPruning = null;
+                    treesByFacilityManagementMeasuresList.CrownFormation = null;
+                    treesByFacilityManagementMeasuresList.SanitaryFelling = null;
+                }
+
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
                     "api/TreesByFacilityManagementMeasuresLists", treesByFacilityManagementMeasuresList);
 
@@ -298,6 +311,15 @@ namespace SmartEco.Controllers
                 treesByFacilityManagementMeasuresList = await response.Content.ReadAsAsync<TreesByFacilityManagementMeasuresList>();
             }
 
+            if (treesByFacilityManagementMeasuresList.BusinessEventsPlantationsTypeId == null)
+            {
+                treesByFacilityManagementMeasuresList.BusinessEvents = true;
+            }
+            else
+            {
+                treesByFacilityManagementMeasuresList.BusinessEvents = false;
+            }
+
             List<PlantationsType> plantationsTypes = new List<PlantationsType>();
             string urlPlantationsTypes = "api/PlantationsTypes",
                 routePlantationsTypes = "";
@@ -344,6 +366,17 @@ namespace SmartEco.Controllers
             }
             if (ModelState.IsValid)
             {
+                if (treesByFacilityManagementMeasuresList.BusinessEvents)
+                {
+                    treesByFacilityManagementMeasuresList.BusinessEventsPlantationsTypeId = null;
+                }
+                else
+                {
+                    treesByFacilityManagementMeasuresList.SanitaryPruning = null;
+                    treesByFacilityManagementMeasuresList.CrownFormation = null;
+                    treesByFacilityManagementMeasuresList.SanitaryFelling = null;
+                }
+
                 HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
                     $"api/TreesByFacilityManagementMeasuresLists/{treesByFacilityManagementMeasuresList.Id}", treesByFacilityManagementMeasuresList);
 
