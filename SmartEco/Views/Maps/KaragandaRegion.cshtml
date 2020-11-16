@@ -18,6 +18,13 @@
 <script src="~/lib/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js"></script>
 <script src="~/lib/moment.js/moment.js"></script>
 
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.12.1/css/all.min.css" />
+<link href="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.css" rel="stylesheet">
+<script src="https://unpkg.com/tableexport.jquery.plugin/tableExport.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/bootstrap-table.min.js"></script>
+<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/export/bootstrap-table-export.min.js"></script>
+@*<script src="https://unpkg.com/bootstrap-table@1.16.0/dist/extensions/print/bootstrap-table-print.min.js"></script>*@
+
 <style>
     /*.map {
         height: calc(100vh - 159px);
@@ -382,16 +389,41 @@
                 <table id="tableMeasuredDatas" class="table-bordered dialog-info-tab-table">
                     <thead>
                         @*<tr>
-                            <th>
-                                @SharedLocalizer["DateTime"]
-                            </th>
-                            <th>
-                                @SharedLocalizer["Value"]
-                            </th>
-                        </tr>*@
+                                <th>
+                                    @SharedLocalizer["DateTime"]
+                                </th>
+                                <th>
+                                    @SharedLocalizer["Value"]
+                                </th>
+                            </tr>*@
                     </thead>
                     <tbody></tbody>
                 </table>
+                <div id="tablePollutionSourceContainer" class="table-responsive">
+                    <table id="tableMeasuredDatasPollutionSource" class="table table-striped"
+                           data-toggle="table"
+                           data-buttons="btn btn-sm"
+                           data-buttons-class="primary"
+                           data-search="false"
+                           data-detail-view="true"
+                           data-detail-view-icon="false"
+                           data-show-fullscreen="false"
+                           data-show-refresh="false"
+                           data-show-columns="false"
+                           data-show-print="false"
+                           data-show-export="true">
+                        <thead class="thead-light">
+                            <tr>
+                                <th data-field="dateTime">Дата и время</th>
+                                <th data-field="volumetricFlow">Объемный расход</th>
+                                <th data-field="sulphurDioxide">Диоксид серы (SO₂)</th>
+                                <th data-field="flow">Расход</th>
+                                <th data-field="mpc">ПДКм.р.</th>
+                                <th data-field="excess">Превышение</th>
+                            </tr>
+                        </thead>
+                    </table>
+                </div>
             </div>
         </div>
     </div>
@@ -1184,16 +1216,16 @@
                 $("#ChartTimeFrom").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatas();
                 });
-                $("#ChartDateFrom").unbind("change").bind("change", function() {
+                $("#ChartDateFrom").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatas();
                 });
-                $("#ChartTimeTo").unbind("change").bind("change", function() {
+                $("#ChartTimeTo").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatas();
                 });
-                $("#ChartDateTo").unbind("change").bind("change", function() {
+                $("#ChartDateTo").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatas();
                 });
-                $("#ChartAveraged").unbind("change").bind("change", function() {
+                $("#ChartAveraged").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatas();
                 });
 
@@ -1252,22 +1284,22 @@
             else if (layerName == 'PollutionSources') {
                 $("#TableMeasuredParameterId").prop('hidden', true);
 
-                $("#ChartMeasuredParameterId").unbind("change").bind("change", function() {
+                $("#ChartMeasuredParameterId").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatasPollutionSource();
                 });
-                $("#ChartTimeFrom").unbind("change").bind("change", function() {
+                $("#ChartTimeFrom").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatasPollutionSource();
                 });
-                $("#ChartDateFrom").unbind("change").bind("change", function() {
+                $("#ChartDateFrom").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatasPollutionSource();
                 });
-                $("#ChartTimeTo").unbind("change").bind("change", function() {
+                $("#ChartTimeTo").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatasPollutionSource();
                 });
-                $("#ChartDateTo").unbind("change").bind("change", function() {
+                $("#ChartDateTo").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatasPollutionSource();
                 });
-                $("#ChartAveraged").unbind("change").bind("change", function() {
+                $("#ChartAveraged").unbind("change").bind("change", function () {
                     ChartGetMeasuredDatasPollutionSource();
                 });
 
@@ -1811,7 +1843,7 @@
     };
 
     function TableGetMeasuredDatasPollutionSource() {
-        $("#tableMeasuredDatas").LoadingOverlay("show");
+        $("#tableMeasuredDatasPollutionSource").LoadingOverlay("show");
         $.ajax({
             url: '@Url.Action("GetMeasuredDatasPollutionSource", "MeasuredDatas")',
             data: {
@@ -1828,7 +1860,7 @@
                 ChangeTablePollutionSource(data);
             },
             error: function () {
-                $("#tableMeasuredDatas").LoadingOverlay("hide");
+                $("#tableMeasuredDatasPollutionSource").LoadingOverlay("hide");
             }
         })
     };
@@ -1860,6 +1892,7 @@
 
     function ChangeTable(data, minMeasured, maxMeasured) {
         //$("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        //$("#tablePollutionSourceContainer").prop('hidden', true);
         $("#tableMeasuredDatas").find("tr").remove();
         if (minMeasured != null || maxMeasured != null)
         for (var i = 0; i < data.measureddatas.length; i++) {
@@ -1885,25 +1918,41 @@
     };
 
     function ChangeTablePollutionSource(data) {
-        //$("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        ////$("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        //$("#tableMeasuredDatas").find("tr").remove();
+        //var tablehtml = '',
+        //    tableHead = '';
+        ////tableHead += '<tr><th>' + $('#DateTime').val() + '</th>';
+        //tableHead += '<tr>';
+        //for (var i = 0; i < data.header.length; i++) {
+        //    tableHead += '<th>' + data.header[i] + '</th>';
+        //}
+        //tableHead += '</tr>';
+        //for (var i = 0; i < data.array.length; i++) {
+        //    tablehtml += '<tr>';
+        //    for (var j = 0; j < data.array[i].length; j++) {
+        //        tablehtml += '<td>' + data.array[i][j] + '</td>';
+        //    }
+        //    tablehtml += '</tr>';
+        //}
+        //$('#tableMeasuredDatas thead').append(tableHead);
+        //$('#tableMeasuredDatas tbody').append(tablehtml);
+        //$("#tableMeasuredDatas").LoadingOverlay("hide");
+        //$("#tablePollutionSourceContainer").prop('hidden', false);
         $("#tableMeasuredDatas").find("tr").remove();
-        var tablehtml = '',
-            tableHead = '';
-        tableHead += '<tr><th>' + $('#DateTime').val() + '</th>';
-        for (var i = 0; i < data.measuredParameters.length; i++) {
-            tableHead += '<th>' + data.measuredParameters[i].name + '</th>';
-        }
-        tableHead += '</tr>';
-        for (var i = 0; i < data.array.length; i++) {
-            tablehtml += '<tr>';
-            for (var j = 0; j < data.array[i].length; j++) {
-                tablehtml += '<td>' + data.array[i][j] + '</td>';
-            }
-            tablehtml += '</tr>';
-        }
-        $('#tableMeasuredDatas thead').append(tableHead);
-        $('#tableMeasuredDatas tbody').append(tablehtml);
-        $("#tableMeasuredDatas").LoadingOverlay("hide");
+        var dataTable = null;
+        dataTable = data.pollutionSourceTables;
+        $(function () {
+            $('#tableMeasuredDatasPollutionSource').bootstrapTable('destroy').bootstrapTable({
+                data: dataTable,
+                iconSize: "sm",
+                exportOptions: {
+                    preventInjection: false
+                }
+            });
+            $('#tableMeasuredDatasPollutionSource').bootstrapTable('load', dataTable);
+        })
+        $("#tableMeasuredDatasPollutionSource").LoadingOverlay("hide");
     };
 </script>
 

@@ -1993,32 +1993,68 @@
         } else {
         }
 
+        //var viewResolution = (map.getView().getResolution());
+        //var url = Layer_WaterProtectionStrip.getSource().getGetFeatureInfoUrl(
+        //    evt.coordinate, viewResolution, 'EPSG:3857',
+        //    {
+        //        'INFO_FORMAT': 'text/javascript',
+        //        'FEATURE_COUNT': '10000'
+        //    });
+        ////console.log(url);
+        //if (url) {
+        //    var parser = new ol.format.GeoJSON();
+        //    $.ajax({
+        //        //jsonp: false,
+        //        //jsonpCallback: 'getJson',
+        //        //type: 'GET',
+        //        url: url,
+        //        //async: false,
+        //        dataType: 'jsonp',
+        //        jsonpCallback: 'parseResponse',
+        //        error: function (xhr, status, error) {
+        //        }
+        //    }).then(function (response) {
+        //        var result = parser.readFeatures(response);
+        //        if (result.length > 0) {
+        //            //console.log(result);
+        //        }
+        //    })
+        //}
         var viewResolution = (map.getView().getResolution());
-        var url = Layer_WaterProtectionStrip.getSource().getGetFeatureInfoUrl(
+        var layerAlmatyPollutantSpread = null;
+        map.getLayers().forEach(function (layer) {
+            if (layer != null) {
+                if (layer.get('name') == 'AlmatyPollutantSpread') {
+                    layerAlmatyPollutantSpread = layer;
+                }
+            }
+        })
+        var url = layerAlmatyPollutantSpread.getSource().getGetFeatureInfoUrl(
             evt.coordinate, viewResolution, 'EPSG:3857',
             {
-                'INFO_FORMAT': 'text/javascript',
-                'FEATURE_COUNT': '10000'
+                'INFO_FORMAT': 'text/javascript'
+                //'FEATURE_COUNT': '10000'
             });
-        //console.log(url);
-        if (url) {
-            var parser = new ol.format.GeoJSON();
-            $.ajax({
-                //jsonp: false,
-                //jsonpCallback: 'getJson',
-                //type: 'GET',
-                url: url,
-                //async: false,
-                dataType: 'jsonp',
-                jsonpCallback: 'parseResponse',
-                error: function (xhr, status, error) {
-                }
-            }).then(function (response) {
-                var result = parser.readFeatures(response);
-                if (result.length > 0) {
-                    //console.log(result);
-                }
-            })
+        if ($('#layerPollutantSpreadShow').is(':checked')) {
+            if (url) {
+                var parser = new ol.format.GeoJSON();
+                $.ajax({
+                    jsonp: false,
+                    jsonpCallback: 'getJson',
+                    type: 'GET',
+                    url: url + "&format_options=callback:getJson",
+                    async: false,
+                    dataType: 'jsonp',
+                    //jsonpCallback: 'parseResponse',
+                    error: function (xhr, status, error) {
+                    }
+                }).then(function (response) {
+                    var result = parser.readFeatures(response);
+                    if (result.length > 0) {
+                        console.log(response);
+                    }
+                });
+            }
         }
     });
 
