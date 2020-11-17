@@ -932,4 +932,7 @@
   <data name="GreenSpacesPlanned" xml:space="preserve">
     <value>Зелёные насаждения (плановые)</value>
   </data>
+  <data name="MPCshare" xml:space="preserve">
+    <value>Доля ПДК</value>
+  </data>
 </root>

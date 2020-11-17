@@ -930,4 +930,7 @@
   <data name="GreenSpacesPlanned" xml:space="preserve">
     <value>Жасыл алаңдар (жоспарланған)</value>
   </data>
+  <data name="MPCshare" xml:space="preserve">
+    <value>ППК үлесі</value>
+  </data>
 </root>
