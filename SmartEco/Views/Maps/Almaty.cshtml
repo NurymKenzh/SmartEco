@@ -2017,7 +2017,7 @@
                 GetMeasuredParameters();
             }
         }
-        else {
+        @*else {
             var layerAlmatyPollutantSpread = null;
             map.getLayers().forEach(function (layer) {
                 if (layer != null) {
@@ -2077,6 +2077,78 @@
                             })
                         }
                     });
+                }
+            }
+        }*@
+        else {
+            var layerAlmatyPollutantSpread = [];
+            map.getLayers().forEach(function (layer) {
+                if (layer != null) {
+                    if (layer.get('name') == 'AlmatyPollutantSpread') {
+                        layerAlmatyPollutantSpread.push(layer);
+                    }
+                }
+            })
+            if ($('#layerPollutantSpreadShow').is(':checked')) {
+                AjaxCycle(0, layerAlmatyPollutantSpread);
+                function AjaxCycle(i, layerAlmatyPollutantSpread) {
+                    var viewResolution = (map.getView().getResolution());
+                    var url = layerAlmatyPollutantSpread[i].getSource().getGetFeatureInfoUrl(
+                        evt.coordinate, viewResolution, 'EPSG:3857',
+                        {
+                            'INFO_FORMAT': 'text/javascript'
+                            //'FEATURE_COUNT': '10000'
+                        });
+                    if (url) {
+                        var parser = new ol.format.GeoJSON();
+                        $.ajax({
+                            jsonp: false,
+                            jsonpCallback: 'getJson',
+                            type: 'GET',
+                            url: url + "&format_options=callback:getJson",
+                            async: false,
+                            dataType: 'jsonp',
+                            //jsonpCallback: 'parseResponse',
+                            error: function (xhr, status, error) {
+                            }
+                        }).then(function (response) {
+                            var result = parser.readFeatures(response);
+                            if (result.length > 0) {
+                                var gray_index = response.features[0].properties.GRAY_INDEX;
+                                $.ajax({
+                                    url: '@Url.Action("GetMeasuredParameterMPC", "Maps")',
+                                    data: {
+                                        GrayIndex: gray_index.toString(),
+                                        MeasuredParameterId: $('#PollutantSpreadMeasuredParameterId').val()
+                                    },
+                                    type: 'POST',
+                                    success: function (data) {
+                                        $('#tablePollutantSpreadMPCshare').text(gray_index);
+                                        $('#tablePollutantSpreadName').text(data.name);
+                                        $('#tablePollutantSpreadValue').text(data.value);
+                                        var title = $('#PollutantSpread').val();
+                                        $("#dialogPollutantSpreadInfo").dialog({
+                                            resize: DialogResize,
+                                            title: title,
+                                            minHeight: 100,
+                                            minWidth: 100,
+                                            width: 350,
+                                            maxHeight: window.innerHeight
+                                        });
+                                    },
+                                    error: function () {
+                                        //error
+                                    }
+                                })
+                            }
+                            else {
+                                if (i < layerAlmatyPollutantSpread.length - 1) {
+                                    i += 1;
+                                    AjaxCycle(i, layerAlmatyPollutantSpread);
+                                }
+                            }
+                        });
+                    }
                 }
             }
         }
