@@ -28,12 +28,14 @@
     <a class="btn btn-default" asp-controller="AuthorizedAuthorities" asp-action="Index">@SharedLocalizer["AuthorizedAuthorities"]</a>
     <a class="btn btn-default" asp-controller="PlantationsTypes" asp-action="Index">@SharedLocalizer["PlantationsTypes"]</a>
     <a class="btn btn-default" asp-controller="PlantationsStateTypes" asp-action="Index">@SharedLocalizer["PlantationsStateTypes"]</a>
+    <a class="btn btn-default" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
     <hr />
     <a class="btn btn-default" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
 }
 else if (Role == "KaragandaRegion")
 {
     <a class="btn btn-default" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+    <a class="btn btn-default" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
     <hr />
     <a class="btn btn-default" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
 }
@@ -45,6 +47,7 @@ else if (Role == "Almaty")
 {
     <a class="btn btn-default" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
     <a class="btn btn-default" asp-controller="Ecoposts" asp-action="Index">@SharedLocalizer["Ecoposts"]</a>
+    <a class="btn btn-default" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
 }
 else if (Role == "Shymkent")
 {

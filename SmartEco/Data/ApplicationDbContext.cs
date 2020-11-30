@@ -42,6 +42,7 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.PlantationsState> PlantationsState { get; set; }
         public DbSet<SmartEco.Models.SpeciesDiversity> SpeciesDiversity { get; set; }
         public DbSet<SmartEco.Models.Ecopost> Ecopost { get; set; }
+        public DbSet<SmartEco.Models.ReceptionRecyclingPoint> ReceptionRecyclingPoint { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }

@@ -96,5 +96,7 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.SpeciesDiversity> SpeciesDiversity { get; set; }
 
         public DbSet<SmartEcoAPI.Models.Ecopost> Ecopost { get; set; }
+
+        public DbSet<SmartEcoAPI.Models.ReceptionRecyclingPoint> ReceptionRecyclingPoint { get; set; }
     }
 }

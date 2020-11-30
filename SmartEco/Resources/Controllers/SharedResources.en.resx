@@ -930,4 +930,19 @@
   <data name="GreenSpacesPlanned" xml:space="preserve">
     <value>Green spaces (planned)</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Address</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Organization</value>
+  </data>
+  <data name="ReceptionRecyclingPoint" xml:space="preserve">
+    <value>Recyclable materials collection point</value>
+  </data>
+  <data name="ReceptionRecyclingPoints" xml:space="preserve">
+    <value>Recyclable materials collection points</value>
+  </data>
+  <data name="TypesRaw" xml:space="preserve">
+    <value>Types of accepted secondary raw materials</value>
+  </data>
 </root>

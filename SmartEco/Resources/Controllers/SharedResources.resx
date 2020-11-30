@@ -927,4 +927,19 @@
   <data name="GreenSpacesPlanned" xml:space="preserve">
     <value />
   </data>
+  <data name="Address" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReceptionRecyclingPoint" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReceptionRecyclingPoints" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypesRaw" xml:space="preserve">
+    <value />
+  </data>
 </root>

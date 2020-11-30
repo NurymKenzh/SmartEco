@@ -153,6 +153,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Address {
+            get {
+                return ResourceManager.GetString("Address", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Aktau {
             get {
                 return ResourceManager.GetString("Aktau", resourceCulture);
@@ -1719,6 +1728,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Organization {
+            get {
+                return ResourceManager.GetString("Organization", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string OtherCapitalStructures {
             get {
                 return ResourceManager.GetString("OtherCapitalStructures", resourceCulture);
@@ -2019,6 +2037,24 @@ namespace SmartEco.Resources.Controllers {
         public static string Quantity {
             get {
                 return ResourceManager.GetString("Quantity", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ReceptionRecyclingPoint {
+            get {
+                return ResourceManager.GetString("ReceptionRecyclingPoint", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ReceptionRecyclingPoints {
+            get {
+                return ResourceManager.GetString("ReceptionRecyclingPoints", resourceCulture);
             }
         }
         
@@ -2415,6 +2451,15 @@ namespace SmartEco.Resources.Controllers {
         public static string TypeOfAchievement {
             get {
                 return ResourceManager.GetString("TypeOfAchievement", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string TypesRaw {
+            get {
+                return ResourceManager.GetString("TypesRaw", resourceCulture);
             }
         }
         

@@ -932,4 +932,19 @@
   <data name="GreenSpacesPlanned" xml:space="preserve">
     <value>Зелёные насаждения (плановые)</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Адрес</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Организация</value>
+  </data>
+  <data name="ReceptionRecyclingPoint" xml:space="preserve">
+    <value>Пункт приёма вторсырья</value>
+  </data>
+  <data name="ReceptionRecyclingPoints" xml:space="preserve">
+    <value>Пункты приёма вторсырья</value>
+  </data>
+  <data name="TypesRaw" xml:space="preserve">
+    <value>Виды принимаемого вторичного сырья</value>
+  </data>
 </root>

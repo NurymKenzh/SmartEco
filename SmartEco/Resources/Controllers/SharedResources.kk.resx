@@ -930,4 +930,19 @@
   <data name="GreenSpacesPlanned" xml:space="preserve">
     <value>Жасыл алаңдар (жоспарланған)</value>
   </data>
+  <data name="Address" xml:space="preserve">
+    <value>Мекен-жай</value>
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value>Ұйымдастыру</value>
+  </data>
+  <data name="ReceptionRecyclingPoint" xml:space="preserve">
+    <value>Қайта өңделетін материалдарды жинау орны</value>
+  </data>
+  <data name="ReceptionRecyclingPoints" xml:space="preserve">
+    <value>Қайта өңдеу нүктелері</value>
+  </data>
+  <data name="TypesRaw" xml:space="preserve">
+    <value>Қабылданған қайталама шикізат түрлері</value>
+  </data>
 </root>
