@@ -947,4 +947,7 @@
   <data name="TypesRaw" xml:space="preserve">
     <value>Виды принимаемого вторичного сырья</value>
   </data>
+  <data name="MPCshare" xml:space="preserve">
+    <value>Доля ПДК</value>
+  </data>
 </root>

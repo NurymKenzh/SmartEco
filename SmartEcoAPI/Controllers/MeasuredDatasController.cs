@@ -164,14 +164,12 @@ namespace SmartEcoAPI.Controllers
             {
                 measuredDatas = measuredDatas.Where(m => m.MeasuredParameterId == MeasuredParameterId);
             }
-            List<MeasuredData> measuredDatas2 = measuredDatas.ToList();
             if (DateTimeFrom != null)
             {
                 measuredDatas = measuredDatas.Where(m => (m.DateTime != null && m.DateTime >= DateTimeFrom) ||
                     (m.Year != null && m.Month == null && m.Year >= DateTimeFrom.Value.Year) ||
                     (m.Year != null && m.Month != null && m.Year >= DateTimeFrom.Value.Year && m.Month >= DateTimeFrom.Value.Month));
             }
-            measuredDatas2 = measuredDatas.ToList();
             if (DateTimeTo != null)
             {
                 //measuredDatas = measuredDatas.Where(m => m.DateTime <= DateTimeTo);
@@ -179,7 +177,6 @@ namespace SmartEcoAPI.Controllers
                     (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
                     (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
             }
-            measuredDatas2 = measuredDatas.ToList();
             if (PollutionSourceId != null)
             {
                 measuredDatas = measuredDatas.Where(m => m.PollutionSourceId == PollutionSourceId);

@@ -139,6 +139,7 @@
     <input id="MonitoringPostMeasuredParameters2" type="text" value="@ViewBag.MonitoringPostMeasuredParameters2" />
     <input id="More" type="text" value="@SharedLocalizer["More"]" />
     <input id="Smaller" type="text" value="@SharedLocalizer["Smaller"]" />
+    <input id="PollutantSpread" type="text" value="@SharedLocalizer["PollutantSpread"]" />
 </div>
 
 <div id="fullscreen" class="fullscreen">
@@ -630,6 +631,31 @@
                 <input type="button" class="btn btn-primary" id="ToCalculate" value="Расчитать рассеивание" onclick="CalculateDissipation();">
             </div>
         </div>
+    </div>
+</div>
+
+<div hidden="hidden">
+    <div id="dialogPollutantSpreadInfo" title="">
+        <table id="tablePollutantSpread" class="table-bordered">
+            <tr>
+                <td>
+                    @SharedLocalizer["MPCshare"]
+                </td>
+                <td id="tablePollutantSpreadMPCshare"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["Pollutant"]
+                </td>
+                <td id="tablePollutantSpreadName"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["Value"]
+                </td>
+                <td id="tablePollutantSpreadValue"></td>
+            </tr>
+        </table>
     </div>
 </div>
 
@@ -1990,7 +2016,141 @@
                 GetPollutantsConcentration();
                 GetMeasuredParameters();
             }
-        } else {
+        }
+        @*else {
+            var layerAlmatyPollutantSpread = null;
+            map.getLayers().forEach(function (layer) {
+                if (layer != null) {
+                    if (layer.get('name') == 'AlmatyPollutantSpread') {
+                        layerAlmatyPollutantSpread = layer;
+                    }
+                }
+            })
+            var viewResolution = (map.getView().getResolution());
+            var url = layerAlmatyPollutantSpread.getSource().getGetFeatureInfoUrl(
+                evt.coordinate, viewResolution, 'EPSG:3857',
+                {
+                    'INFO_FORMAT': 'text/javascript'
+                    //'FEATURE_COUNT': '10000'
+                });
+            if ($('#layerPollutantSpreadShow').is(':checked')) {
+                if (url) {
+                    var parser = new ol.format.GeoJSON();
+                    $.ajax({
+                        jsonp: false,
+                        jsonpCallback: 'getJson',
+                        type: 'GET',
+                        url: url + "&format_options=callback:getJson",
+                        async: false,
+                        dataType: 'jsonp',
+                        //jsonpCallback: 'parseResponse',
+                        error: function (xhr, status, error) {
+                        }
+                    }).then(function (response) {
+                        var result = parser.readFeatures(response);
+                        if (result.length > 0) {
+                            var gray_index = response.features[0].properties.GRAY_INDEX;
+                            $.ajax({
+                                url: '@Url.Action("GetMeasuredParameterMPC", "Maps")',
+                                data: {
+                                    GrayIndex: gray_index.toString(),
+                                    MeasuredParameterId: $('#PollutantSpreadMeasuredParameterId').val()
+                                },
+                                type: 'POST',
+                                success: function (data) {
+                                    $('#tablePollutantSpreadMPCshare').text(gray_index);
+                                    $('#tablePollutantSpreadName').text(data.name);
+                                    $('#tablePollutantSpreadValue').text(data.value);
+                                    var title = $('#PollutantSpread').val();;
+                                    $("#dialogPollutantSpreadInfo").dialog({
+                                        resize: DialogResize,
+                                        title: title,
+                                        minHeight: 100,
+                                        minWidth: 100,
+                                        width: 350,
+                                        maxHeight: window.innerHeight
+                                    });
+                                },
+                                error: function () {
+                                    //error
+                                }
+                            })
+                        }
+                    });
+                }
+            }
+        }*@
+        else {
+            var layerAlmatyPollutantSpread = [];
+            map.getLayers().forEach(function (layer) {
+                if (layer != null) {
+                    if (layer.get('name') == 'AlmatyPollutantSpread') {
+                        layerAlmatyPollutantSpread.push(layer);
+                    }
+                }
+            })
+            if ($('#layerPollutantSpreadShow').is(':checked')) {
+                AjaxCycle(0, layerAlmatyPollutantSpread);
+                function AjaxCycle(i, layerAlmatyPollutantSpread) {
+                    var viewResolution = (map.getView().getResolution());
+                    var url = layerAlmatyPollutantSpread[i].getSource().getGetFeatureInfoUrl(
+                        evt.coordinate, viewResolution, 'EPSG:3857',
+                        {
+                            'INFO_FORMAT': 'text/javascript'
+                            //'FEATURE_COUNT': '10000'
+                        });
+                    if (url) {
+                        var parser = new ol.format.GeoJSON();
+                        $.ajax({
+                            jsonp: false,
+                            jsonpCallback: 'getJson',
+                            type: 'GET',
+                            url: url + "&format_options=callback:getJson",
+                            async: false,
+                            dataType: 'jsonp',
+                            //jsonpCallback: 'parseResponse',
+                            error: function (xhr, status, error) {
+                            }
+                        }).then(function (response) {
+                            var result = parser.readFeatures(response);
+                            if (result.length > 0) {
+                                var gray_index = response.features[0].properties.GRAY_INDEX;
+                                $.ajax({
+                                    url: '@Url.Action("GetMeasuredParameterMPC", "Maps")',
+                                    data: {
+                                        GrayIndex: gray_index.toString(),
+                                        MeasuredParameterId: $('#PollutantSpreadMeasuredParameterId').val()
+                                    },
+                                    type: 'POST',
+                                    success: function (data) {
+                                        $('#tablePollutantSpreadMPCshare').text(gray_index);
+                                        $('#tablePollutantSpreadName').text(data.name);
+                                        $('#tablePollutantSpreadValue').text(data.value);
+                                        var title = $('#PollutantSpread').val();
+                                        $("#dialogPollutantSpreadInfo").dialog({
+                                            resize: DialogResize,
+                                            title: title,
+                                            minHeight: 100,
+                                            minWidth: 100,
+                                            width: 350,
+                                            maxHeight: window.innerHeight
+                                        });
+                                    },
+                                    error: function () {
+                                        //error
+                                    }
+                                })
+                            }
+                            else {
+                                if (i < layerAlmatyPollutantSpread.length - 1) {
+                                    i += 1;
+                                    AjaxCycle(i, layerAlmatyPollutantSpread);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
         }
 
         //var viewResolution = (map.getView().getResolution());
@@ -2020,42 +2180,6 @@
         //        }
         //    })
         //}
-        var viewResolution = (map.getView().getResolution());
-        var layerAlmatyPollutantSpread = null;
-        map.getLayers().forEach(function (layer) {
-            if (layer != null) {
-                if (layer.get('name') == 'AlmatyPollutantSpread') {
-                    layerAlmatyPollutantSpread = layer;
-                }
-            }
-        })
-        var url = layerAlmatyPollutantSpread.getSource().getGetFeatureInfoUrl(
-            evt.coordinate, viewResolution, 'EPSG:3857',
-            {
-                'INFO_FORMAT': 'text/javascript'
-                //'FEATURE_COUNT': '10000'
-            });
-        if ($('#layerPollutantSpreadShow').is(':checked')) {
-            if (url) {
-                var parser = new ol.format.GeoJSON();
-                $.ajax({
-                    jsonp: false,
-                    jsonpCallback: 'getJson',
-                    type: 'GET',
-                    url: url + "&format_options=callback:getJson",
-                    async: false,
-                    dataType: 'jsonp',
-                    //jsonpCallback: 'parseResponse',
-                    error: function (xhr, status, error) {
-                    }
-                }).then(function (response) {
-                    var result = parser.readFeatures(response);
-                    if (result.length > 0) {
-                        console.log(response);
-                    }
-                });
-            }
-        }
     });
 
     function DialogResize(event, ui) {

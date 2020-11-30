@@ -1776,5 +1776,30 @@ namespace SmartEco.Controllers
             }
             );
         }
+
+        [HttpPost]
+        public async Task<IActionResult> GetMeasuredParameterMPC(
+            string GrayIndex,
+            int MeasuredParameterId)
+        {
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            //var measuredParameter = measuredParameters.Where(m => m.Id == MeasuredParameterId).ToList().FirstOrDefault();
+            var measuredParameter = measuredParameters.FirstOrDefault(m => m.Id == MeasuredParameterId);
+            var value = Decimal.Parse(GrayIndex, CultureInfo.InvariantCulture) * measuredParameter.MPCMaxSingle;
+            var name = measuredParameter.Name;
+
+            return Json(new
+            {
+                name,
+                value
+            });
+        }
     }
 }

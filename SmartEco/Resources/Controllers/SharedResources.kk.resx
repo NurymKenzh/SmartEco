@@ -945,4 +945,7 @@
   <data name="TypesRaw" xml:space="preserve">
     <value>Қабылданған қайталама шикізат түрлері</value>
   </data>
+  <data name="MPCshare" xml:space="preserve">
+    <value>ППК үлесі</value>
+  </data>
 </root>

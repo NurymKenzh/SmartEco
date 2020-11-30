@@ -945,4 +945,7 @@
   <data name="TypesRaw" xml:space="preserve">
     <value>Types of accepted secondary raw materials</value>
   </data>
+  <data name="MPCshare" xml:space="preserve">
+    <value>MPC share</value>
+  </data>
 </root>
