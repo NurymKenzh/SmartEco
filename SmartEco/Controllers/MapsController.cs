@@ -872,6 +872,46 @@ namespace SmartEco.Controllers
             });
             ViewBag.EcopostsLayerJson = objectEcoposts.ToString();
 
+            string urlReceptionRecyclingPoints = "api/ReceptionRecyclingPoints";
+            List<ReceptionRecyclingPoint> receptionRecyclingPoints = new List<ReceptionRecyclingPoint>();
+            HttpResponseMessage responseReceptionRecyclingPoints = await _HttpApiClient.GetAsync(urlReceptionRecyclingPoints);
+            receptionRecyclingPoints = await responseReceptionRecyclingPoints.Content.ReadAsAsync<List<ReceptionRecyclingPoint>>();
+            receptionRecyclingPoints = receptionRecyclingPoints.Where(r => r.NorthLatitude != null && r.EastLongitude != null).ToList();
+            JObject objectReceptionRecyclingPoints = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from receptionRecyclingPoint in receptionRecyclingPoints
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = receptionRecyclingPoint.Id,
+                                   Organization = receptionRecyclingPoint.Organization,
+                                   Address = receptionRecyclingPoint.Address,
+                                   TypesRaw = receptionRecyclingPoint.TypesRaw
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                   {
+                                    Convert.ToDecimal(receptionRecyclingPoint.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                    Convert.ToDecimal(receptionRecyclingPoint.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                   },
+                               }
+                           }
+            });
+            ViewBag.ReceptionRecyclingPointsLayerJson = objectReceptionRecyclingPoints.ToString();
+
             //Data for calculate dissipation
             string urlMeasuredDatas = "api/MeasuredDatas",
                  route = "";
