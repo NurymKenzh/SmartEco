@@ -290,6 +290,13 @@
                         </li>
                         <li class="is-checkbox" id="layerWaterProtectionStripShow" onclick="ChangeLayers()">@SharedLocalizer["WaterProtectionStrip"]</li>
                         <li class="is-checkbox" id="layerWaterProtectionZoneShow" onclick="ChangeLayers()">@SharedLocalizer["WaterProtectionZone"]</li>
+                        <li id="InventoryWaterBodies" onclick="ChangeVideo()">@SharedLocalizer["InventoryWaterBodies"]</li>
+                    </ul>
+                </li>
+                <li class="no-checkbox">
+                    @SharedLocalizer["GreenSpaces"]
+                    <ul>
+                        <li id="NDVI" onclick="ChangeVideo()">@SharedLocalizer["NDVI"]</li>
                     </ul>
                 </li>
             </ul>
@@ -302,6 +309,12 @@
         </div>
         <br />
         <hr />*@
+    </div>
+</div>
+
+<div hidden="hidden">
+    <div id="ViewVideo" title="">
+        <iframe id="FrameVideo" width="760" height="515"></iframe>
     </div>
 </div>
 
@@ -1492,6 +1505,32 @@
                 layer.setOpacity(layersCheck.layerTotalRTransportSummationGroupsOpacity / 100)
             }
         })
+    }
+
+    function ChangeVideo() {
+        var id = this.event.target.id;
+        if (~id.indexOf("InventoryWaterBodies")) {
+            $("#FrameVideo").attr('src', 'https://www.youtube.com/embed/FgRX5RrtlDQ');
+            $("#ViewVideo").dialog({
+                resize: DialogResize,
+                //title: title,
+                minHeight: 100,
+                minWidth: 100,
+                width: 800,
+                maxHeight: window.innerHeight
+            });
+        }
+        if (~id.indexOf("NDVI")) {
+            $("#FrameVideo").attr('src', 'https://www.youtube.com/embed/Ens8LdhQy_o');
+            $("#ViewVideo").dialog({
+                resize: DialogResize,
+                //title: title,
+                minHeight: 100,
+                minWidth: 100,
+                width: 800,
+                maxHeight: window.innerHeight
+            });
+        }
     }
 </script>
 

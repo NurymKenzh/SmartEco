@@ -948,4 +948,13 @@
   <data name="MPCshare" xml:space="preserve">
     <value>ППК үлесі</value>
   </data>
+  <data name="GreenSpaces" xml:space="preserve">
+    <value>Жасыл кеңістіктер</value>
+  </data>
+  <data name="InventoryWaterBodies" xml:space="preserve">
+    <value>Су объектілерін түгендеу</value>
+  </data>
+  <data name="NDVI" xml:space="preserve">
+    <value>Ландшафттық-көгалдандыру өзгерістері (NDVI)</value>
+  </data>
 </root>

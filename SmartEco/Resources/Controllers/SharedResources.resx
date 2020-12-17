@@ -945,4 +945,13 @@
   <data name="MPCshare" xml:space="preserve">
     <value />
   </data>
+  <data name="GreenSpaces" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InventoryWaterBodies" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NDVI" xml:space="preserve">
+    <value />
+  </data>
 </root>

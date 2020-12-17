@@ -950,4 +950,13 @@
   <data name="MPCshare" xml:space="preserve">
     <value>Доля ПДК</value>
   </data>
+  <data name="GreenSpaces" xml:space="preserve">
+    <value>Зеленые насаждения</value>
+  </data>
+  <data name="InventoryWaterBodies" xml:space="preserve">
+    <value>Инвентаризация водных объектов</value>
+  </data>
+  <data name="NDVI" xml:space="preserve">
+    <value>Изменения ландшафта и озеленения (NDVI)</value>
+  </data>
 </root>
