@@ -959,4 +959,7 @@
   <data name="NDVI" xml:space="preserve">
     <value>Изменения ландшафта и озеленения (NDVI)</value>
   </data>
+  <data name="Altynalmas" xml:space="preserve">
+    <value>Алтыналмас</value>
+  </data>
 </root>

@@ -957,4 +957,7 @@
   <data name="NDVI" xml:space="preserve">
     <value>Landscape and landscaping changes (NDVI)</value>
   </data>
+  <data name="Altynalmas" xml:space="preserve">
+    <value>Altynalmas</value>
+  </data>
 </root>
