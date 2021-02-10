@@ -72,7 +72,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/ReceptionRecyclingPoints/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<ReceptionRecyclingPoint>> GetReceptionRecyclingPoint(int id)
         {
             var receptionRecyclingPoint = await _context.ReceptionRecyclingPoint
@@ -89,7 +89,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/ReceptionRecyclingPoints/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<IActionResult> PutReceptionRecyclingPoint(int id, ReceptionRecyclingPoint receptionRecyclingPoint)
         {
             if (id != receptionRecyclingPoint.Id)
@@ -120,7 +120,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/ReceptionRecyclingPoints
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<ReceptionRecyclingPoint>> PostReceptionRecyclingPoint(ReceptionRecyclingPoint receptionRecyclingPoint)
         {
             _context.ReceptionRecyclingPoint.Add(receptionRecyclingPoint);
@@ -131,7 +131,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/ReceptionRecyclingPoints/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<ReceptionRecyclingPoint>> DeleteReceptionRecyclingPoint(int id)
         {
             var receptionRecyclingPoint = await _context.ReceptionRecyclingPoint

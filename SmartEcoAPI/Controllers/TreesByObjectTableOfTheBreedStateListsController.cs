@@ -80,7 +80,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TreesByObjectTableOfTheBreedStateLists/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<TreesByObjectTableOfTheBreedStateList>> GetTreesByObjectTableOfTheBreedStateList(int id)
         {
             var treesByObjectTableOfTheBreedStateList = await _context.TreesByObjectTableOfTheBreedStateList
@@ -98,7 +98,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/TreesByObjectTableOfTheBreedStateLists/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<IActionResult> PutTreesByObjectTableOfTheBreedStateList(int id, TreesByObjectTableOfTheBreedStateList treesByObjectTableOfTheBreedStateList)
         {
             if (id != treesByObjectTableOfTheBreedStateList.Id)
@@ -129,7 +129,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/TreesByObjectTableOfTheBreedStateLists
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<TreesByObjectTableOfTheBreedStateList>> PostTreesByObjectTableOfTheBreedStateList(TreesByObjectTableOfTheBreedStateList treesByObjectTableOfTheBreedStateList)
         {
             _context.TreesByObjectTableOfTheBreedStateList.Add(treesByObjectTableOfTheBreedStateList);
@@ -140,7 +140,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/TreesByObjectTableOfTheBreedStateLists/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<TreesByObjectTableOfTheBreedStateList>> DeleteTreesByObjectTableOfTheBreedStateList(int id)
         {
             var treesByObjectTableOfTheBreedStateList = await _context.TreesByObjectTableOfTheBreedStateList

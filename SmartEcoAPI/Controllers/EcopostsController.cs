@@ -60,7 +60,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Ecoposts/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<Ecopost>> GetEcopost(int id)
         {
@@ -77,7 +77,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/Ecoposts/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> PutEcopost(int id, Ecopost ecopost)
         {
@@ -109,7 +109,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/Ecoposts
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<Ecopost>> PostEcopost(Ecopost ecopost)
         {
@@ -121,7 +121,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/Ecoposts/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty")]
+        [Authorize(Roles = "admin,moderator")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<Ecopost>> DeleteEcopost(int id)
         {

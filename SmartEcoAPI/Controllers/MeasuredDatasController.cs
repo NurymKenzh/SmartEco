@@ -380,7 +380,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MeasuredDatas/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<MeasuredData>> GetMeasuredData(long id)
         {

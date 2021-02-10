@@ -173,7 +173,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AActivities/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<AActivity>> GetAActivity(int id)
         {
             var aActivity = await _context.AActivity
@@ -197,7 +197,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/AActivities/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<IActionResult> PutAActivity(int id, AActivity aActivity)
         {
             if (id != aActivity.Id)
@@ -228,7 +228,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/AActivities
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<AActivity>> PostAActivity(AActivity aActivity)
         {
             _context.AActivity.Add(aActivity);
@@ -239,7 +239,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/AActivities/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<AActivity>> DeleteAActivity(int id)
         {
             var aActivity = await _context.AActivity

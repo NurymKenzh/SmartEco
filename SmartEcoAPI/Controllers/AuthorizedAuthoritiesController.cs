@@ -60,7 +60,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AuthorizedAuthorities/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<AuthorizedAuthority>> GetAuthorizedAuthority(int id)
         {
             var authorizedAuthority = await _context.AuthorizedAuthority
@@ -76,7 +76,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/AuthorizedAuthorities/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<IActionResult> PutAuthorizedAuthority(int id, AuthorizedAuthority authorizedAuthority)
         {
             if (id != authorizedAuthority.Id)
@@ -107,7 +107,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/AuthorizedAuthorities
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<AuthorizedAuthority>> PostAuthorizedAuthority(AuthorizedAuthority authorizedAuthority)
         {
             _context.AuthorizedAuthority.Add(authorizedAuthority);
@@ -118,7 +118,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/AuthorizedAuthorities/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<AuthorizedAuthority>> DeleteAuthorizedAuthority(int id)
         {
             var authorizedAuthority = await _context.AuthorizedAuthority

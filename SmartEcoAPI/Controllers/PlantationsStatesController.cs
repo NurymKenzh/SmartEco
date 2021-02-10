@@ -74,7 +74,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PlantationsStates/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<PlantationsState>> GetPlantationsState(int id)
         {
             var plantationsState = await _context.PlantationsState

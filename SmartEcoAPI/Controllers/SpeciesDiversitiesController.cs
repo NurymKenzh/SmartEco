@@ -74,7 +74,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/SpeciesDiversities/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<SpeciesDiversity>> GetSpeciesDiversity(int id)
         {
             var speciesDiversity = await _context.SpeciesDiversity

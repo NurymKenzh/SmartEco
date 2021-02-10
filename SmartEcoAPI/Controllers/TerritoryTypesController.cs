@@ -83,7 +83,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TerritoryTypes/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<TerritoryType>> GetTerritoryType(int id)
         {
             var territoryType = await _context.TerritoryType

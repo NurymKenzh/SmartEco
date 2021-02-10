@@ -124,7 +124,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TargetTerritories/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<TargetTerritory>> GetTargetTerritory(int id)
         {
             var targetTerritory = await _context.TargetTerritory
@@ -145,7 +145,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/TargetTerritories/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<IActionResult> PutTargetTerritory(int id, TargetTerritory targetTerritory)
         {
             if (id != targetTerritory.Id)
@@ -176,7 +176,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/TargetTerritories
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<TargetTerritory>> PostTargetTerritory(TargetTerritory targetTerritory)
         {
             _context.TargetTerritory.Add(targetTerritory);
@@ -187,7 +187,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/TargetTerritories/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<TargetTerritory>> DeleteTargetTerritory(int id)
         {
             var targetTerritory = await _context.TargetTerritory

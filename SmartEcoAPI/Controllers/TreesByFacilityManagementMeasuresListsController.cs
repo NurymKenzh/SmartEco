@@ -80,7 +80,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/TreesByFacilityManagementMeasuresLists/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<TreesByFacilityManagementMeasuresList>> GetTreesByFacilityManagementMeasuresList(int id)
         {
             var treesByFacilityManagementMeasuresList = await _context.TreesByFacilityManagementMeasuresList
@@ -98,7 +98,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/TreesByFacilityManagementMeasuresLists/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<IActionResult> PutTreesByFacilityManagementMeasuresList(int id, TreesByFacilityManagementMeasuresList treesByFacilityManagementMeasuresList)
         {
             if (id != treesByFacilityManagementMeasuresList.Id)
@@ -129,7 +129,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/TreesByFacilityManagementMeasuresLists
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<TreesByFacilityManagementMeasuresList>> PostTreesByFacilityManagementMeasuresList(TreesByFacilityManagementMeasuresList treesByFacilityManagementMeasuresList)
         {
             _context.TreesByFacilityManagementMeasuresList.Add(treesByFacilityManagementMeasuresList);
@@ -140,7 +140,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/TreesByFacilityManagementMeasuresLists/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<TreesByFacilityManagementMeasuresList>> DeleteTreesByFacilityManagementMeasuresList(int id)
         {
             var treesByFacilityManagementMeasuresList = await _context.TreesByFacilityManagementMeasuresList
