@@ -73,13 +73,13 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        @if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent")
+                        @if (Role == "admin" || Role == "moderator" @*|| Role == "Almaty"*@ || Role == "Shymkent")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
                             </li>
                         }
-                        @if (!string.IsNullOrEmpty(Role))
+                        @if (!string.IsNullOrEmpty(Role) && Role != "Almaty")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Data">@SharedLocalizer["Data"]</a>
