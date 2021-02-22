@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 15
-VisualStudioVersion = 15.0.28307.572
+# Visual Studio Version 16
+VisualStudioVersion = 16.0.30804.86
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEco", "SmartEco\SmartEco.csproj", "{3E7B9880-EE03-4C35-AB65-86F907970508}"
 EndProject
@@ -24,7 +24,9 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YandexWeather", "YandexWeat
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kazhydromet", "Kazhydromet\Kazhydromet.csproj", "{E7C9C92D-35DF-4591-AC56-01DBD63B532A}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "GetPollutersData", "GetPollutersData\GetPollutersData.csproj", "{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetPollutersData", "GetPollutersData\GetPollutersData.csproj", "{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoEcoPostsData", "AutoEcoPostsData\AutoEcoPostsData.csproj", "{27FC493E-771A-44BB-9490-7B831BE62D5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -68,6 +70,10 @@ Global
 		{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}.Release|Any CPU.Build.0 = Release|Any CPU
+		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
