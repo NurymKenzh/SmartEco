@@ -25,7 +25,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/DataProviders
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty,KaragandaRegion,Shymkent,Kazhydromet")]
+        //[Authorize(Roles = "admin,moderator,Almaty,KaragandaRegion,Shymkent,Kazhydromet")]
         public async Task<ActionResult<IEnumerable<DataProvider>>> GetDataProvider(string SortOrder,
             string Name,
             int? PageSize,
