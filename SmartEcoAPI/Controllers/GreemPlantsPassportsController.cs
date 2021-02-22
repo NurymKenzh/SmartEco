@@ -72,7 +72,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/GreemPlantsPassports/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<GreemPlantsPassport>> GetGreemPlantsPassport(int id)
         {
@@ -90,7 +90,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/GreemPlantsPassports/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<IActionResult> PutGreemPlantsPassport(int id, GreemPlantsPassport greemPlantsPassport)
         {
@@ -122,7 +122,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/GreemPlantsPassports
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<GreemPlantsPassport>> PostGreemPlantsPassport(GreemPlantsPassport greemPlantsPassport)
         {
@@ -134,7 +134,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/GreemPlantsPassports/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<GreemPlantsPassport>> DeleteGreemPlantsPassport(int id)
         {

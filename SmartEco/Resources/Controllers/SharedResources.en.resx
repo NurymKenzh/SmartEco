@@ -948,4 +948,16 @@
   <data name="MPCshare" xml:space="preserve">
     <value>MPC share</value>
   </data>
+  <data name="GreenSpaces" xml:space="preserve">
+    <value>Green Spaces</value>
+  </data>
+  <data name="InventoryWaterBodies" xml:space="preserve">
+    <value>Inventory of water bodies</value>
+  </data>
+  <data name="NDVI" xml:space="preserve">
+    <value>Landscape and landscaping changes (NDVI)</value>
+  </data>
+  <data name="Altynalmas" xml:space="preserve">
+    <value>Altynalmas</value>
+  </data>
 </root>

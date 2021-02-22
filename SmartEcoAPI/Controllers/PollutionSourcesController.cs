@@ -62,7 +62,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/PollutionSources/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion")]
         public async Task<ActionResult<PollutionSource>> GetPollutionSource(int id)
         {
             var pollutionSource = await _context.PollutionSource.FindAsync(id);

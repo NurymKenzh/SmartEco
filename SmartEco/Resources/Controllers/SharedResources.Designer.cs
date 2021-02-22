@@ -189,6 +189,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Altynalmas {
+            get {
+                return ResourceManager.GetString("Altynalmas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string AmountArbours {
             get {
                 return ResourceManager.GetString("AmountArbours", resourceCulture);
@@ -1035,6 +1044,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string GreenSpaces {
+            get {
+                return ResourceManager.GetString("GreenSpaces", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string GreenSpacesNow {
             get {
                 return ResourceManager.GetString("GreenSpacesNow", resourceCulture);
@@ -1110,6 +1128,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Info {
             get {
                 return ResourceManager.GetString("Info", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string InventoryWaterBodies {
+            get {
+                return ResourceManager.GetString("InventoryWaterBodies", resourceCulture);
             }
         }
         
@@ -1704,6 +1731,15 @@ namespace SmartEco.Resources.Controllers {
         public static string NameShortRU {
             get {
                 return ResourceManager.GetString("NameShortRU", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string NDVI {
+            get {
+                return ResourceManager.GetString("NDVI", resourceCulture);
             }
         }
         

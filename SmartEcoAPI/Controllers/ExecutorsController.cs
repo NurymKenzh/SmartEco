@@ -72,7 +72,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/Executors/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Executor>> GetExecutor(int id)
         {
             var executor = await _context.Executor.FindAsync(id);
@@ -87,7 +87,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/Executors/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<IActionResult> PutExecutor(int id, Executor executor)
         {
             if (id != executor.Id)
@@ -118,7 +118,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/Executors
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Executor>> PostExecutor(Executor executor)
         {
             _context.Executor.Add(executor);
@@ -129,7 +129,7 @@ namespace SmartEcoAPI.Controllers
 
         // DELETE: api/Executors/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator,Almaty,Shymkent,KaragandaRegion")]
+        [Authorize(Roles = "admin,moderator,Shymkent,KaragandaRegion")]
         public async Task<ActionResult<Executor>> DeleteExecutor(int id)
         {
             var executor = await _context.Executor.FindAsync(id);

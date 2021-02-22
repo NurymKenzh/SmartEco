@@ -93,7 +93,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/SpeciallyProtectedNaturalTerritories/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<SpeciallyProtectedNaturalTerritory>> GetSpeciallyProtectedNaturalTerritory(int id)
         {
             var speciallyProtectedNaturalTerritory = await _context.SpeciallyProtectedNaturalTerritory
@@ -110,7 +110,7 @@ namespace SmartEcoAPI.Controllers
 
         // PUT: api/SpeciallyProtectedNaturalTerritories/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<IActionResult> PutSpeciallyProtectedNaturalTerritory(int id, SpeciallyProtectedNaturalTerritory speciallyProtectedNaturalTerritory)
         {
             if (id != speciallyProtectedNaturalTerritory.Id)
@@ -141,7 +141,7 @@ namespace SmartEcoAPI.Controllers
 
         // POST: api/SpeciallyProtectedNaturalTerritories
         [HttpPost]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Shymkent")]
         public async Task<ActionResult<SpeciallyProtectedNaturalTerritory>> PostSpeciallyProtectedNaturalTerritory(SpeciallyProtectedNaturalTerritory speciallyProtectedNaturalTerritory)
         {
             _context.SpeciallyProtectedNaturalTerritory.Add(speciallyProtectedNaturalTerritory);
