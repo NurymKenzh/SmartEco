@@ -972,6 +972,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string ForAuthorizedUsers {
+            get {
+                return ResourceManager.GetString("ForAuthorizedUsers", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Formaldehyde {
             get {
                 return ResourceManager.GetString("Formaldehyde", resourceCulture);
@@ -2217,6 +2226,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Shymkent {
             get {
                 return ResourceManager.GetString("Shymkent", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string SignIn {
+            get {
+                return ResourceManager.GetString("SignIn", resourceCulture);
             }
         }
         

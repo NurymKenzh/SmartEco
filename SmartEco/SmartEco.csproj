@@ -36,6 +36,8 @@
     <PackageReference Include="Microsoft.VisualStudio.Web.BrowserLink" Version="2.2.0" />
     <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="2.2.4" />
     <PackageReference Include="ServiceStack.Text.LS" Version="5.0.0" />
+    <None Include="appsettings.json" CopyToPublishDirectory="Always" />
+    <None Include="appsettings.Development.json" CopyToPublishDirectory="Always" />
   </ItemGroup>
 
 

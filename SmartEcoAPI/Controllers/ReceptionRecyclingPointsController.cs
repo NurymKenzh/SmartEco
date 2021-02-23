@@ -23,7 +23,7 @@ namespace SmartEcoAPI.Controllers
         }
 
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
+        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Arys,Almaty,Shymkent")]
         public async Task<ActionResult<IEnumerable<ReceptionRecyclingPoint>>> GetReceptionRecyclingPoint(string SortOrder,
             string Organization,
             string TypesRaw,

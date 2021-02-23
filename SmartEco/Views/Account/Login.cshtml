@@ -3,7 +3,7 @@
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @model Person
 @{
-    ViewData["Title"] = SharedLocalizer["Login"];
+    ViewData["Title"] = SharedLocalizer["SignIn"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
@@ -28,12 +28,12 @@
         <input type="submit" id="getDataByRole" value="Данные по роли" />
     </div>*@
 <script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
-<h2 class="loginForm">@ViewData["Title"]</h2>
+@*<h2 class="loginForm">@ViewData["Title"]</h2>*@
 <div class="row">
-    <div class="col-md-4">
-        <form>
+    <div class="col-md-4 text-center mx-auto d-flex">
+        <form class="justify-content-center align-self-center mx-auto col-md-8">
             <section>
-                <hr />
+                @*<hr />*@
                 <span id="message" class="text-danger"></span>
                 <div asp-validation-summary="All" class="text-danger"></div>
                 <div class="form-group loginForm">
@@ -45,7 +45,11 @@
                     <input id="passwordLogin" asp-for="Password" class="form-control" />
                 </div>
                 <div class="form-group loginForm">
-                    <input type="submit" class="btn btn-default" id="submitLogin" value="@SharedLocalizer["Login"]" />
+                    @*<input type="submit" class="btn btn-default" id="submitLogin" value="@SharedLocalizer["SignIn"] (@SharedLocalizer["ForAuthorizedUsers"])" />*@
+                    <button type="submit" class="btn btn-default" id="submitLogin">
+                        <div>@SharedLocalizer["SignIn"]</div> 
+                        <div>(@SharedLocalizer["ForAuthorizedUsers"])</div>
+                    </button>
                 </div>
             </section>
         </form>

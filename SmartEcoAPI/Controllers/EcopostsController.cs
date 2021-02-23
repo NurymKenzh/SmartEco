@@ -23,7 +23,7 @@ namespace SmartEcoAPI.Controllers
         }
         
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,Almaty,Kazhydromet")]
+        //[Authorize(Roles = "admin,moderator,Almaty,Kazhydromet")]
         public async Task<ActionResult<IEnumerable<Ecopost>>> GetEcopost(string SortOrder,
             string Name,
             int? PageSize,

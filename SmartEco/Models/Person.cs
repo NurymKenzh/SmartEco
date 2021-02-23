@@ -12,7 +12,7 @@ namespace SmartEco.Models
 
         [Required]
         [EmailAddress]
-        [Display(Name = "Email")]
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Login")]
         public string Email { get; set; }
 
         [Required]

@@ -75,7 +75,7 @@ namespace GetPollutersData
                             .LastOrDefault();
                         if (measuredDatasSO2 == null)
                         {
-                            measuredDatasSource = ReceiveEmailAsync(null).Result;
+                            measuredDatasSource = ReceiveEmailAsync(measuredDatasPost.FirstOrDefault()?.DateTime).Result;
                         }
                         else
                         {
@@ -191,7 +191,7 @@ namespace GetPollutersData
                     }
                     else
                     {
-                        measuredDatasSource = ReceiveEmailAsync(null).Result;
+                        measuredDatasSource = ReceiveEmailAsync(measuredDatasPost.FirstOrDefault()?.DateTime).Result;
 
                         foreach (var measuredParameterId in measuredParametersId)
                         {
@@ -213,11 +213,11 @@ namespace GetPollutersData
                         {
                             try
                             {
-                                dateTime = measuredDatasPost.Where(m => m.DateTime > dateTime).FirstOrDefault().DateTime;
+                                dateTime = measuredDatasSource.Where(m => m.DateTime > dateTime).FirstOrDefault().DateTime;
 
-                                var temp = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 4 && m.DateTime == dateTime).FirstOrDefault().Value;
-                                var pres = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 1 && m.DateTime == dateTime).FirstOrDefault().Value;
-                                var so2 = measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                var temp = measuredDatasSource.Where(m => m.MeasuredParameterId == 4 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                var pres = measuredDatasSource.Where(m => m.MeasuredParameterId == 1 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                var so2 = measuredDatasSource.Where(m => m.MeasuredParameterId == 9 && m.DateTime == dateTime).FirstOrDefault().Value;
                                 var value = GetValueByFormula(temp, pres, so2);
 
                                 measuredDatasSource.Add(new MeasuredData
@@ -235,7 +235,7 @@ namespace GetPollutersData
                             }
 
                         //} while (measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9).Last().DateTime != dateTime);
-                        } while (measuredDatasSourceDB.LastOrDefault().DateTime != dateTime);
+                        } while (measuredDatasSource.LastOrDefault().DateTime != dateTime);
 
                         measuredDatasSource = measuredDatasSource
                             .OrderBy(m => m.DateTime)

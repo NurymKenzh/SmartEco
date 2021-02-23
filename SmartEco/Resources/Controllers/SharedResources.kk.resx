@@ -319,7 +319,7 @@
     <value>Тіркеу</value>
   </data>
   <data name="Login" xml:space="preserve">
-    <value>Кіру</value>
+    <value>Логин</value>
   </data>
   <data name="LogOut" xml:space="preserve">
     <value>Шығу</value>
@@ -959,5 +959,11 @@
   </data>
   <data name="Altynalmas" xml:space="preserve">
     <value>Алтыналмас</value>
+  </data>
+  <data name="Sign In" xml:space="preserve">
+    <value>Кіру</value>
+  </data>
+  <data name="ForAuthorizedUsers" xml:space="preserve">
+    <value>Авторланған пайдаланушылар үшін</value>
   </data>
 </root>
