@@ -108,6 +108,10 @@
         /*offset icon width*/
         padding-right: 24px;
     }
+
+    #DispersionBlock {
+        background-color: #cccccc;
+    }
 </style>
 
 <div hidden="hidden">
@@ -136,7 +140,7 @@
     <input id="ShowHideRightPanelText" type="text" value="@SharedLocalizer["ShowHideRightPanelText"]" />
     <input id="More" type="text" value="@SharedLocalizer["More"]" />
     <input id="Smaller" type="text" value="@SharedLocalizer["Smaller"]" />
-    <input id="PollutantSpread" type="text" value="@SharedLocalizer["PollutantSpread"]" />
+    <input id="PollutantSpread" type="text" value="@SharedLocalizer["DispersionPollutants"]" />
     <input id="ReceptionRecyclingPoint" type="text" value="@SharedLocalizer["ReceptionRecyclingPoint"]" />
 </div>
 
@@ -273,20 +277,22 @@
         </select>
         <br />
         <hr />
-        <label>
-            <input type="checkbox" id="layerPollutantSpreadShow" onchange="ChangeLayers()">
-            @SharedLocalizer["PollutantSpread"]
-        </label>
-        <br />
-        <input id="layerPollutantSpreadOpacity" type="range" min="0" max="100" value="80" oninput="ChangeLayers()" />
-        <br />
-        <label>@SharedLocalizer["Time"]</label>: <label id="time20Label"></label>
-        <input id="time20" type="range" min="0" value="0" max="0" step="1">
-        <label>@SharedLocalizer["MeasuredParameter"]</label>
-        <br />
-        @Html.DropDownList("PollutantSpreadMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control info-input-select", @id = "PollutantSpreadMeasuredParameterId", @onchange = "PollutantSpreadChange()" })
-        <br />
-        <hr />
+        <div id="DispersionBlock">
+            <label>
+                <input type="checkbox" id="layerPollutantSpreadShow" onchange="ChangeLayers()">
+                @SharedLocalizer["DispersionPollutants"]
+            </label>
+            <br />
+            <input id="layerPollutantSpreadOpacity" type="range" min="0" max="100" value="80" oninput="ChangeLayers()" />
+            <br />
+            <label>@SharedLocalizer["Time"]</label>: <label id="time20Label"></label>
+            <input id="time20" type="range" min="0" value="0" max="0" step="1">
+            <label>@SharedLocalizer["MeasuredParameter"]</label>
+            <br />
+            @Html.DropDownList("PollutantSpreadMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control info-input-select", @id = "PollutantSpreadMeasuredParameterId", @onchange = "PollutantSpreadChange()" })
+            <br />
+            <hr />
+        </div>
     </div>
 </div>
 

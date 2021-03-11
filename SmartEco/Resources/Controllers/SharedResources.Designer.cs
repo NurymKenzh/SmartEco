@@ -756,6 +756,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string DispersionPollutants {
+            get {
+                return ResourceManager.GetString("DispersionPollutants", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string DissipationSummary {
             get {
                 return ResourceManager.GetString("DissipationSummary", resourceCulture);

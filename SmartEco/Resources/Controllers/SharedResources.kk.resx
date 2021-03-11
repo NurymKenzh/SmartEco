@@ -577,7 +577,7 @@
     <value>Қатысты элементтер</value>
   </data>
   <data name="DailyAveraged" xml:space="preserve">
-    <value>Тәуліктік орташа мән</value>
+    <value>Кезеңдегі орташа мән</value>
   </data>
   <data name="MPCMaxSingle" xml:space="preserve">
     <value>Шоғырланудың максималды шегі</value>
@@ -965,5 +965,8 @@
   </data>
   <data name="ForAuthorizedUsers" xml:space="preserve">
     <value>Авторланған пайдаланушылар үшін</value>
+  </data>
+  <data name="DispersionPollutants" xml:space="preserve">
+    <value>Ластаушы заттардың дисперсиясы</value>
   </data>
 </root>

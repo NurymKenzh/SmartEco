@@ -577,7 +577,7 @@
     <value>Related Items</value>
   </data>
   <data name="DailyAveraged" xml:space="preserve">
-    <value>Daily average</value>
+    <value>Average value for the period</value>
   </data>
   <data name="MPCMaxSingle" xml:space="preserve">
     <value>The maximum single MPC</value>
@@ -965,5 +965,8 @@
   </data>
   <data name="ForAuthorizedUsers" xml:space="preserve">
     <value>For authorized users</value>
+  </data>
+  <data name="DispersionPollutants" xml:space="preserve">
+    <value>Dispersion of pollutants</value>
   </data>
 </root>

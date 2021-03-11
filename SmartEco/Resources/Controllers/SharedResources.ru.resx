@@ -577,7 +577,7 @@
     <value>Связанные элементы</value>
   </data>
   <data name="DailyAveraged" xml:space="preserve">
-    <value>Среднесуточное значение</value>
+    <value>Среднее значение за период</value>
   </data>
   <data name="MPCMaxSingle" xml:space="preserve">
     <value>ПДК максимально-разовое</value>
@@ -967,5 +967,8 @@
   </data>
   <data name="ForAuthorizedUsers" xml:space="preserve">
     <value>Для авторизованных пользователей</value>
+  </data>
+  <data name="DispersionPollutants" xml:space="preserve">
+    <value>Рассеивание ЗВ</value>
   </data>
 </root>
