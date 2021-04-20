@@ -25,6 +25,7 @@ namespace GetPostsData
             public int Id { get; set; }
             public string OceanusCode { get; set; }
             public string NameRU { get; set; }
+            public decimal? MPCMaxSingle { get; set; }
         }
         public class MonitoringPost
         {
@@ -89,6 +90,7 @@ namespace GetPostsData
             NewLog("Program started!");
             DateTime lastBackupDateTime = new DateTime(2000, 1, 1);
             DateTime lastCheckDateTime = new DateTime(2000, 1, 1);
+            DateTime lastWriteFileDateTime = new DateTime(2000, 1, 1);
             DateTime lastGetSourceDateTime = new DateTime(2000, 1, 1);
             while (true)
             {
@@ -97,6 +99,7 @@ namespace GetPostsData
                 List<MonitoringPostMeasuredParameter> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameter>();
                 List<MeasuredData> measuredDatasCheck = new List<MeasuredData>();
                 List<MeasuredData> measuredDatasCheckMinMax = new List<MeasuredData>();
+                List<MeasuredData> measuredDatasWriteFile = new List<MeasuredData>();
                 List<Person> persons = new List<Person>();
 
                 // Get MeasuredParameters, MonitoringPosts, MonitoringPostMeasuredParameter
@@ -408,7 +411,7 @@ namespace GetPostsData
                     connection.Open();
                     var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\" " +
                             $"FROM public.\"MeasuredData\" " +
-                            $"WHERE \"DateTime\" > '{DateTime.Now.AddMinutes(-20).ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null AND " + 
+                            $"WHERE \"DateTime\" > '{DateTime.Now.AddMinutes(-20).ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null AND " +
                             $"\"MonitoringPostId\" IN ('184', '185', '168', '169', '193', '194') AND \"Averaged\" = 'true' " +
                             $"ORDER BY \"DateTime\"", commandTimeout: 86400);
                     measuredDatasDB = measuredDatasv.ToList();
@@ -965,6 +968,123 @@ namespace GetPostsData
                         }
                     }
                     lastCheckDateTime = DateTime.Now;
+                }
+                //=================================================================================================================================================================
+                // Writing data to a file for download
+                Dictionary<int, string> postDistrictPairs = new Dictionary<int, string>
+                {
+                    [11] = "Турксибский район",  // ПНЗ №29
+                    [12] = "Алатауский район",   // ПНЗ №30
+                    [13] = "Бостандыкский район", // ПНЗ №31
+                    [19] = "Медеуский район", // ПНЗ №6
+                    [157] = "Жетысуский район",   // Alm-005
+                    [161] = "Алмалинский район",  // Alm-008
+                    [163] = "Ауэзовский район",   // Alm-010
+                    [151] = "Наурызбайский район" // Alm-003
+
+                };
+                if ((DateTime.Now - lastWriteFileDateTime) > new TimeSpan(0, 3, 0, 0))
+                {
+                    MeasuredData measuredData = new MeasuredData();
+                    // Get measured data for monitoring posts
+                    NewLog($"Writing data to a file >> Get data");
+                    foreach (var postDistrict in postDistrictPairs)
+                    {
+                        try
+                        {
+                            using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                            {
+                                var monitoringPostMeasuredParametersv = connection.Query<MonitoringPostMeasuredParameter>($"SELECT * " +
+                                $"FROM public.\"MonitoringPostMeasuredParameters\" " +
+                                $"WHERE \"MonitoringPostId\" = '{postDistrict.Key}' " +
+                                $"ORDER BY \"MeasuredParameterId\"", commandTimeout: 86400);
+                                monitoringPostMeasuredParameters = monitoringPostMeasuredParametersv.ToList();
+
+                                var measuredParametersv = connection.Query<MeasuredParameter>(
+                                    $"SELECT \"Id\", \"MPCMaxSingle\", \"NameRU\"" +
+                                    $"FROM public.\"MeasuredParameter\" WHERE \"MPCMaxSingle\" is not null;");
+                                measuredParameters = measuredParametersv.ToList();
+                            }
+
+                            foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
+                            {
+                                try
+                                {
+                                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                                    {
+                                        var measuredDatasv = connection.Query<MeasuredData>($"SELECT * " +
+                                        $"FROM public.\"MeasuredData\" as datas " +
+                                        $"JOIN public.\"MeasuredParameter\" as param ON param.\"Id\" = datas.\"MeasuredParameterId\" " +
+                                        $"WHERE datas.\"MonitoringPostId\" = '{postDistrict.Key}' AND datas.\"MeasuredParameterId\" = '{monitoringPostMeasuredParameter.MeasuredParameterId}' AND datas.\"DateTime\" > '{lastWriteFileDateTime.ToString("yyyy-MM-dd HH:mm:ss")}' AND datas.\"DateTime\" is not null AND datas.\"Averaged\" = true AND param.\"MPCMaxSingle\" is not null " +
+                                        $"ORDER BY datas.\"DateTime\" DESC " +
+                                        $"LIMIT 1", commandTimeout: 86400);
+                                        measuredData = measuredDatasv.FirstOrDefault();
+
+                                        if (measuredData != null)
+                                        {
+                                            measuredDatasWriteFile.Add(measuredData);
+                                        }
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    NewLog($"Writing data to a file >> Error get measured data: {ex.Message}");
+                                }
+                            }
+                        }
+                        catch (Exception ex)
+                        {
+                            NewLog($"Writing data to a file >> Error get activated parameters: {ex.Message}");
+                        }
+                    }
+
+                    // Write data from formed array
+                    NewLog($"Writing data to a file >> Write data");
+                    try
+                    {
+                        using (StreamWriter sw = new StreamWriter(@"C:\Users\Administrator\source\repos\Download\AlmatyPollution.txt", false, System.Text.Encoding.Default))
+                        {
+                            foreach (var postDistrict in postDistrictPairs)
+                            {
+                                sw.WriteLine(postDistrict.Value);
+                                foreach (var data in measuredDatasWriteFile.Where(m => m.MonitoringPostId == postDistrict.Key))
+                                {
+                                    var measuredParameter = measuredParameters.Where(m => m.Id == data.MeasuredParameterId).FirstOrDefault();
+                                    if (measuredParameter != null)
+                                    {
+                                        decimal index = Convert.ToDecimal(data.Value / measuredParameter.MPCMaxSingle);
+                                        string level = String.Empty;
+                                        if (index <= 0.2m)
+                                        {
+                                            level = "Уровень низкий";
+                                        }
+                                        else if (index <= 0.5m)
+                                        {
+                                            level = "Уровень повышенный";
+                                        }
+                                        else if (index <= 1m)
+                                        {
+                                            level = "Уровень высокий";
+                                        }
+                                        else
+                                        {
+                                            level = "Уровень опасный";
+                                        }
+
+                                        sw.WriteLine(measuredParameter.NameRU);
+                                        sw.WriteLine(level);
+                                    }
+                                }
+                                sw.WriteLine();
+                            }
+                        }
+
+                        lastWriteFileDateTime = DateTime.Now;
+                    }
+                    catch (Exception ex)
+                    {
+                        NewLog($"Writing data to a file >> Error write data: {ex.Message}");
+                    }
                 }
 
                 Thread.Sleep(30000);
