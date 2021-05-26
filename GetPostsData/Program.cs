@@ -25,6 +25,7 @@ namespace GetPostsData
             public int Id { get; set; }
             public string OceanusCode { get; set; }
             public string NameRU { get; set; }
+            public string NameKK { get; set; }
             public decimal? MPCMaxSingle { get; set; }
         }
         public class MonitoringPost
@@ -971,7 +972,7 @@ namespace GetPostsData
                 }
                 //=================================================================================================================================================================
                 // Writing data to a file for download
-                Dictionary<int, string> postDistrictPairs = new Dictionary<int, string>
+                Dictionary<int, string> postDistrictPairsRu = new Dictionary<int, string>
                 {
                     [11] = "Турксибский район",  // ПНЗ №29
                     [12] = "Алатауский район",   // ПНЗ №30
@@ -983,12 +984,39 @@ namespace GetPostsData
                     [151] = "Наурызбайский район" // Alm-003
 
                 };
+                Dictionary<int, string> postDistrictPairsKk = new Dictionary<int, string>
+                {
+                    [11] = "Түрксіб ауданы",  // ПНЗ №29
+                    [12] = "Алатау ауданы",   // ПНЗ №30
+                    [13] = "Бостандық ауданы", // ПНЗ №31
+                    [19] = "Медеу ауданы", // ПНЗ №6
+                    [157] = "Жетісу ауданы",   // Alm-005
+                    [161] = "Алмалы ауданы",  // Alm-008
+                    [163] = "Әуезов ауданы",   // Alm-010
+                    [151] = "Наурызбай ауданы" // Alm-003
+
+                };
+                Dictionary<int, string> pollutionLevelRu = new Dictionary<int, string>
+                {
+                    [1] = "Уровень низкий",
+                    [2] = "Уровень повышенный",
+                    [3] = "Уровень высокий",
+                    [4] = "Уровень опасный"
+                };
+                Dictionary<int, string> pollutionLevelKk = new Dictionary<int, string>
+                {
+                    [1] = "Төмен деңгей",
+                    [2] = "Көтеріңкі деңгей",
+                    [3] = "Жоғары деңгей",
+                    [4] = "Қауіпті деңгей"
+                };
+
                 if ((DateTime.Now - lastWriteFileDateTime) > new TimeSpan(0, 3, 0, 0))
                 {
                     MeasuredData measuredData = new MeasuredData();
                     // Get measured data for monitoring posts
                     NewLog($"Writing data to a file >> Get data");
-                    foreach (var postDistrict in postDistrictPairs)
+                    foreach (var postDistrict in postDistrictPairsRu)
                     {
                         try
                         {
@@ -1000,9 +1028,14 @@ namespace GetPostsData
                                 $"ORDER BY \"MeasuredParameterId\"", commandTimeout: 86400);
                                 monitoringPostMeasuredParameters = monitoringPostMeasuredParametersv.ToList();
 
+                                //var measuredParametersv = connection.Query<MeasuredParameter>(
+                                //    $"SELECT \"Id\", \"MPCMaxSingle\", \"NameRU\", \"NameKK\" " +
+                                //    $"FROM public.\"MeasuredParameter\" WHERE \"MPCMaxSingle\" is not null;");
+                                //measuredParameters = measuredParametersv.ToList();
+
                                 var measuredParametersv = connection.Query<MeasuredParameter>(
-                                    $"SELECT \"Id\", \"MPCMaxSingle\", \"NameRU\"" +
-                                    $"FROM public.\"MeasuredParameter\" WHERE \"MPCMaxSingle\" is not null;");
+                                    $"SELECT \"Id\", \"MPCMaxSingle\", \"NameRU\", \"NameKK\" " +
+                                    $"FROM public.\"MeasuredParameter\" WHERE \"MPCMaxSingle\" is not null AND \"Id\" = 3;"); //measuredParameter only PM2.5
                                 measuredParameters = measuredParametersv.ToList();
                             }
 
@@ -1044,7 +1077,7 @@ namespace GetPostsData
                     {
                         using (StreamWriter sw = new StreamWriter(@"C:\Users\Administrator\source\repos\Download\AlmatyPollution.txt", false, System.Text.Encoding.Default))
                         {
-                            foreach (var postDistrict in postDistrictPairs)
+                            foreach (var postDistrict in postDistrictPairsRu)
                             {
                                 sw.WriteLine(postDistrict.Value);
                                 foreach (var data in measuredDatasWriteFile.Where(m => m.MonitoringPostId == postDistrict.Key))
@@ -1056,22 +1089,56 @@ namespace GetPostsData
                                         string level = String.Empty;
                                         if (index <= 0.2m)
                                         {
-                                            level = "Уровень низкий";
+                                            level = pollutionLevelRu[1];
                                         }
                                         else if (index <= 0.5m)
                                         {
-                                            level = "Уровень повышенный";
+                                            level = pollutionLevelRu[2];
                                         }
                                         else if (index <= 1m)
                                         {
-                                            level = "Уровень высокий";
+                                            level = pollutionLevelRu[3];
                                         }
                                         else
                                         {
-                                            level = "Уровень опасный";
+                                            level = pollutionLevelRu[4];
                                         }
 
                                         sw.WriteLine(measuredParameter.NameRU);
+                                        sw.WriteLine(level);
+                                    }
+                                }
+                                sw.WriteLine();
+                            }
+                            sw.WriteLine("-------------------------------------- \n");
+                            foreach (var postDistrict in postDistrictPairsKk)
+                            {
+                                sw.WriteLine(postDistrict.Value);
+                                foreach (var data in measuredDatasWriteFile.Where(m => m.MonitoringPostId == postDistrict.Key))
+                                {
+                                    var measuredParameter = measuredParameters.Where(m => m.Id == data.MeasuredParameterId).FirstOrDefault();
+                                    if (measuredParameter != null)
+                                    {
+                                        decimal index = Convert.ToDecimal(data.Value / measuredParameter.MPCMaxSingle);
+                                        string level = String.Empty;
+                                        if (index <= 0.2m)
+                                        {
+                                            level = pollutionLevelKk[1];
+                                        }
+                                        else if (index <= 0.5m)
+                                        {
+                                            level = pollutionLevelKk[2];
+                                        }
+                                        else if (index <= 1m)
+                                        {
+                                            level = pollutionLevelKk[3];
+                                        }
+                                        else
+                                        {
+                                            level = pollutionLevelKk[4];
+                                        }
+
+                                        sw.WriteLine(measuredParameter.NameKK);
                                         sw.WriteLine(level);
                                     }
                                 }
