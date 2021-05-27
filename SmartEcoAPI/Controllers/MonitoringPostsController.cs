@@ -34,6 +34,7 @@ namespace SmartEcoAPI.Controllers
             string Name,
             int? DataProviderId,
             int? PollutionEnvironmentId,
+            string MN,
             int? PageSize,
             int? PageNumber)
         {
@@ -58,6 +59,10 @@ namespace SmartEcoAPI.Controllers
             if (PollutionEnvironmentId != null)
             {
                 monitoringPosts = monitoringPosts.Where(m => m.PollutionEnvironmentId == PollutionEnvironmentId);
+            }
+            if (!string.IsNullOrEmpty(MN))
+            {
+                monitoringPosts = monitoringPosts.Where(m => m.MN.ToLower().Contains(MN.ToLower()));
             }
 
             switch (SortOrder)
@@ -85,6 +90,12 @@ namespace SmartEcoAPI.Controllers
                     break;
                 case "PollutionEnvironmentDesc":
                     monitoringPosts = monitoringPosts.OrderByDescending(k => k.PollutionEnvironment);
+                    break;
+                case "MN":
+                    monitoringPosts = monitoringPosts.OrderBy(k => k.MN);
+                    break;
+                case "MNDesc":
+                    monitoringPosts = monitoringPosts.OrderByDescending(k => k.MN);
                     break;
                 default:
                     monitoringPosts = monitoringPosts.OrderBy(m => m.Id);
@@ -205,7 +216,8 @@ namespace SmartEcoAPI.Controllers
         public async Task<ActionResult<IEnumerable<MonitoringPost>>> GetMonitoringPostsCount(int? Number,
             string Name,
             int? DataProviderId,
-            int? PollutionEnvironmentId)
+            int? PollutionEnvironmentId,
+            string MN)
         {
             var monitoringPosts = _context.MonitoringPost
                  .Where(m => true);
@@ -225,6 +237,10 @@ namespace SmartEcoAPI.Controllers
             if (PollutionEnvironmentId != null)
             {
                 monitoringPosts = monitoringPosts.Where(m => m.PollutionEnvironmentId == PollutionEnvironmentId);
+            }
+            if (!string.IsNullOrEmpty(MN))
+            {
+                monitoringPosts = monitoringPosts.Where(m => m.MN.ToLower().Contains(MN.ToLower()));
             }
 
             int count = await monitoringPosts.CountAsync();

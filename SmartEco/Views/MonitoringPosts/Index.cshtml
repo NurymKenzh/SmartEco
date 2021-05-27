@@ -16,10 +16,10 @@
 @if (Role == "admin" || Role == "moderator")
 {
     <p>
-        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
     </p>
 }
-@using (Html.BeginForm("Index", "MonitoringPosts", new { SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter }, FormMethod.Get))
+@using (Html.BeginForm("Index", "MonitoringPosts", new { SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter }, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
     @if (ViewBag.EndPage > 1)
@@ -29,11 +29,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
             }
 
@@ -41,7 +41,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
             }
 
@@ -49,11 +49,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
             }
         </ul>
@@ -63,13 +63,13 @@
             <tr>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().Number).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NumberSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NumberSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                     <br />
                     @Html.Editor("NumberFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().Name).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                     <br />
                     @Html.Editor("NameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
@@ -81,15 +81,21 @@
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().DataProviderId).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.DataProviderSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.DataProviderSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                     <br />
                     @Html.DropDownList("DataProviderIdFilter", (IEnumerable<SelectListItem>)ViewBag.DataProviders, "", htmlAttributes: new { @class = "form-control" })
                 </th>
                 <th>
                     @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().PollutionEnvironmentId).ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.PollutionEnvironmentSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.PollutionEnvironmentSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                     <br />
                     @Html.DropDownList("PollutionEnvironmentIdFilter", (IEnumerable<SelectListItem>)ViewBag.PollutionEnvironments, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().MN).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MNSort, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
+                    <br />
+                    @Html.Editor("MNFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
                     @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
@@ -119,18 +125,21 @@
                 <td>
                     @Html.DisplayFor(modelItem => item.PollutionEnvironment.Name)
                 </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.MN)
+                </td>
                 @if (Role == "admin" || Role == "moderator")
                 {
                     <td>
-                        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter }) |
-                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter }) |
-                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter }) |
+                        @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                     </td>
                 }
                 else
                 {
                     <td>
-                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                     </td>
                 }
             </tr>
@@ -144,11 +153,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
             }
 
@@ -156,7 +165,7 @@
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
                     @Html.ActionLink(page.ToString(), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
             }
 
@@ -164,11 +173,11 @@
             {
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
                 <li>
                     @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
-                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
                 </li>
             }
         </ul>

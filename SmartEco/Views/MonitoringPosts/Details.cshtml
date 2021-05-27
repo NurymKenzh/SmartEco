@@ -107,14 +107,14 @@
 @if (Role == "admin" || Role == "moderator")
 {
     <div>
-        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter }) |
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter }) |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
     </div>
 }
 else
 {
     <div>
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
     </div>
 }
 <div hidden="hidden">

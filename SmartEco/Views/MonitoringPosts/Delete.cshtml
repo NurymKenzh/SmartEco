@@ -106,8 +106,9 @@
             @Html.Editor("NameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
             @Html.Editor("DataProviderIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
             @Html.Editor("PollutionEnvironmentIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("MNFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
         </div>
         <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-danger" /> |
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter })
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
     </form>
 </div>
