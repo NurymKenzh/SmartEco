@@ -430,7 +430,8 @@ namespace GetPostsData
                                     MeasuredParameterId = m.MeasuredParameterId,
                                     DateTime = m.DateTime,
                                     Value = m.Value,
-                                    MonitoringPostId = 184
+                                    MonitoringPostId = 184,
+                                    Averaged = m.Averaged
                                 }));
                         }
                     }
@@ -447,7 +448,8 @@ namespace GetPostsData
                                     MeasuredParameterId = m.MeasuredParameterId,
                                     DateTime = m.DateTime,
                                     Value = m.Value,
-                                    MonitoringPostId = 193
+                                    MonitoringPostId = 193,
+                                    Averaged = m.Averaged
                                 }));
                         }
                     }
@@ -464,13 +466,15 @@ namespace GetPostsData
                                     MeasuredParameterId = m.MeasuredParameterId,
                                     DateTime = m.DateTime,
                                     Value = m.Value,
-                                    MonitoringPostId = 194
+                                    MonitoringPostId = 194,
+                                    Averaged = m.Averaged
                                 }));
                         }
                     }
 
                     foreach (MeasuredData measuredData in measuredDatas)
                     {
+                        string avg = measuredData.Averaged == null ? "NULL" : measuredData.Averaged.ToString();
                         string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
                             $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
                             $"make_timestamptz(" +
@@ -482,7 +486,7 @@ namespace GetPostsData
                                 $"{measuredData.DateTime?.Second.ToString()})," +
                             $"{measuredData.Value.ToString()}," +
                             $"{measuredData.MonitoringPostId.ToString()}," +
-                            $"{measuredData.Averaged.ToString()});";
+                            $"{avg});";
                         connection.Execute(execute);
                     }
                     connection.Close();
@@ -1079,7 +1083,7 @@ namespace GetPostsData
                         {
                             foreach (var postDistrict in postDistrictPairsRu)
                             {
-                                sw.WriteLine(postDistrict.Value);
+                                sw.WriteLine(postDistrict.Value.ToUpper());
                                 foreach (var data in measuredDatasWriteFile.Where(m => m.MonitoringPostId == postDistrict.Key))
                                 {
                                     var measuredParameter = measuredParameters.Where(m => m.Id == data.MeasuredParameterId).FirstOrDefault();
@@ -1104,8 +1108,8 @@ namespace GetPostsData
                                             level = pollutionLevelRu[4];
                                         }
 
-                                        sw.WriteLine(measuredParameter.NameRU);
-                                        sw.WriteLine(level);
+                                        sw.WriteLine(measuredParameter.NameRU.ToUpper());
+                                        sw.WriteLine(level.ToUpper());
                                     }
                                 }
                                 sw.WriteLine();
@@ -1113,7 +1117,7 @@ namespace GetPostsData
                             sw.WriteLine("-------------------------------------- \n");
                             foreach (var postDistrict in postDistrictPairsKk)
                             {
-                                sw.WriteLine(postDistrict.Value);
+                                sw.WriteLine(postDistrict.Value.ToUpper());
                                 foreach (var data in measuredDatasWriteFile.Where(m => m.MonitoringPostId == postDistrict.Key))
                                 {
                                     var measuredParameter = measuredParameters.Where(m => m.Id == data.MeasuredParameterId).FirstOrDefault();
@@ -1138,8 +1142,8 @@ namespace GetPostsData
                                             level = pollutionLevelKk[4];
                                         }
 
-                                        sw.WriteLine(measuredParameter.NameKK);
-                                        sw.WriteLine(level);
+                                        sw.WriteLine(measuredParameter.NameKK.ToUpper());
+                                        sw.WriteLine(level.ToUpper());
                                     }
                                 }
                                 sw.WriteLine();
