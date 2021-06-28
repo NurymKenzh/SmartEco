@@ -213,26 +213,25 @@ namespace SmartEcoAPI.Controllers
                 foreach (var monitoringPostId in MonitoringPostsId)
                 {
                     row++;
-                    var monitoringPost = _context.MonitoringPost
-                        .Where(m => m.Id == Convert.ToInt32(monitoringPostId))
-                        .ToList();
+                    var monitoringPost = await _context.MonitoringPost
+                        .FirstOrDefaultAsync(m => m.Id == Convert.ToInt32(monitoringPostId));
 
-                    worksheet.Cells[row, 1].Value = $"Станция № {monitoringPost[0].Number}";
+                    worksheet.Cells[row, 1].Value = $"Станция № {monitoringPost.Number}";
                     worksheet.Cells[row, 1].Style.Font.Bold = true;
                     worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
                     row++;
 
-                    worksheet.Cells[row, 1].Value = $"Название станции: {monitoringPost[0].Name}";
+                    worksheet.Cells[row, 1].Value = $"Название станции: {monitoringPost.Name}";
                     worksheet.Cells[row, 1].Style.Font.Bold = true;
                     worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
                     row++;
 
-                    worksheet.Cells[row, 1].Value = $"Место установки: {monitoringPost[0].AdditionalInformation}";
+                    worksheet.Cells[row, 1].Value = $"Место установки: {monitoringPost.AdditionalInformation}";
                     worksheet.Cells[row, 1].Style.Font.Bold = true;
                     worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
                     row++;
 
-                    worksheet.Cells[row, 1].Value = $"Координаты: {monitoringPost[0].NorthLatitude} с.ш. {monitoringPost[0].EastLongitude} в.д.";
+                    worksheet.Cells[row, 1].Value = $"Координаты: {monitoringPost.NorthLatitude} с.ш. {monitoringPost.EastLongitude} в.д.";
                     worksheet.Cells[row, 1].Style.Font.Bold = true;
                     worksheet.Cells[$"A{row}:D{row}"].Style.Border.Bottom.Style = OfficeOpenXml.Style.ExcelBorderStyle.Thin;
                     row++;
@@ -265,21 +264,16 @@ namespace SmartEcoAPI.Controllers
 
                     //Параметры, которые включены у постов
                     var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
-                        .Where(m => m.MonitoringPostId == monitoringPost[0].Id)
+                        .Where(m => m.MonitoringPostId == monitoringPost.Id)
                         .OrderBy (m => m.MeasuredParameter.NameRU)
                         .Include(m => m.MeasuredParameter)
                         .ToList();
                     foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
                     {
-                        var measuredDatasv = _context.MeasuredData
-                            .Where(m => m.MonitoringPostId == monitoringPost[0].Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId);
-                        measuredDatasv = measuredDatasv.Where(m => (m.DateTime != null && m.DateTime >= DateTimeFrom) ||
-                            (m.Year != null && m.Month == null && m.Year >= DateTimeFrom.Value.Year) ||
-                            (m.Year != null && m.Month != null && m.Year >= DateTimeFrom.Value.Year && m.Month >= DateTimeFrom.Value.Month));
-                        measuredDatasv = measuredDatasv.Where(m => (m.DateTime != null && m.DateTime <= DateTimeTo) ||
-                            (m.Year != null && m.Month == null && m.Year <= DateTimeTo.Value.Year) ||
-                            (m.Year != null && m.Month != null && m.Year <= DateTimeTo.Value.Year && m.Month <= DateTimeTo.Value.Month));
-                        var measuredDatas = measuredDatasv.ToList();
+                        var measuredDatas = _context.MeasuredData
+                            .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId
+                             && m.DateTime >= DateTimeFrom && m.DateTime <= DateTimeTo)
+                            .ToList();
                         measuredDatasTotal.AddRange(measuredDatas); //Запись данных в общий список
 
                         worksheet.Cells[row, 1].Value = $"{monitoringPostMeasuredParameter.MeasuredParameter.NameRU}";
