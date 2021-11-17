@@ -84,6 +84,8 @@ namespace GetPostsData
             public int MeasuredParameterId { get; set; }
             public string Min { get; set; }
             public string Max { get; set; }
+            public string MinMeasuredValue { get; set; }
+            public string MaxMeasuredValue { get; set; }
             public string Coefficient { get; set; }
         }
         static void Main(string[] args)
@@ -118,7 +120,7 @@ namespace GetPostsData
                     monitoringPosts = monitoringPostsv.ToList();
 
                     var monitoringPostMeasuredParametersv = connection.Query<MonitoringPostMeasuredParameter>(
-                            $"SELECT \"MonitoringPostId\", \"MeasuredParameterId\", \"Coefficient\"" +
+                            $"SELECT \"MonitoringPostId\", \"MeasuredParameterId\", \"Coefficient\", \"MinMeasuredValue\", \"MaxMeasuredValue\"" +
                             $"FROM public.\"MonitoringPostMeasuredParameters\"");
                     monitoringPostMeasuredParameters = monitoringPostMeasuredParametersv.ToList();
                 }
@@ -142,9 +144,11 @@ namespace GetPostsData
                             {
                                 int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
                                     MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
-                                var checkPost = monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId).ToList();
-                                var coef = (checkPost.Count != 0) ? monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Coefficient : null;
-                                if (MeasuredParameterId != null && MonitoringPostId != null)
+                                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
+                                var coef = checkPost != null ? checkPost.Coefficient : null;
+                                var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+
+                                if (MeasuredParameterId != null && MonitoringPostId != null && (checkPost == null || string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
                                 {
                                     try
                                     {
@@ -165,7 +169,7 @@ namespace GetPostsData
                                                 DateTime = postData.DateTimeServer,
                                                 MeasuredParameterId = (int)MeasuredParameterId,
                                                 MonitoringPostId = (int)MonitoringPostId,
-                                                Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]) * Convert.ToDecimal(coef)
+                                                Value = measuredValue * Convert.ToDecimal(coef)
                                             });
                                         }
                                         else
@@ -176,7 +180,7 @@ namespace GetPostsData
                                                 DateTime = postData.DateTimeServer,
                                                 MeasuredParameterId = (int)MeasuredParameterId,
                                                 MonitoringPostId = (int)MonitoringPostId,
-                                                Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0])
+                                                Value = measuredValue
                                             });
                                         }
                                     }
@@ -191,7 +195,7 @@ namespace GetPostsData
                     }
                     catch (Exception ex)
                     {
-
+                        NewLog($"Error get Data from PostsData: {ex.Message}");
                     }
                     NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
                         $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
@@ -254,9 +258,11 @@ namespace GetPostsData
                             {
                                 int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
                                     MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
-                                var checkPost = monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId).ToList();
-                                var coef = (checkPost.Count != 0) ? monitoringPostMeasuredParameters.Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Coefficient : null;
-                                if (MeasuredParameterId != null && MonitoringPostId != null)
+                                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
+                                var coef = checkPost != null ? checkPost.Coefficient : null;
+                                var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+
+                                if (MeasuredParameterId != null && MonitoringPostId != null && (checkPost == null || string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
                                 {
                                     try
                                     {
@@ -278,7 +284,7 @@ namespace GetPostsData
                                                 DateTime = postData.DateTimeServer,
                                                 MeasuredParameterId = (int)MeasuredParameterId,
                                                 MonitoringPostId = (int)MonitoringPostId,
-                                                Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]) * Convert.ToDecimal(coef)
+                                                Value = measuredValue * Convert.ToDecimal(coef)
                                             });
                                         }
                                         else
@@ -290,7 +296,7 @@ namespace GetPostsData
                                                 DateTime = postData.DateTimeServer,
                                                 MeasuredParameterId = (int)MeasuredParameterId,
                                                 MonitoringPostId = (int)MonitoringPostId,
-                                                Value = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0])
+                                                Value = measuredValue
                                             });
                                         }
                                     }
@@ -308,7 +314,7 @@ namespace GetPostsData
                     }
                     catch (Exception ex)
                     {
-
+                        NewLog($"Error get Data from PostsData (Averaged): {ex.Message}");
                     }
                     NewLog($"Average. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
                     $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
