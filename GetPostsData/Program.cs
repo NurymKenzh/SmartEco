@@ -146,9 +146,8 @@ namespace GetPostsData
                                     MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
                                 var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
                                 var coef = checkPost != null ? checkPost.Coefficient : null;
-                                var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
 
-                                if (MeasuredParameterId != null && MonitoringPostId != null && (checkPost == null || string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                                if (MeasuredParameterId != null && MonitoringPostId != null)
                                 {
                                     try
                                     {
@@ -161,27 +160,32 @@ namespace GetPostsData
                                         {
                                             adequateDateTimePost = false;
                                         }
-                                        if (coef != null)
+
+                                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                                        if (checkPost == null || string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue)
                                         {
-                                            measuredDatas.Add(new MeasuredData()
+                                            if (coef != null)
                                             {
-                                                //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                DateTime = postData.DateTimeServer,
-                                                MeasuredParameterId = (int)MeasuredParameterId,
-                                                MonitoringPostId = (int)MonitoringPostId,
-                                                Value = measuredValue * Convert.ToDecimal(coef)
-                                            });
-                                        }
-                                        else
-                                        {
-                                            measuredDatas.Add(new MeasuredData()
+                                                measuredDatas.Add(new MeasuredData()
+                                                {
+                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                                    DateTime = postData.DateTimeServer,
+                                                    MeasuredParameterId = (int)MeasuredParameterId,
+                                                    MonitoringPostId = (int)MonitoringPostId,
+                                                    Value = measuredValue * Convert.ToDecimal(coef)
+                                                });
+                                            }
+                                            else
                                             {
-                                                //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                DateTime = postData.DateTimeServer,
-                                                MeasuredParameterId = (int)MeasuredParameterId,
-                                                MonitoringPostId = (int)MonitoringPostId,
-                                                Value = measuredValue
-                                            });
+                                                measuredDatas.Add(new MeasuredData()
+                                                {
+                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                                    DateTime = postData.DateTimeServer,
+                                                    MeasuredParameterId = (int)MeasuredParameterId,
+                                                    MonitoringPostId = (int)MonitoringPostId,
+                                                    Value = measuredValue
+                                                });
+                                            }
                                         }
                                     }
                                     catch (Exception ex)
@@ -195,7 +199,7 @@ namespace GetPostsData
                     }
                     catch (Exception ex)
                     {
-                        NewLog($"Error get Data from PostsData: {ex.Message}");
+                        
                     }
                     NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
                         $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
@@ -260,9 +264,8 @@ namespace GetPostsData
                                     MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
                                 var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
                                 var coef = checkPost != null ? checkPost.Coefficient : null;
-                                var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
 
-                                if (MeasuredParameterId != null && MonitoringPostId != null && (checkPost == null || string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                                if (MeasuredParameterId != null && MonitoringPostId != null)
                                 {
                                     try
                                     {
@@ -275,29 +278,34 @@ namespace GetPostsData
                                         {
                                             adequateDateTimePost = false;
                                         }
-                                        if (coef != null)
+
+                                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                                        if (checkPost == null || string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue)
                                         {
-                                            measuredDatas.Add(new MeasuredData()
+                                            if (coef != null)
                                             {
-                                                Id = postData.Id,
-                                                //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                DateTime = postData.DateTimeServer,
-                                                MeasuredParameterId = (int)MeasuredParameterId,
-                                                MonitoringPostId = (int)MonitoringPostId,
-                                                Value = measuredValue * Convert.ToDecimal(coef)
-                                            });
-                                        }
-                                        else
-                                        {
-                                            measuredDatas.Add(new MeasuredData()
+                                                measuredDatas.Add(new MeasuredData()
+                                                {
+                                                    Id = postData.Id,
+                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                                    DateTime = postData.DateTimeServer,
+                                                    MeasuredParameterId = (int)MeasuredParameterId,
+                                                    MonitoringPostId = (int)MonitoringPostId,
+                                                    Value = measuredValue * Convert.ToDecimal(coef)
+                                                });
+                                            }
+                                            else
                                             {
-                                                Id = postData.Id,
-                                                //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                DateTime = postData.DateTimeServer,
-                                                MeasuredParameterId = (int)MeasuredParameterId,
-                                                MonitoringPostId = (int)MonitoringPostId,
-                                                Value = measuredValue
-                                            });
+                                                measuredDatas.Add(new MeasuredData()
+                                                {
+                                                    Id = postData.Id,
+                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                                                    DateTime = postData.DateTimeServer,
+                                                    MeasuredParameterId = (int)MeasuredParameterId,
+                                                    MonitoringPostId = (int)MonitoringPostId,
+                                                    Value = measuredValue
+                                                });
+                                            }
                                         }
                                     }
                                     catch (Exception ex)
@@ -314,7 +322,7 @@ namespace GetPostsData
                     }
                     catch (Exception ex)
                     {
-                        NewLog($"Error get Data from PostsData (Averaged): {ex.Message}");
+                        
                     }
                     NewLog($"Average. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
                     $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
