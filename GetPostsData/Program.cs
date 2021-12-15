@@ -162,7 +162,7 @@ namespace GetPostsData
                                         }
 
                                         var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
-                                        if (checkPost == null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
                                         {
                                             if (coef != null)
                                             {
@@ -280,7 +280,7 @@ namespace GetPostsData
                                         }
 
                                         var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
-                                        if (checkPost == null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
                                         {
                                             if (coef != null)
                                             {
