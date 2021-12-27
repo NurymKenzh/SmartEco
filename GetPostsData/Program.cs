@@ -105,390 +105,481 @@ namespace GetPostsData
                 List<MeasuredData> measuredDatasWriteFile = new List<MeasuredData>();
                 List<Person> persons = new List<Person>();
 
-                // Get MeasuredParameters, MonitoringPosts, MonitoringPostMeasuredParameter
-                using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                {
-                    connection.Open();
-                    var measuredParametersv = connection.Query<MeasuredParameter>(
-                        $"SELECT \"Id\", \"OceanusCode\"" +
-                        $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null;");
-                    measuredParameters = measuredParametersv.ToList();
+                //// Get MeasuredParameters, MonitoringPosts, MonitoringPostMeasuredParameter
+                //using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //{
+                //    connection.Open();
+                //    var measuredParametersv = connection.Query<MeasuredParameter>(
+                //        $"SELECT \"Id\", \"OceanusCode\"" +
+                //        $"FROM public.\"MeasuredParameter\" WHERE \"OceanusCode\" <> '' and \"OceanusCode\" is not null;");
+                //    measuredParameters = measuredParametersv.ToList();
 
-                    var monitoringPostsv = connection.Query<MonitoringPost>(
-                        $"SELECT \"Id\", \"MN\"" +
-                        $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
-                    monitoringPosts = monitoringPostsv.ToList();
+                //    var monitoringPostsv = connection.Query<MonitoringPost>(
+                //        $"SELECT \"Id\", \"MN\"" +
+                //        $"FROM public.\"MonitoringPost\" WHERE \"MN\" <> '' and \"MN\" is not null;");
+                //    monitoringPosts = monitoringPostsv.ToList();
 
-                    var monitoringPostMeasuredParametersv = connection.Query<MonitoringPostMeasuredParameter>(
-                            $"SELECT \"MonitoringPostId\", \"MeasuredParameterId\", \"Coefficient\", \"MinMeasuredValue\", \"MaxMeasuredValue\"" +
-                            $"FROM public.\"MonitoringPostMeasuredParameters\"");
-                    monitoringPostMeasuredParameters = monitoringPostMeasuredParametersv.ToList();
-                }
+                //    var monitoringPostMeasuredParametersv = connection.Query<MonitoringPostMeasuredParameter>(
+                //            $"SELECT \"MonitoringPostId\", \"MeasuredParameterId\", \"Coefficient\", \"MinMeasuredValue\", \"MaxMeasuredValue\"" +
+                //            $"FROM public.\"MonitoringPostMeasuredParameters\"");
+                //    monitoringPostMeasuredParameters = monitoringPostMeasuredParametersv.ToList();
+                //}
 
-                // Copy data
-                // Get Data from PostsData
-                NewLog("Get. Get Data from PostsData started");
-                int postDatasCount = 0;
-                using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                {
-                    List<MeasuredData> measuredDatas = new List<MeasuredData>();
-                    connection.Open();
-                    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
-                    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;", commandTimeout: 86400);
-                    postDatasCount = postDatas.Count();
-                    try
-                    {
-                        foreach (PostData postData in postDatas)
-                        {
-                            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
-                            {
-                                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
-                                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
-                                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
-                                var coef = checkPost != null ? checkPost.Coefficient : null;
+                //// Copy data
+                //// Get Data from PostsData
+                //NewLog("Get. Get Data from PostsData started");
+                //int postDatasCount = 0;
+                //using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //{
+                //    List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                //    connection.Open();
+                //    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
+                //    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //    postDatasCount = postDatas.Count();
+                //    try
+                //    {
+                //        foreach (PostData postData in postDatas)
+                //        {
+                //            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
+                //            {
+                //                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
+                //                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
+                //                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
+                //                var coef = checkPost != null ? checkPost.Coefficient : null;
 
-                                if (MeasuredParameterId != null && MonitoringPostId != null)
-                                {
-                                    try
-                                    {
-                                        bool adequateDateTimePost = true;
-                                        if (postData.DateTimePost == null)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
-                                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
+                //                if (MeasuredParameterId != null && MonitoringPostId != null)
+                //                {
+                //                    try
+                //                    {
+                //                        bool adequateDateTimePost = true;
+                //                        if (postData.DateTimePost == null)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
+                //                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
 
-                                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
-                                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
-                                        {
-                                            if (coef != null)
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue * Convert.ToDecimal(coef)
-                                                });
-                                            }
-                                            else
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue
-                                                });
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
+                //                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                //                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                //                        {
+                //                            if (coef != null)
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue * Convert.ToDecimal(coef)
+                //                                });
+                //                            }
+                //                            else
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    catch (Exception ex)
+                //                    {
 
-                                    }
+                //                    }
 
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+                //                }
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
                         
-                    }
-                    NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
-                        $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
-                    NewLog($"Get. Insert data to MeasuredDatas started");
-                    // Insert MeasuredDatas into SmartEcoAPI
-                    try
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            foreach (MeasuredData measuredData in measuredDatas)
-                            {
-                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
-                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                    $"make_timestamptz(" +
-                                        $"{measuredData.DateTime?.Year.ToString()}, " +
-                                        $"{measuredData.DateTime?.Month.ToString()}, " +
-                                        $"{measuredData.DateTime?.Day.ToString()}, " +
-                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                        $"{measuredData.DateTime?.Second.ToString()})," +
-                                    $"{measuredData.Value.ToString()}," +
-                                    $"{measuredData.MonitoringPostId.ToString()});";
-                                connection2.Execute(execute);
-                            }
-                        }
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;", commandTimeout: 86400);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;", commandTimeout: 86400);
-                        }
-                    }
-                    NewLog($"Get. Insert data to MeasuredDatas finished");
-                }
-                //=================================================================================================================================================================
-                // Average data
-                // Get Data from PostsData
-                NewLog($"Average. Get Data from PostsData started");
-                List<MeasuredData> measuredDatasAveraged = new List<MeasuredData>();
-                using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                {
-                    List<MeasuredData> measuredDatas = new List<MeasuredData>();
-                    connection.Open();
-                    connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = false WHERE \"Averaged\" is null;", commandTimeout: 86400);
-                    var postDatas = connection.Query<PostData>("SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Averaged\" FROM public.\"Data\" WHERE \"Averaged\" = false;");
-                    postDatasCount = postDatas.Count();
-                    try
-                    {
-                        foreach (PostData postData in postDatas)
-                        {
-                            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
-                            {
-                                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
-                                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
-                                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
-                                var coef = checkPost != null ? checkPost.Coefficient : null;
+                //    }
+                //    NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                //        $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
+                //    NewLog($"Get. Insert data to MeasuredDatas started");
+                //    // Insert MeasuredDatas into SmartEcoAPI
+                //    try
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            foreach (MeasuredData measuredData in measuredDatas)
+                //            {
+                //                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
+                //                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                //                    $"make_timestamptz(" +
+                //                        $"{measuredData.DateTime?.Year.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Month.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Day.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Hour.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Minute.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Second.ToString()})," +
+                //                    $"{measuredData.Value.ToString()}," +
+                //                    $"{measuredData.MonitoringPostId.ToString()});";
+                //                connection2.Execute(execute);
+                //            }
+                //        }
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //        }
+                //    }
+                //    NewLog($"Get. Insert data to MeasuredDatas finished");
+                //}
+                ////=================================================================================================================================================================
+                //// Average data
+                //// Get Data from PostsData
+                //NewLog($"Average. Get Data from PostsData started");
+                //List<MeasuredData> measuredDatasAveraged = new List<MeasuredData>();
+                //using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //{
+                //    List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                //    connection.Open();
+                //    connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = false WHERE \"Averaged\" is null;", commandTimeout: 86400);
+                //    var postDatas = connection.Query<PostData>("SELECT \"Id\", \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Averaged\" FROM public.\"Data\" WHERE \"Averaged\" = false;");
+                //    postDatasCount = postDatas.Count();
+                //    try
+                //    {
+                //        foreach (PostData postData in postDatas)
+                //        {
+                //            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
+                //            {
+                //                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
+                //                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
+                //                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
+                //                var coef = checkPost != null ? checkPost.Coefficient : null;
 
-                                if (MeasuredParameterId != null && MonitoringPostId != null)
-                                {
-                                    try
-                                    {
-                                        bool adequateDateTimePost = true;
-                                        if (postData.DateTimePost == null)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
-                                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
+                //                if (MeasuredParameterId != null && MonitoringPostId != null)
+                //                {
+                //                    try
+                //                    {
+                //                        bool adequateDateTimePost = true;
+                //                        if (postData.DateTimePost == null)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
+                //                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
 
-                                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
-                                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
-                                        {
-                                            if (coef != null)
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    Id = postData.Id,
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue * Convert.ToDecimal(coef)
-                                                });
-                                            }
-                                            else
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    Id = postData.Id,
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue
-                                                });
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
+                //                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                //                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                //                        {
+                //                            if (coef != null)
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    Id = postData.Id,
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue * Convert.ToDecimal(coef)
+                //                                });
+                //                            }
+                //                            else
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    Id = postData.Id,
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    catch (Exception ex)
+                //                    {
 
-                                    }
-                                }
-                                else
-                                {
+                //                    }
+                //                }
+                //                else
+                //                {
 
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+                //                }
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
                         
-                    }
-                    NewLog($"Average. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
-                    $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
-                    NewLog($"Average. Average data started");
-                    // Average data
-                    List<long> averagedPostsDatas = new List<long>();
-                    if (measuredDatas.Count() > 0)
-                    {
-                        DateTime? dateTimeMin = measuredDatas.Min(m => m.DateTime),
-                        dateTimeMax = measuredDatas.Max(m => m.DateTime);
-                        dateTimeMax = dateTimeMax.Value.AddSeconds(-dateTimeMax.Value.Second);
-                        while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMax.Value.Minute))
-                        {
-                            dateTimeMax = dateTimeMax.Value.AddMinutes(-1);
-                        }
-                        dateTimeMin = dateTimeMin.Value.AddSeconds(-dateTimeMin.Value.Second);
-                        while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMin.Value.Minute))
-                        {
-                            dateTimeMin = dateTimeMin.Value.AddMinutes(-1);
-                        }
-                        for (DateTime dateTimeStart = dateTimeMin.Value; dateTimeStart < dateTimeMax.Value; dateTimeStart = dateTimeStart.AddMinutes(20))
-                        {
-                            DateTime dateTimeFinish = dateTimeStart.AddMinutes(20);
-                            List<MeasuredData> measuredDatasCurrentAll = measuredDatas.Where(m => m.DateTime.Value > dateTimeStart && m.DateTime.Value <= dateTimeFinish).ToList();
-                            foreach (MonitoringPost monitoringPost in monitoringPosts)
-                            {
-                                foreach (MeasuredParameter measuredParameter in measuredParameters)
-                                {
-                                    List<MeasuredData> measuredDatasCurrent = measuredDatasCurrentAll
-                                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id)
-                                        .ToList();
-                                    if (measuredDatasCurrent.Count() > 0)
-                                    {
-                                        measuredDatasAveraged.Add(new MeasuredData()
-                                        {
-                                            DateTime = dateTimeFinish,
-                                            MeasuredParameterId = measuredParameter.Id,
-                                            MonitoringPostId = monitoringPost.Id,
-                                            Value = measuredDatasCurrent.Average(m => m.Value),
-                                            Averaged = true
-                                        });
-                                        averagedPostsDatas.AddRange(measuredDatasCurrent.Select(m => m.Id));
-                                    }
-                                }
-                            }
-                        }
-                    }
-                    averagedPostsDatas = averagedPostsDatas.Distinct().ToList();
-                    NewLog($"Average. Average data finished. Average data count: {measuredDatasAveraged.Count().ToString()}. " +
-                        $"From {measuredDatasAveraged.Min(m => m.DateTime).ToString()} to {measuredDatasAveraged.Max(m => m.DateTime).ToString()}.");
-                    NewLog($"Average. Insert data to MeasuredDatas started");
-                    // Insert measuredDatasAveraged into SmartEcoAPI
-                    try
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            foreach (MeasuredData measuredData in measuredDatasAveraged)
-                            {
-                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
-                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                    $"make_timestamptz(" +
-                                        $"{measuredData.DateTime?.Year.ToString()}, " +
-                                        $"{measuredData.DateTime?.Month.ToString()}, " +
-                                        $"{measuredData.DateTime?.Day.ToString()}, " +
-                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                        $"{measuredData.DateTime?.Second.ToString()})," +
-                                    $"{measuredData.Value.ToString()}," +
-                                    $"{measuredData.MonitoringPostId.ToString()}," +
-                                    $"{measuredData.Averaged.ToString()});";
-                                connection2.Execute(execute);
-                            }
-                        }
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            //connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Averaged\" = false;");
-                            foreach (long id in averagedPostsDatas)
-                            {
-                                connection2.Execute($"UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Id\" = {id.ToString()};");
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            connection2.Execute("UPDATE public.\"Data\" SET \"Averaged\" = null WHERE \"Averaged\" = false;", commandTimeout: 86400);
-                        }
-                    }
-                    NewLog($"Average. Insert data to MeasuredDatas finished");
-                }
+                //    }
+                //    NewLog($"Average. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                //    $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
+                //    NewLog($"Average. Average data started");
+                //    // Average data
+                //    List<long> averagedPostsDatas = new List<long>();
+                //    if (measuredDatas.Count() > 0)
+                //    {
+                //        DateTime? dateTimeMin = measuredDatas.Min(m => m.DateTime),
+                //        dateTimeMax = measuredDatas.Max(m => m.DateTime);
+                //        dateTimeMax = dateTimeMax.Value.AddSeconds(-dateTimeMax.Value.Second);
+                //        while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMax.Value.Minute))
+                //        {
+                //            dateTimeMax = dateTimeMax.Value.AddMinutes(-1);
+                //        }
+                //        dateTimeMin = dateTimeMin.Value.AddSeconds(-dateTimeMin.Value.Second);
+                //        while (!(new int[] { 0, 20, 40 }).Contains(dateTimeMin.Value.Minute))
+                //        {
+                //            dateTimeMin = dateTimeMin.Value.AddMinutes(-1);
+                //        }
+                //        for (DateTime dateTimeStart = dateTimeMin.Value; dateTimeStart < dateTimeMax.Value; dateTimeStart = dateTimeStart.AddMinutes(20))
+                //        {
+                //            DateTime dateTimeFinish = dateTimeStart.AddMinutes(20);
+                //            List<MeasuredData> measuredDatasCurrentAll = measuredDatas.Where(m => m.DateTime.Value > dateTimeStart && m.DateTime.Value <= dateTimeFinish).ToList();
+                //            foreach (MonitoringPost monitoringPost in monitoringPosts)
+                //            {
+                //                foreach (MeasuredParameter measuredParameter in measuredParameters)
+                //                {
+                //                    List<MeasuredData> measuredDatasCurrent = measuredDatasCurrentAll
+                //                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id)
+                //                        .ToList();
+                //                    if (measuredDatasCurrent.Count() > 0)
+                //                    {
+                //                        measuredDatasAveraged.Add(new MeasuredData()
+                //                        {
+                //                            DateTime = dateTimeFinish,
+                //                            MeasuredParameterId = measuredParameter.Id,
+                //                            MonitoringPostId = monitoringPost.Id,
+                //                            Value = measuredDatasCurrent.Average(m => m.Value),
+                //                            Averaged = true
+                //                        });
+                //                        averagedPostsDatas.AddRange(measuredDatasCurrent.Select(m => m.Id));
+                //                    }
+                //                }
+                //            }
+                //        }
+                //    }
+                //    averagedPostsDatas = averagedPostsDatas.Distinct().ToList();
+                //    NewLog($"Average. Average data finished. Average data count: {measuredDatasAveraged.Count().ToString()}. " +
+                //        $"From {measuredDatasAveraged.Min(m => m.DateTime).ToString()} to {measuredDatasAveraged.Max(m => m.DateTime).ToString()}.");
+                //    NewLog($"Average. Insert data to MeasuredDatas started");
+                //    // Insert measuredDatasAveraged into SmartEcoAPI
+                //    try
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            foreach (MeasuredData measuredData in measuredDatasAveraged)
+                //            {
+                //                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
+                //                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                //                    $"make_timestamptz(" +
+                //                        $"{measuredData.DateTime?.Year.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Month.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Day.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Hour.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Minute.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Second.ToString()})," +
+                //                    $"{measuredData.Value.ToString()}," +
+                //                    $"{measuredData.MonitoringPostId.ToString()}," +
+                //                    $"{measuredData.Averaged.ToString()});";
+                //                connection2.Execute(execute);
+                //            }
+                //        }
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            //connection.Execute("UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Averaged\" = false;");
+                //            foreach (long id in averagedPostsDatas)
+                //            {
+                //                connection2.Execute($"UPDATE public.\"Data\" SET \"Averaged\" = true WHERE \"Id\" = {id.ToString()};");
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            connection2.Execute("UPDATE public.\"Data\" SET \"Averaged\" = null WHERE \"Averaged\" = false;", commandTimeout: 86400);
+                //        }
+                //    }
+                //    NewLog($"Average. Insert data to MeasuredDatas finished");
+                //}
+                ////=================================================================================================================================================================
+                //// Insert data to inactive posts
+                //using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //{
+                //    List<MeasuredData> measuredDatasDB = new List<MeasuredData>();
+                //    List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                //    connection.Open();
+                //    var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\" " +
+                //            $"FROM public.\"MeasuredData\" " +
+                //            $"WHERE \"DateTime\" > '{DateTime.Now.AddMinutes(-20).ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null AND " +
+                //            $"\"MonitoringPostId\" IN ('184', '185', '168', '169', '193', '194') AND \"Averaged\" = 'true' " +
+                //            $"ORDER BY \"DateTime\"", commandTimeout: 86400);
+                //    measuredDatasDB = measuredDatasv.ToList();
+
+                //    //Check post Balhash-002
+                //    if (measuredDatasDB.Where(m => m.MonitoringPostId == 184).Count() == 0)
+                //    {
+                //        //Copy data from Balhash-003
+                //        if (measuredDatasDB.Where(m => m.MonitoringPostId == 185).Count() != 0)
+                //        {
+                //            measuredDatas.AddRange(measuredDatasDB
+                //                .Where(m => m.MonitoringPostId == 185)
+                //                .Select(m => new MeasuredData
+                //                {
+                //                    MeasuredParameterId = m.MeasuredParameterId,
+                //                    DateTime = m.DateTime,
+                //                    Value = m.Value,
+                //                    MonitoringPostId = 184,
+                //                    Averaged = m.Averaged
+                //                }));
+                //        }
+                //    }
+                //    //Check post Temir-009
+                //    if (measuredDatasDB.Where(m => m.MonitoringPostId == 193).Count() == 0)
+                //    {
+                //        //Copy data from Temir-007
+                //        if (measuredDatasDB.Where(m => m.MonitoringPostId == 168).Count() != 0)
+                //        {
+                //            measuredDatas.AddRange(measuredDatasDB
+                //                .Where(m => m.MonitoringPostId == 168)
+                //                .Select(m => new MeasuredData
+                //                {
+                //                    MeasuredParameterId = m.MeasuredParameterId,
+                //                    DateTime = m.DateTime,
+                //                    Value = m.Value,
+                //                    MonitoringPostId = 193,
+                //                    Averaged = m.Averaged
+                //                }));
+                //        }
+                //    }
+                //    //Check post Temir-010
+                //    if (measuredDatasDB.Where(m => m.MonitoringPostId == 194).Count() == 0)
+                //    {
+                //        //Copy data from Temir-008
+                //        if (measuredDatasDB.Where(m => m.MonitoringPostId == 169).Count() != 0)
+                //        {
+                //            measuredDatas.AddRange(measuredDatasDB
+                //                .Where(m => m.MonitoringPostId == 169)
+                //                .Select(m => new MeasuredData
+                //                {
+                //                    MeasuredParameterId = m.MeasuredParameterId,
+                //                    DateTime = m.DateTime,
+                //                    Value = m.Value,
+                //                    MonitoringPostId = 194,
+                //                    Averaged = m.Averaged
+                //                }));
+                //        }
+                //    }
+
+                //    foreach (MeasuredData measuredData in measuredDatas)
+                //    {
+                //        string avg = measuredData.Averaged == null ? "NULL" : measuredData.Averaged.ToString();
+                //        string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
+                //            $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                //            $"make_timestamptz(" +
+                //                $"{measuredData.DateTime?.Year.ToString()}, " +
+                //                $"{measuredData.DateTime?.Month.ToString()}, " +
+                //                $"{measuredData.DateTime?.Day.ToString()}, " +
+                //                $"{measuredData.DateTime?.Hour.ToString()}, " +
+                //                $"{measuredData.DateTime?.Minute.ToString()}, " +
+                //                $"{measuredData.DateTime?.Second.ToString()})," +
+                //            $"{measuredData.Value.ToString()}," +
+                //            $"{measuredData.MonitoringPostId.ToString()}," +
+                //            $"{avg});";
+                //        connection.Execute(execute);
+                //    }
+                //    connection.Close();
+                //}
                 //=================================================================================================================================================================
-                // Insert data to inactive posts
+                // Insert "Lead" to Shymkent posts
                 using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                 {
                     List<MeasuredData> measuredDatasDB = new List<MeasuredData>();
                     List<MeasuredData> measuredDatas = new List<MeasuredData>();
                     connection.Open();
-                    var measuredDatasv = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\" " +
-                            $"FROM public.\"MeasuredData\" " +
-                            $"WHERE \"DateTime\" > '{DateTime.Now.AddMinutes(-20).ToString("yyyy-MM-dd HH:mm:ss")}' AND \"DateTime\" is not null AND " +
-                            $"\"MonitoringPostId\" IN ('184', '185', '168', '169', '193', '194') AND \"Averaged\" = 'true' " +
-                            $"ORDER BY \"DateTime\"", commandTimeout: 86400);
+
+                    //Get posts that selected "Lead"
+                    var MPMPs = connection.Query<MonitoringPostMeasuredParameter>($"SELECT * " +
+                            $"FROM public.\"MonitoringPostMeasuredParameters\" as mpmp " +
+                            $"INNER JOIN public.\"MonitoringPost\" as post ON mpmp.\"MonitoringPostId\" = post.\"Id\" " +
+                            $"INNER JOIN public.\"MeasuredParameter\" as param ON mpmp.\"MeasuredParameterId\" = param.\"Id\" " +
+                            $"WHERE post.\"Name\" LIKE 'Shym%' AND param.\"Id\" = 74", commandTimeout: 86400) // selected "Lead" - 74 id
+                        .ToList();
+
+                    //Get last data posts that selected "Lead" (data by "Lead")
+                    var measuredDataLead = connection.Query<MeasuredData>($"SELECT max(md.\"DateTime\") as \"DateTime\", md.\"MonitoringPostId\" " +
+                            $"FROM public.\"MeasuredData\" as md " +
+                            $"WHERE md.\"MonitoringPostId\" IN ({string.Join(", ", MPMPs.Select(m => m.MonitoringPostId))}) AND md.\"MeasuredParameterId\" = 74 AND md.\"Averaged\" = 'true' " +
+                            $"GROUP BY md.\"MonitoringPostId\"", commandTimeout: 86400)
+                        .ToList();
+
+                    var dateTime = measuredDataLead.Count != 0 ? (DateTime)measuredDataLead.Min(m => m.DateTime) : DateTime.Now.AddMinutes(-20);
+                    //Get last data posts
+                    var measuredDatasv = connection.Query<MeasuredData>($"SELECT md.\"Id\", md.\"MeasuredParameterId\", md.\"DateTime\", md.\"Value\", md.\"MonitoringPostId\", md.\"Averaged\" " +
+                            $"FROM public.\"MeasuredData\" as md " +
+                            $"WHERE md.\"DateTime\" > '{dateTime.ToString("yyyy-MM-dd HH:mm:ss")}' AND md.\"DateTime\" is not null AND " +
+                            $"md.\"MonitoringPostId\" IN ({string.Join(", ", MPMPs.Select(m => m.MonitoringPostId))}) AND md.\"Averaged\" = 'true' " +
+                            $"ORDER BY md.\"DateTime\"", commandTimeout: 86400);
                     measuredDatasDB = measuredDatasv.ToList();
 
-                    //Check post Balhash-002
-                    if (measuredDatasDB.Where(m => m.MonitoringPostId == 184).Count() == 0)
+                    foreach (var MPMP in MPMPs)
                     {
-                        //Copy data from Balhash-003
-                        if (measuredDatasDB.Where(m => m.MonitoringPostId == 185).Count() != 0)
+                        if (measuredDatasDB.Where(m => m.MonitoringPostId == MPMP.MonitoringPostId && m.MeasuredParameterId == 74 && m.DateTime > DateTime.Now.AddMinutes(-20)).FirstOrDefault() is null) //check "Lead" for the last datetime
                         {
-                            measuredDatas.AddRange(measuredDatasDB
-                                .Where(m => m.MonitoringPostId == 185)
-                                .Select(m => new MeasuredData
+                            if (measuredDatasDB.Where(m => m.MonitoringPostId == MPMP.MonitoringPostId && m.DateTime > DateTime.Now.AddMinutes(-20)).FirstOrDefault() != null) //checking whether the post is working
+                            {
+                                //Check if there is any data on the post in "Lead"
+                                var measuredDataPost = measuredDatasDB.Where(m => m.MonitoringPostId == MPMP.MonitoringPostId && m.MeasuredParameterId == 74).FirstOrDefault();
+                                if (measuredDataPost is null)
                                 {
-                                    MeasuredParameterId = m.MeasuredParameterId,
-                                    DateTime = m.DateTime,
-                                    Value = m.Value,
-                                    MonitoringPostId = 184,
-                                    Averaged = m.Averaged
-                                }));
-                        }
-                    }
-                    //Check post Temir-009
-                    if (measuredDatasDB.Where(m => m.MonitoringPostId == 193).Count() == 0)
-                    {
-                        //Copy data from Temir-007
-                        if (measuredDatasDB.Where(m => m.MonitoringPostId == 168).Count() != 0)
-                        {
-                            measuredDatas.AddRange(measuredDatasDB
-                                .Where(m => m.MonitoringPostId == 168)
-                                .Select(m => new MeasuredData
+                                    measuredDatas.Add(new MeasuredData()
+                                    {
+                                        MeasuredParameterId = 74,
+                                        DateTime = measuredDatasDB.FirstOrDefault().DateTime,
+                                        Value = 0m,
+                                        MonitoringPostId = MPMP.MonitoringPostId,
+                                        Averaged = true
+                                    });
+                                }
+                                else
                                 {
-                                    MeasuredParameterId = m.MeasuredParameterId,
-                                    DateTime = m.DateTime,
-                                    Value = m.Value,
-                                    MonitoringPostId = 193,
-                                    Averaged = m.Averaged
-                                }));
-                        }
-                    }
-                    //Check post Temir-010
-                    if (measuredDatasDB.Where(m => m.MonitoringPostId == 194).Count() == 0)
-                    {
-                        //Copy data from Temir-008
-                        if (measuredDatasDB.Where(m => m.MonitoringPostId == 169).Count() != 0)
-                        {
-                            measuredDatas.AddRange(measuredDatasDB
-                                .Where(m => m.MonitoringPostId == 169)
-                                .Select(m => new MeasuredData
-                                {
-                                    MeasuredParameterId = m.MeasuredParameterId,
-                                    DateTime = m.DateTime,
-                                    Value = m.Value,
-                                    MonitoringPostId = 194,
-                                    Averaged = m.Averaged
-                                }));
+                                    var dates = measuredDatasDB
+                                        .Where(m => m.DateTime > measuredDataPost.DateTime)
+                                        .Select(m => m.DateTime)
+                                        .Distinct()
+                                        .ToList();
+
+                                    measuredDatas.AddRange(dates
+                                        .Select(date => new MeasuredData
+                                        {
+                                            MeasuredParameterId = 74,
+                                            DateTime = date,
+                                            Value = 0m,
+                                            MonitoringPostId = MPMP.MonitoringPostId,
+                                            Averaged = true
+                                        }));
+                                }
+                            }
                         }
                     }
 
                     foreach (MeasuredData measuredData in measuredDatas)
                     {
-                        string avg = measuredData.Averaged == null ? "NULL" : measuredData.Averaged.ToString();
                         string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\", \"Averaged\")" +
                             $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
                             $"make_timestamptz(" +
@@ -498,9 +589,9 @@ namespace GetPostsData
                                 $"{measuredData.DateTime?.Hour.ToString()}, " +
                                 $"{measuredData.DateTime?.Minute.ToString()}, " +
                                 $"{measuredData.DateTime?.Second.ToString()})," +
-                            $"{measuredData.Value.ToString()}," +
-                            $"{measuredData.MonitoringPostId.ToString()}," +
-                            $"{avg});";
+                            $"{measuredData.Value}," +
+                            $"{measuredData.MonitoringPostId}," +
+                            $"{measuredData.Averaged});";
                         connection.Execute(execute);
                     }
                     connection.Close();
@@ -1178,26 +1269,26 @@ namespace GetPostsData
 
         public static void NewLog(string Log)
         {
-            Console.WriteLine($"{DateTime.Now.ToString()} >> {Log}{Environment.NewLine}");
-            using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
-            {
-                connection.Open();
-                DateTime now = DateTime.Now;
-                string execute = $"INSERT INTO public.\"Log\"(" +
-                    $"\"Log\"," +
-                    $"\"DateTime\") " +
-                    $"VALUES ('{Log}'," +
-                    $"make_timestamptz(" +
-                        $"{now.Year.ToString()}, " +
-                        $"{now.Month.ToString()}, " +
-                        $"{now.Day.ToString()}, " +
-                        $"{now.Hour.ToString()}, " +
-                        $"{now.Minute.ToString()}, " +
-                        $"{now.Second.ToString()})" +
-                    $");";
-                connection.Execute(execute);
-                connection.Close();
-            }
+            //Console.WriteLine($"{DateTime.Now.ToString()} >> {Log}{Environment.NewLine}");
+            //using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
+            //{
+            //    connection.Open();
+            //    DateTime now = DateTime.Now;
+            //    string execute = $"INSERT INTO public.\"Log\"(" +
+            //        $"\"Log\"," +
+            //        $"\"DateTime\") " +
+            //        $"VALUES ('{Log}'," +
+            //        $"make_timestamptz(" +
+            //            $"{now.Year.ToString()}, " +
+            //            $"{now.Month.ToString()}, " +
+            //            $"{now.Day.ToString()}, " +
+            //            $"{now.Hour.ToString()}, " +
+            //            $"{now.Minute.ToString()}, " +
+            //            $"{now.Second.ToString()})" +
+            //        $");";
+            //    connection.Execute(execute);
+            //    connection.Close();
+            //}
         }
 
         public static async Task SendEmailAsync(List<Person> persons, string subject, string message)
