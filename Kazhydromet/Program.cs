@@ -86,9 +86,9 @@ namespace Kazhydromet
                         $"WHERE mp.\"Automatic\" = false AND mp.\"KazhydrometID\" is not null AND md.\"DateTime\" is not null " +
                         $"ORDER BY md.\"DateTime\" DESC " +
                         $"LIMIT 1;").FirstOrDefault();
-                        lastInsertHandPostsTime = lastDateHandPostsDB is null ? lastInsertAutoPostsTime : lastDateHandPostsDB.Value;
+                        lastInsertHandPostsTime = lastDateHandPostsDB is null ? lastInsertHandPostsTime : lastDateHandPostsDB.Value;
                     }
-
+                    
                     //Get Data Automatic Posts
                     if ((DateTime.Now - lastInsertAutoPostsTime) > new TimeSpan(0, 1, 0, 0))
                     {
@@ -166,7 +166,7 @@ namespace Kazhydromet
                     }
 
                     //Get Data Hands Posts
-                    if ((DateTime.Now - lastInsertHandPostsTime) > new TimeSpan(1, 0, 0, 0))
+                    if ((DateTime.Now - lastInsertHandPostsTime.AddDays(1)) > new TimeSpan(1, 0, 0, 0))   //add day, because there are data for the last day 
                     {
                         Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Kazhydromet Hands Posts started.{Environment.NewLine}");
 
