@@ -469,7 +469,7 @@
     <value>Type Station</value>
   </data>
   <data name="AssessmentAir" xml:space="preserve">
-    <value>The main impact factors and assessment of the current state and quality of atmospheric air in Almaty</value>
+    <value>The main impact factors and assessment of the current state and quality of atmospheric air</value>
   </data>
   <data name="AssessmentWater" xml:space="preserve">
     <value>Assessment of the current state and quality of water resources</value>
