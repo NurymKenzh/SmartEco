@@ -46,7 +46,7 @@ namespace Kazhydromet
         {
             Console.WriteLine("Program started!");
             DateTime lastInsertAutoPostsTime = new DateTime(2000, 1, 1);
-            DateTime lasInsertHandPostsTime = new DateTime(2000, 1, 1);
+            DateTime lastInsertHandPostsTime = new DateTime(2000, 1, 1);
             while (true)
             {
                 List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
@@ -59,14 +59,34 @@ namespace Kazhydromet
                         connection.Open();
 
                         var monitoringPostsv = connection.Query<MonitoringPost>(
-                            $"SELECT \"Id\", \"Name\", \"KazhydrometID\", \"Automatic\"" +
-                            $"FROM public.\"MonitoringPost\" WHERE \"DataProviderId\" = 1 and \"ProjectId\" = 3 and \"PollutionEnvironmentId\" = 2");
+                            $"SELECT \"Id\", \"Name\", \"KazhydrometID\", \"Automatic\" " +
+                            $"FROM public.\"MonitoringPost\" " +
+                            $"WHERE \"DataProviderId\" = 1 AND \"ProjectId\" IN (1, 3, 4) AND \"PollutionEnvironmentId\" = 2 AND \"KazhydrometID\" is not null");
                         monitoringPosts = monitoringPostsv.ToList();
 
                         var measuredParametersv = connection.Query<MeasuredParameter>(
-                        $"SELECT \"Id\", \"NameRU\", \"KazhydrometCode\"" +
-                        $"FROM public.\"MeasuredParameter\" WHERE \"KazhydrometCode\" <> '' and \"KazhydrometCode\" is not null;");
+                        $"SELECT \"Id\", \"NameRU\", \"KazhydrometCode\" " +
+                        $"FROM public.\"MeasuredParameter\" " +
+                        $"WHERE \"KazhydrometCode\" <> '' and \"KazhydrometCode\" is not null;");
                         measuredParameters = measuredParametersv.ToList();
+
+                        var lastDateAutoPostsDB = connection.Query<DateTime?>(
+                        $"SELECT md.\"DateTime\" " +
+                        $"FROM public.\"MeasuredData\" md " +
+                        $"LEFT JOIN public.\"MonitoringPost\" mp ON mp.\"Id\" = md.\"MonitoringPostId\" " +
+                        $"WHERE mp.\"Automatic\" = true AND mp.\"KazhydrometID\" is not null AND md.\"DateTime\" is not null " +
+                        $"ORDER BY md.\"DateTime\" DESC " +
+                        $"LIMIT 1;").FirstOrDefault();
+                        lastInsertAutoPostsTime = lastDateAutoPostsDB is null ? lastInsertAutoPostsTime : lastDateAutoPostsDB.Value;
+
+                        var lastDateHandPostsDB = connection.Query<DateTime?>(
+                        $"SELECT md.\"DateTime\" " +
+                        $"FROM public.\"MeasuredData\" md " +
+                        $"LEFT JOIN public.\"MonitoringPost\" mp ON mp.\"Id\" = md.\"MonitoringPostId\" " +
+                        $"WHERE mp.\"Automatic\" = false AND mp.\"KazhydrometID\" is not null AND md.\"DateTime\" is not null " +
+                        $"ORDER BY md.\"DateTime\" DESC " +
+                        $"LIMIT 1;").FirstOrDefault();
+                        lastInsertHandPostsTime = lastDateHandPostsDB is null ? lastInsertAutoPostsTime : lastDateHandPostsDB.Value;
                     }
 
                     //Get Data Automatic Posts
@@ -84,17 +104,16 @@ namespace Kazhydromet
                             jsonString = reader.ReadToEnd();
                         }
                         dynamic datas = JArray.Parse(jsonString);
-                        //var monitoringPostsAuto = monitoringPostsAutoHand.Where(m => m.Type == "A");
 
                         foreach (dynamic data in datas)
                         {
                             int stationId = data.stationId;
                             string code = data.code;
-                            var monitoringPost = monitoringPosts.Where(m => m.KazhydrometID == stationId).ToList();
-                            if (monitoringPost.Count != 0)
+                            var monitoringPost = monitoringPosts.Where(m => m.KazhydrometID == stationId).FirstOrDefault();
+                            if (monitoringPost != null)
                             {
-                                var measuredParameter = measuredParameters.Where(m => m.KazhydrometCode == code).ToList();
-                                if (measuredParameter.Count != 0)
+                                var measuredParameter = measuredParameters.Where(m => m.KazhydrometCode == code).FirstOrDefault();
+                                if (measuredParameter != null)
                                 {
                                     var value = data.value != null ? Convert.ToDecimal(data.value) : null;
                                     DateTime date = Convert.ToDateTime(data.date);
@@ -102,8 +121,8 @@ namespace Kazhydromet
                                     measuredDatas.Add(new MeasuredData()
                                     {
                                         DateTime = date,
-                                        MeasuredParameterId = measuredParameter[0].Id,
-                                        MonitoringPostId = monitoringPost[0].Id,
+                                        MeasuredParameterId = measuredParameter.Id,
+                                        MonitoringPostId = monitoringPost.Id,
                                         Value = value,
                                         Averaged = true
                                     });
@@ -147,7 +166,7 @@ namespace Kazhydromet
                     }
 
                     //Get Data Hands Posts
-                    if ((DateTime.Now - lasInsertHandPostsTime) > new TimeSpan(1, 0, 0, 0))
+                    if ((DateTime.Now - lastInsertHandPostsTime) > new TimeSpan(1, 0, 0, 0))
                     {
                         Console.WriteLine($"{DateTime.Now.ToString()} >> Get Data from Kazhydromet Hands Posts started.{Environment.NewLine}");
 
@@ -170,8 +189,8 @@ namespace Kazhydromet
                             foreach (dynamic data in datasHand)
                             {
                                 string code = data.code;
-                                var measuredParameter = measuredParameters.Where(m => m.KazhydrometCode == code).ToList();
-                                if (measuredParameter.Count != 0)
+                                var measuredParameter = measuredParameters.Where(m => m.KazhydrometCode == code).FirstOrDefault();
+                                if (measuredParameter != null)
                                 {
                                     var value = data.value != null ? Convert.ToDecimal(data.value) : null;
                                     DateTime date = Convert.ToDateTime(data.date);
@@ -179,7 +198,7 @@ namespace Kazhydromet
                                     measuredDatas.Add(new MeasuredData()
                                     {
                                         DateTime = date,
-                                        MeasuredParameterId = measuredParameter[0].Id,
+                                        MeasuredParameterId = measuredParameter.Id,
                                         MonitoringPostId = monitoringPost.Id,
                                         Value = value,
                                         Averaged = true
@@ -220,7 +239,7 @@ namespace Kazhydromet
                         }
                         Console.WriteLine($"{DateTime.Now.ToString()} >> Insert Data from Hands Posts to MeasuredData finished.{Environment.NewLine}");
 
-                        lasInsertHandPostsTime = DateTime.Now;
+                        lastInsertHandPostsTime = DateTime.Now;
                     }
                 }
                 catch (Exception ex)
