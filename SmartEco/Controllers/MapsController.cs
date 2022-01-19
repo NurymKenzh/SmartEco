@@ -201,7 +201,7 @@ namespace SmartEco.Controllers
             double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 6).Value);
             ViewBag.MeasuredData = measuredDatas;
             ViewBag.Temperature = temperature;
-            ViewBag.SpeedWind = speedWind;
+            ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
             ViewBag.DirectionWind = directionWind;
 
             List<SelectListItem> pollutants = new List<SelectListItem>();
@@ -958,7 +958,7 @@ namespace SmartEco.Controllers
             double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
             ViewBag.MeasuredData = measuredDatas;
             ViewBag.Temperature = temperature;
-            ViewBag.SpeedWind = speedWind;
+            ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
             ViewBag.DirectionWind = directionWind;
 
             List<SelectListItem> pollutants = new List<SelectListItem>();
@@ -2144,29 +2144,34 @@ namespace SmartEco.Controllers
             float length)
         {
             int code = 0301;
-            if (pollutants == 12)
+            decimal pdk = 0.4m;
+
+            switch (pollutants)
             {
-                code = 0301;
-            }
-            if (pollutants == 13)
-            {
-                code = 0304;
-            }
-            if (pollutants == 16)
-            {
-                code = 0330;
-            }
-            if (pollutants == 17)
-            {
-                code = 0337;
-            }
-            if (pollutants == 3)
-            {
-                code = 0010;
-            }
-            if (pollutants == 2)
-            {
-                code = 0008;
+                case 12:
+                    code = 0301;
+                    pdk = 0.4m;
+                    break;
+                case 13:
+                    code = 0304;
+                    pdk = 0.085m;
+                    break;
+                case 16:
+                    code = 0330;
+                    pdk = 0.5m;
+                    break;
+                case 17:
+                    code = 0337;
+                    pdk = 5m;
+                    break;
+                case 3:
+                    code = 0010;
+                    pdk = 0.16m;
+                    break;
+                case 2:
+                    code = 0008;
+                    pdk = 0.3m;
+                    break;
             }
 
             string temperatureString = Convert.ToString(temperature, CultureInfo.InvariantCulture);
@@ -2270,11 +2275,12 @@ namespace SmartEco.Controllers
             string airPollutionSources = @"air_pollution_sources\"": [ ";
 
             //Old version UPRZA-kernel
+            //X и Y временно поменяны местами, чтобы было правильное отображение
             for (int i = 0; i < pollutantsValueString.Count; i++)
             {
                 airPollutionSources += @"{ \""id\"": " + i + @", \""is_organized\"": true, \""methodical\"": 1, \""background_relation\"": 3, " +
                     @"\""configuration\"": { \""type\"": 1, \""height\"": " + height[i] + @", \""diameter\"": " + diameter[i] + @", \""flow_temperature\"": " + flow_temperature[i] + @", \""flow_speed\"": " + flow_speed[i] + @", " +
-                    @"\""point_1\"": { \""x\"": " + longitude[i] + @", \""y\"": " + latitude[i] + @", \""z\"": 0 }, \""relief_coefficient\"": 1 }, \""emissions\"": [";
+                    @"\""point_1\"": { \""y\"": " + longitude[i] + @", \""x\"": " + latitude[i] + @", \""z\"": 0 }, \""relief_coefficient\"": 1 }, \""emissions\"": [";
                 airPollutionSources += @"{ \""pollutant_code\"": " + code + @", \""power\"": " + pollutantsValueString[i] + @", \""coefficient\"": 2 }";
                 airPollutionSources += " ] }";
                 if (i < pollutantsValueString.Count - 1)
@@ -2290,7 +2296,9 @@ namespace SmartEco.Controllers
                 @", \""background\"": { \""mode\"": 0 }, \""method\"": 1, \""contributor_count\"": " + pollutantsValueString.Count + @", \""use_summation_groups\"": false, \""";
             content += airPollutionSources;
             //content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
-            content += @"\""calculated_area\"": { \""rectangles\"": [{ \""id\"": 0, \""center_point\"": { \""y\"": 5376759.33, \""x\"": 8572343.29, \""z\"": 0 }, \""width\"": " + widthString + @", \""length\"": " + lengthString + @", \""height\"": 1, \""step_by_width\"": 100, \""step_by_length\"": 100 }], \""points\"": [], \""lines\"": [] }, \""buildings\"": []}";
+            //X и Y временно поменяны местами, чтобы было правильное отображение
+            content += @"\""calculated_area\"": { \""rectangles\"": [{ \""id\"": 0, \""center_point\"": { \""y\"": 8572343.29, \""x\"": 5376759.33, \""z\"": 0 }, \""width\"": " + widthString + @", \""length\"": " + lengthString + @", \""height\"": 1, \""step_by_width\"": 100, \""step_by_length\"": 100 }], \""points\"": [], \""lines\"": [] }, \""buildings\"": []," +
+                @" \""pollutants\"": [{\""code\"": " + code + @",\""pdk\"": " + Convert.ToString(pdk, CultureInfo.InvariantCulture) + "}]}";
 
             //New version UPRZA-kernel
             //content += "{ \"contributor_count\": 2, \"locality\": { \"square\": 682, \"stratification_coefficient\": 200, \"relief_coefficient\": 1 }, " +

@@ -3303,7 +3303,6 @@
             type: 'POST',
             success: function (data) {
                 var turfFeatureCollection = JSON.parse(data.answer);
-                console.log(turfFeatureCollection);
                 const minAndMax = turfFeatureCollection.features.reduce(
                     (values, feature) => {
                         const c = feature.properties['c_pdk'];
