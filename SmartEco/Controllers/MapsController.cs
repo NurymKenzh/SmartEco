@@ -10,8 +10,10 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SmartEco.Models;
+using SmartEco.Models.UPRZA;
 
 namespace SmartEco.Controllers
 {
@@ -2129,7 +2131,8 @@ namespace SmartEco.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult> CalculateDissipation(float temperature,
+        public async Task<ActionResult> CalculateDissipation(
+            float temperature,
             float windSpeed,
             float startSpeed,
             float endSpeed,
@@ -2140,8 +2143,8 @@ namespace SmartEco.Controllers
             float stepDirection,
             float uSpeed,
             int pollutants,
-            float width,
-            float length)
+            int width,
+            int length)
         {
             int code = 0301;
             decimal pdk = 0.4m;
@@ -2173,19 +2176,6 @@ namespace SmartEco.Controllers
                     pdk = 0.3m;
                     break;
             }
-
-            string temperatureString = Convert.ToString(temperature, CultureInfo.InvariantCulture);
-            string windSpeedString = Convert.ToString(windSpeed, CultureInfo.InvariantCulture);
-            string startSpeedString = Convert.ToString(startSpeed, CultureInfo.InvariantCulture);
-            string endSpeedString = Convert.ToString(endSpeed, CultureInfo.InvariantCulture);
-            string stepSpeedString = Convert.ToString(stepSpeed, CultureInfo.InvariantCulture);
-            string windDirectionString = Convert.ToString(windDirection, CultureInfo.InvariantCulture);
-            string startDirectionString = Convert.ToString(startDirection, CultureInfo.InvariantCulture);
-            string endDirectionString = Convert.ToString(endDirection, CultureInfo.InvariantCulture);
-            string stepDirectionString = Convert.ToString(stepDirection, CultureInfo.InvariantCulture);
-            string uSpeedString = Convert.ToString(uSpeed, CultureInfo.InvariantCulture);
-            string widthString = Convert.ToString(width, CultureInfo.InvariantCulture);
-            string lengthString = Convert.ToString(length, CultureInfo.InvariantCulture);
 
             //string urlMeasuredDatas = "api/MeasuredDatas";
             //List<MeasuredData> measuredDatas = new List<MeasuredData>();
@@ -2246,92 +2236,125 @@ namespace SmartEco.Controllers
             List<double> pollutantsValue = new List<double>();
             pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
             pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 4).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
-            //pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault().Value));
-            //pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 4).LastOrDefault().Value));
 
-            List<string> pollutantsValueString = new List<string>();
-            foreach (double pollutantValue in pollutantsValue)
+            List<double> longitude = new List<double> { 8572410, 8572371 };
+            List<double> latitude = new List<double> { 5376722, 5376650 };
+
+            List<double> height = new List<double> { 20, 4 };
+            List<double> diameter = new List<double> { 0.5, 0.25 };
+            List<double> flow_temperature = new List<double> { 24, 20 };
+            List<double> flow_speed = new List<double> { 1, 8.5 };
+
+            var reqCalCreate = new ReqCalcCreate();
+            for (int i = 0; i < pollutantsValue.Count; i++)
             {
-                pollutantsValueString.Add(Convert.ToString(pollutantValue, CultureInfo.InvariantCulture));
+                reqCalCreate.AirPollutionSources.Add(
+                    new AirPollutionSource()
+                    {
+                        Id = i,
+                        IsOrganized = true,
+                        Methodical = 1,
+                        BackgroundRelation = 3,
+                        Configuration = new Configuration()
+                        {
+                            Type = 1,
+                            Height = height[i],
+                            Diameter = diameter[i],
+                            FlowTemperature = flow_temperature[i],
+                            FlowSpeed = flow_speed[i],
+                            ReliefCoefficient = 1,
+                            Point1 = new Point1()
+                            {
+                                //X и Y временно поменяны местами, чтобы было правильное отображение
+                                Y = longitude[i],
+                                X = latitude[i],
+                                Z = 0
+                            }
+                        },
+                        Emissions = new List<Emission>()
+                        {
+                            new Emission()
+                            {
+                                PollutantCode = code,
+                                Power = pollutantsValue[i],
+                                Coefficient = 2
+                            }
+                        }
+                    }
+                );
             }
-
-            //List<string> longitude = new List<string> { "76.89392209053041", "76.89093410968779" };
-            //List<string> latitude = new List<string> { "43.25245478496336", "43.252024999269906" };
-            //List<string> longitude = new List<string> { "77.00667", "76.89093410968779" };
-            //List<string> latitude = new List<string> { "43.42417", "43.252024999269906" };
-
-            //List<string> longitude = new List<string> { "8572102.20", "8572696.97" };
-            //List<string> latitude = new List<string> { "5376224.66", "5376683.28" };
-            List<string> longitude = new List<string> { "8572410", "8572371" };
-            List<string> latitude = new List<string> { "5376722", "5376650" };
-
-            List<string> height = new List<string> { "20", "4" };
-            List<string> diameter = new List<string> { "0.5", "0.25" };
-            List<string> flow_temperature = new List<string> { "24", "20" };
-            List<string> flow_speed = new List<string> { "1", "8.5" };
-
-            string content = "";
-            //string airPollutionSources = "\"air_pollution_sources\": [ ";
-            string airPollutionSources = @"air_pollution_sources\"": [ ";
-
-            //Old version UPRZA-kernel
-            //X и Y временно поменяны местами, чтобы было правильное отображение
-            for (int i = 0; i < pollutantsValueString.Count; i++)
+            reqCalCreate.ThresholdPdk = 0;
+            reqCalCreate.Locality = new Locality()
             {
-                airPollutionSources += @"{ \""id\"": " + i + @", \""is_organized\"": true, \""methodical\"": 1, \""background_relation\"": 3, " +
-                    @"\""configuration\"": { \""type\"": 1, \""height\"": " + height[i] + @", \""diameter\"": " + diameter[i] + @", \""flow_temperature\"": " + flow_temperature[i] + @", \""flow_speed\"": " + flow_speed[i] + @", " +
-                    @"\""point_1\"": { \""y\"": " + longitude[i] + @", \""x\"": " + latitude[i] + @", \""z\"": 0 }, \""relief_coefficient\"": 1 }, \""emissions\"": [";
-                airPollutionSources += @"{ \""pollutant_code\"": " + code + @", \""power\"": " + pollutantsValueString[i] + @", \""coefficient\"": 2 }";
-                airPollutionSources += " ] }";
-                if (i < pollutantsValueString.Count - 1)
+                Square = 682,
+                ReliefCoefficient = 1,
+                StratificationCoefficient = 200
+            };
+            reqCalCreate.Meteo = new Meteo()
+            {
+                Temperature = temperature,
+                WindSpeedSettings = new WindSpeedSettings()
                 {
-                    airPollutionSources += ", ";
+                    Mode = 1,
+                    Speed = windSpeed,
+                    StartSpeed = startSpeed,
+                    EndSpeed = endSpeed,
+                    StepSpeed = stepSpeed
+                },
+                WindDirectionSettings = new WindDirectionSettings()
+                {
+                    Mode = 1,
+                    Direction = windDirection,
+                    StartDirection = startDirection,
+                    EndDirection = endDirection,
+                    StepDirection = stepDirection
+                },
+                USpeed = uSpeed
+            };
+            reqCalCreate.Background = new Background()
+            {
+                Mode = 0
+            };
+            reqCalCreate.Method = 1;
+            reqCalCreate.ContributorCount = pollutantsValue.Count;
+            reqCalCreate.UseSummationGroups = false;
+            reqCalCreate.CalculatedArea = new CalculatedArea
+            {
+                Rectangles = new List<Rectangle>()
+                {
+                    new Rectangle()
+                    {
+                        Id = 0,
+                        CenterPoint = new CenterPoint()
+                        {
+                            //X и Y временно поменяны местами, чтобы было правильное отображение
+                            Y = 8572343.29,
+                            X = 5376759.33,
+                            Z = 0
+                        },
+                        Width = width,
+                        Length = length,
+                        Height = 1,
+                        StepByWidth = 100,
+                        StepByLength = 100
+                    }
                 }
-            }
-            airPollutionSources += " ], ";
+            };
+            reqCalCreate.Pollutants = new List<Models.UPRZA.Pollutant>()
+            {
+                new Models.UPRZA.Pollutant()
+                {
+                    Code = code,
+                    Pdk = Convert.ToDouble(pdk, CultureInfo.InvariantCulture)
+                }
+            };
 
-            content = @"{ \""threshold_pdk\"": 0, \""locality\"": { \""square\"": 682, \""relief_coefficient\"": 1, \""stratification_coefficient\"": 200 }, \""meteo\"": " +
-                @"{ \""temperature\"": " + temperatureString + @", \""wind_speed_settings\"": { \""mode\"": 1, \""speed\"": " + windSpeedString + @", \""start_speed\"": " + startSpeedString + @", \""end_speed\"": " + endSpeedString + @", \""step_speed\"": " + stepSpeedString + @" }, " +
-                @"\""wind_direction_settings\"": { \""mode\"": 1, \""direction\"": " + windDirectionString + @", \""start_direction\"": " + startDirectionString + @", \""end_direction\"": " + endDirectionString + @", \""step_direction\"": " + stepDirectionString + @" }, \""u_speed\"": " + uSpeedString + @" }" +
-                @", \""background\"": { \""mode\"": 0 }, \""method\"": 1, \""contributor_count\"": " + pollutantsValueString.Count + @", \""use_summation_groups\"": false, \""";
-            content += airPollutionSources;
-            //content += "\"calculated_area\": { \"rectangles\": [{ \"id\": 0, \"center_point\": { \"y\": 43.42417, \"x\": 77.00667, \"z\": 0 }, \"width\": 10, \"length\": 10, \"height\": 1, \"step_by_width\": 1, \"step_by_length\": 1 }], \"points\": [], \"lines\": [] }}";
-            //X и Y временно поменяны местами, чтобы было правильное отображение
-            content += @"\""calculated_area\"": { \""rectangles\"": [{ \""id\"": 0, \""center_point\"": { \""y\"": 8572343.29, \""x\"": 5376759.33, \""z\"": 0 }, \""width\"": " + widthString + @", \""length\"": " + lengthString + @", \""height\"": 1, \""step_by_width\"": 100, \""step_by_length\"": 100 }], \""points\"": [], \""lines\"": [] }, \""buildings\"": []," +
-                @" \""pollutants\"": [{\""code\"": " + code + @",\""pdk\"": " + Convert.ToString(pdk, CultureInfo.InvariantCulture) + "}]}";
-
-            //New version UPRZA-kernel
-            //content += "{ \"contributor_count\": 2, \"locality\": { \"square\": 682, \"stratification_coefficient\": 200, \"relief_coefficient\": 1 }, " +
-            //    "\"calculated_area\": { \"points\": [], \"rectangles\": [{ \"step_y\": 100, \"step_x\": 100, \"number\": 0, \"right_top_point\": { " +
-            //    "\"y\": 5378759.33, \"x\": 8574343.29, \"z\": 1 }, \"left_bottom_point\": { \"y\": 5374759.33, \"x\": 8570343.29, \"z\": 1 }}]}, " +
-            //    "\"threshold_pdk\": 0, \"meteo\": { \"wind_speed_settings\": { \"end_speed\": 2, \"step_speed\": 0.1, \"mode\": 1, \"start_speed\": 0 }, " +
-            //    "\"wind_direction_settings\": { \"end_direction\": 360, \"mode\": 1, \"step_direction\": 1, \"start_direction\": 0 }, " +
-            //    "\"rose_of_wind\": { \"east\": 0, \"north\": 0, \"southwest\": 0, \"west\": 0, \"northeast\": 0, \"northwest\": 0, \"southeast\": 0, \"south\": 0 }, " +
-            //    "\"temperature\": 39.93, \"u_speed\": 1 }, \"use_summation_groups\": false, ";
-
-            //for (int i = 0; i < pollutantsValueString.Count; i++)
-            //{
-            //    airPollutionSources += "{ \"count\": 1, \"methodical\": 1, \"is_organized\": true, \"relief_coefficient\": 1, \"emissions\": [{ " +
-            //        "\"coefficient\": 2, \"power\": 3.4711, \"pollutant_code\": 301 }], \"configuration\": { \"diameter\": 0.5, \"flow_temperature\": 24, " +
-            //        "\"flow_speed\": 1, \"height\": 20, \"type\": 1, \"point_1\": { \"y\": 5376722, \"x\": 8572410, \"z\": 0 }}, \"id\": 0 }";
-            //    if (i < pollutantsValueString.Count - 1)
-            //    {
-            //        airPollutionSources += ", ";
-            //    }
-            //}
-            //airPollutionSources += " ], ";
-
-            //content += airPollutionSources;
-            //content += "\"background\": { \"mode\": 0 }, \"method\": 1 }";
-
-            ////content += "{ \"contributor_count\": 10, \"locality\": { \"square\": 1, \"stratification_coefficient\": 0, \"relief_coefficient\": 0 }, \"calculated_area\": { \"points\": [], \"rectangles\": [ { \"step_y\": 50, \"step_x\": 50, \"number\": 0, \"right_top_point\": { \"y\": 2000, \"x\": 2000, \"z\": 2 }, \"left_bottom_point\": { \"y\": 0, \"x\": 0, \"z\": 2 } } ] }, \"threshold_pdk\": 0, \"meteo\": { \"wind_speed_settings\": { \"end_speed\": 11, \"step_speed\": 0.1, \"mode\": 3, \"start_speed\": 0.5 }, \"wind_direction_settings\": { \"end_direction\": 360, \"mode\": 3, \"step_direction\": 1, \"start_direction\": 0 }, \"rose_of_wind\": { \"east\": 0, \"north\": 0, \"southwest\": 0, \"west\": 0, \"northeast\": 0, \"northwest\": 0, \"southeast\": 0, \"south\": 0 }, \"temperature\": 0, \"u_speed\": 11 }, \"use_summation_groups\": false, \"air_pollution_sources\": [ { \"count\": 1, \"methodical\": 1, \"is_organized\": true, \"relief_coefficient\": 1, \"emissions\": [ { \"coefficient\": 1, \"power\": 2, \"pollutant_code\": 1063 } ], \"configuration\": { \"diameter\": 0.4, \"flow_temperature\": 350, \"flow_speed\": 7.957747155, \"height\": 10, \"type\": 1, \"point_1\": { \"y\": 0, \"x\": 0, \"z\": 0 } }, \"id\": 76 }, { \"count\": 1, \"is_organized\": true, \"methodical\": 1, \"relief_coefficient\": 1, \"emissions\": [ { \"coefficient\": 1, \"power\": 2, \"pollutant_code\": 1063 } ], \"configuration\": { \"diameter\": 0.4, \"flow_temperature\": 100, \"flow_speed\": 7.957747154619572, \"height\": 10, \"type\": 1, \"point_1\": { \"y\": 0, \"x\": 0, \"z\": 0 } }, \"id\": 76 }, { \"count\": 1, \"is_organized\": true, \"methodical\": 1, \"relief_coefficient\": 1, \"emissions\": [ { \"coefficient\": 1, \"power\": 2, \"pollutant_code\": 1063 } ], \"configuration\": { \"diameter\": 0.4, \"flow_temperature\": 4.5, \"flow_speed\": 7.957747154619572, \"height\": 10, \"type\": 1, \"point_1\": { \"y\": 0, \"x\": 0, \"z\": 0 } }, \"id\": 76 }, { \"count\": 1, \"is_organized\": true, \"methodical\": 1, \"relief_coefficient\": 1, \"emissions\": [ { \"coefficient\": 1, \"power\": 2, \"pollutant_code\": 1063 } ], \"configuration\": { \"diameter\": 0.4, \"flow_temperature\": 3, \"flow_speed\": 7.957747154619572, \"height\": 10, \"type\": 1, \"point_1\": { \"y\": 0, \"x\": 0, \"z\": 0 } }, \"id\": 76 }, { \"count\": 1, \"is_organized\": true, \"methodical\": 1, \"relief_coefficient\": 1, \"emissions\": [ { \"coefficient\": 1, \"power\": 2, \"pollutant_code\": 1063 } ], \"configuration\": { \"diameter\": 0.4, \"flow_temperature\": 0, \"flow_speed\": 7.957747154619572, \"height\": 10, \"type\": 1, \"point_1\": { \"y\": 0, \"x\": 0, \"z\": 0 } }, \"id\": 76 }, { \"count\": 2, \"is_organized\": true, \"methodical\": 1, \"relief_coefficient\": 1, \"emissions\": [ { \"coefficient\": 1, \"power\": 2, \"pollutant_code\": 1063 } ], \"configuration\": { \"diameter\": 0.4, \"flow_temperature\": 0, \"flow_speed\": 7.957747154619572, \"height\": 5, \"type\": 1, \"point_1\": { \"y\": 0, \"x\": 0, \"z\": 0 } }, \"id\": 77 }, { \"count\": 2, \"is_organized\": true, \"methodical\": 1, \"relief_coefficient\": 1, \"emissions\": [ { \"coefficient\": 1, \"power\": 2, \"pollutant_code\": 1063 } ], \"configuration\": { \"diameter\": 0.4, \"flow_temperature\": 0, \"flow_speed\": 7.957747154619572, \"height\": 1, \"type\": 1, \"point_1\": { \"y\": 0, \"x\": 0, \"z\": 0 } }, \"id\": 77 } ], \"background\": { \"post_monitors\": [], \"value_type\": 1, \"mode\": 0 }, \"method\": 1 }";
+            string jsonContent = JsonConvert.SerializeObject(reqCalCreate).Replace(@"""", @"\""");
 
             bool server = Convert.ToBoolean(Startup.Configuration["Server"]);
             string URPZAUrl = server ? Startup.Configuration["URPZAUrlServer"] : Startup.Configuration["URPZAUrlDebug"];
 
-            //string calculate = "-X POST \"http://185.125.44.116:50006/calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
-            string calculate = "-X POST \"" + URPZAUrl + "calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + content + "\"";
-            //string calculate = "-X POST \"" + URPZAUrl + "uprza/calculations/create\" -H \"Authorization: Bearer t9TfgXMhr6CNVTPmKFlYzMCh3JdUjYH4\" -H \"User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/74.0.3729.169 Safari/537.36\" -d \"" + content + "\"";
+            string calculate = "-X POST \"" + URPZAUrl + "calculation/create\" -H \"accept: application/json\" -H \"Content-Type: application/json\" -d \"" + jsonContent + "\"";
             Process process = CurlExecute(calculate);
             string answer = process.StandardOutput.ReadToEnd();
             process.WaitForExit();
