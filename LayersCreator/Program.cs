@@ -26,8 +26,8 @@ namespace LayersCreator
             GSStyle = "",
             GSDataDir = "";
             //GSDataDir = "D:\\GeoServer 2.13.4\\data_dir\\data\\SmartEco";
-        static List<string> GSStyleList = new List<string>() { "KaragandaRegionPollutantSpread", "AlmatyPollutantSpread" },
-            LayerNameTemplateList = new List<string>() { "KaragandaRegionPollutantSpread", "AlmatyPollutantSpread" };
+        static List<string> GSStyleList = new List<string>() { "KaragandaRegionPollutantSpread", "AlmatyPollutantSpread", "ShymkentPollutantSpread" },
+            LayerNameTemplateList = new List<string>() { "KaragandaRegionPollutantSpread", "AlmatyPollutantSpread", "ShymkentPollutantSpread" };
         const decimal MaxDistance = 0.25M,
             DistanceForRectangle = 0.135M,
             DistanceForPoints = 0.027M;
