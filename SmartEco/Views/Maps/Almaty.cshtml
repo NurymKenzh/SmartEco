@@ -145,7 +145,7 @@
 </div>
 
 <div id="fullscreen" class="fullscreen">
-    <div id="sidepanelLeft" class="sidepanel">
+    <div id="sidepanelLeft" class="sidepanel d-none">
         <label>
             @SharedLocalizer["EcoserviceAirStations"]
         </label>
@@ -1828,7 +1828,7 @@
         var options = opt_options || {};
         var button = document.createElement('button');
         button.id = "sidepanelleftshowhide";
-        button.innerHTML = '«';
+        button.innerHTML = '»';
         button.title = $("#ShowHideLeftPanelText").val();
         var this_ = this;
         var handleShowHideSidePanelLeft = function () {
@@ -1924,7 +1924,8 @@
     $(document).ready(function (e) {
         map.updateSize();
         $('#sidepanelRight').addClass("d-none d-block");
-        $('#sidepanelLeft').addClass("d-none d-block");
+        $('#map').css("width", "80%");
+        map.updateSize();
         window.addEventListener('resize', function (event) {
             $('#map').css("width", "100%");
             map.updateSize();
