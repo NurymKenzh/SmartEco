@@ -1,0 +1,27 @@
+﻿@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Delete"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+@if(Role == "admin" || Role == "moderator")
+{
+    <h3>@SharedLocalizer["DeleteQuestionByAdmin"]</h3>
+}
+else
+{
+    <h3>@SharedLocalizer["DeleteQuestion"]</h3>
+}
+<div>
+    <form asp-action="Delete">
+        <input name="id" type="hidden" value="@ViewBag.QuestionId" />
+        <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-danger" /> |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index")
+    </form>
+</div>

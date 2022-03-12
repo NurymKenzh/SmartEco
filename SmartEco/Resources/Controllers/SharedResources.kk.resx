@@ -969,4 +969,31 @@
   <data name="DispersionPollutants" xml:space="preserve">
     <value>Ластаушы заттардың дисперсиясы</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>Мәтін</value>
+  </data>
+  <data name="AppealCitizens" xml:space="preserve">
+    <value>Азаматтардың өтініші</value>
+  </data>
+  <data name="AskQuestion" xml:space="preserve">
+    <value>Сұрақ қою</value>
+  </data>
+  <data name="DeleteAnswer" xml:space="preserve">
+    <value>Жауапты шынымен жойғыңыз келе ме?</value>
+  </data>
+  <data name="DeleteQuestion" xml:space="preserve">
+    <value>Сұрақты шынымен жойғыңыз келе ме?</value>
+  </data>
+  <data name="DeleteQuestionByAdmin" xml:space="preserve">
+    <value>Сұрақты және барлық қатысты жауаптарды (бар болса) жойғыңыз келетініне сенімдісіз бе?</value>
+  </data>
+  <data name="NameUser" xml:space="preserve">
+    <value>Аты</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Сұрақ</value>
+  </data>
+  <data name="ToAnswer" xml:space="preserve">
+    <value>Жауап беру</value>
+  </data>
 </root>

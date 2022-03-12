@@ -22,6 +22,8 @@
     <Compile Remove="Migrations\20200813122945_AActivity_20200813_01.Designer.cs" />
     <Compile Remove="Migrations\20201029112333_GreemPlantsPassport_20201029_00.cs" />
     <Compile Remove="Migrations\20201029112333_GreemPlantsPassport_20201029_00.Designer.cs" />
+    <Compile Remove="Migrations\20220309162840_Question_20220309_00.cs" />
+    <Compile Remove="Migrations\20220309162840_Question_20220309_00.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

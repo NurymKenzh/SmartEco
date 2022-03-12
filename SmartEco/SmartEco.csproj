@@ -16,6 +16,8 @@
     <Compile Remove="Data\Migrations\20200214141251_TargetTerritory_20200214_00.Designer.cs" />
     <Compile Remove="Data\Migrations\20200220161044_AActivity_20200220_00.cs" />
     <Compile Remove="Data\Migrations\20200220161044_AActivity_20200220_00.Designer.cs" />
+    <Compile Remove="Data\Migrations\20220309162205_Question_20220309_00.cs" />
+    <Compile Remove="Data\Migrations\20220309162205_Question_20220309_00.Designer.cs" />
   </ItemGroup>
 
 

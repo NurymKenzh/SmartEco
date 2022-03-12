@@ -1,0 +1,16 @@
+﻿@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Delete"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h3>@SharedLocalizer["DeleteAnswer"]</h3>
+<div>
+    <form asp-action="Delete">
+        <input name="id" type="hidden" value="@ViewBag.AnswerId" />
+        <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-danger" /> |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index")
+    </form>
+</div>

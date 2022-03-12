@@ -1,0 +1,51 @@
+﻿@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["AppealCitizens"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+<p>
+    @Html.ActionLink(SharedLocalizer["AskQuestion"], "AskQuestion")
+</p>
+@foreach (var questionAndAnswer in ViewBag.PersonQuestions.QuestionAndAnswers)
+{
+    <div class="card w-75 mt-3 bg-light">
+        <div class="card-header">
+            @questionAndAnswer.Question.Name
+        </div>
+        <div class="card-body">
+            <h6 class="card-title">@questionAndAnswer.Question.DateTime</h6>
+            <p class="card-text">@questionAndAnswer.Question.Text</p>
+            <div class="float-right">
+                @Html.ActionLink(SharedLocalizer["ToAnswer"], "ToAnswer", new { questionId = questionAndAnswer.Question.Id }, new { @class = "btn btn-primary" })
+                @if ((questionAndAnswer.Answers.Count == 0 && ViewBag.PersonQuestions.Person.Id == questionAndAnswer.PersonId) || (Role == "admin" || Role == "moderator"))
+                {
+                    @Html.ActionLink(SharedLocalizer["Delete"], "DeleteQuestion", new { id = questionAndAnswer.Question.Id }, new { @class = "btn btn-danger" })
+                }
+            </div>
+        </div>
+    </div>
+    @foreach (var answer in questionAndAnswer.Answers)
+    {
+        <div class="card w-50 mt-1" style="left: 25%; background-color: aliceblue; ">
+            <div class="card-header">
+                Administrator
+            </div>
+            <div class="card-body">
+                <h6 class="card-title">@answer.DateTime</h6>
+                <p class="card-text">@answer.Text</p>
+                <div class="float-right">
+                    @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id }, new { @class = "btn btn-danger" })
+                </div>
+            </div>
+        </div>
+    }
+}
+

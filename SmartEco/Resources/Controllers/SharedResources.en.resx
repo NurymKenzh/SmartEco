@@ -969,4 +969,31 @@
   <data name="DispersionPollutants" xml:space="preserve">
     <value>Dispersion of pollutants</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>Text</value>
+  </data>
+  <data name="AppealCitizens" xml:space="preserve">
+    <value>Appeal Citizens</value>
+  </data>
+  <data name="AskQuestion" xml:space="preserve">
+    <value>Ask a Question</value>
+  </data>
+  <data name="DeleteAnswer" xml:space="preserve">
+    <value>Are you sure you want to delete the answer?</value>
+  </data>
+  <data name="DeleteQuestion" xml:space="preserve">
+    <value>Are you sure you want to delete the question?</value>
+  </data>
+  <data name="DeleteQuestionByAdmin" xml:space="preserve">
+    <value>Are you sure you want to delete the question and all related answers (if any)?</value>
+  </data>
+  <data name="NameUser" xml:space="preserve">
+    <value>Name User</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Question</value>
+  </data>
+  <data name="ToAnswer" xml:space="preserve">
+    <value>To Answer</value>
+  </data>
 </root>

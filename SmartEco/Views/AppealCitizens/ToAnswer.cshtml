@@ -1,0 +1,36 @@
+﻿@model SmartEco.Models.Answer
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["Create"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h4>@SharedLocalizer["ToAnswer"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-group">
+            <p>@SharedLocalizer["Question"]:</p>
+            <p>"@ViewBag.Question.Text"</p>
+        </div>
+        <form asp-action="ToAnswer">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input asp-for="QuestionId" type="hidden" value="@ViewBag.Question.Id" />
+            <div class="form-group">
+                <label asp-for="Text" class="control-label"></label>
+                <textarea asp-for="Text" class="form-control"></textarea>
+                <span asp-validation-for="Text" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["Create"]" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index")
+</div>

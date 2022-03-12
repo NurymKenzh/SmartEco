@@ -971,4 +971,31 @@
   <data name="DispersionPollutants" xml:space="preserve">
     <value>Рассеивание ЗВ</value>
   </data>
+  <data name="Text" xml:space="preserve">
+    <value>Текст</value>
+  </data>
+  <data name="AppealCitizens" xml:space="preserve">
+    <value>Обращение граждан</value>
+  </data>
+  <data name="AskQuestion" xml:space="preserve">
+    <value>Задать вопрос</value>
+  </data>
+  <data name="DeleteAnswer" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить ответ?</value>
+  </data>
+  <data name="DeleteQuestion" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить вопрос?</value>
+  </data>
+  <data name="DeleteQuestionByAdmin" xml:space="preserve">
+    <value>Вы уверены, что хотите удалить вопрос и все связанные ответы с ним (если есть)?</value>
+  </data>
+  <data name="NameUser" xml:space="preserve">
+    <value>Имя</value>
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value>Вопрос</value>
+  </data>
+  <data name="ToAnswer" xml:space="preserve">
+    <value>Ответить</value>
+  </data>
 </root>

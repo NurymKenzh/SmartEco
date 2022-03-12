@@ -966,4 +966,31 @@
   <data name="DispersionPollutants" xml:space="preserve">
     <value />
   </data>
+  <data name="Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AppealCitizens" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AskQuestion" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteAnswer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteQuestion" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteQuestionByAdmin" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ToAnswer" xml:space="preserve">
+    <value />
+  </data>
 </root>

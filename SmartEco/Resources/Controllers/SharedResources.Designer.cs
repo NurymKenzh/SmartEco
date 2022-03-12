@@ -333,6 +333,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AppealCitizens {
+            get {
+                return ResourceManager.GetString("AppealCitizens", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Areahectares {
             get {
                 return ResourceManager.GetString("Areahectares", resourceCulture);
@@ -435,6 +444,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Arys {
             get {
                 return ResourceManager.GetString("Arys", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AskQuestion {
+            get {
+                return ResourceManager.GetString("AskQuestion", resourceCulture);
             }
         }
         
@@ -723,6 +741,33 @@ namespace SmartEco.Resources.Controllers {
         public static string Delete {
             get {
                 return ResourceManager.GetString("Delete", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string DeleteAnswer {
+            get {
+                return ResourceManager.GetString("DeleteAnswer", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string DeleteQuestion {
+            get {
+                return ResourceManager.GetString("DeleteQuestion", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string DeleteQuestionByAdmin {
+            get {
+                return ResourceManager.GetString("DeleteQuestionByAdmin", resourceCulture);
             }
         }
         
@@ -1755,6 +1800,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string NameUser {
+            get {
+                return ResourceManager.GetString("NameUser", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string NDVI {
             get {
                 return ResourceManager.GetString("NDVI", resourceCulture);
@@ -2106,6 +2160,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Question {
+            get {
+                return ResourceManager.GetString("Question", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string ReceptionRecyclingPoint {
             get {
                 return ResourceManager.GetString("ReceptionRecyclingPoint", resourceCulture);
@@ -2421,9 +2484,27 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Text {
+            get {
+                return ResourceManager.GetString("Text", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Time {
             get {
                 return ResourceManager.GetString("Time", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ToAnswer {
+            get {
+                return ResourceManager.GetString("ToAnswer", resourceCulture);
             }
         }
         

@@ -122,6 +122,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
                             </li>
                         }
+                        @if (!string.IsNullOrEmpty(Token))
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppealCitizens" asp-action="Index">@SharedLocalizer["AppealCitizens"]</a>
+                            </li>
+                        }
                         @*@if (string.IsNullOrEmpty(Token))
                         {
                             <li class="nav-item mx-auto">
