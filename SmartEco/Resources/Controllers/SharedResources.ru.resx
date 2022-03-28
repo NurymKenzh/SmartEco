@@ -998,4 +998,7 @@
   <data name="ToAnswer" xml:space="preserve">
     <value>Ответить</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Применить</value>
+  </data>
 </root>

@@ -25,22 +25,33 @@ namespace SmartEcoAPI.Controllers
         /// <summary>
         /// Получение всех имеющихся вопросов и ответов на них (работает только для авторизованных пользователей).
         /// </summary>
+        /// <param name="PageSize">
+        /// Все возвращаемые данные разделены на блоки (страницы). Данный параметр задает размер блока.
+        /// </param>
+        /// <param name="PageNumber">
+        /// Номер возвращаемого блока.
+        /// </param>
         /// <returns></returns>
         [HttpGet]
         [Route("GetQuestionsAndAnswers")]
         [Authorize]
-        public async Task<ActionResult<PersonQuestions>> GetQuestionsAndAnswers()
+        public async Task<ActionResult<PersonQuestions>> GetQuestionsAndAnswers(
+            int? PageSize,
+            int? PageNumber)
         {
-            var questions = _context.Question.Include(q => q.Person).OrderByDescending(q => q.DateTime).ToList();
-            var answers = _context.Answer.Include(a => a.Question).ToList();
+            var questions = _context.Question.Include(q => q.Person).OrderByDescending(q => q.DateTime);
+            var answers = _context.Answer.Include(a => a.Question);
             var person = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name);
 
+            if (PageSize != null && PageNumber != null)
+            {
+                questions = (IOrderedQueryable<Question>)questions.Skip(((int)PageNumber - 1) * (int)PageSize).Take((int)PageSize);
+            }
+
             var personQuestions = new PersonQuestions();
-            var questionAndAnswers = new List<QuestionAndAnswers>();
             try
             {
-                questionAndAnswers = questions
-                    .AsEnumerable()
+                var questionAndAnswers = questions
                     .GroupJoin(
                     answers,
                     question => question,
@@ -49,16 +60,18 @@ namespace SmartEcoAPI.Controllers
                     {
                         Question = q,
                         Answers = ansCollection.OrderBy(a => a.DateTime).ToList()
-                    }).ToList();
+                    });
 
-                personQuestions.Person = person;
-                personQuestions.QuestionAndAnswers = questionAndAnswers;
+                return new PersonQuestions()
+                {
+                    QuestionAndAnswers = await questionAndAnswers.ToListAsync(),
+                    Person = person
+                };
             }
             catch (Exception ex)
             {
-
+                return new PersonQuestions();
             }
-            return personQuestions;
         }
 
         // GET: api/AppealCitizens/5
@@ -181,6 +194,20 @@ namespace SmartEcoAPI.Controllers
             await _context.SaveChangesAsync();
 
             return answer;
+        }
+
+        // GET: api/Projects/Count
+        [HttpGet("Count")]
+        [ApiExplorerSettings(IgnoreApi = true)]
+        [Authorize]
+        public async Task<ActionResult<IEnumerable<Question>>> GetQuestionsCount()
+        {
+            var questions = _context.Question
+                .Where(m => true);
+
+            int count = await questions.CountAsync();
+
+            return Ok(count);
         }
     }
 }

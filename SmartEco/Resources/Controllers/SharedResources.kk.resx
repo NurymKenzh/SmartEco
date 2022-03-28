@@ -996,4 +996,7 @@
   <data name="ToAnswer" xml:space="preserve">
     <value>Жауап беру</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Қолдану</value>
+  </data>
 </root>

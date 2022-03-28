@@ -996,4 +996,7 @@
   <data name="ToAnswer" xml:space="preserve">
     <value>To Answer</value>
   </data>
+  <data name="Apply" xml:space="preserve">
+    <value>Apply</value>
+  </data>
 </root>

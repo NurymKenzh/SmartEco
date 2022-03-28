@@ -10,7 +10,11 @@
 <div>
     <form asp-action="Delete">
         <input name="id" type="hidden" value="@ViewBag.AnswerId" />
+        <div hidden="hidden">
+            @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </div>
         <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-danger" /> |
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index")
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize })
     </form>
 </div>

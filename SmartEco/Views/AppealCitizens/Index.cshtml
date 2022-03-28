@@ -12,40 +12,156 @@
 }
 
 <p>
-    @Html.ActionLink(SharedLocalizer["AskQuestion"], "AskQuestion")
+    @Html.ActionLink(SharedLocalizer["AskQuestion"], "AskQuestion", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize })
 </p>
-@foreach (var questionAndAnswer in ViewBag.PersonQuestions.QuestionAndAnswers)
-{
-    <div class="card w-75 mt-3 bg-light">
-        <div class="card-header">
-            @questionAndAnswer.Question.Name
-        </div>
-        <div class="card-body">
-            <h6 class="card-title">@questionAndAnswer.Question.DateTime</h6>
-            <p class="card-text">@questionAndAnswer.Question.Text</p>
-            <div class="float-right">
-                @Html.ActionLink(SharedLocalizer["ToAnswer"], "ToAnswer", new { questionId = questionAndAnswer.Question.Id }, new { @class = "btn btn-primary" })
-                @if ((questionAndAnswer.Answers.Count == 0 && ViewBag.PersonQuestions.Person.Id == questionAndAnswer.PersonId) || (Role == "admin" || Role == "moderator"))
-                {
-                    @Html.ActionLink(SharedLocalizer["Delete"], "DeleteQuestion", new { id = questionAndAnswer.Question.Id }, new { @class = "btn btn-danger" })
-                }
-            </div>
-        </div>
-    </div>
-    @foreach (var answer in questionAndAnswer.Answers)
+@*@foreach (var questionAndAnswer in ViewBag.PersonQuestions.QuestionAndAnswers)
     {
-        <div class="card w-50 mt-1" style="left: 25%; background-color: aliceblue; ">
+        <div class="card w-75 mt-3 bg-light">
             <div class="card-header">
-                Administrator
+                @questionAndAnswer.Question.Name
             </div>
             <div class="card-body">
-                <h6 class="card-title">@answer.DateTime</h6>
-                <p class="card-text">@answer.Text</p>
+                <h6 class="card-title">@questionAndAnswer.Question.DateTime</h6>
+                <p class="card-text">@questionAndAnswer.Question.Text</p>
                 <div class="float-right">
-                    @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id }, new { @class = "btn btn-danger" })
+                    @Html.ActionLink(SharedLocalizer["ToAnswer"], "ToAnswer", new { questionId = questionAndAnswer.Question.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-primary" })
+                    @if ((questionAndAnswer.Answers.Count == 0 && ViewBag.PersonQuestions.Person.Id == questionAndAnswer.PersonId) || (Role == "admin" || Role == "moderator"))
+                    {
+                        @Html.ActionLink(SharedLocalizer["Delete"], "DeleteQuestion", new { id = questionAndAnswer.Question.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                    }
                 </div>
             </div>
         </div>
+        @foreach (var answer in questionAndAnswer.Answers)
+        {
+            <div class="card w-50 mt-1" style="left: 25%; background-color: aliceblue; ">
+                <div class="card-header">
+                    Administrator
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title">@answer.DateTime</h6>
+                    <p class="card-text">@answer.Text</p>
+                    <div class="float-right">
+                        @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+    }*@
+
+@using (Html.BeginForm("Index", "AppealCitizens", FormMethod.Get))
+{
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1 })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1 })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages })
+                </li>
+            }
+        </ul>
+    }
+
+    <p>
+        @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control w-auto d-inline" })
+        <input type="submit" value="@SharedLocalizer["Apply"]" class="btn btn-default">
+    </p>
+
+    @foreach (var questionAndAnswer in ViewBag.PersonQuestions.QuestionAndAnswers)
+    {
+        <div class="card w-75 mt-3 bg-light">
+            <div class="card-header">
+                @questionAndAnswer.Question.Name
+            </div>
+            <div class="card-body">
+                <h6 class="card-title">@questionAndAnswer.Question.DateTime</h6>
+                <p class="card-text">@questionAndAnswer.Question.Text</p>
+                <div class="float-right">
+                    @Html.ActionLink(SharedLocalizer["ToAnswer"], "ToAnswer", new { questionId = questionAndAnswer.Question.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-primary" })
+                    @if ((questionAndAnswer.Answers.Count == 0 && ViewBag.PersonQuestions.Person.Id == questionAndAnswer.Question.PersonId) || (Role == "admin" || Role == "moderator"))
+                    {
+                        @Html.ActionLink(SharedLocalizer["Delete"], "DeleteQuestion", new { id = questionAndAnswer.Question.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                    }
+                </div>
+            </div>
+        </div>
+        @foreach (var answer in questionAndAnswer.Answers)
+        {
+            <div class="card w-50 mt-1" style="left: 25%; background-color: aliceblue; ">
+                <div class="card-header">
+                    Administrator
+                </div>
+                <div class="card-body">
+                    <h6 class="card-title">@answer.DateTime</h6>
+                    <p class="card-text">@answer.Text</p>
+                    <div class="float-right">
+                        @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                    </div>
+                </div>
+            </div>
+        }
+    }
+
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1 })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1 })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages })
+                </li>
+            }
+        </ul>
     }
 }
-
