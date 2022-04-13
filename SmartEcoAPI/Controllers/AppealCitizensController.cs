@@ -6,6 +6,7 @@ using SmartEcoAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SmartEcoAPI.Controllers
@@ -133,14 +134,37 @@ namespace SmartEcoAPI.Controllers
         {
             try
             {
-                answer.PersonId = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name).Id;
-                answer.DateTime = DateTime.Now;
-                _context.Answer.Add(answer);
-                await _context.SaveChangesAsync();
+                var isAnswered = _context.Answer.Any(a => a.QuestionId == answer.QuestionId);
+                if (isAnswered)
+                {
+                    return StatusCode((int)HttpStatusCode.InternalServerError);
+                }
             }
-            catch (Exception ex)
+            catch
             {
+                return BadRequest();
+            }
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    answer.PersonId = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name).Id;
+                    answer.DateTime = DateTime.Now;
+                    _context.Answer.Add(answer);
+                    await _context.SaveChangesAsync();
 
+                    var question = await _context.Question.FindAsync(answer.QuestionId);
+                    question.IsResolved = true;
+                    _context.Question.Update(question);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return BadRequest();
+                }
             }
 
             return answer;
@@ -184,16 +208,35 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin, moderator")]
         public async Task<ActionResult<Answer>> DeleteAnswer(int id)
         {
-            var answer = await _context.Answer.FindAsync(id);
-            if (answer == null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                return NotFound();
+                try
+                {
+                    var answer = await _context.Answer.FindAsync(id);
+                    if (answer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var question = await _context.Question.FindAsync(answer.QuestionId);
+
+                    _context.Answer.Remove(answer);
+                    await _context.SaveChangesAsync();
+
+                    question.IsResolved = false;
+                    _context.Question.Update(question);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+
+                    return answer;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return BadRequest();
+                }
             }
-
-            _context.Answer.Remove(answer);
-            await _context.SaveChangesAsync();
-
-            return answer;
         }
 
         // GET: api/Projects/Count

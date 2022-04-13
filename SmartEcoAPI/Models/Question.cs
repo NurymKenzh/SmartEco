@@ -15,6 +15,8 @@ namespace SmartEcoAPI.Models
 
         public DateTime DateTime { get; set; }
 
+        public bool IsResolved { get; set; }
+
         public int PersonId { get; set; }
 
         public Person Person { get; set; }
