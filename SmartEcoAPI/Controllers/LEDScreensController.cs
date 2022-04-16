@@ -369,25 +369,27 @@ namespace SmartEcoAPI.Controllers
             //    .ToList();
 
             var monitoringPosts = _context.MonitoringPost
-                .Where(m => m.Project != null && m.Project.Name == ProjectName && m.PollutionEnvironmentId == 2 && m.TurnOnOff == true)
+                .Where(m => m.Project != null && m.Project.Name == ProjectName && m.PollutionEnvironmentId == 2 && m.TurnOnOff == true);
+            var measuredDatas = _context.MeasuredData
+                .Where(m => m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-60))
+                .OrderByDescending(m => m.DateTime)
                 .ToList();
             foreach (var monitoringPost in monitoringPosts)
             {
                 indexResult = null;
                 var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
-                            .Where(m => m.MonitoringPostId == monitoringPost.Id)
-                            .OrderBy(m => m.MeasuredParameter.NameRU)
-                            .Include(m => m.MeasuredParameter)
-                            .ToList();
+                    .Where(m => m.MonitoringPostId == monitoringPost.Id)
+                    .OrderBy(m => m.MeasuredParameter.NameRU)
+                    .Include(m => m.MeasuredParameter);
 
                 foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
                 {
-                    var measuredData = _context.MeasuredData
-                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-60))
-                        .LastOrDefault();
+                    var measuredData = measuredDatas
+                        .Where(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId)
+                        .FirstOrDefault();
                     if (measuredData != null)
                     {
-                        decimal index = Convert.ToDecimal(measuredData.Value / measuredData.MeasuredParameter.MPCMaxSingle);
+                        decimal index = Convert.ToDecimal(measuredData.Value / monitoringPostMeasuredParameter.MeasuredParameter.MPCMaxSingle);
                         if (Convert.ToDecimal(indexResult) < index)
                         {
                             indexResult = index;

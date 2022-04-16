@@ -2631,10 +2631,10 @@ namespace SmartEco.Controllers
             {
                 monitoringPostMeasuredParameters = await responseMPMP.Content.ReadAsAsync<List<MonitoringPostMeasuredParameters>>();
             }
-            var min = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Min;
-            var max = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().Max;
-            var minMeasured = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().MinMeasuredValue;
-            var maxMeasured = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault().MaxMeasuredValue;
+            var min = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault()?.Min;
+            var max = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault()?.Max;
+            var minMeasured = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault()?.MinMeasuredValue;
+            var maxMeasured = monitoringPostMeasuredParameters.Where(m => m.MeasuredParameterId == MeasuredParameterId).FirstOrDefault()?.MaxMeasuredValue;
 
             return Json(new
             {
