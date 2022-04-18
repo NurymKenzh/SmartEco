@@ -293,3 +293,8 @@ body {
     overflow: auto;
     height: 120px;
 }
+
+.btn-text-wrap {
+    white-space: normal !important;
+    word-wrap: break-word;
+}
