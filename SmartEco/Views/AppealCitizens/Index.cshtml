@@ -100,7 +100,8 @@
                 @questionAndAnswer.Question.Name
             </div>
             <div class="card-body">
-                <h6 class="card-title">@questionAndAnswer.Question.DateTime</h6>
+                <h5 class="card-title">@questionAndAnswer.Question.Title</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@questionAndAnswer.Question.DateTime</h6>
                 <p class="card-text">@questionAndAnswer.Question.Text</p>
                 <div class="float-right">
                     @if ((Role == "admin" || Role == "moderator") && questionAndAnswer.Answers.Count == 0)

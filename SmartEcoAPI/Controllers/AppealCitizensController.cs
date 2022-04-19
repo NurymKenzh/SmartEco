@@ -77,7 +77,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AppealCitizens/5
         /// <summary>
-        /// Получение детальной информации отдельного вопроса (работает только для администратора или модератора).
+        /// Получение детальной информации отдельного вопроса (работает только для авторизованных пользователей).
         /// </summary>
         /// <param name="id">
         /// Идентификационный номер вопроса (целочисленное значение).
@@ -85,8 +85,8 @@ namespace SmartEcoAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetQuestion/{id}")]
-        [Authorize(Roles = "admin, moderator")]
-        public async Task<ActionResult<Question>> GetQuestion(int id)
+        [Authorize]
+        public async Task<ActionResult<QuestionAndAnswers>> GetQuestion(int id)
         {
             var question = await _context.Question.FindAsync(id);
 
@@ -95,7 +95,20 @@ namespace SmartEcoAPI.Controllers
                 return NotFound();
             }
 
-            return question;
+            var answer = _context.Answer
+                .AsNoTracking()
+                .Where(a => a.QuestionId == id)
+                .SingleOrDefault();
+
+            return new QuestionAndAnswers() 
+            { 
+                Question = question, 
+                Answers = new List<Answer>() 
+                { 
+                    answer 
+                } 
+            };
+            //return question;
         }
 
         // POST: api/AppealCitizens

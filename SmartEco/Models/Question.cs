@@ -11,6 +11,10 @@ namespace SmartEco.Models
         public int Id { get; set; }
 
         [Required]
+        [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "Title")]
+        public string Title { get; set; }
+
+        [Required]
         [Display(ResourceType = typeof(Resources.Controllers.SharedResources), Name = "NameUser")]
         public string Name { get; set; }
 
