@@ -35,7 +35,6 @@ namespace SmartEcoAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetQuestionsAndAnswers")]
-        [Authorize]
         public async Task<ActionResult<PersonQuestions>> GetQuestionsAndAnswers(
             int? PageSize,
             int? PageNumber)
@@ -85,7 +84,6 @@ namespace SmartEcoAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetQuestion/{id}")]
-        [Authorize]
         public async Task<ActionResult<QuestionAndAnswers>> GetQuestion(int id)
         {
             var question = await _context.Question.FindAsync(id);
@@ -121,7 +119,6 @@ namespace SmartEcoAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("PostQuestion")]
-        [Authorize]
         public async Task<ActionResult<Question>> PostQuestion(Question question)
         {
             question.PersonId = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name).Id;
@@ -255,7 +252,6 @@ namespace SmartEcoAPI.Controllers
         // GET: api/Projects/Count
         [HttpGet("Count")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestionsCount()
         {
             var questions = _context.Question

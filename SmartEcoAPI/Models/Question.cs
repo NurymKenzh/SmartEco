@@ -19,7 +19,7 @@ namespace SmartEcoAPI.Models
 
         public bool IsResolved { get; set; }
 
-        public int PersonId { get; set; }
+        public int? PersonId { get; set; }
 
         public Person Person { get; set; }
     }
