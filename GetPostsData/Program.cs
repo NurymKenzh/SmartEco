@@ -16,7 +16,8 @@ namespace GetPostsData
         const string Heading = "Нет данных!",
             Theme = "SmartEco",
             FromEmail = "smartecokz@gmail.com",
-            Password = "Qwerty123_",
+            //Password = "Qwerty123_",
+            Password = "skqjcaiyizgljuak",
             SMTPServer = "smtp.gmail.com";
         const int SMTPPort = 465;
 
