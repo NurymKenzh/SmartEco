@@ -125,7 +125,10 @@
                     <h6 class="card-title">@answer.DateTime</h6>
                     <p class="card-text">@answer.Text</p>
                     <div class="float-right">
-                        @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                        @if (Role == "admin" || Role == "moderator")
+                        {
+                            @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                        }
                     </div>
                 </div>
             </div>
