@@ -821,9 +821,10 @@ namespace GetPostsData
                             $"WHERE \"Role\" = 'admin' OR \"Role\" = 'moderator' " +
                             $"ORDER BY \"Id\"");
                         persons = personsv
-                            //.Where(p => p.Email != "rkostylev@ecoservice.kz" &&
-                            //    p.Email != "biskakov@ecoservice.kz" &&
-                            //    p.Email != "n.a.k@bk.ru")
+                            .Where(p => p.Email != "rkostylev@ecoservice.kz" &&
+                                p.Email != "biskakov@ecoservice.kz" &&
+                                p.Email != "n.a.k@bk.ru" &&
+                                p.Email != "testuser@smarteco.com")
                             .ToList();
                     }
                     using (var connection = new NpgsqlConnection("Host=localhost;Database=GetPostsData;Username=postgres;Password=postgres"))
