@@ -338,12 +338,16 @@ namespace SmartEcoAPI.Controllers
                         .OrderBy(m => m.MeasuredParameter.NameRU)
                         .Include(m => m.MeasuredParameter)
                         .ToList();
+            var measuredDatas = _context.MeasuredData
+                .Include(m => m.MeasuredParameter)
+                .Where(m => m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                .OrderByDescending(m => m.DateTime)
+                .ToList();
 
             foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
             {
-                var measuredData = _context.MeasuredData
-                    .Include(m => m.MeasuredParameter)
-                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-20))
+                var measuredData = measuredDatas
+                    .Where(m => m.MonitoringPostId == ledScreens.MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId)
                     .LastOrDefault();
                 if (measuredData != null)
                 {
@@ -371,6 +375,7 @@ namespace SmartEcoAPI.Controllers
             var monitoringPosts = _context.MonitoringPost
                 .Where(m => m.Project != null && m.Project.Name == ProjectName && m.PollutionEnvironmentId == 2 && m.TurnOnOff == true);
             var measuredDatas = _context.MeasuredData
+                .Include(m => m.MeasuredParameter)
                 .Where(m => m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-60))
                 .OrderByDescending(m => m.DateTime)
                 .ToList();
@@ -418,11 +423,16 @@ namespace SmartEcoAPI.Controllers
                         .OrderBy(m => m.MeasuredParameter.NameRU)
                         .Include(m => m.MeasuredParameter)
                         .ToList();
+            var measuredDatas = _context.MeasuredData
+                .Include(m => m.MeasuredParameter)
+                .Where(m => m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-60))
+                .OrderByDescending(m => m.DateTime)
+                .ToList();
 
             foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
             {
-                var measuredData = _context.MeasuredData
-                    .Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId && m.Averaged == true && m.MeasuredParameter.MPCMaxSingle != null && m.DateTime != null && m.DateTime >= DateTime.Now.AddMinutes(-60))
+                var measuredData = measuredDatas
+                    .Where(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == monitoringPostMeasuredParameter.MeasuredParameterId)
                     .LastOrDefault();
                 if (measuredData != null)
                 {
