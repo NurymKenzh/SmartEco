@@ -46,7 +46,7 @@
                 </div>
                 <div class="form-group loginForm">
                     @*<input type="submit" class="btn btn-default" id="submitLogin" value="@SharedLocalizer["SignIn"] (@SharedLocalizer["ForAuthorizedUsers"])" />*@
-                    <button type="submit" class="btn btn-default" id="submitLogin">
+                    <button type="submit" class="btn btn-default btn-text-wrap" id="submitLogin">
                         <div>@SharedLocalizer["SignIn"]</div> 
                         <div>(@SharedLocalizer["ForAuthorizedUsers"])</div>
                     </button>
@@ -76,12 +76,12 @@
             //$('.userEmail').text(data.email);
             //$('.userInfo').css('display', 'block');
             $('.loginForm').css('display', 'none');
-            sessionStorage.setItem(tokenKey, data.access_token);
+            sessionStorage.setItem(tokenKey, data.accessToken);
             $.ajax({
                 type: 'POST',
                 url: '@Url.Action("SetToken")',
                 data: {
-                    Token: data.access_token,
+                    Token: data.accessToken,
                     Role: data.role
                 }
             }).success(function (datat) {

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -8,6 +9,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Newtonsoft.Json;
 using SmartEco.Models;
+using SmartEcoAPI.Models.Account;
 
 namespace SmartEco.Controllers
 {
@@ -68,21 +70,15 @@ namespace SmartEco.Controllers
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync("api/Account/Register", model);
 
-                string OutputViewText = await response.Content.ReadAsStringAsync();
-                OutputViewText = OutputViewText.Replace("\"", "");
-                try
+                if (response.IsSuccessStatusCode || response.StatusCode == HttpStatusCode.Unauthorized)
                 {
-                    response.EnsureSuccessStatusCode();
-                    ViewBag.ResultMessage = OutputViewText;
+                    var authResponse = await response.Content.ReadAsAsync<AuthResponse>();
+                    ViewBag.ResultMessage = authResponse.Message;
                 }
-                catch
+                else
                 {
-                    dynamic errors = JsonConvert.DeserializeObject<dynamic>(OutputViewText);
-                    foreach (Newtonsoft.Json.Linq.JProperty property in errors.Children())
-                    {
-                        ModelState.AddModelError(property.Name, property.Value[0].ToString());
-                    }
-                    return View(model);
+                    string OutputViewText = await response.Content.ReadAsStringAsync();
+                    ViewBag.ResultMessage = OutputViewText;
                 }
             }
             return View(model);

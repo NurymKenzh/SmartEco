@@ -122,12 +122,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
                             </li>
                         }
-                        @if (!string.IsNullOrEmpty(Token))
-                        {
+                        @*@if (!string.IsNullOrEmpty(Token))
+                        {*@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="AppealCitizens" asp-action="Index">@SharedLocalizer["AppealCitizens"]</a>
                             </li>
-                        }
+                        @*}*@
                         @*@if (string.IsNullOrEmpty(Token))
                         {
                             <li class="nav-item mx-auto">
@@ -147,7 +147,8 @@
     </div>
     <footer class="border-top footer text-muted">
         <div class="container">
-            &copy; @DateTime.Now.Year.ToString() - SmartEco
+            &copy; @DateTime.Now.Year.ToString() - SmartEco | 
+            <a class="text-secondary" asp-controller="Home" asp-action="PrivacyPolicy">@SharedLocalizer["PrivacyPolicy"]</a>
             @await Html.PartialAsync("_SelectLanguagePartial")
         </div>
         <div class="container">

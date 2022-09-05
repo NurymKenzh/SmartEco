@@ -9,13 +9,17 @@ namespace SmartEcoAPI.Models
     {
         public int Id { get; set; }
 
+        public string Title { get; set; }
+
         public string Name { get; set; }
 
         public string Text { get; set; }
 
         public DateTime DateTime { get; set; }
 
-        public int PersonId { get; set; }
+        public bool IsResolved { get; set; }
+
+        public int? PersonId { get; set; }
 
         public Person Person { get; set; }
     }

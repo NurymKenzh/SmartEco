@@ -316,14 +316,17 @@ namespace SmartEcoAPI.Controllers
                 .Include(m => m.PollutionEnvironment)
                 .Include(m => m.Project)
                 .Where(m => (m.DataProviderId == (int)DataProviderId) || DataProviderId == null);
+            var activePosts = _context.MeasuredData
+                .Where(m => m.DateTime >= minExceedDateTime)
+                .ToList();
+
             List<MonitoringPost> monitoringPostsInactive = new List<MonitoringPost>();
 
             foreach (MonitoringPost monitoringPost in monitoringPosts)
             {
-                bool active = _context.MeasuredData
-                    .Where(m => m.MonitoringPostId == monitoringPost.Id
-                        && m.DateTime >= minExceedDateTime)
-                    .Include(m => m.MeasuredParameter)
+                bool active = activePosts
+                    .Where(m => m.MonitoringPostId == monitoringPost.Id)
+                    //.Include(m => m.MeasuredParameter)
                     //.Where(m => m.Value > m.MeasuredParameter.MPC && m.MeasuredParameter.MPC != null)
                     .FirstOrDefault() != null;
                 if (!active)

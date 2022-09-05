@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IdentityModel.Tokens.Jwt;
 using System.Linq;
+using System.Net;
 using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
@@ -12,6 +13,7 @@ using Microsoft.IdentityModel.Tokens;
 using Newtonsoft.Json;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models;
+using SmartEcoAPI.Models.Account;
 
 namespace SmartEcoAPI.Controllers
 {
@@ -27,7 +29,7 @@ namespace SmartEcoAPI.Controllers
         }
 
         /// <summary>
-        /// Получение токена авторизованного пользователя. Работает только для авторизованных пользователей.
+        /// Получение токена авторизованного пользователя. Работает только для зарегистрированных пользователей.
         /// </summary>
         /// <returns></returns>
         [HttpPost("GetToken")]
@@ -39,39 +41,22 @@ namespace SmartEcoAPI.Controllers
             var identity = GetIdentity(email, password);
             if (identity == null)
             {
-                Response.StatusCode = 400;
-                //await Response.WriteAsync("Invalid username or password.");
-                var responseerror = new
+                var authResponse = new AuthResponse
                 {
-                    error = "Invalid username or password."
+                    Message = "Invalid username or password."
                 };
-                Response.ContentType = "application/json";
-                await Response.WriteAsync(JsonConvert.SerializeObject(responseerror, new JsonSerializerSettings { Formatting = Formatting.Indented }));
-                //return;
+                await SendAuthResponse(authResponse, HttpStatusCode.Unauthorized);
             }
             else
             {
-                var now = DateTime.UtcNow;
-                // создаем JWT-токен
-                var jwt = new JwtSecurityToken(
-                        issuer: AuthOptions.ISSUER,
-                        audience: AuthOptions.AUDIENCE,
-                        notBefore: now,
-                        claims: identity.Claims,
-                        expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
-                        signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-                var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-
-                var response = new
+                var encodedJwt = CreateToken(email, password, identity);
+                var authResponse = new AuthResponse
                 {
-                    access_token = encodedJwt,
-                    email = identity.Name,
-                    role = _context.Person.FirstOrDefault(p => p.Email == identity.Name)?.Role
+                    AccessToken = encodedJwt,
+                    Email = identity.Name,
+                    Role = _context.Person.FirstOrDefault(p => p.Email == identity.Name)?.Role
                 };
-
-                // сериализация ответа
-                Response.ContentType = "application/json";
-                await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented }));
+                await SendAuthResponse(authResponse, HttpStatusCode.OK);
             }
         }
 
@@ -102,23 +87,28 @@ namespace SmartEcoAPI.Controllers
         /// </param>
         /// <returns></returns>
         [HttpPost("Register")]
-        public async Task<string> Register(Person person)
+        public async Task Register(Person person)
         {
+            var authResponse = new AuthResponse();
             if (string.IsNullOrEmpty(person.Password))
             {
-                return $"The Password must be at least 6 characters long.";
+                authResponse.Message = $"The Password must be at least 6 characters long.";
+                await SendAuthResponse(authResponse, HttpStatusCode.Unauthorized);
             }
             if (person.Password.Length < 6)
             {
-                return $"The Password must be at least 6 characters long.";
+                authResponse.Message = $"The Password must be at least 6 characters long.";
+                await SendAuthResponse(authResponse, HttpStatusCode.Unauthorized);
             }
             if (!IsValidEmail(person.Email))
             {
-                return $"{person.Email} is not a valid email.";
+                authResponse.Message = $"{person.Email} is not a valid email.";
+                await SendAuthResponse(authResponse, HttpStatusCode.Unauthorized);
             }
             if (_context.Person.FirstOrDefault(p => p.Email == person.Email) != null)
             {
-                return $"User with {person.Email} email already exist.";
+                authResponse.Message = $"User with {person.Email} email already exist.";
+                await SendAuthResponse(authResponse, HttpStatusCode.Unauthorized);
             }
 
             person.Role = "";
@@ -127,7 +117,17 @@ namespace SmartEcoAPI.Controllers
             _context.Person.Add(person);
             await _context.SaveChangesAsync();
 
-            return $"User {person.Email} successfully registered!";
+            var identity = GetIdentity(person.Email, person.Password);
+            var encodedJwt = CreateToken(person.Email, person.Password, identity);
+            authResponse = new AuthResponse
+            {
+                AccessToken = encodedJwt,
+                Email = identity.Name,
+                Role = _context.Person.FirstOrDefault(p => p.Email == identity.Name)?.Role,
+                Message = $"User {person.Email} successfully registered!"
+            };
+
+            await SendAuthResponse(authResponse, HttpStatusCode.OK);
         }
 
         private bool IsValidEmail(string email)
@@ -169,6 +169,28 @@ namespace SmartEcoAPI.Controllers
                 iterationCount: 10000,
                 numBytesRequested: 256 / 8));
             return hashed;
+        }
+
+        private string CreateToken(string email, string password, ClaimsIdentity identity)
+        {
+            var now = DateTime.UtcNow;
+            // создаем JWT-токен
+            var jwt = new JwtSecurityToken(
+                issuer: AuthOptions.ISSUER,
+                audience: AuthOptions.AUDIENCE,
+                notBefore: now,
+                claims: identity.Claims,
+                expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
+                signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
+            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
+            return encodedJwt;
+        }
+
+        private async Task SendAuthResponse(AuthResponse response, HttpStatusCode statusCode)
+        {
+            Response.StatusCode = (int)statusCode;
+            Response.ContentType = "application/json";
+            await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore }));
         }
 
         //[Authorize]

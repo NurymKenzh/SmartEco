@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20220419081515_Question_20220419_00")]
+    partial class Question_20220419_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -812,7 +814,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<string>("Name");
 
-                    b.Property<int?>("PersonId");
+                    b.Property<int>("PersonId");
 
                     b.Property<string>("Text");
 
@@ -1258,7 +1260,8 @@ namespace SmartEcoAPI.Migrations
                 {
                     b.HasOne("SmartEcoAPI.Models.Person", "Person")
                         .WithMany()
-                        .HasForeignKey("PersonId");
+                        .HasForeignKey("PersonId")
+                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ReceptionRecyclingPoint", b =>

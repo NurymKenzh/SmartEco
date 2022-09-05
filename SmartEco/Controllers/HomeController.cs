@@ -37,7 +37,7 @@ namespace SmartEco.Controllers
             }
         }
 
-        public IActionResult Privacy()
+        public IActionResult PrivacyPolicy()
         {
             return View();
         }

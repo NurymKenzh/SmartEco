@@ -6,6 +6,7 @@ using SmartEcoAPI.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using System.Threading.Tasks;
 
 namespace SmartEcoAPI.Controllers
@@ -34,7 +35,6 @@ namespace SmartEcoAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetQuestionsAndAnswers")]
-        [Authorize]
         public async Task<ActionResult<PersonQuestions>> GetQuestionsAndAnswers(
             int? PageSize,
             int? PageNumber)
@@ -76,7 +76,7 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/AppealCitizens/5
         /// <summary>
-        /// Получение детальной информации отдельного вопроса (работает только для администратора или модератора).
+        /// Получение детальной информации отдельного вопроса (работает только для авторизованных пользователей).
         /// </summary>
         /// <param name="id">
         /// Идентификационный номер вопроса (целочисленное значение).
@@ -84,8 +84,7 @@ namespace SmartEcoAPI.Controllers
         /// <returns></returns>
         [HttpGet]
         [Route("GetQuestion/{id}")]
-        [Authorize(Roles = "admin, moderator")]
-        public async Task<ActionResult<Question>> GetQuestion(int id)
+        public async Task<ActionResult<QuestionAndAnswers>> GetQuestion(int id)
         {
             var question = await _context.Question.FindAsync(id);
 
@@ -94,7 +93,20 @@ namespace SmartEcoAPI.Controllers
                 return NotFound();
             }
 
-            return question;
+            var answer = _context.Answer
+                .AsNoTracking()
+                .Where(a => a.QuestionId == id)
+                .SingleOrDefault();
+
+            return new QuestionAndAnswers() 
+            { 
+                Question = question, 
+                Answers = new List<Answer>() 
+                { 
+                    answer 
+                } 
+            };
+            //return question;
         }
 
         // POST: api/AppealCitizens
@@ -107,7 +119,6 @@ namespace SmartEcoAPI.Controllers
         /// <returns></returns>
         [HttpPost]
         [Route("PostQuestion")]
-        [Authorize]
         public async Task<ActionResult<Question>> PostQuestion(Question question)
         {
             question.PersonId = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name).Id;
@@ -133,14 +144,37 @@ namespace SmartEcoAPI.Controllers
         {
             try
             {
-                answer.PersonId = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name).Id;
-                answer.DateTime = DateTime.Now;
-                _context.Answer.Add(answer);
-                await _context.SaveChangesAsync();
+                var isAnswered = _context.Answer.Any(a => a.QuestionId == answer.QuestionId);
+                if (isAnswered)
+                {
+                    return StatusCode((int)HttpStatusCode.InternalServerError);
+                }
             }
-            catch (Exception ex)
+            catch
             {
+                return BadRequest();
+            }
+            using (var transaction = _context.Database.BeginTransaction())
+            {
+                try
+                {
+                    answer.PersonId = _context.Person.FirstOrDefault(p => p.Email == User.Identity.Name).Id;
+                    answer.DateTime = DateTime.Now;
+                    _context.Answer.Add(answer);
+                    await _context.SaveChangesAsync();
 
+                    var question = await _context.Question.FindAsync(answer.QuestionId);
+                    question.IsResolved = true;
+                    _context.Question.Update(question);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return BadRequest();
+                }
             }
 
             return answer;
@@ -184,22 +218,40 @@ namespace SmartEcoAPI.Controllers
         [Authorize(Roles = "admin, moderator")]
         public async Task<ActionResult<Answer>> DeleteAnswer(int id)
         {
-            var answer = await _context.Answer.FindAsync(id);
-            if (answer == null)
+            using (var transaction = _context.Database.BeginTransaction())
             {
-                return NotFound();
+                try
+                {
+                    var answer = await _context.Answer.FindAsync(id);
+                    if (answer == null)
+                    {
+                        return NotFound();
+                    }
+
+                    var question = await _context.Question.FindAsync(answer.QuestionId);
+
+                    _context.Answer.Remove(answer);
+                    await _context.SaveChangesAsync();
+
+                    question.IsResolved = false;
+                    _context.Question.Update(question);
+                    await _context.SaveChangesAsync();
+
+                    transaction.Commit();
+
+                    return answer;
+                }
+                catch (Exception ex)
+                {
+                    transaction.Rollback();
+                    return BadRequest();
+                }
             }
-
-            _context.Answer.Remove(answer);
-            await _context.SaveChangesAsync();
-
-            return answer;
         }
 
         // GET: api/Projects/Count
         [HttpGet("Count")]
         [ApiExplorerSettings(IgnoreApi = true)]
-        [Authorize]
         public async Task<ActionResult<IEnumerable<Question>>> GetQuestionsCount()
         {
             var questions = _context.Question

@@ -100,11 +100,15 @@
                 @questionAndAnswer.Question.Name
             </div>
             <div class="card-body">
-                <h6 class="card-title">@questionAndAnswer.Question.DateTime</h6>
+                <h5 class="card-title">@questionAndAnswer.Question.Title</h5>
+                <h6 class="card-subtitle mb-2 text-muted">@questionAndAnswer.Question.DateTime</h6>
                 <p class="card-text">@questionAndAnswer.Question.Text</p>
                 <div class="float-right">
-                    @Html.ActionLink(SharedLocalizer["ToAnswer"], "ToAnswer", new { questionId = questionAndAnswer.Question.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-primary" })
-                    @if ((questionAndAnswer.Answers.Count == 0 && ViewBag.PersonQuestions.Person.Id == questionAndAnswer.Question.PersonId) || (Role == "admin" || Role == "moderator"))
+                    @if ((Role == "admin" || Role == "moderator") && questionAndAnswer.Answers.Count == 0)
+                    {
+                        @Html.ActionLink(SharedLocalizer["ToAnswer"], "ToAnswer", new { questionId = questionAndAnswer.Question.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-primary" })
+                    }
+                    @if ((questionAndAnswer.Answers.Count == 0 && ViewBag.PersonQuestions.Person != null && ViewBag.PersonQuestions.Person.Id == questionAndAnswer.Question.PersonId) || (Role == "admin" || Role == "moderator"))
                     {
                         @Html.ActionLink(SharedLocalizer["Delete"], "DeleteQuestion", new { id = questionAndAnswer.Question.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
                     }
@@ -121,7 +125,10 @@
                     <h6 class="card-title">@answer.DateTime</h6>
                     <p class="card-text">@answer.Text</p>
                     <div class="float-right">
-                        @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                        @if (Role == "admin" || Role == "moderator")
+                        {
+                            @Html.ActionLink(SharedLocalizer["Delete"], "DeleteAnswer", new { id = answer.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize }, new { @class = "btn btn-danger" })
+                        }
                     </div>
                 </div>
             </div>

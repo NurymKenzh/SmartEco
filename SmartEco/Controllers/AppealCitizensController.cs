@@ -129,7 +129,7 @@ namespace SmartEco.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> AskQuestion([Bind("Id,Name,Text")] Question question,
+        public async Task<IActionResult> AskQuestion([Bind("Id,Title,Name,Text")] Question question,
             int? PageSize,
             int? PageNumber)
         {
@@ -184,7 +184,8 @@ namespace SmartEco.Controllers
             HttpResponseMessage response = await _HttpApiClient.GetAsync(url + route);
             if (response.IsSuccessStatusCode)
             {
-                question = await response.Content.ReadAsAsync<Question>();
+                var questionAndAnswer = await response.Content.ReadAsAsync<QuestionAndAnswers>();
+                question = questionAndAnswer.Question;
             }
 
             ViewBag.Question = question;
