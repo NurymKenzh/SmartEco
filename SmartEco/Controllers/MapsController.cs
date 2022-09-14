@@ -154,41 +154,7 @@ namespace SmartEco.Controllers
             });
             ViewBag.KazHydrometSoilPostsLayerJson = objectKazHydrometSoilPosts.ToString();
 
-            string urlPollutionSources = "api/PollutionSources";
-            List<PollutionSource> pollutionSources = new List<PollutionSource>();
-            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
-            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
-            JObject objectPollutionSources = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from pollutionSource in pollutionSources
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = pollutionSource.Id,
-                                   Name = pollutionSource.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                            {
-                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                            },
-                               }
-                           }
-            });
+            JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
             string urlMeasuredDatas = "api/MeasuredDatas",
@@ -223,14 +189,7 @@ namespace SmartEco.Controllers
                 return Redirect("/");
             }
 
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            string urlMeasuredParameters = "api/MeasuredParameters",
-                routeMeasuredParameters = "";
-            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            if (responseMeasuredParameters.IsSuccessStatusCode)
-            {
-                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            }
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
 
             ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
             ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
@@ -249,96 +208,18 @@ namespace SmartEco.Controllers
 
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            string urlMonitoringPosts = "api/MonitoringPosts";
-            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
-            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
-            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
                 .Where(m => m.Project != null && m.Project.Name == "KaragandaRegion"
                 && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsAutomatic = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == true)
-                .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsHands = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == false)
-                .ToList();
-            JObject kazHydrometAirMonitoringPostsAutomaticObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsAutomatic
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
-
-            JObject kazHydrometAirMonitoringPostsHandsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsHands
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
 
             ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
@@ -349,79 +230,12 @@ namespace SmartEco.Controllers
                 && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in ecoserviceAirMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
 
-            string urlPollutionSources = "api/PollutionSources";
-            List<PollutionSource> pollutionSources = new List<PollutionSource>();
-            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
-            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
-            JObject objectPollutionSources = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from pollutionSource in pollutionSources
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = pollutionSource.Id,
-                                   Name = pollutionSource.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                            {
-                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                            },
-                               }
-                           }
-            });
+            JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
             Task<string> jsonString = null;
@@ -459,14 +273,7 @@ namespace SmartEco.Controllers
                 return Redirect("/");
             }
 
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            string urlMeasuredParameters = "api/MeasuredParameters",
-                routeMeasuredParameters = "";
-            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            if (responseMeasuredParameters.IsSuccessStatusCode)
-            {
-                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            }
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
 
             ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
             ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
@@ -476,10 +283,7 @@ namespace SmartEco.Controllers
 
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            string urlMonitoringPosts = "api/MonitoringPosts";
-            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
-            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
-            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
                 .Where(m => /*m.NorthLatitude >= 42.32M && m.NorthLatitude <= 42.50M*/
@@ -488,41 +292,8 @@ namespace SmartEco.Controllers
                     && m.TurnOnOff == true)
                 .Where(m => m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString())
                 .ToList();
-            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in ecoserviceAirMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
 
             return View();
@@ -536,14 +307,7 @@ namespace SmartEco.Controllers
                 return Redirect("/");
             }
 
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            string urlMeasuredParameters = "api/MeasuredParameters",
-                routeMeasuredParameters = "";
-            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            if (responseMeasuredParameters.IsSuccessStatusCode)
-            {
-                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            }
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
 
             ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
             ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
@@ -562,10 +326,7 @@ namespace SmartEco.Controllers
 
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            string urlMonitoringPosts = "api/MonitoringPosts";
-            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
-            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
-            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
                 .Where(m => m.Project != null && m.Project.Name == "Almaty"
@@ -573,86 +334,11 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 2
                 && m.TurnOnOff == true)
                 .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsAutomatic = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == true)
-                .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsHands = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == false)
-                .ToList();
-            JObject kazHydrometAirMonitoringPostsAutomaticObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsAutomatic
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
 
-            JObject kazHydrometAirMonitoringPostsHandsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsHands
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
 
             ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
@@ -663,41 +349,8 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 3
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject kazHydrometWaterMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometWaterMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometWaterMonitoringPostsObject = GetObjectKazHydrometWaterMonitoringPosts(decimaldelimiter, kazHydrometWaterMonitoringPosts);
             ViewBag.KazHydrometWaterMonitoringPostsLayerJson = kazHydrometWaterMonitoringPostsObject.ToString();
 
             List<MonitoringPost> kazHydrometTransportMonitoringPosts = monitoringPosts
@@ -706,41 +359,8 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 7
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject kazHydrometTransportMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometTransportMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometTransportMonitoringPostsObject = GetObjectKazHydrometTransportMonitoringPosts(decimaldelimiter, kazHydrometTransportMonitoringPosts);
             ViewBag.KazHydrometTransportMonitoringPostsLayerJson = kazHydrometTransportMonitoringPostsObject.ToString();
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
@@ -749,193 +369,28 @@ namespace SmartEco.Controllers
                 && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in ecoserviceAirMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+            
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
 
-            string urlPollutionSources = "api/PollutionSources";
-            List<PollutionSource> pollutionSources = new List<PollutionSource>();
-            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
-            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
-            JObject objectPollutionSources = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from pollutionSource in pollutionSources
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = pollutionSource.Id,
-                                   Name = pollutionSource.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                            {
-                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                            },
-                               }
-                           }
-            });
+            JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
-            string urlLEDScreens = "api/LEDScreens";
-            List<LEDScreen> ledScreens = new List<LEDScreen>();
-            HttpResponseMessage responseLEDScreens = await _HttpApiClient.GetAsync(urlLEDScreens);
-            ledScreens = await responseLEDScreens.Content.ReadAsAsync<List<LEDScreen>>();
-            JObject objectLEDScreens = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from ledScreen in ledScreens
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = ledScreen.Id,
-                                   Name = ledScreen.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(ledScreen.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(ledScreen.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<LEDScreen> ledScreens = await GetLEDScreens();
+
+            JObject objectLEDScreens = GetObjectLEDScreens(decimaldelimiter, ledScreens);
             ViewBag.LEDScreensLayerJson = objectLEDScreens.ToString();
 
-            string urlEcoposts = "api/Ecoposts";
-            List<Ecopost> ecoposts = new List<Ecopost>();
-            HttpResponseMessage responseEcoposts = await _HttpApiClient.GetAsync(urlEcoposts);
-            ecoposts = await responseEcoposts.Content.ReadAsAsync<List<Ecopost>>();
-            JObject objectEcoposts = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from ecopost in ecoposts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = ecopost.Id,
-                                   Name = ecopost.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(ecopost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(ecopost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<Ecopost> ecoposts = await GetEcoposts();
+
+            JObject objectEcoposts = GetObjectEcoposts(decimaldelimiter, ecoposts);
             ViewBag.EcopostsLayerJson = objectEcoposts.ToString();
 
-            string urlReceptionRecyclingPoints = "api/ReceptionRecyclingPoints";
-            List<ReceptionRecyclingPoint> receptionRecyclingPoints = new List<ReceptionRecyclingPoint>();
-            HttpResponseMessage responseReceptionRecyclingPoints = await _HttpApiClient.GetAsync(urlReceptionRecyclingPoints);
-            receptionRecyclingPoints = await responseReceptionRecyclingPoints.Content.ReadAsAsync<List<ReceptionRecyclingPoint>>();
-            receptionRecyclingPoints = receptionRecyclingPoints.Where(r => r.NorthLatitude != null && r.EastLongitude != null).ToList();
-            JObject objectReceptionRecyclingPoints = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from receptionRecyclingPoint in receptionRecyclingPoints
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = receptionRecyclingPoint.Id,
-                                   Organization = receptionRecyclingPoint.Organization,
-                                   Address = receptionRecyclingPoint.Address,
-                                   TypesRaw = receptionRecyclingPoint.TypesRaw
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(receptionRecyclingPoint.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(receptionRecyclingPoint.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<ReceptionRecyclingPoint> receptionRecyclingPoints = await GetReceptionRecyclingPoints();
+
+            JObject objectReceptionRecyclingPoints = GetObjectReceptionRecyclingPoints(decimaldelimiter, receptionRecyclingPoints);
             ViewBag.ReceptionRecyclingPointsLayerJson = objectReceptionRecyclingPoints.ToString();
 
             //Data for calculate dissipation
@@ -1031,14 +486,7 @@ namespace SmartEco.Controllers
                 return Redirect("/");
             }
 
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            string urlMeasuredParameters = "api/MeasuredParameters",
-                routeMeasuredParameters = "";
-            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            if (responseMeasuredParameters.IsSuccessStatusCode)
-            {
-                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            }
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
 
             ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
             ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
@@ -1057,10 +505,7 @@ namespace SmartEco.Controllers
 
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            string urlMonitoringPosts = "api/MonitoringPosts";
-            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
-            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
-            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
                 .Where(m => m.Project != null && m.Project.Name == "Almaty"
@@ -1068,86 +513,11 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 2
                 && m.TurnOnOff == true)
                 .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsAutomatic = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == true)
-                .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsHands = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == false)
-                .ToList();
-            JObject kazHydrometAirMonitoringPostsAutomaticObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsAutomatic
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
-            ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
 
-            JObject kazHydrometAirMonitoringPostsHandsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsHands
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
+            
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
 
             ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
@@ -1158,193 +528,28 @@ namespace SmartEco.Controllers
                 && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in ecoserviceAirMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+            
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
 
-            string urlPollutionSources = "api/PollutionSources";
-            List<PollutionSource> pollutionSources = new List<PollutionSource>();
-            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
-            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
-            JObject objectPollutionSources = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from pollutionSource in pollutionSources
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = pollutionSource.Id,
-                                   Name = pollutionSource.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                            {
-                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                            },
-                               }
-                           }
-            });
+            JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
-            string urlLEDScreens = "api/LEDScreens";
-            List<LEDScreen> ledScreens = new List<LEDScreen>();
-            HttpResponseMessage responseLEDScreens = await _HttpApiClient.GetAsync(urlLEDScreens);
-            ledScreens = await responseLEDScreens.Content.ReadAsAsync<List<LEDScreen>>();
-            JObject objectLEDScreens = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from ledScreen in ledScreens
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = ledScreen.Id,
-                                   Name = ledScreen.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(ledScreen.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(ledScreen.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<LEDScreen> ledScreens = await GetLEDScreens();
+
+            JObject objectLEDScreens = GetObjectLEDScreens(decimaldelimiter, ledScreens);
             ViewBag.LEDScreensLayerJson = objectLEDScreens.ToString();
 
-            string urlEcoposts = "api/Ecoposts";
-            List<Ecopost> ecoposts = new List<Ecopost>();
-            HttpResponseMessage responseEcoposts = await _HttpApiClient.GetAsync(urlEcoposts);
-            ecoposts = await responseEcoposts.Content.ReadAsAsync<List<Ecopost>>();
-            JObject objectEcoposts = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from ecopost in ecoposts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = ecopost.Id,
-                                   Name = ecopost.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(ecopost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(ecopost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<Ecopost> ecoposts = await GetEcoposts();
+
+            JObject objectEcoposts = GetObjectEcoposts(decimaldelimiter, ecoposts);
             ViewBag.EcopostsLayerJson = objectEcoposts.ToString();
 
-            string urlReceptionRecyclingPoints = "api/ReceptionRecyclingPoints";
-            List<ReceptionRecyclingPoint> receptionRecyclingPoints = new List<ReceptionRecyclingPoint>();
-            HttpResponseMessage responseReceptionRecyclingPoints = await _HttpApiClient.GetAsync(urlReceptionRecyclingPoints);
-            receptionRecyclingPoints = await responseReceptionRecyclingPoints.Content.ReadAsAsync<List<ReceptionRecyclingPoint>>();
-            receptionRecyclingPoints = receptionRecyclingPoints.Where(r => r.NorthLatitude != null && r.EastLongitude != null).ToList();
-            JObject objectReceptionRecyclingPoints = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from receptionRecyclingPoint in receptionRecyclingPoints
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = receptionRecyclingPoint.Id,
-                                   Organization = receptionRecyclingPoint.Organization,
-                                   Address = receptionRecyclingPoint.Address,
-                                   TypesRaw = receptionRecyclingPoint.TypesRaw
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(receptionRecyclingPoint.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(receptionRecyclingPoint.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<ReceptionRecyclingPoint> receptionRecyclingPoints = await GetReceptionRecyclingPoints();
+
+            JObject objectReceptionRecyclingPoints = GetObjectReceptionRecyclingPoints(decimaldelimiter, receptionRecyclingPoints);
             ViewBag.ReceptionRecyclingPointsLayerJson = objectReceptionRecyclingPoints.ToString();
 
             Task<string> jsonString = null;
@@ -1382,14 +587,7 @@ namespace SmartEco.Controllers
                 return Redirect("/");
             }
 
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            string urlMeasuredParameters = "api/MeasuredParameters",
-                routeMeasuredParameters = "";
-            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            if (responseMeasuredParameters.IsSuccessStatusCode)
-            {
-                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            }
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
 
             ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
             ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
@@ -1408,10 +606,7 @@ namespace SmartEco.Controllers
 
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            string urlMonitoringPosts = "api/MonitoringPosts";
-            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
-            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
-            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
                 .Where(m => m.Project != null && m.Project.Name == "Shymkent"
@@ -1419,86 +614,11 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 2
                 && m.TurnOnOff == true)
                 .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsAutomatic = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == true)
-                .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsHands = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == false)
-                .ToList();
-            JObject kazHydrometAirMonitoringPostsAutomaticObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsAutomatic
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
 
-            JObject kazHydrometAirMonitoringPostsHandsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsHands
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
 
             ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
@@ -1509,41 +629,8 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 3
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject kazHydrometWaterMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometWaterMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometWaterMonitoringPostsObject = GetObjectKazHydrometWaterMonitoringPosts(decimaldelimiter, kazHydrometWaterMonitoringPosts);
             ViewBag.KazHydrometWaterMonitoringPostsLayerJson = kazHydrometWaterMonitoringPostsObject.ToString();
 
             List<MonitoringPost> kazHydrometTransportMonitoringPosts = monitoringPosts
@@ -1552,41 +639,8 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 7
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject kazHydrometTransportMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometTransportMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometTransportMonitoringPostsObject = GetObjectKazHydrometTransportMonitoringPosts(decimaldelimiter, kazHydrometTransportMonitoringPosts);
             ViewBag.KazHydrometTransportMonitoringPostsLayerJson = kazHydrometTransportMonitoringPostsObject.ToString();
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
@@ -1595,42 +649,10 @@ namespace SmartEco.Controllers
                 && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in ecoserviceAirMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+            
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
 
             //string urlPollutionSources = "api/PollutionSources";
@@ -1763,14 +785,7 @@ namespace SmartEco.Controllers
                 return Redirect("/");
             }
 
-            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
-            string urlMeasuredParameters = "api/MeasuredParameters",
-                routeMeasuredParameters = "";
-            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
-            if (responseMeasuredParameters.IsSuccessStatusCode)
-            {
-                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
-            }
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
 
             ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
             ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
@@ -1789,10 +804,7 @@ namespace SmartEco.Controllers
 
             string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
 
-            string urlMonitoringPosts = "api/MonitoringPosts";
-            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
-            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
-            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
 
             List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
                 .Where(m => m.Project != null && m.Project.Name == "Altynalmas"
@@ -1800,86 +812,11 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 2
                 && m.TurnOnOff == true)
                 .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsAutomatic = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == true)
-                .ToList();
-            List<MonitoringPost> kazHydrometAirMonitoringPostsHands = kazHydrometAirMonitoringPosts
-                .Where(m => m.Automatic == false)
-                .ToList();
-            JObject kazHydrometAirMonitoringPostsAutomaticObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsAutomatic
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
 
-            JObject kazHydrometAirMonitoringPostsHandsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometAirMonitoringPostsHands
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                                   Automatic = monitoringPost.Automatic
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
             ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
 
             ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
@@ -1890,41 +827,8 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 3
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject kazHydrometWaterMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometWaterMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometWaterMonitoringPostsObject = GetObjectKazHydrometWaterMonitoringPosts(decimaldelimiter, kazHydrometWaterMonitoringPosts);
             ViewBag.KazHydrometWaterMonitoringPostsLayerJson = kazHydrometWaterMonitoringPostsObject.ToString();
 
             List<MonitoringPost> kazHydrometTransportMonitoringPosts = monitoringPosts
@@ -1933,41 +837,8 @@ namespace SmartEco.Controllers
                 && m.PollutionEnvironmentId == 7
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject kazHydrometTransportMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in kazHydrometTransportMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject kazHydrometTransportMonitoringPostsObject = GetObjectKazHydrometTransportMonitoringPosts(decimaldelimiter, kazHydrometTransportMonitoringPosts);
             ViewBag.KazHydrometTransportMonitoringPostsLayerJson = kazHydrometTransportMonitoringPostsObject.ToString();
 
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
@@ -1976,193 +847,28 @@ namespace SmartEco.Controllers
                 && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
                 && m.TurnOnOff == true)
                 .ToList();
-            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from monitoringPost in ecoserviceAirMonitoringPosts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = monitoringPost.Id,
-                                   Number = monitoringPost.Number,
-                                   Name = monitoringPost.Name,
-                                   AdditionalInformation = monitoringPost.AdditionalInformation,
-                                   DataProviderName = monitoringPost.DataProvider.Name,
-                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                    {
-                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                    },
-                               }
-                           }
-            });
+
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+            
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
 
-            string urlPollutionSources = "api/PollutionSources";
-            List<PollutionSource> pollutionSources = new List<PollutionSource>();
-            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
-            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
-            JObject objectPollutionSources = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from pollutionSource in pollutionSources
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = pollutionSource.Id,
-                                   Name = pollutionSource.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                            {
-                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                            },
-                               }
-                           }
-            });
+            JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
-            string urlLEDScreens = "api/LEDScreens";
-            List<LEDScreen> ledScreens = new List<LEDScreen>();
-            HttpResponseMessage responseLEDScreens = await _HttpApiClient.GetAsync(urlLEDScreens);
-            ledScreens = await responseLEDScreens.Content.ReadAsAsync<List<LEDScreen>>();
-            JObject objectLEDScreens = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from ledScreen in ledScreens
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = ledScreen.Id,
-                                   Name = ledScreen.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(ledScreen.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(ledScreen.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<LEDScreen> ledScreens = await GetLEDScreens();
+
+            JObject objectLEDScreens = GetObjectLEDScreens(decimaldelimiter, ledScreens);
             ViewBag.LEDScreensLayerJson = objectLEDScreens.ToString();
 
-            string urlEcoposts = "api/Ecoposts";
-            List<Ecopost> ecoposts = new List<Ecopost>();
-            HttpResponseMessage responseEcoposts = await _HttpApiClient.GetAsync(urlEcoposts);
-            ecoposts = await responseEcoposts.Content.ReadAsAsync<List<Ecopost>>();
-            JObject objectEcoposts = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from ecopost in ecoposts
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = ecopost.Id,
-                                   Name = ecopost.Name
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(ecopost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(ecopost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<Ecopost> ecoposts = await GetEcoposts();
+
+            JObject objectEcoposts = GetObjectEcoposts(decimaldelimiter, ecoposts);
             ViewBag.EcopostsLayerJson = objectEcoposts.ToString();
 
-            string urlReceptionRecyclingPoints = "api/ReceptionRecyclingPoints";
-            List<ReceptionRecyclingPoint> receptionRecyclingPoints = new List<ReceptionRecyclingPoint>();
-            HttpResponseMessage responseReceptionRecyclingPoints = await _HttpApiClient.GetAsync(urlReceptionRecyclingPoints);
-            receptionRecyclingPoints = await responseReceptionRecyclingPoints.Content.ReadAsAsync<List<ReceptionRecyclingPoint>>();
-            receptionRecyclingPoints = receptionRecyclingPoints.Where(r => r.NorthLatitude != null && r.EastLongitude != null).ToList();
-            JObject objectReceptionRecyclingPoints = JObject.FromObject(new
-            {
-                type = "FeatureCollection",
-                crs = new
-                {
-                    type = "name",
-                    properties = new
-                    {
-                        name = "urn:ogc:def:crs:EPSG::3857"
-                    }
-                },
-                features = from receptionRecyclingPoint in receptionRecyclingPoints
-                           select new
-                           {
-                               type = "Feature",
-                               properties = new
-                               {
-                                   Id = receptionRecyclingPoint.Id,
-                                   Organization = receptionRecyclingPoint.Organization,
-                                   Address = receptionRecyclingPoint.Address,
-                                   TypesRaw = receptionRecyclingPoint.TypesRaw
-                               },
-                               geometry = new
-                               {
-                                   type = "Point",
-                                   coordinates = new List<decimal>
-                                   {
-                                    Convert.ToDecimal(receptionRecyclingPoint.EastLongitude.ToString().Replace(".", decimaldelimiter)),
-                                    Convert.ToDecimal(receptionRecyclingPoint.NorthLatitude.ToString().Replace(".", decimaldelimiter))
-                                   },
-                               }
-                           }
-            });
+            List<ReceptionRecyclingPoint> receptionRecyclingPoints = await GetReceptionRecyclingPoints();
+
+            JObject objectReceptionRecyclingPoints = GetObjectReceptionRecyclingPoints(decimaldelimiter, receptionRecyclingPoints);
             ViewBag.ReceptionRecyclingPointsLayerJson = objectReceptionRecyclingPoints.ToString();
 
             //Data for calculate dissipation
@@ -2223,31 +929,530 @@ namespace SmartEco.Controllers
             pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
             ViewBag.PollutantsDessipation = pollutants;
 
-            Task<string> jsonString = null;
-            var jsonResult = Enumerable.Range(0, 0)
-                .Select(e => new { Id = 0, AQI = .0m })
+            return View();
+        }
+
+        public async Task<IActionResult> Zhanatas()
+        {
+            string role = HttpContext.Session.GetString("Role");
+            if (!(role == "admin" || role == "moderator" || role == "Zhanatas" || role == "Kazhydromet"))
+            {
+                return Redirect("/");
+            }
+
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
+
+            ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
+            ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
+            if (!Convert.ToBoolean(Startup.Configuration["Server"]))
+            {
+                ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
+            }
+            ViewBag.GeoServerPort = Startup.Configuration["GeoServerPort"].ToString();
+            //ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.MonitoringPostMeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.Pollutants = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode) && m.MPCMaxSingle != null).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+
+            string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
+
+            List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
+                .Where(m => m.Project != null && m.Project.Name == "Zhanatas"
+                && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                && m.PollutionEnvironmentId == 2
+                && m.TurnOnOff == true)
                 .ToList();
-            string urlLedScreens = "api/LEDScreens/GetAQIPosts",
-                routeLEDScreens = "";
-            routeLEDScreens += string.IsNullOrEmpty(routeLEDScreens) ? "?" : "&";
-            routeLEDScreens += $"ProjectName=Altynalmas";
-            HttpResponseMessage responseLedScreens = await _HttpApiClient.GetAsync(urlLedScreens + routeLEDScreens);
-            if (responseLedScreens.IsSuccessStatusCode)
-            {
-                jsonString = responseLedScreens.Content.ReadAsStringAsync();
-            }
-            var resultString = jsonString.Result.ToString();
-            dynamic json = JArray.Parse(resultString);
-            foreach (dynamic data in json)
-            {
-                int id = data.id;
-                decimal aqi = data.aqi;
-                jsonResult.Add(new { Id = id, AQI = aqi });
-            }
-            ViewBag.LEDScreensId = jsonResult.Select(r => r.Id).ToArray();
-            ViewBag.LEDScreensAQI = jsonResult.Select(r => r.AQI).ToArray();
+
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
+
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
+
+            ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
+
+            List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
+                .Where(m =>
+                m.Project != null && m.Project.Name == "Zhanatas"
+                && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
+                && m.TurnOnOff == true)
+                .ToList();
+
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
+            ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+
+            ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
+
+            //JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
+            //ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
+
+            ////Data for calculate dissipation
+            //string urlMeasuredDatas = "api/MeasuredDatas",
+            //     route = "";
+
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MonitoringPostId={55}";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MeasuredParameterId={4}";
+            //List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            //HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            //route = "";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MonitoringPostId={55}";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MeasuredParameterId={5}";
+            //measuredDatas = new List<MeasuredData>();
+            //responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            //route = "";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MonitoringPostId={55}";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MeasuredParameterId={6}";
+            //measuredDatas = new List<MeasuredData>();
+            //responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            //ViewBag.MeasuredData = measuredDatas;
+            //ViewBag.Temperature = temperature;
+            //ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
+            //ViewBag.DirectionWind = directionWind;
+
+            //List<SelectListItem> pollutants = new List<SelectListItem>();
+            //pollutants.Add(new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12" });
+            //pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
+            //pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
+            //pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
+            //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM2,5", Value = "3" });
+            //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
+            //ViewBag.PollutantsDessipation = pollutants;
 
             return View();
+        }
+
+        public async Task<JObject> GetObjectPollutionSources(string decimaldelimiter)
+        {
+            string urlPollutionSources = "api/PollutionSources";
+            List<PollutionSource> pollutionSources = new List<PollutionSource>();
+            HttpResponseMessage responsePollutionSources = await _HttpApiClient.GetAsync(urlPollutionSources);
+            pollutionSources = await responsePollutionSources.Content.ReadAsAsync<List<PollutionSource>>();
+            JObject objectPollutionSources = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from pollutionSource in pollutionSources
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = pollutionSource.Id,
+                                   Name = pollutionSource.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                            {
+                            Convert.ToDecimal(pollutionSource.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                            Convert.ToDecimal(pollutionSource.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                            },
+                               }
+                           }
+            });
+
+            return objectPollutionSources;
+        }
+
+        public async Task<List<MeasuredParameter>> GetMeasuredParameters()
+        {
+            string urlMeasuredParameters = "api/MeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                return await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            return new List<MeasuredParameter>();
+        }
+
+        public async Task<List<MonitoringPost>> GetMonitoringPosts()
+        {
+            string urlMonitoringPosts = "api/MonitoringPosts";
+            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
+            if (responseMonitoringPosts.IsSuccessStatusCode)
+            {
+                return await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            }
+            return new List<MonitoringPost>();
+        }
+
+        public JObject GetObjectKazHydrometAirMonitoringPostsAutomatic(string decimaldelimiter, List<MonitoringPost> kazHydrometAirMonitoringPosts)
+        {
+            List<MonitoringPost> kazHydrometAirMonitoringPostsAutomatic = kazHydrometAirMonitoringPosts
+                .Where(m => m.Automatic == true)
+                .ToList();
+
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometAirMonitoringPostsAutomatic
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                                   Automatic = monitoringPost.Automatic
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            return kazHydrometAirMonitoringPostsAutomaticObject;
+        }
+
+        public JObject GetObjectKazHydrometAirMonitoringPostsHands(string decimaldelimiter, List<MonitoringPost> kazHydrometAirMonitoringPosts)
+        {
+            List<MonitoringPost> kazHydrometAirMonitoringPostsHands = kazHydrometAirMonitoringPosts
+                .Where(m => m.Automatic == false)
+                .ToList();
+
+            JObject kazHydrometAirMonitoringPostsHandsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometAirMonitoringPostsHands
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                                   Automatic = monitoringPost.Automatic
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            return kazHydrometAirMonitoringPostsHandsObject;
+        }
+
+        public JObject GetObjectEcoserviceAirMonitoringPosts(string decimaldelimiter, List<MonitoringPost> ecoserviceAirMonitoringPosts)
+        {
+            JObject ecoserviceAirMonitoringPostsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in ecoserviceAirMonitoringPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            return ecoserviceAirMonitoringPostsObject;
+        }
+
+        public JObject GetObjectKazHydrometWaterMonitoringPosts(string decimaldelimiter, List<MonitoringPost> kazHydrometWaterMonitoringPosts)
+        {
+            JObject kazHydrometWaterMonitoringPostsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometWaterMonitoringPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            return kazHydrometWaterMonitoringPostsObject;
+        }
+
+        public JObject GetObjectKazHydrometTransportMonitoringPosts(string decimaldelimiter, List<MonitoringPost> kazHydrometTransportMonitoringPosts)
+        {
+            JObject kazHydrometTransportMonitoringPostsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from monitoringPost in kazHydrometTransportMonitoringPosts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = monitoringPost.Id,
+                                   Number = monitoringPost.Number,
+                                   Name = monitoringPost.Name,
+                                   AdditionalInformation = monitoringPost.AdditionalInformation,
+                                   DataProviderName = monitoringPost.DataProvider.Name,
+                                   PollutionEnvironmentName = monitoringPost.PollutionEnvironment.Name,
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(monitoringPost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(monitoringPost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            return kazHydrometTransportMonitoringPostsObject;
+        }
+        public async Task<List<LEDScreen>> GetLEDScreens()
+        {
+            string urlLEDScreens = "api/LEDScreens";
+            HttpResponseMessage responseLEDScreens = await _HttpApiClient.GetAsync(urlLEDScreens);
+            if (responseLEDScreens.IsSuccessStatusCode)
+            {
+                return await responseLEDScreens.Content.ReadAsAsync<List<LEDScreen>>();
+            }
+            return new List<LEDScreen>();
+        }
+        public JObject GetObjectLEDScreens(string decimaldelimiter, List<LEDScreen> ledScreens)
+        {
+            JObject objectLEDScreens = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from ledScreen in ledScreens
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = ledScreen.Id,
+                                   Name = ledScreen.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                   {
+                                    Convert.ToDecimal(ledScreen.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                    Convert.ToDecimal(ledScreen.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                   },
+                               }
+                           }
+            });
+            return objectLEDScreens;
+        }
+
+        public async Task<List<Ecopost>> GetEcoposts()
+        {
+            string urlEcoposts = "api/Ecoposts";
+            HttpResponseMessage responseEcoposts = await _HttpApiClient.GetAsync(urlEcoposts);
+            if (responseEcoposts.IsSuccessStatusCode)
+            {
+                return await responseEcoposts.Content.ReadAsAsync<List<Ecopost>>();
+            }
+            return new List<Ecopost>();
+        }
+        public JObject GetObjectEcoposts(string decimaldelimiter, List<Ecopost> ecoposts)
+        {
+            JObject objectEcoposts = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from ecopost in ecoposts
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = ecopost.Id,
+                                   Name = ecopost.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                   {
+                                    Convert.ToDecimal(ecopost.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                    Convert.ToDecimal(ecopost.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                   },
+                               }
+                           }
+            });
+            return objectEcoposts;
+        }
+
+        public async Task<List<ReceptionRecyclingPoint>> GetReceptionRecyclingPoints()
+        {
+            string urlReceptionRecyclingPoints = "api/ReceptionRecyclingPoints";
+            List<ReceptionRecyclingPoint> receptionRecyclingPoints = new List<ReceptionRecyclingPoint>();
+            HttpResponseMessage responseReceptionRecyclingPoints = await _HttpApiClient.GetAsync(urlReceptionRecyclingPoints);
+            if (responseReceptionRecyclingPoints.IsSuccessStatusCode)
+            {
+                receptionRecyclingPoints = await responseReceptionRecyclingPoints.Content.ReadAsAsync<List<ReceptionRecyclingPoint>>();
+                receptionRecyclingPoints = receptionRecyclingPoints.Where(r => r.NorthLatitude != null && r.EastLongitude != null).ToList();
+            }
+            return receptionRecyclingPoints;
+        }
+        public JObject GetObjectReceptionRecyclingPoints(string decimaldelimiter, List<ReceptionRecyclingPoint> receptionRecyclingPoints)
+        {
+            JObject objectReceptionRecyclingPoints = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from receptionRecyclingPoint in receptionRecyclingPoints
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = receptionRecyclingPoint.Id,
+                                   Organization = receptionRecyclingPoint.Organization,
+                                   Address = receptionRecyclingPoint.Address,
+                                   TypesRaw = receptionRecyclingPoint.TypesRaw
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                   {
+                                    Convert.ToDecimal(receptionRecyclingPoint.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                    Convert.ToDecimal(receptionRecyclingPoint.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                   },
+                               }
+                           }
+            });
+            return objectReceptionRecyclingPoints;
         }
 
         [HttpPost]
@@ -2605,6 +1810,7 @@ namespace SmartEco.Controllers
             });
         }
 
+        [HttpPost]
         public async Task<IActionResult> GetMeasuredParameters(int MonitoringPostId)
         {
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();

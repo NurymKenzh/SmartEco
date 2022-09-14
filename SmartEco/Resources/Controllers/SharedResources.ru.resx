@@ -1007,4 +1007,7 @@
   <data name="PrivacyPolicy" xml:space="preserve">
     <value>Политика конфиденциальности</value>
   </data>
+  <data name="Zhanatas" xml:space="preserve">
+    <value>Жанатас</value>
+  </data>
 </root>
