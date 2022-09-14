@@ -836,6 +836,114 @@ namespace SmartEco.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Zhanatas()
+        {
+            string role = HttpContext.Session.GetString("Role");
+            if (!(role == "admin" || role == "moderator" || role == "Zhanatas" || role == "Kazhydromet"))
+            {
+                return Redirect("/");
+            }
+
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
+
+            ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
+            ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
+            if (!Convert.ToBoolean(Startup.Configuration["Server"]))
+            {
+                ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
+            }
+            ViewBag.GeoServerPort = Startup.Configuration["GeoServerPort"].ToString();
+            //ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.MonitoringPostMeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.Pollutants = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode) && m.MPCMaxSingle != null).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+
+            string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
+
+            List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
+                .Where(m => m.Project != null && m.Project.Name == "Zhanatas"
+                && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                && m.PollutionEnvironmentId == 2
+                && m.TurnOnOff == true)
+                .ToList();
+
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
+
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
+
+            ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
+
+            List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
+                .Where(m =>
+                m.Project != null && m.Project.Name == "Zhanatas"
+                && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
+                && m.TurnOnOff == true)
+                .ToList();
+
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
+            ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+
+            ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
+
+            //JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
+            //ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
+
+            ////Data for calculate dissipation
+            //string urlMeasuredDatas = "api/MeasuredDatas",
+            //     route = "";
+
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MonitoringPostId={55}";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MeasuredParameterId={4}";
+            //List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            //HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            //route = "";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MonitoringPostId={55}";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MeasuredParameterId={5}";
+            //measuredDatas = new List<MeasuredData>();
+            //responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            //route = "";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MonitoringPostId={55}";
+            //route += string.IsNullOrEmpty(route) ? "?" : "&";
+            //route += $"MeasuredParameterId={6}";
+            //measuredDatas = new List<MeasuredData>();
+            //responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            //double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            //ViewBag.MeasuredData = measuredDatas;
+            //ViewBag.Temperature = temperature;
+            //ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
+            //ViewBag.DirectionWind = directionWind;
+
+            //List<SelectListItem> pollutants = new List<SelectListItem>();
+            //pollutants.Add(new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12" });
+            //pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
+            //pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
+            //pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
+            //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM2,5", Value = "3" });
+            //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
+            //ViewBag.PollutantsDessipation = pollutants;
+
+            return View();
+        }
+
         public async Task<JObject> GetObjectPollutionSources(string decimaldelimiter)
         {
             string urlPollutionSources = "api/PollutionSources";
@@ -1606,6 +1714,7 @@ namespace SmartEco.Controllers
             });
         }
 
+        [HttpPost]
         public async Task<IActionResult> GetMeasuredParameters(int MonitoringPostId)
         {
             List<MonitoringPostMeasuredParameters> monitoringPostMeasuredParameters = new List<MonitoringPostMeasuredParameters>();

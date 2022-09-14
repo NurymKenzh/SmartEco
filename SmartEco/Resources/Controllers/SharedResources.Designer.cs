@@ -2714,5 +2714,14 @@ namespace SmartEco.Resources.Controllers {
                 return ResourceManager.GetString("Year", resourceCulture);
             }
         }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Zhanatas {
+            get {
+                return ResourceManager.GetString("Zhanatas", resourceCulture);
+            }
+        }
     }
 }

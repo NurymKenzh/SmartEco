@@ -1005,4 +1005,7 @@
   <data name="PrivacyPolicy" xml:space="preserve">
     <value>Құпиялылық саясаты</value>
   </data>
+  <data name="Zhanatas" xml:space="preserve">
+    <value>Жаңатас</value>
+  </data>
 </root>
