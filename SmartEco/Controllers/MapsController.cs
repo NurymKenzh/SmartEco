@@ -424,6 +424,30 @@ namespace SmartEco.Controllers
             });
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
 
+            Task<string> jsonString = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Id = 0, AQI = .0m })
+                .ToList();
+            string urlLedScreens = "api/LEDScreens/GetAQIPosts",
+                routeLEDScreens = "";
+            routeLEDScreens += string.IsNullOrEmpty(routeLEDScreens) ? "?" : "&";
+            routeLEDScreens += $"ProjectName=KaragandaRegion";
+            HttpResponseMessage responseLedScreens = await _HttpApiClient.GetAsync(urlLedScreens + routeLEDScreens);
+            if (responseLedScreens.IsSuccessStatusCode)
+            {
+                jsonString = responseLedScreens.Content.ReadAsStringAsync();
+            }
+            var resultString = jsonString.Result.ToString();
+            dynamic json = JArray.Parse(resultString);
+            foreach (dynamic data in json)
+            {
+                int id = data.id;
+                decimal aqi = data.aqi;
+                jsonResult.Add(new { Id = id, AQI = aqi });
+            }
+            ViewBag.LEDScreensId = jsonResult.Select(r => r.Id).ToArray();
+            ViewBag.LEDScreensAQI = jsonResult.Select(r => r.AQI).ToArray();
+
             return View();
         }
 
@@ -972,6 +996,30 @@ namespace SmartEco.Controllers
             pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
             ViewBag.PollutantsDessipation = pollutants;
 
+            Task<string> jsonString = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Id = 0, AQI = .0m })
+                .ToList();
+            string urlLedScreens = "api/LEDScreens/GetAQIPosts",
+                routeLEDScreens = "";
+            routeLEDScreens += string.IsNullOrEmpty(routeLEDScreens) ? "?" : "&";
+            routeLEDScreens += $"ProjectName=Almaty";
+            HttpResponseMessage responseLedScreens = await _HttpApiClient.GetAsync(urlLedScreens + routeLEDScreens);
+            if (responseLedScreens.IsSuccessStatusCode)
+            {
+                jsonString = responseLedScreens.Content.ReadAsStringAsync();
+            }
+            var resultString = jsonString.Result.ToString();
+            dynamic json = JArray.Parse(resultString);
+            foreach (dynamic data in json)
+            {
+                int id = data.id;
+                decimal aqi = data.aqi;
+                jsonResult.Add(new { Id = id, AQI = aqi });
+            }
+            ViewBag.LEDScreensId = jsonResult.Select(r => r.Id).ToArray();
+            ViewBag.LEDScreensAQI = jsonResult.Select(r => r.AQI).ToArray();
+
             return View();
         }
 
@@ -1298,6 +1346,30 @@ namespace SmartEco.Controllers
                            }
             });
             ViewBag.ReceptionRecyclingPointsLayerJson = objectReceptionRecyclingPoints.ToString();
+
+            Task<string> jsonString = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Id = 0, AQI = .0m })
+                .ToList();
+            string urlLedScreens = "api/LEDScreens/GetAQIPosts",
+                routeLEDScreens = "";
+            routeLEDScreens += string.IsNullOrEmpty(routeLEDScreens) ? "?" : "&";
+            routeLEDScreens += $"ProjectName=Shymkent";
+            HttpResponseMessage responseLedScreens = await _HttpApiClient.GetAsync(urlLedScreens + routeLEDScreens);
+            if (responseLedScreens.IsSuccessStatusCode)
+            {
+                jsonString = responseLedScreens.Content.ReadAsStringAsync();
+            }
+            var resultString = jsonString.Result.ToString();
+            dynamic json = JArray.Parse(resultString);
+            foreach (dynamic data in json)
+            {
+                int id = data.id;
+                decimal aqi = data.aqi;
+                jsonResult.Add(new { Id = id, AQI = aqi });
+            }
+            ViewBag.LEDScreensId = jsonResult.Select(r => r.Id).ToArray();
+            ViewBag.LEDScreensAQI = jsonResult.Select(r => r.AQI).ToArray();
 
             return View();
         }
@@ -1655,6 +1727,30 @@ namespace SmartEco.Controllers
             //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM2,5", Value = "3" });
             //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
             //ViewBag.PollutantsDessipation = pollutants;
+
+            Task<string> jsonString = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Id = 0, AQI = .0m })
+                .ToList();
+            string urlLedScreens = "api/LEDScreens/GetAQIPosts",
+                routeLEDScreens = "";
+            routeLEDScreens += string.IsNullOrEmpty(routeLEDScreens) ? "?" : "&";
+            routeLEDScreens += $"ProjectName=Shymkent";
+            HttpResponseMessage responseLedScreens = await _HttpApiClient.GetAsync(urlLedScreens + routeLEDScreens);
+            if (responseLedScreens.IsSuccessStatusCode)
+            {
+                jsonString = responseLedScreens.Content.ReadAsStringAsync();
+            }
+            var resultString = jsonString.Result.ToString();
+            dynamic json = JArray.Parse(resultString);
+            foreach (dynamic data in json)
+            {
+                int id = data.id;
+                decimal aqi = data.aqi;
+                jsonResult.Add(new { Id = id, AQI = aqi });
+            }
+            ViewBag.LEDScreensId = jsonResult.Select(r => r.Id).ToArray();
+            ViewBag.LEDScreensAQI = jsonResult.Select(r => r.AQI).ToArray();
 
             return View();
         }
@@ -2126,6 +2222,30 @@ namespace SmartEco.Controllers
             pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM2,5", Value = "3" });
             pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
             ViewBag.PollutantsDessipation = pollutants;
+
+            Task<string> jsonString = null;
+            var jsonResult = Enumerable.Range(0, 0)
+                .Select(e => new { Id = 0, AQI = .0m })
+                .ToList();
+            string urlLedScreens = "api/LEDScreens/GetAQIPosts",
+                routeLEDScreens = "";
+            routeLEDScreens += string.IsNullOrEmpty(routeLEDScreens) ? "?" : "&";
+            routeLEDScreens += $"ProjectName=Altynalmas";
+            HttpResponseMessage responseLedScreens = await _HttpApiClient.GetAsync(urlLedScreens + routeLEDScreens);
+            if (responseLedScreens.IsSuccessStatusCode)
+            {
+                jsonString = responseLedScreens.Content.ReadAsStringAsync();
+            }
+            var resultString = jsonString.Result.ToString();
+            dynamic json = JArray.Parse(resultString);
+            foreach (dynamic data in json)
+            {
+                int id = data.id;
+                decimal aqi = data.aqi;
+                jsonResult.Add(new { Id = id, AQI = aqi });
+            }
+            ViewBag.LEDScreensId = jsonResult.Select(r => r.Id).ToArray();
+            ViewBag.LEDScreensAQI = jsonResult.Select(r => r.AQI).ToArray();
 
             return View();
         }

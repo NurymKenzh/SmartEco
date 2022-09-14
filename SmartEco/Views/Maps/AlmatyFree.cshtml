@@ -2,6 +2,7 @@
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
 @using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["Almaty"];
@@ -2013,8 +2014,8 @@
 @* GetAQI *@
 <script>
     var durationAQI = 3000;
-    var colorPostsId = [],
-        colorPostsAQI = [];
+    var colorPostsId = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensId)),
+        colorPostsAQI = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensAQI));
     var projectName = 'Almaty';
     function GetAQI() {
         function getAQI() {
@@ -2039,7 +2040,6 @@
                 }
             })
         }
-        getAQI();
         window.setInterval(function () {
             getAQI();
         }, durationAQI * 10);
