@@ -1,0 +1,375 @@
+﻿
+@{
+    ViewData["Title"] = "Temirtau";
+    Layout = null;
+}
+
+<!doctype html>
+<html lang="en">
+<head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+
+    <!-- Bootstrap CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/css/bootstrap.min.css" integrity="sha256-eSi1q2PG6J7g7ib17yAaWMcrr5GrtohYChqibrV7PBE=" crossorigin="anonymous">
+
+    <title>Темиртау</title>
+
+    <style type="text/css">
+        html {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+        }
+
+        body {
+            margin: 0;
+            padding: 0;
+            height: 100%;
+            max-height: 100%;
+            float: left;
+            width: 100%;
+            background: linear-gradient(#00458c, #007dff);
+        }
+
+        .container {
+            width: 100%;
+            max-width: 100%;
+        }
+
+        .cardMeasurement {
+            padding: 1em;
+            border-radius: 25px;
+            box-shadow: 2px 8px 6px rgba(0,0,0,0.1), 0px -5px 35px rgba(255,255,255,0.1);
+        }
+
+        .textShadow {
+            text-shadow: 2px 8px 6px rgba(0,0,0,0.2), 0px -5px 35px rgba(255,255,255,0.3);
+        }
+
+        .lowPollution {
+            box-shadow: 0px 0px 20px 10px #28a745;
+        }
+
+        .increasedPollution {
+            box-shadow: 0px 0px 20px 10px #d39e00;
+        }
+
+        .highPollution {
+            box-shadow: 0px 0px 20px 10px #bd2130;
+        }
+
+        .dangerousPollution {
+            box-shadow: 0px 0px 20px 10px #4e28a7;
+        }
+
+        #Temperature {
+            font-size: 8rem;
+        }
+
+        #pollutants {
+            margin-top: 10rem;
+        }
+
+        .vertical-center {
+            min-height: 100%;
+            display: flex;
+            align-items: center;
+            flex-direction: column;
+            justify-content: center;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="row mt-5 row-cols-6 textShadow">
+            <div class="col-5">
+                <div class="col-md align-self-center text-center vertical-center">
+                    <h1 id="AddressPost" class="text-white font-weight-bold display-2"></h1>
+                    <h1 id="NamePost" class="text-white"></h1>
+                    <h1 id="DateMeasurement" class="text-white"></h1>
+                </div>
+            </div>
+            <div class="col-5">
+                <div class="cardMeasurement textShadow h-100">
+                    <div class="text-center">
+                        <h1 class="text-white">Температура, °C</h1>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <img class="d-inline" src="~/images/weather/temperature.svg" alt="temperature" width="40%" />
+                        <div class="vh-100 d-flex justify-content-center align-items-center">
+                            <h1 id="Temperature" class="text-white d-inline font-weight-bold"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col">
+                <div class="row row-cols-1">
+                    <div class="col">
+                        <div class="cardMeasurement textShadow">
+                            <div class="text-center">
+                                <h3 class="text-white">Ветер, м/с</h3>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <img class="d-inline" src="~/images/weather/breeze.svg" alt="breeze" width="20%" />
+                                <div class="vh-100 d-flex justify-content-center align-items-center">
+                                    <h1 id="WindDirection" class="text-white d-inline font-weight-bold"></h1>
+                                    <h1 id="WindSpeed" class="text-white d-inline font-weight-bold"></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-5 row-cols-1">
+                    <div class="col">
+                        <div class="cardMeasurement textShadow">
+                            <div class="text-center">
+                                <h3 class="text-white">Влажность, %</h3>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <img class="d-inline" src="~/images/weather/rain.svg" alt="rain" width="20%" />
+                                <div class="vh-100 d-flex justify-content-center align-items-center">
+                                    <h1 id="Humidity" class="text-white d-inline font-weight-bold"></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row mt-5 row-cols-1">
+                    <div class="col">
+                        <div class="cardMeasurement textShadow">
+                            <div class="text-center">
+                                <h3 class="text-white">Давление, мм</h3>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                <img class="d-inline" src="~/images/weather/hurricane.svg" alt="hurricane" width="20%" />
+                                <div class="vh-100 d-flex justify-content-center align-items-center">
+                                    <h1 id="Pressure" class="text-white d-inline font-weight-bold"></h1>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div id="pollutants" class="row row-cols-5">
+            <div class="col">
+                <div id="CardPM10" class="cardMeasurement textShadow">
+                    <div class="text-center">
+                        <h1 class="text-white">PM10, мг/м³</h1>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <img class="d-inline" src="~/images/weather/wind.svg" alt="wind" width="40%" />
+                        <div class="vh-100 d-flex justify-content-center align-items-center">
+                            <h1 id="PM10" class="text-white d-inline display-3 font-weight-bold"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div id="CardPM25" class="cardMeasurement textShadow">
+                    <div class="text-center">
+                        <h1 class="text-white">PM2.5, мг/м³</h1>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <img class="d-inline" src="~/images/weather/wind.svg" alt="wind" width="40%" />
+                        <div class="vh-100 d-flex justify-content-center align-items-center">
+                            <h1 id="PM25" class="text-white d-inline display-3 font-weight-bold"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div id="CardNO2" class="cardMeasurement textShadow">
+                    <div class="text-center">
+                        <h1 class="text-white">NO₂, мг/м³</h1>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <img class="d-inline" src="~/images/weather/wind.svg" alt="wind" width="40%" />
+                        <div class="vh-100 d-flex justify-content-center align-items-center">
+                            <h1 id="NO2" class="text-white d-inline display-3 font-weight-bold"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div id="CardSO2" class="cardMeasurement textShadow">
+                    <div class="text-center">
+                        <h1 class="text-white">SO₂, мг/м³</h1>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <img class="d-inline" src="~/images/weather/wind.svg" alt="wind" width="40%" />
+                        <div class="vh-100 d-flex justify-content-center align-items-center">
+                            <h1 id="SO2" class="text-white d-inline display-3 font-weight-bold"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col">
+                <div id="CardCO" class="cardMeasurement textShadow">
+                    <div class="text-center">
+                        <h1 class="text-white">CO, мг/м³</h1>
+                    </div>
+                    <div class="d-flex justify-content-center">
+                        <img class="d-inline" src="~/images/weather/wind.svg" alt="wind" width="40%" />
+                        <div class="vh-100 d-flex justify-content-center align-items-center">
+                            <h1 id="CO" class="text-white d-inline display-3 font-weight-bold"></h1>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Optional JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.3.1/jquery.min.js" integrity="sha256-FgpCb/KJQlLNfOu91ta32o/NMZxltwRo8QtmkMRdAu8=" crossorigin="anonymous"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/twitter-bootstrap/4.1.3/js/bootstrap.bundle.min.js" integrity="sha256-E/V4cWE4qvAeO5MOhjtGtqDzPndRO1LBk8lJ/PR7CA4=" crossorigin="anonymous"></script>
+
+    <script>
+        let parameter = {
+            Pressure: 1,
+            PM10: 2,
+            PM25: 3,
+            Temperature: 4,
+            WindSpeed: 5,
+            WindDirection: 6,
+            CO: 7,
+            SO2: 9,
+            NO2: 13,
+            Humidity: 19
+        };
+
+        let timeout;
+        var durationGetData = 20 * 60 * 1000; //minutes * seconds * milliseconds = 20 min
+        let durationLoop = 20 * 1000; //seconds * milliseconds = 20 sec
+        let namePosts = 'Temir';
+
+        function GetDisplayData() {
+            $.ajax({
+                url: '@Url.Action("GetDisplayData", "LEDDisplay")',
+                data: {
+                    namePosts: namePosts,
+                },
+                type: 'GET',
+                success: function (data) {
+                    window.clearTimeout(timeout);
+                    loopingData(0, data);
+                },
+                error: function () {
+                }
+            })
+        }
+
+        var windSpeed;
+        var windDirection;
+        function loopingData(index, data) {
+            $('#AddressPost').text(data[index].addressPost);
+            $('#NamePost').text(data[index].namePost);
+            $('#DateMeasurement').text(data[index].dateMeasurement);
+            $.each(data[index].parameters, function (i) {
+                let parameter = data[index].parameters[i];
+                SetParameterValue(parameter.id, parameter.value, parameter.mpc);
+            });
+            timeout = window.setTimeout(
+                loopingData.bind(undefined, (index + 1) % data.length, data), durationLoop);
+        }
+
+        function SetParameterValue(id, value, mpc) {
+            switch (id) {
+                case parameter.Pressure:
+                    $('#Pressure').text(Fixed(value));
+                    break;
+                case parameter.PM10:
+                    $('#PM10').text(Fixed(value, 3));
+                    SetColorCardPollution(value, "#CardPM10", mpc);
+                    break;
+                case parameter.PM25:
+                    $('#PM25').text(Fixed(value, 3));
+                    SetColorCardPollution(value, "#CardPM25", mpc);
+                    break;
+                case parameter.Temperature:
+                    $('#Temperature').text(Fixed(value));
+                    break;
+                case parameter.WindSpeed:
+                    $('#WindSpeed').text(Fixed(value));
+                    break;
+                case parameter.WindDirection:
+                    $('#WindDirection').text(GetWindDirection(Fixed(value, 1)));
+                    break;
+                case parameter.CO:
+                    $('#CO').text(Fixed(value, 3));
+                    SetColorCardPollution(value, "#CardCO", mpc);
+                    break;
+                case parameter.SO2:
+                    $('#SO2').text(Fixed(value, 3));
+                    SetColorCardPollution(value, "#CardSO2", mpc);
+                    break;
+                case parameter.NO2:
+                    $('#NO2').text(Fixed(value, 3));
+                    SetColorCardPollution(value, "#CardNO2", mpc);
+                    break;
+                case parameter.Humidity:
+                    $('#Humidity').text(Fixed(value));
+                    break;
+                default:
+                    console.log(`Parameter with id ${id} is not support.`);
+                    break;
+            }
+        }
+
+        function Fixed(value, number) {
+            if (number == null) {
+                return value == null ? value : parseFloat(value.toFixed());
+            }
+            else {
+                return value == null ? value : parseFloat(value.toFixed(number));
+            }
+        }
+
+        GetWindDirection = (degrees) => {
+            if (degrees == null || degrees == undefined) {
+                return;
+            }
+            const directions = ['С', 'СВ', 'В', 'ЮВ', 'Ю', 'ЮЗ', 'З', 'СЗ'];
+            let i = parseInt((degrees + 22.5) / 45, 10);
+            return `${directions[i % 8]}, `
+        }
+
+        function SetColorCardPollution(value, idPollution, mpc) {
+            $(idPollution).removeClass();
+            if (value == null || value == undefined) {
+                $(idPollution).addClass("cardMeasurement textShadow");
+            }
+            else {
+                $(idPollution).addClass(`cardMeasurement textShadow ${GetClassPollution(value, mpc)}`);
+            }
+        }
+
+        GetClassPollution = (value, mpc) => {
+            let index = value / mpc;
+            switch (true) {
+                case index <= 0.2:
+                    return "lowPollution";
+                case index <= 0.5:
+                    return "increasedPollution";
+                case index <= 1:
+                    return "highPollution";
+                default:
+                    return "dangerousPollution";
+            }
+        }
+
+        window.onload = function start() {
+            GetDisplayData();
+        }
+        window.setInterval(function () {
+            GetDisplayData();
+        }, durationGetData);
+    </script>
+</body>
+</html>
