@@ -609,7 +609,8 @@ namespace GetPostsData
                         connection.Open();
                         var measuredDatasB = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"Ecomontimestamp_ms\", \"MaxValueDay\", \"MaxValueMonth\", \"Month\", \"Year\", \"MaxValuePerMonth\", \"MaxValuePerYear\", \"MonitoringPostId\", \"PollutionSourceId\", \"Averaged\" " +
                             $"FROM public.\"MeasuredData\" " +
-                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;", commandTimeout: 86400);
+                            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null " +
+                            $"AND \"MonitoringPostId\" <> 234 AND \"MonitoringPostId\" <> 235;", commandTimeout: 86400); //exclude Zhanatas posts
                         countBackup = measuredDatasB.Count();
                         foreach (MeasuredData measuredData in measuredDatasB)
                         {
@@ -776,6 +777,58 @@ namespace GetPostsData
                         }
                     }
                     NewLog($"Backup. Get Data from Log (GetPostsData) finished. {countBackup.ToString()} rows backed up");
+
+
+                    //Backup Zhanatas data
+                    NewLog($"Backup. Get Data Zhanatas posts from MeasuredData (SmartEcoAPI) started");
+                    DateTime dateTimeZhanatasLast = DateTime.Now.AddMonths(-6);
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var measuredDatasB = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"Ecomontimestamp_ms\", \"MaxValueDay\", \"MaxValueMonth\", \"Month\", \"Year\", \"MaxValuePerMonth\", \"MaxValuePerYear\", \"MonitoringPostId\", \"PollutionSourceId\", \"Averaged\" " +
+                            $"FROM public.\"MeasuredData\" " +
+                            $"WHERE \"DateTime\" < '{dateTimeZhanatasLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null " +
+                            $"AND \"MonitoringPostId\" = 234 OR \"MonitoringPostId\" = 235;", commandTimeout: 86400); //Zhanatas posts
+                        countBackup = measuredDatasB.Count();
+                        foreach (MeasuredData measuredData in measuredDatasB)
+                        {
+                            string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"SmartEcoAPI_MeasuredData_Zhanatas {measuredData.DateTime?.ToString("yyyy-MM")}");
+                            fileName = Path.ChangeExtension(fileName, "csv");
+                            string data = measuredData.MeasuredParameterId.ToString() + "\t" +
+                                measuredData.DateTime?.ToString("yyyy-MM-dd HH:mm:ss") + "\t" +
+                                measuredData.Value?.ToString() + "\t" +
+                                measuredData.Ecomontimestamp_ms?.ToString() + "\t" +
+                                measuredData.MaxValueDay?.ToString() + "\t" +
+                                measuredData.MaxValueMonth?.ToString() + "\t" +
+                                measuredData.Month?.ToString() + "\t" +
+                                measuredData.Year?.ToString() + "\t" +
+                                measuredData.MaxValuePerMonth?.ToString() + "\t" +
+                                measuredData.MaxValuePerYear?.ToString() + "\t" +
+                                measuredData.MonitoringPostId?.ToString() + "\t" +
+                                measuredData.PollutionSourceId?.ToString() + "\t" +
+                                measuredData.Averaged?.ToString() + Environment.NewLine;
+                            if (!File.Exists(fileName))
+                            {
+                                File.AppendAllText(fileName, $"MeasuredParameterId\tDateTime\tValue\tEcomontimestamp_ms\tMaxValueDay\tMaxValueMonth\t" +
+                                    $"Month\tYear\tMaxValuePerMonth\tMaxValuePerYear\tMonitoringPostId\tPollutionSourceId\tAveraged" + Environment.NewLine);
+                            }
+                            File.AppendAllText(fileName, data);
+                        }
+                        try
+                        {
+                            connection.Execute($"DELETE FROM public.\"MeasuredData\" " +
+                                $"WHERE \"DateTime\" < '{dateTimeZhanatasLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;", commandTimeout: 86400);
+                        }
+                        catch
+                        {
+
+                        }
+                        finally
+                        {
+                            connection.Execute($"VACUUM public.\"MeasuredData\"", commandTimeout: 86400);
+                        }
+                    }
+                    NewLog($"Backup. Get Data Zhanatas posts from MeasuredData (SmartEcoAPI) finished. {countBackup.ToString()} rows backed up");
 
                     lastBackupDateTime = DateTime.Now;
                 }
