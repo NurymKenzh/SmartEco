@@ -22,6 +22,12 @@
 @*<script src="~/lib/turf.js/turf515.min.js"></script>*@
 <script src="~/lib/turf.js/turf516.min.js"></script>
 
+<link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css" />
+<script type="text/javascript" src="~/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/css/bootstrap-multiselect.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/js/bootstrap-multiselect.min.js"></script>
+
 <style>
     /*.map {
         height: calc(100vh - 159px);
@@ -107,6 +113,31 @@
         height: auto !important;
         /*offset icon width*/
         padding-right: 24px;
+    }
+
+    .multiselect-container {
+        width: 100% !important;
+    }
+
+    .dropdown-item:hover {
+        border: none !important;
+        color: #000;
+        text-decoration: none;
+        background-color: #dddee0;
+    }
+
+    .dropdown-item:focus {
+        color: #000;
+        text-decoration: none;
+        background-color: #f5f7f9;
+        outline: none;
+    }
+
+    .dropdown-item.active {
+        border: none !important;
+        color: #000;
+        text-decoration: none;
+        background-color: #ecedee;
     }
 </style>
 
@@ -355,7 +386,9 @@
                 <canvas id="chartMeasuredDatas"></canvas>
             </div>
             <div id="divEcoserviceAirPostTable" class="dialog-info-tab-div">
-                @Html.DropDownList("TableMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MonitoringPostMeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "TableMeasuredParameterId", @onchange = "TableGetMeasuredDatas()" })
+                @Html.ListBox("TableMeasuredParameterId", (MultiSelectList)ViewBag.MonitoringPostMeasuredParameters, new { @class = "listbox", @id = "TableMeasuredParameterId", @onchange = "TableGetMeasuredDatas()" })
+                <br />
+                <br />
                 @Html.TextBox("TableTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "TableTimeFrom", @onchange = "TableGetMeasuredDatas()" })
                 @Html.TextBox("TableDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "TableDateFrom", @onchange = "TableGetMeasuredDatas()" })
                 -
@@ -382,6 +415,9 @@
                         <tr>
                             <th>
                                 @SharedLocalizer["DateTime"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["MeasuredParameter"]
                             </th>
                             <th>
                                 @SharedLocalizer["Value"]
@@ -761,7 +797,18 @@
                 anchorYUnits: 'fraction',
                 //scale: 0.0625
                 scale: 0.5
-            }))
+            })),
+            text: new ol.style.Text({
+                font: '13px Calibri,sans-serif',
+                fill: new ol.style.Fill({
+                    color: '#000',
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 4,
+                }),
+                offsetY: -58
+            })
         }),
         activeYellow: new ol.style.Style({
             image: new ol.style.Icon(({
@@ -771,7 +818,17 @@
                 anchorYUnits: 'fraction',
                 //scale: 0.0625
                 scale: 0.5
-            }))
+            })),
+            text: new ol.style.Text({
+                font: '13px Calibri,sans-serif',
+                fill: new ol.style.Fill({
+                    color: '#000',
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 4,
+                })
+            })
         }),
         activeOrange: new ol.style.Style({
             image: new ol.style.Icon(({
@@ -781,7 +838,17 @@
                 anchorYUnits: 'fraction',
                 //scale: 0.0625
                 scale: 0.5
-            }))
+            })),
+            text: new ol.style.Text({
+                font: '13px Calibri,sans-serif',
+                fill: new ol.style.Fill({
+                    color: '#000',
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 4,
+                })
+            })
         }),
         activeViolet: new ol.style.Style({
             image: new ol.style.Icon(({
@@ -791,7 +858,17 @@
                 anchorYUnits: 'fraction',
                 //scale: 0.0625
                 scale: 0.5
-            }))
+            })),
+            text: new ol.style.Text({
+                font: '13px Calibri,sans-serif',
+                fill: new ol.style.Fill({
+                    color: '#000',
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 4,
+                })
+            })
         }),
         inactive: new ol.style.Style({
             image: new ol.style.Icon(({
@@ -802,30 +879,52 @@
                 anchorYUnits: 'fraction',
                 //scale: 0.0625
                 scale: 0.5
-            }))
+            })),
+            text: new ol.style.Text({
+                font: '13px Calibri,sans-serif',
+                fill: new ol.style.Fill({
+                    color: '#000',
+                }),
+                stroke: new ol.style.Stroke({
+                    color: '#fff',
+                    width: 4,
+                }),
+                offsetY: -58
+            })
         }),
     };
     function EcoserviceAirMonitoringPostsStyleFunction(feature) {
+        var labelSplited = feature.get('AdditionalInformation').split(',');
+        var label = '';
+        $.each(labelSplited, function (i) {
+            label += labelSplited[i] + '\n';
+        });
         if (inactivePosts.includes(feature.get('Id'))) {
+            EcoserviceAirMonitoringPostsStyle.inactive.getText().setText(label);
             return EcoserviceAirMonitoringPostsStyle.inactive;
         }
         else if (colorPostsId.includes(feature.get('Id'))) {
             var number = colorPostsId.indexOf(feature.get('Id'));
             var value = colorPostsAQI[number];
             if (value <= 0.2) {
+                EcoserviceAirMonitoringPostsStyle.activeGreen.getText().setText(label);
                 return EcoserviceAirMonitoringPostsStyle.activeGreen;
             }
             else if (value <= 0.5) {
+                EcoserviceAirMonitoringPostsStyle.activeYellow.getText().setText(label);
                 return EcoserviceAirMonitoringPostsStyle.activeYellow;
             }
             else if (value <= 1) {
+                EcoserviceAirMonitoringPostsStyle.activeOrange.getText().setText(label);
                 return EcoserviceAirMonitoringPostsStyle.activeOrange;
             }
             else {
+                EcoserviceAirMonitoringPostsStyle.activeViolet.getText().setText(label);
                 return EcoserviceAirMonitoringPostsStyle.activeViolet;
             }
         }
         else {
+            EcoserviceAirMonitoringPostsStyle.activeGreen.getText().setText(label);
             return EcoserviceAirMonitoringPostsStyle.activeGreen;
         }
     }
@@ -1196,6 +1295,22 @@
         map.getView().setCenter([7761194.89, 5397601.74]);
         document.cookie = "zoomZhanatas=" + 10;
         document.cookie = "coordsZhanatas=" + [69.72, 43.56];
+    }
+</script>
+
+<script>
+    function SetSettingsForTableMeasuredParameters() {
+        $('.listbox').multiselect({
+            nonSelectedText: 'Выберете параметры...',
+            includeSelectAllOption: true,
+            selectAllText: 'Выбрать все',
+            allSelectedText: 'Выбраны все параметры',
+            nSelectedText: 'выбрано',
+            numberDisplayed: 1,
+            maxHeight: 100,
+            buttonWidth: '95%',
+            buttonTextAlignment: 'center'
+        });
     }
 </script>
 
@@ -1579,10 +1694,10 @@
     function TableGetMeasuredDatas() {
         $("#tableMeasuredDatas").LoadingOverlay("show");
         $.ajax({
-            url: '@Url.Action("GetMeasuredDatas", "MeasuredDatas")',
+            url: '@Url.Action("GetSeveralMeasuredDatas", "MeasuredDatas")',
             data: {
                 MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
-                MeasuredParameterId: $('#TableMeasuredParameterId').val(),
+                MeasuredParameterIds: $('#TableMeasuredParameterId').val(),
                 DateFrom: $('#TableDateFrom').val(),
                 TimeFrom: $('#TableTimeFrom').val(),
                 DateTo: $('#TableDateTo').val(),
@@ -1640,7 +1755,7 @@
         }
         var tablehtml = '';
         for (var i = 0; i < data.measureddatas.length; i++) {
-            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + data.measureddatas[i].value + '</td></tr>';
+            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + data.measureddatas[i].measuredParameter.name + '</td><td>' + data.measureddatas[i].value + '</td></tr>';
         }
         $('#tableMeasuredDatas tbody').append(tablehtml);
         $("#tableMeasuredDatas").LoadingOverlay("hide");
@@ -1879,5 +1994,6 @@
         GetInactiveKazHydrometPosts();
         GetAQI();
         ChangeLayers();
+        SetSettingsForTableMeasuredParameters();
     }
 </script>
