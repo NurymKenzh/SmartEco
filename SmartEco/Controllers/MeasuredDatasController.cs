@@ -460,7 +460,7 @@ namespace SmartEco.Controllers
         //}
 
         [HttpPost]
-        public async Task<IActionResult> GetMeasuredDatas(
+        public async Task<(List<MeasuredData>, decimal?)> GetPostMeasuredDatas(
             int? MonitoringPostId,
             int? MeasuredParameterId,
             DateTime DateFrom,
@@ -573,6 +573,50 @@ namespace SmartEco.Controllers
                     dailyAverage = measureddatasDailyAverage.Sum(m => m.Value) / measureddatasDailyAverage.Count();
                 }
             }
+            return (measureddatas, dailyAverage);
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetMeasuredDatas(
+            int? MonitoringPostId,
+            int? MeasuredParameterId,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo,
+            bool? Averaged = true)
+        {
+            var data = await GetPostMeasuredDatas(MonitoringPostId, MeasuredParameterId, DateFrom, TimeFrom, DateTo, TimeTo, Averaged);
+
+            List<MeasuredData> measureddatas = data.Item1;
+            decimal? dailyAverage = data.Item2;
+            
+            return Json(new
+            {
+                measureddatas,
+                dailyAverage
+            });
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> GetSeveralMeasuredDatas(
+            int? MonitoringPostId,
+            List<int> MeasuredParameterIds,
+            DateTime DateFrom,
+            DateTime TimeFrom,
+            DateTime DateTo,
+            DateTime TimeTo,
+            bool? Averaged = true)
+        {
+            List<MeasuredData> measureddatas = new List<MeasuredData>();
+            List<decimal?> dailyAverage = new List<decimal?>();
+            foreach (int MeasuredParameterId in MeasuredParameterIds)
+            {
+                var data = await GetPostMeasuredDatas(MonitoringPostId, MeasuredParameterId, DateFrom, TimeFrom, DateTo, TimeTo, Averaged);
+                measureddatas.AddRange(data.Item1);
+                dailyAverage.Add(data.Item2);
+            }
+            measureddatas = measureddatas.OrderByDescending(m => m.DateTime).ToList();
             return Json(new
             {
                 measureddatas,

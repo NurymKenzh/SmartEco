@@ -902,55 +902,6 @@ namespace SmartEco.Controllers
 
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
 
-            //JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
-            //ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
-
-            ////Data for calculate dissipation
-            //string urlMeasuredDatas = "api/MeasuredDatas",
-            //     route = "";
-
-            //route += string.IsNullOrEmpty(route) ? "?" : "&";
-            //route += $"MonitoringPostId={55}";
-            //route += string.IsNullOrEmpty(route) ? "?" : "&";
-            //route += $"MeasuredParameterId={4}";
-            //List<MeasuredData> measuredDatas = new List<MeasuredData>();
-            //HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
-            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            //double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
-
-            //route = "";
-            //route += string.IsNullOrEmpty(route) ? "?" : "&";
-            //route += $"MonitoringPostId={55}";
-            //route += string.IsNullOrEmpty(route) ? "?" : "&";
-            //route += $"MeasuredParameterId={5}";
-            //measuredDatas = new List<MeasuredData>();
-            //responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
-            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            //double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
-
-            //route = "";
-            //route += string.IsNullOrEmpty(route) ? "?" : "&";
-            //route += $"MonitoringPostId={55}";
-            //route += string.IsNullOrEmpty(route) ? "?" : "&";
-            //route += $"MeasuredParameterId={6}";
-            //measuredDatas = new List<MeasuredData>();
-            //responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
-            //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            //double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
-            //ViewBag.MeasuredData = measuredDatas;
-            //ViewBag.Temperature = temperature;
-            //ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
-            //ViewBag.DirectionWind = directionWind;
-
-            //List<SelectListItem> pollutants = new List<SelectListItem>();
-            //pollutants.Add(new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12" });
-            //pollutants.Add(new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" });
-            //pollutants.Add(new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" });
-            //pollutants.Add(new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" });
-            //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM2,5", Value = "3" });
-            //pollutants.Add(new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" });
-            //ViewBag.PollutantsDessipation = pollutants;
-
             return View();
         }
 
