@@ -1,0 +1,114 @@
+﻿@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["PostAnalyticsZhanatas"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="~/css/bootstrap.min.css" type="text/css" />
+<script type="text/javascript" src="~/js/bootstrap.min.js"></script>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/css/bootstrap-multiselect.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/js/bootstrap-multiselect.min.js"></script>
+
+<style>
+    .multiselect-container {
+        width: 100% !important;
+    }
+
+    .dropdown-item:hover {
+        border: none !important;
+        color: #000;
+        text-decoration: none;
+        background-color: #dddee0;
+    }
+
+    .dropdown-item:focus {
+        color: #000;
+        text-decoration: none;
+        background-color: #f5f7f9;
+        outline: none;
+    }
+
+    .dropdown-item.active {
+        border: none !important;
+        color: #000;
+        text-decoration: none;
+        background-color: #ecedee;
+    }
+</style>
+
+<h1>@SharedLocalizer["PostAnalyticsZhanatas"]</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="PostAnalyticsZhanatas">
+            <div>
+                @Html.TextBox("DateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "DateTimeFrom" })
+                -
+                @Html.TextBox("DateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "DateTimeTo" })
+            </div>
+            <br/>
+            <div hidden="hidden">
+                <input id="TimeFrom" name="TimeFrom" type="text" value="@ViewBag.TimeFrom" />
+                <input id="TimeTo" name="TimeTo" type="text" value="@ViewBag.TimeTo" />
+            </div>
+            <div>
+                @Html.ListBox("MonitoringPostsId", (MultiSelectList)ViewBag.MonitoringPosts, new { @class = "listboxMonitoringPosts", @id = "MonitoringPostId"})
+            </div>
+            <br />
+            <div>
+                @Html.ListBox("MeasuredParametersId", (MultiSelectList)ViewBag.MeasuredParameters, new { @class = "listboxMeasuredParameters", @id = "MeasuredParameterId" })
+            </div>
+            <br />
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["SendExcel"]" class="btn btn-primary" onclick="ExcelFormation()" />
+            </div>
+        </form>
+        <div id="ExcelFormationBlock">
+            <p id="TextExcelFormation">@ViewBag.ExcelSent</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function SetSettingsMeasuredParametersAndMonitoringPosts() {
+        $('.listboxMonitoringPosts').multiselect({
+            nonSelectedText: 'Выберете посты мониторинга...',
+            includeSelectAllOption: true,
+            selectAllText: 'Выбрать все',
+            allSelectedText: 'Выбраны все посты',
+            nSelectedText: 'выбрано',
+            numberDisplayed: 1,
+            maxHeight: 200,
+            buttonWidth: '55%',
+            buttonTextAlignment: 'center'
+        });
+        $('.listboxMeasuredParameters').multiselect({
+            nonSelectedText: 'Выберете параметры...',
+            includeSelectAllOption: true,
+            selectAllText: 'Выбрать все',
+            allSelectedText: 'Выбраны все параметры',
+            nSelectedText: 'выбрано',
+            numberDisplayed: 1,
+            maxHeight: 200,
+            buttonWidth: '55%',
+            buttonTextAlignment: 'center'
+        });
+    }
+    function ExcelFormation() {
+        var excelFormationBlock = document.getElementById('ExcelFormationBlock');
+        $('#TextExcelFormation').text("Формирование Excel-файла...");
+    }
+</script>
+
+@* window.onload *@
+<script>
+    window.onload = function start() {
+        SetSettingsMeasuredParametersAndMonitoringPosts();
+    }
+</script>

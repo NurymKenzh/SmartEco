@@ -25,7 +25,8 @@ namespace SmartEcoAPI.Controllers
         const string Heading = "Аналитика по постам",
             Theme = "SmartEco",
             FromEmail = "smartecokz@gmail.com",
-            Password = "Qwerty123_",
+            //Password = "Qwerty123_",
+            Password = "skqjcaiyizgljuak",
             SMTPServer = "smtp.gmail.com";
         const int SMTPPort = 465;
 
@@ -448,6 +449,92 @@ namespace SmartEcoAPI.Controllers
                 worksheet.Column(5).Width = 16;
                 worksheet.Column(7).Width = 20;
                 worksheet.Column(8).Width = 20;
+                package.Save();
+
+                string userEmail = User.Identity.Name;
+                Task.WaitAll(SendExcel(userEmail, Server));
+                System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
+            }
+
+            return null;
+        }
+
+        // POST: api/Analytics/ExcelFormationZhanatas
+        [HttpPost("ExcelFormationZhanatas")]
+        [Authorize(Roles = "admin,moderator,Zhanatas")]
+        public async Task<ActionResult> ExcelFormationZhanatas(
+            DateTime? DateTimeFrom,
+            DateTime? DateTimeTo,
+            [FromQuery(Name = "MonitoringPostsId")] List<int> MonitoringPostsId,
+            [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
+            bool Server)
+        {
+            string sFileName = $"{sName}.xlsx";
+            FileInfo file = Server == true ? new FileInfo(Path.Combine(PathExcelFile, sFileName)) : new FileInfo(Path.Combine(sFileName));
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(sFileName));
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(sName);
+
+                //Заголовок
+                worksheet.Cells[2, 1].Value = $"Отчёт по мониторингу качества атмосферного воздуха (Жанатас)";
+                worksheet.Cells["A2:I2"].Merge = true;
+                worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                worksheet.Cells[2, 1].Style.Font.Bold = true;
+                worksheet.Cells[2, 1].Style.Font.Size = 16;
+
+                //Запись информации каждого поста
+                int row = 4;
+
+                    worksheet.Cells[row, 1].Value = $"Дата и время";
+                    worksheet.Cells[row, 2].Value = $"Пост";
+                    worksheet.Cells[row, 3].Value = $"Дополнительная информация";
+                    worksheet.Cells[row, 4].Value = $"Изменяемый параметр";
+                    worksheet.Cells[row, 5].Value = $"Значение";
+
+                    //Установка стилей для "шапки" таблицы
+                    for (int i = 1; i < 7; i++)
+                    {
+                        worksheet.Cells[row, i].Style.Font.Bold = true;
+                        worksheet.Cells[row, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[row, i].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                        worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                    }
+                    row++;
+
+                    var measuredDatas = _context.MeasuredData
+                        .Include(m => m.MonitoringPost)
+                        .Include(m => m.MeasuredParameter)
+                        .Where(m => m.DateTime >= DateTimeFrom && m.DateTime <= DateTimeTo && MonitoringPostsId.Contains(m.MonitoringPost.Id) && MeasuredParametersId.Contains(m.MeasuredParameter.Id) && m.Averaged == true)
+                        .OrderByDescending(m => m.DateTime)
+                        .ToList();
+
+                    foreach (var measuredData in measuredDatas)
+                    {
+                        worksheet.Cells[row, 1].Value = $"{measuredData.DateTime}";
+                        worksheet.Cells[row, 2].Value = $"{measuredData.MonitoringPost.Name}";
+                        worksheet.Cells[row, 3].Value = $"{measuredData.MonitoringPost.AdditionalInformation}";
+                        worksheet.Cells[row, 4].Value = $"{measuredData.MeasuredParameter.NameRU}";
+                        worksheet.Cells[row, 5].Value = $"{measuredData.Value}";
+
+                        //Установка стиля для заполненного ряда
+                        for (int i = 1; i < 7; i++)
+                        {
+                            worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                        }
+                        row++;
+                    }
+
+                //Автовыравнивание по ширине
+                for (int i = 1; i < 7; i++)
+                {
+                    worksheet.Column(i).AutoFit();
+                }
+
                 package.Save();
 
                 string userEmail = User.Identity.Name;

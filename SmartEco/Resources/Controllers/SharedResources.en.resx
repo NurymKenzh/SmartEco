@@ -1008,4 +1008,10 @@
   <data name="Zhanatas" xml:space="preserve">
     <value>Zhanatas</value>
   </data>
+  <data name="ZhanatasEcoserviceMonitoringPosts" xml:space="preserve">
+    <value>Monitoring posts Ecoservice-S Zhanatas</value>
+  </data>
+  <data name="PostAnalyticsZhanatas" xml:space="preserve">
+    <value>Analytics on the posts of Zhanatas</value>
+  </data>
 </root>

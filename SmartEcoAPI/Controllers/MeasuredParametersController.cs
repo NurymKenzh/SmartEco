@@ -257,5 +257,23 @@ namespace SmartEcoAPI.Controllers
             await _context.SaveChangesAsync();
             return NoContent();
         }
+
+        [HttpGet("GetSameMeasuredParameters")]
+        public async Task<List<MeasuredParameter>> GetSameMeasuredParameters()
+        {
+            var mpmp = await _context.MonitoringPostMeasuredParameters
+                    .Include(m => m.MonitoringPost.Project)
+                    .Include(m => m.MeasuredParameter)
+                    .Where(m => m.MonitoringPost.Project.Name.Contains("Zhanatas"))
+                    .ToListAsync();
+
+            var measuredParameters = mpmp
+                .GroupBy(m => m.MeasuredParameterId)
+                .Select(m => m.First().MeasuredParameter)
+                .OrderBy(m => m.NameRU)
+                .ToList();
+
+            return measuredParameters;
+        }
     }
 }

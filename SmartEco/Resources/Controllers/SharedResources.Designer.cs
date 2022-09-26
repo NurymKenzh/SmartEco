@@ -2124,6 +2124,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string PostAnalyticsZhanatas {
+            get {
+                return ResourceManager.GetString("PostAnalyticsZhanatas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Posts {
             get {
                 return ResourceManager.GetString("Posts", resourceCulture);
@@ -2721,6 +2730,15 @@ namespace SmartEco.Resources.Controllers {
         public static string Zhanatas {
             get {
                 return ResourceManager.GetString("Zhanatas", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string ZhanatasEcoserviceMonitoringPosts {
+            get {
+                return ResourceManager.GetString("ZhanatasEcoserviceMonitoringPosts", resourceCulture);
             }
         }
     }

@@ -44,6 +44,9 @@
     function GetMonitoringPosts() {
         $.ajax({
             url: '@Url.Action("GetMonitoringPosts", "Analytics")',
+            data: {
+                projectName: "Almaty"
+            },
             type: 'POST',
             success: function (data) {
                 var checkBoxHtml = '';

@@ -207,23 +207,29 @@ namespace SmartEco.Controllers
             return View();
         }
 
-        public async Task<IActionResult> GetMonitoringPosts()
+        public async Task<IActionResult> GetMonitoringPosts(string projectName)
+        {
+            var result = await GetAllMonitoringPosts(projectName);
+
+            return Json(
+                result
+            );
+        }
+
+        public async Task<List<MonitoringPost>> GetAllMonitoringPosts(string projectName)
         {
             string urlMonitoringPosts = "api/MonitoringPosts";
             List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
             HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
             monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
             List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
-                .Where(m => m.Project != null && m.Project.Name == "Almaty"
+                .Where(m => m.Project != null && m.Project.Name == projectName
                 && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
                 && m.TurnOnOff == true)
                 .OrderBy(m => m.Name)
                 .ToList();
-            var result = ecoserviceAirMonitoringPosts;
-
-            return Json(
-                result
-            );
+            
+            return ecoserviceAirMonitoringPosts;
         }
 
         public async Task<IActionResult> GetMeasuredParameters(int MonitoringPostId)
@@ -839,6 +845,131 @@ namespace SmartEco.Controllers
             return Json(
                 result
             );
+        }
+
+        public async Task<IActionResult> ZhanatasEcoserviceMonitoringPosts()
+        {
+            string role = HttpContext.Session.GetString("Role");
+            if (!(role == "admin" || role == "moderator" || role == "Zhanatas"))
+            {
+                return Redirect("/");
+            }
+
+            string urlMonitoringPosts = "api/MonitoringPosts";
+            List<MonitoringPost> monitoringPosts = new List<MonitoringPost>();
+            HttpResponseMessage responseMonitoringPosts = await _HttpApiClient.GetAsync(urlMonitoringPosts);
+            monitoringPosts = await responseMonitoringPosts.Content.ReadAsAsync<List<MonitoringPost>>();
+            List<MonitoringPost> zhanatasEcoserviceAirMonitoringPosts = monitoringPosts
+                .Where(m => m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString() && m.Project.Name == "Zhanatas")
+                .OrderBy(m => m.Name)
+                .ToList();
+            ViewBag.ZhanatasEcoserviceAirMonitoringPosts = zhanatasEcoserviceAirMonitoringPosts.ToArray();
+
+            string urlMeasuredParameters = "api/MeasuredParameters";
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters);
+            measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            measuredParameters = measuredParameters
+                .Where(m => !string.IsNullOrEmpty(m.OceanusCode))
+                .OrderBy(m => m.Name)
+                .ToList();
+            ViewBag.MeasuredParameters = measuredParameters.ToArray();
+
+            int MPCExceedPastMinutes = Convert.ToInt32(Startup.Configuration["MPCExceedPastMinutes"]),
+                InactivePastMinutes = Convert.ToInt32(Startup.Configuration["InactivePastMinutes"]);
+            ViewBag.PastMinutes = Math.Max(MPCExceedPastMinutes, InactivePastMinutes);
+
+            return View();
+        }
+
+        public async Task<IActionResult> PostAnalyticsZhanatas()
+        {
+            ViewBag.DateFrom = DateTime.Now.ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = DateTime.Today.ToString("HH:mm:ss");
+            ViewBag.DateTo = DateTime.Now.ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+            var monitoringPosts = await GetAllMonitoringPosts("Zhanatas");
+            ViewBag.MonitoringPosts = new SelectList(monitoringPosts.OrderBy(m => m.Name), "Id", "Name");
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters/GetSameMeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            ViewBag.MeasuredParameters = new SelectList(measuredParameters.OrderBy(m => m.Name), "Id", "Name");
+
+            return View();
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> PostAnalyticsZhanatas(
+            DateTime DateFrom,
+            DateTime DateTo,
+            DateTime TimeFrom,
+            DateTime TimeTo,
+            List<int> MonitoringPostsId,
+            List<int> MeasuredParametersId)
+        {
+            string url = "api/Analytics/ExcelFormationZhanatas",
+                route = "";
+            DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
+                dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
+            if (dateTimeFrom != null)
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={dateTimeFrom.ToString(dateTimeFormatInfo)}";
+            }
+            if (dateTimeTo != null)
+            {
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={dateTimeTo.ToString(dateTimeFormatInfo)}";
+            }
+            if (MonitoringPostsId.Count != 0)
+            {
+                foreach (var monitoringPostId in MonitoringPostsId)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MonitoringPostsId={monitoringPostId}".Replace(',', '.');
+                }
+            }
+            if (MeasuredParametersId.Count != 0)
+            {
+                foreach (var measuredParametersId in MeasuredParametersId)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MeasuredParametersId={measuredParametersId}".Replace(',', '.');
+                }
+            }
+
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"Server={Startup.Configuration["Server"]}";
+            HttpResponseMessage response = await _HttpApiClient.PostAsync(url + route, null);
+            //if (response.IsSuccessStatusCode)
+            //{
+            //}
+
+            ViewBag.ExcelSent = "Excel-файл отправлен на Ваш E-mail";
+
+            ViewBag.DateFrom = DateFrom.ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = DateTime.Today.ToString("HH:mm:ss");
+            ViewBag.DateTo = DateTo.ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+            var monitoringPosts = await GetAllMonitoringPosts("Zhanatas");
+            ViewBag.MonitoringPosts = new SelectList(monitoringPosts.OrderBy(m => m.Name), "Id", "Name");
+            List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
+            string urlMeasuredParameters = "api/MeasuredParameters/GetSameMeasuredParameters",
+                routeMeasuredParameters = "";
+            HttpResponseMessage responseMeasuredParameters = await _HttpApiClient.GetAsync(urlMeasuredParameters + routeMeasuredParameters);
+            if (responseMeasuredParameters.IsSuccessStatusCode)
+            {
+                measuredParameters = await responseMeasuredParameters.Content.ReadAsAsync<List<MeasuredParameter>>();
+            }
+            ViewBag.MeasuredParameters = new SelectList(measuredParameters.OrderBy(m => m.Name), "Id", "Name");
+            return View();
         }
     }
 }
