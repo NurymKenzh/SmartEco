@@ -788,7 +788,7 @@ namespace GetPostsData
                         var measuredDatasB = connection.Query<MeasuredData>($"SELECT \"Id\", \"MeasuredParameterId\", \"DateTime\", \"Value\", \"Ecomontimestamp_ms\", \"MaxValueDay\", \"MaxValueMonth\", \"Month\", \"Year\", \"MaxValuePerMonth\", \"MaxValuePerYear\", \"MonitoringPostId\", \"PollutionSourceId\", \"Averaged\" " +
                             $"FROM public.\"MeasuredData\" " +
                             $"WHERE \"DateTime\" < '{dateTimeZhanatasLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null " +
-                            $"AND \"MonitoringPostId\" = 234 OR \"MonitoringPostId\" = 235;", commandTimeout: 86400); //Zhanatas posts
+                            $"AND (\"MonitoringPostId\" = 234 OR \"MonitoringPostId\" = 235);", commandTimeout: 86400); //Zhanatas posts
                         countBackup = measuredDatasB.Count();
                         foreach (MeasuredData measuredData in measuredDatasB)
                         {
