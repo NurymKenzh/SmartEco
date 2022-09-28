@@ -8,6 +8,10 @@ using System.IO;
 using System.Threading.Tasks;
 using MimeKit;
 using MailKit.Net.Smtp;
+using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Diagnostics;
+using System.Globalization;
 
 namespace GetPostsData
 {
@@ -96,6 +100,7 @@ namespace GetPostsData
             DateTime lastCheckDateTime = new DateTime(2000, 1, 1);
             DateTime lastWriteFileDateTime = new DateTime(2000, 1, 1);
             DateTime lastGetSourceDateTime = new DateTime(2000, 1, 1);
+            DateTime lastSendReportDateTime = new DateTime(2000, 1, 1);
             while (true)
             {
                 List<MeasuredParameter> measuredParameters = new List<MeasuredParameter>();
@@ -1317,11 +1322,81 @@ namespace GetPostsData
                         NewLog($"Writing data to a file >> Error write data: {ex.Message}");
                     }
                 }
+                //=================================================================================================================================================================
+                // Send report for Zhanats posts
+                if (lastSendReportDateTime.AddHours(1) < DateTime.Now && lastSendReportDateTime.ToShortDateString() != DateTime.Now.ToShortDateString())
+                {
+                    try
+                    {
+                        NewLog($"Send report for Zhanats posts >> Calling Api");
+                        Task.WaitAll(SendReportZhanatas());
+                    }
+                    catch (Exception ex)
+                    {
+                        NewLog($"Send report for Zhanats posts >> Error: {ex.Message}");
+                    }
+                    finally
+                    {
+                        lastSendReportDateTime = DateTime.Now;
+                    }
+                }
 
                 Thread.Sleep(30000);
             }
         }
 
+        private static async Task SendReportZhanatas()
+        {
+            HttpResponseMessage result = new HttpResponseMessage();
+
+            using (var client = new HttpClient())
+            {
+                client.BaseAddress = Debugger.IsAttached ?
+                    new Uri("http://localhost:52207") :
+                    new Uri("http://localhost:8084");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGlyZGFyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Im1vZGVyYXRvciIsIm5iZiI6MTY2NDI2ODkwNCwiZXhwIjoxNjk1ODkxMzA0LCJpc3MiOiJTbWFydEVjbyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTIyMDcvIn0.qFOJ7nH1WMmEd378PhP7r8Ed8gc6N2UJJH1WOa7YZ6s");
+
+                var dateTimeYesterdayFrom = DateTime.Now.AddDays(-1).Date + new TimeSpan(00, 00, 00);
+                var dateTimeYesterdayTo = DateTime.Now.AddDays(-1).Date + new TimeSpan(23, 59, 59);
+                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                var monitoringPostIds = new List<int>() { 234, 235 };
+                var measuredParameterIds = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 9, 13, 19, 73 };
+
+                string url = "api/Analytics/ExcelFormationZhanatas",
+                route = "";
+
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeFrom={dateTimeYesterdayFrom.ToString(dateTimeFormatInfo)}";
+
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"DateTimeTo={dateTimeYesterdayTo.ToString(dateTimeFormatInfo)}";
+
+                foreach (var monitoringPostId in monitoringPostIds)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MonitoringPostsId={monitoringPostId}".Replace(',', '.');
+                }
+
+                foreach (var measuredParametersId in measuredParameterIds)
+                {
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MeasuredParametersId={measuredParametersId}".Replace(',', '.');
+                }
+
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"Server={!Debugger.IsAttached}";
+
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"MailTo=baimukhanov.a@kpp.kz";
+
+                result = await client.PostAsync(url + route, null);
+            }
+
+            if (result.IsSuccessStatusCode)
+            {
+                NewLog($"Send report for Zhanats posts >> Success sended");
+            }
+        }
         public static void NewLog(string Log)
         {
             Console.WriteLine($"{DateTime.Now.ToString()} >> {Log}{Environment.NewLine}");
