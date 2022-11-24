@@ -52,8 +52,18 @@ namespace SmartEco.Controllers
                 };
                 foreach (var measuredParameter in data.MeasuredParameters)
                 {
-                    var measuredData = data.MeasuredDatas
-                        .FirstOrDefault(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id);
+                    //Временная мера. С постов получаем неверные данные по температуре. Пока что берём с поста Temir-005
+                    MeasuredData measuredData = null;
+                    if (measuredParameter.Id == 4)
+                    {
+                        measuredData = data.MeasuredDatas
+                            .FirstOrDefault(m => m.MonitoringPostId == 166 && m.MeasuredParameterId == measuredParameter.Id);
+                    }
+                    else
+                    {
+                        measuredData = data.MeasuredDatas
+                            .FirstOrDefault(m => m.MonitoringPostId == monitoringPost.Id && m.MeasuredParameterId == measuredParameter.Id);
+                    }
 
                     displayData.Parameters.Add(new DisplayData.Parameter()
                     {
