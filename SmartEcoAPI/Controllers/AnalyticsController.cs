@@ -169,7 +169,7 @@ namespace SmartEcoAPI.Controllers
                 package.Save();
 
                 string userEmail = User.Identity.Name;
-                Task.WaitAll(SendExcel(userEmail, Server));
+                await SendExcel(userEmail, Server);
                 System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
             }
             return null;
@@ -452,7 +452,7 @@ namespace SmartEcoAPI.Controllers
                 package.Save();
 
                 string userEmail = User.Identity.Name;
-                Task.WaitAll(SendExcel(userEmail, Server));
+                await SendExcel(userEmail, Server);
                 System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
             }
 
@@ -467,7 +467,8 @@ namespace SmartEcoAPI.Controllers
             DateTime? DateTimeTo,
             [FromQuery(Name = "MonitoringPostsId")] List<int> MonitoringPostsId,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
-            bool Server)
+            bool Server,
+            string MailTo)
         {
             string sFileName = $"{sName}.xlsx";
             FileInfo file = Server == true ? new FileInfo(Path.Combine(PathExcelFile, sFileName)) : new FileInfo(Path.Combine(sFileName));
@@ -537,12 +538,12 @@ namespace SmartEcoAPI.Controllers
 
                 package.Save();
 
-                string userEmail = User.Identity.Name;
-                Task.WaitAll(SendExcel(userEmail, Server));
+                string userEmail = MailTo ?? User.Identity.Name;
+                await SendExcel(userEmail, Server);
                 System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
             }
 
-            return null;
+            return Ok();
         }
 
         [HttpGet("GetAllMonitoringPosts")]

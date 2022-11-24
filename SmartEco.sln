@@ -1,13 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio Version 16
-VisualStudioVersion = 16.0.30804.86
+# Visual Studio Version 17
+VisualStudioVersion = 17.3.32922.545
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEco", "SmartEco\SmartEco.csproj", "{3E7B9880-EE03-4C35-AB65-86F907970508}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEcoAPI", "SmartEcoAPI\SmartEcoAPI.csproj", "{2F3448CE-A1D6-44EC-8B73-818A6B479921}"
-EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "EcomonDownloader", "EcomonDownloader\EcomonDownloader.csproj", "{6AB964DC-920A-422A-962A-93E55D59810E}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TCPListener", "TCPListener\TCPListener.csproj", "{7D5F7A7C-9C0A-4E57-910C-16927949E041}"
 EndProject
@@ -20,13 +18,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.txt = README.txt
 	EndProjectSection
 EndProject
-Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "YandexWeather", "YandexWeather\YandexWeather.csproj", "{4EA01863-4A53-40E9-BCE5-3783066A3590}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kazhydromet", "Kazhydromet\Kazhydromet.csproj", "{E7C9C92D-35DF-4591-AC56-01DBD63B532A}"
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "GetPollutersData", "GetPollutersData\GetPollutersData.csproj", "{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "AutoEcoPostsData", "AutoEcoPostsData\AutoEcoPostsData.csproj", "{27FC493E-771A-44BB-9490-7B831BE62D5E}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -42,10 +36,6 @@ Global
 		{2F3448CE-A1D6-44EC-8B73-818A6B479921}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2F3448CE-A1D6-44EC-8B73-818A6B479921}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2F3448CE-A1D6-44EC-8B73-818A6B479921}.Release|Any CPU.Build.0 = Release|Any CPU
-		{6AB964DC-920A-422A-962A-93E55D59810E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{6AB964DC-920A-422A-962A-93E55D59810E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{6AB964DC-920A-422A-962A-93E55D59810E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{6AB964DC-920A-422A-962A-93E55D59810E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{7D5F7A7C-9C0A-4E57-910C-16927949E041}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{7D5F7A7C-9C0A-4E57-910C-16927949E041}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{7D5F7A7C-9C0A-4E57-910C-16927949E041}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -58,10 +48,6 @@ Global
 		{E4A57C5E-E413-4740-8979-552413569856}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4A57C5E-E413-4740-8979-552413569856}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4A57C5E-E413-4740-8979-552413569856}.Release|Any CPU.Build.0 = Release|Any CPU
-		{4EA01863-4A53-40E9-BCE5-3783066A3590}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{4EA01863-4A53-40E9-BCE5-3783066A3590}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{4EA01863-4A53-40E9-BCE5-3783066A3590}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{4EA01863-4A53-40E9-BCE5-3783066A3590}.Release|Any CPU.Build.0 = Release|Any CPU
 		{E7C9C92D-35DF-4591-AC56-01DBD63B532A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{E7C9C92D-35DF-4591-AC56-01DBD63B532A}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E7C9C92D-35DF-4591-AC56-01DBD63B532A}.Release|Any CPU.ActiveCfg = Release|Any CPU
@@ -70,10 +56,6 @@ Global
 		{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{903A4E02-2A1E-47C5-8DCA-95DAB8436C05}.Release|Any CPU.Build.0 = Release|Any CPU
-		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{27FC493E-771A-44BB-9490-7B831BE62D5E}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
