@@ -1,0 +1,42 @@
+﻿@using SmartEco.Web.Models.Auth
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@model PersonAuthViewModel
+@{
+    ViewData["Title"] = SharedLocalizer["Register"];
+}
+
+<div class="row">
+    <div class="col-md-4 text-center mx-auto d-flex">
+        <form class="justify-content-center align-self-center mx-auto col-md-8" method="post" asp-route-returnUrl="@ViewData["ReturnUrl"]">
+            <h2>@ViewData["Title"]</h2>
+            <section>
+                <span class="text-danger">@ViewBag.ResultMessage</span>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-floating mb-3">
+                    <input id="email" class="form-control" asp-for="Email" placeholder="name@example.com" />
+                    <label for="email" asp-for="Email"></label>
+                    <span asp-validation-for="Email" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="password" class="form-control" asp-for="Password" placeholder="Password" />
+                    <label for="password" asp-for="Password"></label>
+                    <span asp-validation-for="Password" class="text-danger"></span>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="passwordConfirm" class="form-control" asp-for="ConfirmPassword" placeholder="ConfirmPassword" />
+                    <label for="passwordConfirm" asp-for="ConfirmPassword"></label>
+                    <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-primary btn-lg w-100">@SharedLocalizer["Register"]</button>
+                </div>
+            </section>
+        </form>
+    </div>
+</div>
+
+@section Scripts {
+    @await Html.PartialAsync("_ValidationScriptsPartial")
+}

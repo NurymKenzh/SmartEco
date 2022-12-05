@@ -1,0 +1,81 @@
+﻿@using SmartEco.Common.Enums
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Data"];
+}
+@{
+    Role role = (Role)(Context.Session.GetInt32("Role") ?? default);
+}
+@if (role is Role.Admin || role is Role.Moderator)
+{
+    <a class="btn link-primary" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+    <a class="btn link-primary" asp-controller="Layers" asp-action="Index">@SharedLocalizer["Layers"]</a>
+    <a class="btn link-primary" asp-controller="MeasuredParameters" asp-action="SetMaximumValue">Установка максимального значения измеряемых параметров</a>
+    <hr />
+    <a class="btn link-primary" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+    <a class="btn link-primary" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+    <a class="btn link-primary" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+    <a class="btn link-primary" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+    <a class="btn link-primary" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+    <a class="btn link-primary" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+    <a class="btn link-primary" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+    <a class="btn link-primary" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+    <a class="btn link-primary" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+    <a class="btn link-primary" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+    <a class="btn link-primary" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+    <a class="btn link-primary" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+}
+else if (role is Role.KaragandaRegion)
+{
+    <a class="btn link-primary" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+    <hr />
+    <a class="btn link-primary" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+    <a class="btn link-primary" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+    <a class="btn link-primary" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+    <a class="btn link-primary" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+    <a class="btn link-primary" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+    <a class="btn link-primary" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+    <a class="btn link-primary" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+    <a class="btn link-primary" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+    <a class="btn link-primary" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+    <a class="btn link-primary" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+    <a class="btn link-primary" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+    <a class="btn link-primary" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+}
+else if (role is Role.Arys)
+{
+    <a class="btn link-primary" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+}
+else if (role is Role.Almaty)
+{
+    <a class="btn link-primary" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+    <a class="btn link-primary" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+    <a class="btn link-primary" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+    <a class="btn link-primary" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+    <a class="btn link-primary" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+    <a class="btn link-primary" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+    <a class="btn link-primary" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+    <a class="btn link-primary" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+    <a class="btn link-primary" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+    <a class="btn link-primary" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+    <a class="btn link-primary" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+    <a class="btn link-primary" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+}
+else if (role is Role.Shymkent)
+{
+    <a class="btn link-primary" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+    <a class="btn link-primary" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+    <a class="btn link-primary" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+    <a class="btn link-primary" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+    <a class="btn link-primary" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+    <a class="btn link-primary" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+    <a class="btn link-primary" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+    <a class="btn link-primary" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+    <a class="btn link-primary" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+    <a class="btn link-primary" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+    <a class="btn link-primary" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+    <a class="btn link-primary" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+}

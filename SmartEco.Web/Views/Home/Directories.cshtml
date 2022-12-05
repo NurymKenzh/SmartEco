@@ -1,0 +1,108 @@
+﻿@using SmartEco.Common.Enums
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Directories"];
+}
+@{
+    Role role = (Role)(Context.Session.GetInt32("Role") ?? default);
+}
+
+<div class="row">
+    @if (role is Role.Admin || role is Role.Moderator)
+    {
+        <div class="col-md-3">
+            @if (role is Role.Admin)
+            {
+                <div class="list-group mb-3 shadow-sm">
+                    <a class="list-group-item list-group-item-action text-sm-center" asp-controller="Persons" asp-action="Index">@SharedLocalizer["Persons"]</a>
+                </div>
+            }
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="KATOes" asp-action="Index">@SharedLocalizer["KATOes"]</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="MeasuredParameters" asp-action="Index">@SharedLocalizer["MeasuredParameters"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="PollutionEnvironments" asp-action="Index">@SharedLocalizer["PollutionEnvironments"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="PollutionSources" asp-action="Index">@SharedLocalizer["PollutionSources"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="DataProviders" asp-action="Index">@SharedLocalizer["DataProviders"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="Projects" asp-action="Index">@SharedLocalizer["Projects"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="MeasuredParameterUnits" asp-action="Index">@SharedLocalizer["MeasuredParameterUnits"]</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="Ecoposts" asp-action="Index">@SharedLocalizer["Ecoposts"]</a>
+            </div>
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="LEDScreens" asp-action="Index">@SharedLocalizer["LEDScreens"]</a>
+            </div>
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="AuthorizedAuthorities" asp-action="Index">@SharedLocalizer["AuthorizedAuthorities"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="PlantationsTypes" asp-action="Index">@SharedLocalizer["PlantationsTypes"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="PlantationsStateTypes" asp-action="Index">@SharedLocalizer["PlantationsStateTypes"]</a>
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+            </div>
+        </div>
+    }
+    else if (role is Role.KaragandaRegion)
+    {
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+            </div>
+        </div>
+    }
+    else if (role is Role.Arys)
+    {
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+            </div>
+        </div>
+    }
+    else if (role is Role.Almaty)
+    {
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="Ecoposts" asp-action="Index">@SharedLocalizer["Ecoposts"]</a>
+            </div>
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+            </div>
+        </div>
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+            </div>
+        </div>
+    }
+    else if (role is Role.Shymkent)
+    {
+        <div class="col-md-3">
+            <div class="list-group mb-3 shadow-sm">
+                <a class="list-group-item list-group-item-action text-sm-center" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+            </div>
+        </div>
+    }
+</div>

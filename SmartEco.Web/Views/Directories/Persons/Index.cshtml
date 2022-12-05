@@ -1,0 +1,154 @@
+﻿@using SmartEco.Common.Enums
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@using System.Net
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Web.Models.Filters.Directories
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@model PersonViewModelFilterList
+@{
+    ViewData["Title"] = SharedLocalizer["Persons"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.1.0/css/font-awesome.min.css" rel="stylesheet">
+<script src="~/js/changeSortIcon.js" asp-append-version="true"></script>
+
+@{
+    Role role = (Role)(Context.Session.GetInt32("Role") ?? default);
+
+    var filterGeneral = new PersonFilterBase(Model.Filter.PageNumber, Model.Filter.PageSize, Model.Filter.SortOrder, Model.Filter.Email, Model.Filter.RoleId);
+    var filterId = new PersonFilterId(0, Model.Filter.PageNumber, Model.Filter.PageSize, Model.Filter.SortOrder, Model.Filter.Email, Model.Filter.RoleId);
+}
+
+<h2>@SharedLocalizer["Persons"]</h2>
+
+@if (role is Role.Admin@* || role is Role.Moderator*@)
+{
+    <p>
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", filterGeneral, new { @class="btn btn-sm btn-outline-primary" })
+    </p>
+}
+@using (Html.BeginForm("Index", "Persons", filterGeneral, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = Model.Filter.SortOrder })
+    @if (Model.Filter.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Filter.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", filterGeneral with { PageNumber = 1 })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber - 1 })
+                </li>
+            }
+
+            @for (var page = Model.Filter.StartPage; page <= Model.Filter.EndPage; page++)
+            {
+                <li class="@(page == Model.Filter.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index", filterGeneral with { PageNumber = page })
+                </li>
+            }
+
+            @if (Model.Filter.PageNumber < Model.Filter.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber + 1 })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.TotalPages})
+                </li>
+            }
+        </ul>
+    }
+    <table class="table table-hover table-bordered">
+        <thead class="table-light">
+            <tr>
+                <th>
+                    <a class="d-flex align-items-center btn btn-outline-primary btn-sort fw-bold w-100 mb-1" data-current-sort="@Model.Filter.SortOrder" data-sort="@Model.Filter.EmailSort"
+                        href="@Url.Action("Index", new PersonFilterBase(Model.Filter.PageNumber, Model.Filter.PageSize, Model.Filter.EmailSort, Model.Filter.Email, Model.Filter.RoleId))">
+                        <span class="m-md-auto">@Html.DisplayNameFor(c => c.Persons.ToList().FirstOrDefault().Email).ToString()</span>
+                        <i class="fa fa-fw"></i>
+                    </a>
+                    @Html.Editor("Email", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    <a class="d-flex align-items-center btn btn-outline-primary btn-sort fw-bold w-100 mb-1" data-current-sort="@Model.Filter.SortOrder" data-sort="@Model.Filter.RoleSort"
+                        href="@Url.Action("Index", new PersonFilterBase(Model.Filter.PageNumber, Model.Filter.PageSize, Model.Filter.RoleSort, Model.Filter.Email, Model.Filter.RoleId))">
+                        <span class="m-md-auto">@Html.DisplayNameFor(c => c.Persons.ToList().FirstOrDefault().Role).ToString()</span>
+                        <i class="fa fa-fw"></i>
+                    </a>
+                    @Html.DropDownList("RoleId", Model.Roles, "", htmlAttributes: new { @class = "form-select" })
+                </th>
+                <th class="col-1">
+                    <div class="input-group">
+                        @Html.DropDownList("PageSize", Model.Filter.PageSizeList, htmlAttributes: new { @class = "form-select" })
+                        <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-outline-secondary">
+                    </div>
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Persons)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Email, null, new { @class="text" })
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Role)
+                    </td>
+                    @if (role is Role.Admin@* || role is Role.Moderator*@)
+                    {
+                        <td>
+                            <div class="btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
+                                @Html.ActionLink(SharedLocalizer["Edit"], "Edit", filterId with { Id = item.Id }, new { @class="btn btn-outline-primary" })
+                                @Html.ActionLink(SharedLocalizer["Details"], "Details", filterId with { Id = item.Id }, new { @class="btn btn-outline-primary" })
+                                @Html.ActionLink(SharedLocalizer["Delete"], "Delete", filterId with { Id = item.Id }, new { @class="btn btn-outline-primary" })
+                            </div>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", filterId with { Id = item.Id })
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.Filter.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Filter.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", filterGeneral with { PageNumber = 1 })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber - 1 })
+                </li>
+            }
+
+            @for (var page = Model.Filter.StartPage; page <= Model.Filter.EndPage; page++)
+            {
+                <li class="@(page == Model.Filter.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index", filterGeneral with { PageNumber = page })
+                </li>
+            }
+
+            @if (Model.Filter.PageNumber < Model.Filter.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber + 1 })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.TotalPages })
+                </li>
+            }
+        </ul>
+    }
+}

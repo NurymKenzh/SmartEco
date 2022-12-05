@@ -1,0 +1,36 @@
+﻿@using SmartEco.Web.Models.Auth
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@model PersonAuthViewModel
+@{
+    ViewData["Title"] = SharedLocalizer["SignIn"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://code.jquery.com/jquery-2.2.4.min.js"></script>
+
+<div class="row">
+    <div class="col-md-4 text-center mx-auto d-flex">
+        <form class="justify-content-center align-self-center mx-auto col-md-8 w-auto" method="post" action="@Url.Action("Login", "Account")">
+            <section>
+                <span id="message" class="text-danger">@ViewBag.Message</span>
+                <div asp-validation-summary="All" class="text-danger"></div>
+                <div class="form-floating mb-3">
+                    <input id="emailLogin" class="form-control" asp-for="Email" placeholder="name@example.com" />
+                    <label for="emailLogin" asp-for="Email"></label>
+                </div>
+                <div class="form-floating mb-3">
+                    <input id="passwordLogin" class="form-control" asp-for="Password" placeholder="Password" />
+                    <label for="passwordLogin" asp-for="Password"></label>
+                </div>
+                <div class="mb-3">
+                    <button type="submit" class="btn btn-outline-secondary btn-text-wrap" id="submitLogin">
+                        <div>@SharedLocalizer["SignIn"]</div> 
+                        <div>(@SharedLocalizer["ForAuthorizedUsers"])</div>
+                    </button>
+                </div>
+            </section>
+        </form>
+    </div>
+</div>

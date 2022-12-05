@@ -1,49 +1,117 @@
-﻿<!DOCTYPE html>
+﻿@using SmartEco.Common.Enums
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+<!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>@ViewData["Title"] - SmartEco.Web</title>
+    <title>@ViewData["Title"] - SmartEco</title>
     <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
     <link rel="stylesheet" href="~/css/site.css" asp-append-version="true" />
-    <link rel="stylesheet" href="~/SmartEco.Web.styles.css" asp-append-version="true" />
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
 </head>
+@{
+    Role role = (Role)(Context.Session.GetInt32("Role") ?? default);
+}
 <body>
     <header>
-        <nav class="navbar navbar-expand-sm navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
+        <nav class="navbar navbar-expand-lg navbar-toggleable-sm navbar-light bg-white border-bottom box-shadow mb-3">
             <div class="container-fluid">
-                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SmartEco.Web</a>
+                <a class="navbar-brand" asp-area="" asp-controller="Home" asp-action="Index">SmartEco</a>
                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target=".navbar-collapse" aria-controls="navbarSupportedContent"
                         aria-expanded="false" aria-label="Toggle navigation">
                     <span class="navbar-toggler-icon"></span>
                 </button>
                 <div class="navbar-collapse collapse d-sm-inline-flex justify-content-between">
                     <ul class="navbar-nav flex-grow-1">
+                        @if (role is Role.Admin || role is Role.Moderator@*|| role is Role.Almaty*@ || role is Role.Shymkent)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
+                            </li>
+                        }
+                        @if (role is not default(int) && role is not Role.Almaty)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Data">@SharedLocalizer["Data"]</a>
+                            </li>
+                        }
+                        @if (role is Role.Admin || role is Role.Moderator)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Index">@SharedLocalizer["Maps"]</a>
+                            </li>
+                        }
+                        @if (role is Role.KaragandaRegion)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["Map"]</a>
+                            </li>
+                        }
+                        @if (role is Role.Almaty)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Map"]</a>
+                            </li>
+                        }
+                        @if (role is Role.Shymkent)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Map"]</a>
+                            </li>
+                        }
+                        @if (role is Role.Zhanatas)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Zhanatas">@SharedLocalizer["Map"]</a>
+                            </li>
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
+                            </li>
+                        }
+                        @if (role is Role.Kazhydromet)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Index">@SharedLocalizer["Map"]</a>
+                            </li>
+                        }
+                        @if (role is Role.Admin || role is Role.Moderator)
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
+                            </li>
+                        }
                         <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Index">Home</a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
+                            <a class="nav-link text-dark" asp-area="" asp-controller="AppealCitizens" asp-action="Index">@SharedLocalizer["AppealCitizens"]</a>
                         </li>
                     </ul>
+                    <partial name="_LoginPartial" />
                 </div>
             </div>
         </nav>
     </header>
-    <div class="container">
+    <div class="container-fluid">
         <main role="main" class="pb-3">
             @RenderBody()
         </main>
     </div>
 
     <footer class="border-top footer text-muted">
+        <div class="container-fluid">
+            &copy; @DateTime.Now.Year.ToString() - SmartEco -
+            <a class="text-secondary" asp-controller="Home" asp-action="Privacy">@SharedLocalizer["PrivacyPolicy"]</a>
+            @await Html.PartialAsync("_SelectLanguagePartial")
+        </div>
         <div class="container">
-            &copy; 2022 - SmartEco.Web - <a asp-area="" asp-controller="Home" asp-action="Privacy">Privacy</a>
         </div>
     </footer>
-    <script src="~/lib/jquery/dist/jquery.min.js"></script>
-    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="~/js/site.js" asp-append-version="true"></script>
+
     @await RenderSectionAsync("Scripts", required: false)
 </body>
 </html>

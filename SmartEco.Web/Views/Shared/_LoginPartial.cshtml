@@ -1,0 +1,60 @@
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+<ul class="nav navbar-nav">
+    <li class="nav-item user" style="display: none;">
+        <a id="usera" class="nav-link text-dark"></a>
+    </li>
+    <li class="nav-item user" style="display: none;">
+        <button id="logOut" class="nav-link btn btn-link text-dark">@SharedLocalizer["LogOut"]</button>
+    </li>
+
+    @if (Context.Request.Path != "/Maps/AlmatyFree")
+    {
+        <li class="nav-item login" style="display: none;">
+            <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Register">@SharedLocalizer["Register"]</a>
+        </li>
+    }
+    <li class="nav-item login" style="display: none;">
+        <a class="nav-link text-dark" asp-area="" asp-controller="Account" asp-action="Login">@SharedLocalizer["SignIn"]</a>
+    </li>
+</ul>
+
+<script>
+    $(document).ready(function () {
+        $.ajax({
+            type: 'GET',
+            url: '@Url.Action("GetEmail", "Account")',
+            success: function (data) {
+                if (data != null) {
+                    $('#usera').html(data);
+                    $('.user').show();
+                    $('.login').hide();
+                }
+                else {
+                    $('.login').show();
+                    $('.user').remove();
+                }
+            },
+            fail: function (data) {
+                $('.login').show();
+                $('.user').hide();
+            }
+        });
+    });
+
+    $('#logOut').click(function (e) {
+        e.preventDefault();
+        $('.login').show();
+        $('.user').hide();
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("ResetSession", "Account")',
+            success: function (data) {
+                window.location.href = "/";
+            },
+            error: function () {
+            }
+        })
+    });
+</script>

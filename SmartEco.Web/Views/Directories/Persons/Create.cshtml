@@ -1,0 +1,58 @@
+﻿@model SmartEco.Web.Models.Filters.Directories.PersonAuthViewModelFilter
+@using SmartEco.Web.Helpers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Create"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4 text-center mx-auto d-flex h-auto">
+        <div class="justify-content-center align-self-center mx-auto col-md-8">
+            <form asp-action="Create">
+                <h2>@SharedLocalizer["Person"]</h2>
+                <h4>@SharedLocalizer["Create"]</h4>
+                <section>
+                    <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="@Model.Person.Email" id="email" class="form-control" placeholder="name@example.com" />
+                        <label asp-for="@Model.Person.Email" for="email" class="control-label"></label>
+                        <span asp-validation-for="@Model.Person.Email" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="@Model.Person.Password" id="password" class="form-control" placeholder="Password" />
+                        <label asp-for="@Model.Person.Password" for="password" class="control-label"></label>
+                        <span asp-validation-for="@Model.Person.Password" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <input asp-for="@Model.Person.ConfirmPassword" id="confirmPassword" class="form-control" placeholder="ConfirmPassword" />
+                        <label asp-for="@Model.Person.ConfirmPassword" for="confirmPassword" class="control-label"></label>
+                        <span asp-validation-for="@Model.Person.ConfirmPassword" class="text-danger"></span>
+                    </div>
+                    <div class="form-floating mb-3">
+                        <select asp-for="@Model.Person.Role" asp-items="@Model.Roles" id="roles" class="form-select" aria-label="Roles"></select>
+                        <label asp-for="@Model.Person.Role" for="roles" class="control-label"></label>
+                    </div>
+                    <div hidden="hidden">
+                        <input asp-for="@Model.Filter.SortOrder" type="hidden" />
+                        <input asp-for="@Model.Filter.PageSize" type="hidden" />
+                        <input asp-for="@Model.Filter.PageNumber" type="hidden" />
+                        <input asp-for="@Model.Filter.Email" type="hidden" />
+                        <input asp-for="@Model.Filter.RoleId" type="hidden" />
+                    </div>
+                    <div class="mb-3">
+                        <input type="submit" value="@SharedLocalizer["Save"]" class="btn btn-primary btn-lg w-100" />
+                    </div>
+                </section>
+            </form>
+            <div>
+                @Html.ActionLink(SharedLocalizer["BackToList"], "Index", Model.Filter, new { @class="btn btn-secondary" })
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

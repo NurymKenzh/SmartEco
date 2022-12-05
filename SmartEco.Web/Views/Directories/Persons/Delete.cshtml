@@ -1,0 +1,75 @@
+﻿@model SmartEco.Web.Models.Filters.Directories.PersonViewModelFilter
+@using SmartEco.Common.Enums
+@using SmartEco.Web.Helpers
+@using Microsoft.AspNetCore.Http
+@using Microsoft.Extensions.Localization
+@using SmartEco.Web.Models.Filters.Directories
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Delete"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-4 mx-auto d-flex">
+        <div class="justify-content-center align-self-center mx-auto col-md-12">
+            <div class="text-sm-center">
+            <h2>@SharedLocalizer["Person"]</h2>
+                <h4>@SharedLocalizer["Delete"]</h4>
+            </div>
+            <table class="table table-hover mt-3">
+                <tr>
+                    <th class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Person.Email)
+                    </th>
+                    <td class="col-sm-6">
+                        @Html.DisplayFor(model => model.Person.Email)
+                    </td>
+                </tr>
+                <tr>
+                    <th class="col-sm-4">
+                        @Html.DisplayNameFor(model => model.Person.Role)
+                    </th>
+                    <td class="col-sm-6">
+                        @Html.DisplayFor(model => model.Person.Role)
+                    </td>
+                </tr>
+            </table>
+            <div class="d-flex justify-content-center">
+                <div class="mb-3 btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
+                    <a class="btn btn-outline-danger" data-bs-toggle="modal" href="#deleteModalToggle" role="button">@SharedLocalizer["Delete"]</a>
+                    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", (PersonFilterBase)Model.Filter, new { @class="btn btn-outline-secondary" })
+                </div>
+            </div>
+            
+            <div class="modal fade" id="deleteModalToggle" aria-hidden="true" aria-labelledby="deleteModalToggleLabel" tabindex="-1">
+                <div class="modal-dialog modal-dialog-centered">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <h5 class="modal-title" id="deleteModalToggleLabel">@SharedLocalizer["Delete"]?</h5>
+                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                        </div>
+                        <div class="modal-body">
+                            <p>@SharedLocalizer["Person"] "@Model.Person.Email"</p>
+                        </div>
+                        <div class="modal-footer">
+                            <form asp-action="Delete">
+                                <section>
+                                    <input type="hidden" asp-for="@Model.Filter.Id" />
+                                    <div hidden="hidden">
+                                        <input asp-for="@Model.Filter.SortOrder" type="hidden" />
+                                        <input asp-for="@Model.Filter.PageSize" type="hidden" />
+                                        <input asp-for="@Model.Filter.PageNumber" type="hidden" />
+                                        <input asp-for="@Model.Filter.Email" type="hidden" />
+                                        <input asp-for="@Model.Filter.RoleId" type="hidden" />
+                                    </div>
+                                    <button class="btn btn-danger" type="submit">@SharedLocalizer["Delete"]</button>
+                                </section>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

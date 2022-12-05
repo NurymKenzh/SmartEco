@@ -1,0 +1,1035 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<root>
+  <!-- 
+    Microsoft ResX Schema 
+    
+    Version 2.0
+    
+    The primary goals of this format is to allow a simple XML format 
+    that is mostly human readable. The generation and parsing of the 
+    various data types are done through the TypeConverter classes 
+    associated with the data types.
+    
+    Example:
+    
+    ... ado.net/XML headers & schema ...
+    <resheader name="resmimetype">text/microsoft-resx</resheader>
+    <resheader name="version">2.0</resheader>
+    <resheader name="reader">System.Resources.ResXResourceReader, System.Windows.Forms, ...</resheader>
+    <resheader name="writer">System.Resources.ResXResourceWriter, System.Windows.Forms, ...</resheader>
+    <data name="Name1"><value>this is my long string</value><comment>this is a comment</comment></data>
+    <data name="Color1" type="System.Drawing.Color, System.Drawing">Blue</data>
+    <data name="Bitmap1" mimetype="application/x-microsoft.net.object.binary.base64">
+        <value>[base64 mime encoded serialized .NET Framework object]</value>
+    </data>
+    <data name="Icon1" type="System.Drawing.Icon, System.Drawing" mimetype="application/x-microsoft.net.object.bytearray.base64">
+        <value>[base64 mime encoded string representing a byte array form of the .NET Framework object]</value>
+        <comment>This is a comment</comment>
+    </data>
+                
+    There are any number of "resheader" rows that contain simple 
+    name/value pairs.
+    
+    Each data row contains a name, and value. The row also contains a 
+    type or mimetype. Type corresponds to a .NET class that support 
+    text/value conversion through the TypeConverter architecture. 
+    Classes that don't support this are serialized and stored with the 
+    mimetype set.
+    
+    The mimetype is used for serialized objects, and tells the 
+    ResXResourceReader how to depersist the object. This is currently not 
+    extensible. For a given mimetype the value must be set accordingly:
+    
+    Note - application/x-microsoft.net.object.binary.base64 is the format 
+    that the ResXResourceWriter will generate, however the reader can 
+    read any of the formats listed below.
+    
+    mimetype: application/x-microsoft.net.object.binary.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Binary.BinaryFormatter
+            : and then encoded with base64 encoding.
+    
+    mimetype: application/x-microsoft.net.object.soap.base64
+    value   : The object must be serialized with 
+            : System.Runtime.Serialization.Formatters.Soap.SoapFormatter
+            : and then encoded with base64 encoding.
+
+    mimetype: application/x-microsoft.net.object.bytearray.base64
+    value   : The object must be serialized into a byte array 
+            : using a System.ComponentModel.TypeConverter
+            : and then encoded with base64 encoding.
+    -->
+  <xsd:schema id="root" xmlns="" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:msdata="urn:schemas-microsoft-com:xml-msdata">
+    <xsd:import namespace="http://www.w3.org/XML/1998/namespace" />
+    <xsd:element name="root" msdata:IsDataSet="true">
+      <xsd:complexType>
+        <xsd:choice maxOccurs="unbounded">
+          <xsd:element name="metadata">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" />
+              </xsd:sequence>
+              <xsd:attribute name="name" use="required" type="xsd:string" />
+              <xsd:attribute name="type" type="xsd:string" />
+              <xsd:attribute name="mimetype" type="xsd:string" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="assembly">
+            <xsd:complexType>
+              <xsd:attribute name="alias" type="xsd:string" />
+              <xsd:attribute name="name" type="xsd:string" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="data">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+                <xsd:element name="comment" type="xsd:string" minOccurs="0" msdata:Ordinal="2" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" msdata:Ordinal="1" />
+              <xsd:attribute name="type" type="xsd:string" msdata:Ordinal="3" />
+              <xsd:attribute name="mimetype" type="xsd:string" msdata:Ordinal="4" />
+              <xsd:attribute ref="xml:space" />
+            </xsd:complexType>
+          </xsd:element>
+          <xsd:element name="resheader">
+            <xsd:complexType>
+              <xsd:sequence>
+                <xsd:element name="value" type="xsd:string" minOccurs="0" msdata:Ordinal="1" />
+              </xsd:sequence>
+              <xsd:attribute name="name" type="xsd:string" use="required" />
+            </xsd:complexType>
+          </xsd:element>
+        </xsd:choice>
+      </xsd:complexType>
+    </xsd:element>
+  </xsd:schema>
+  <resheader name="resmimetype">
+    <value>text/microsoft-resx</value>
+  </resheader>
+  <resheader name="version">
+    <value>2.0</value>
+  </resheader>
+  <resheader name="reader">
+    <value>System.Resources.ResXResourceReader, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <resheader name="writer">
+    <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
+  </resheader>
+  <data name="AdditionalInformation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BackToList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Chart" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Code" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Create" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Data" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DataProvider" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DataProviders" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DateTime" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DateTimeEnd" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DateTimeStart" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Delete" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Details" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EastLongitude" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcomonMonitoringPoint" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcomonMonitoringPoints" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Edit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EgovId" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Find" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GeoServerName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GeoServerWorkspace" xml:space="preserve">
+    <value />
+  </data>
+  <data name="History" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Hour" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KATO" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KATOes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometAirPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometAirPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometSoilPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometSoilPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Language" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Layer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Layers" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Level" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Map" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValueDay" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValueMonth" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValuePerMonth" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxValuePerYear" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MeasuredData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MeasuredDatas" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MeasuredParameter" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MeasuredParameters" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MonitoringPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MonitoringPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MPC" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Name" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameKK" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameRU" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NorthLatitude" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Number" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ParentEgovId" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Pollutant" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Pollutants" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutionEnvironment" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutionEnvironments" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutionSource" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutionSourceData" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutionSourceDatas" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutionSources" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Posts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SanitaryZone" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Save" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Season" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Value" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Register" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Login" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LogOut" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Directories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Aktau" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KaragandaRegion" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Maps" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BaseLayer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcoserviceAirPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcoserviceAirPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Info" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Table" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Averaged" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Arys" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Analytics" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcoserviceMonitoringPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ShowHideLeftPanelText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ShowHideRightPanelText" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PollutantSpread" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Time" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Maximum" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Minimum" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Sensors" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TurnOnOff" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaxMeasuredValue" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MinMeasuredValue" xml:space="preserve">
+    <value />
+  </data>
+  <data name="More" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Smaller" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MeasuredParameterUnit" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MeasuredParameterUnits" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ComparisonMeasuredParameters" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PostAnalytics" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Coefficient" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Project" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Projects" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Almaty" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaterProtectionStrip" xml:space="preserve">
+    <value />
+  </data>
+  <data name="WaterProtectionZone" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazhydrometCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazhydrometID" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Automatic" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CarbonOxide" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Formaldehyde" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NitrogenDioxide" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SulfurDioxide" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SummationGroups" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometTransportPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometWaterPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PhoneNumber" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Hands" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeStation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AssessmentAir" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AssessmentWater" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DissipationSummary" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MobileEmissionSources" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcoserviceAirStation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EcoserviceAirStations" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AdditionalInformationEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AdditionalInformationKK" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AdditionalInformationRU" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TerritoryType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TerritoryTypes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Direct" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Reverse" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypeOfAchievement" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Target" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Targets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Event" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Events" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometTransportPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="KazHydrometWaterPost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Post" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GISConnectionCode" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetTerritories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetTerritory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Actual" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Planned" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetValueType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Year" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetValue" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TargetValues" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ErrorNumberRangeMustBe" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AActivities" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AActivity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ActivityType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ImplementationPercentage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="RelatedItems" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DailyAveraged" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MPCMaxSingle" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PostAnalyticsAlmaty" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MPCDailyAverage" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LEDScreen" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LEDScreens" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Concentration" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AllMonitoringPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameShort" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameShortEN" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameShortKK" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameShortRU" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Shymkent" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Efficiency" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PeriodActivity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Add" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EfficiencyContribution" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ContributionExceeds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Executor" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Executors" xml:space="preserve">
+    <value />
+  </data>
+  <data name="FullName" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Position" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Contribution" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AuthorizedAuthorities" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AuthorizedAuthority" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Areahectares" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritories" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpeciallyProtectedNaturalTerritory" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AccountNumber" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountArbours" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountBenches" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountBillboards" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountConiferousTrees" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountDeciduousTrees" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountEquippedPlaygrounds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountEquippedSportsgrounds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountFormedTrees" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountMonument" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountOutdoorLighting" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountShrubs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountSofas" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountSofasAndBenches" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AmountToilets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUndeFlowerbeds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUnderGreenery" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUnderGroundlawn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUnderLawn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUnderMeadowlawn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUnderOrdinarylawn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUnderShrubs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUnderTrees" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AreaUndeTracksAndPlatforms" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Asphalted" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Betwen10_20yearsConiferous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Betwen10_20yearsDeciduous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Billboards" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EquippedPlaygrounds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EquippedSportsgrounds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Flowerbeds" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreemPlantsPassport" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreemPlantsPassports" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenObject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenTotalArea" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenTotalAreaGa" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Lawns" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LegalEntityUse" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LengthOfHedges" xml:space="preserve">
+    <value />
+  </data>
+  <data name="LengthOfTrays" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListOfTreesByObjectBreedsCondition" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListOfTreesByObjectEconomicMeasures" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListOfTreesConiferous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ListOfTreesDeciduous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Monument" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameAndLocation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameOfPowersAttributed" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameOfRegistrationObject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OtherCapitalStructures" xml:space="preserve">
+    <value />
+  </data>
+  <data name="OutdoorLighting" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Over10yearsConiferous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Over10yearsDeciduous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PassportGeneralInformation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PavingBlocks" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PresenceOfHistoricalObject" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Shrubs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SofasAndBenches" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Toilets" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TotallAmountShrubs" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TracksAndPlatforms" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Tree" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Upto10yearsConiferous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Upto10yearsDeciduous" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Urns" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlantationsType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlantationsTypes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlantationsStateType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlantationsStateTypes" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlantationsState" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PlantationsStates" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesNumber" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Quantity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="StateOfCSR15" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByObjectTableOfTheBreedStateLists" xml:space="preserve">
+    <value />
+  </data>
+  <data name="BusinessEvents" xml:space="preserve">
+    <value />
+  </data>
+  <data name="CrownFormation" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MaintenanceWork" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SanitaryFelling" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SanitaryPruning" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByFacilityManagementMeasuresList" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TreesByFacilityManagementMeasuresLists" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpeciesDiversities" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SpeciesDiversity" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Ecopost" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Ecoposts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AssessmentVegetationСover" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenSpacesNow" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenSpacesPlanned" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Address" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Organization" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReceptionRecyclingPoint" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ReceptionRecyclingPoints" xml:space="preserve">
+    <value />
+  </data>
+  <data name="TypesRaw" xml:space="preserve">
+    <value />
+  </data>
+  <data name="MPCshare" xml:space="preserve">
+    <value />
+  </data>
+  <data name="GreenSpaces" xml:space="preserve">
+    <value />
+  </data>
+  <data name="InventoryWaterBodies" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NDVI" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Altynalmas" xml:space="preserve">
+    <value />
+  </data>
+  <data name="SignIn" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ForAuthorizedUsers" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DispersionPollutants" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Text" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AppealCitizens" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AskQuestion" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteAnswer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteQuestion" xml:space="preserve">
+    <value />
+  </data>
+  <data name="DeleteQuestionByAdmin" xml:space="preserve">
+    <value />
+  </data>
+  <data name="NameUser" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Question" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ToAnswer" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Apply" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Title" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PrivacyPolicy" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Zhanatas" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ZhanatasEcoserviceMonitoringPosts" xml:space="preserve">
+    <value />
+  </data>
+  <data name="PostAnalyticsZhanatas" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Password" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ConfirmEmail" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ConfirmPassword" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Persons" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Person" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Role" xml:space="preserve">
+    <value />
+  </data>
+  <data name="Roles" xml:space="preserve">
+    <value />
+  </data>
+</root>
