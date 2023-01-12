@@ -9,18 +9,11 @@ namespace SmartEcoAPI.Data
 {
     public class ApplicationDbContext : DbContext
     {
+        private readonly string AMS_SCHEMA = "ams";
+
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
-        }
-
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<CompanyKK>()
-            //    .HasIndex(c => c.NameRU);
-
-            //modelBuilder.Entity<Person>()
-            //.HasIndex(p => new { p.FirstName, p.LastName });
         }
 
         public DbSet<SmartEcoAPI.Models.MeasuredParameter> MeasuredParameter { get; set; }
@@ -102,5 +95,22 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.Question> Question { get; set; }
 
         public DbSet<SmartEcoAPI.Models.Answer> Answer { get; set; }
+
+        #region AMS
+        public DbSet<Company> Company { get; set; }
+        public DbSet<Enterprise> Enterprise { get; set; }
+        public DbSet<Manufactory> Manufactory { get; set; }
+        public DbSet<SourceAirPollution> SourceAirPollution { get; set; }
+        public DbSet<SourceEmission> SourceEmission { get; set; }
+        #endregion
+
+        protected override void OnModelCreating(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<Company>().ToTable(name: nameof(Company), schema: AMS_SCHEMA);
+            modelBuilder.Entity<Enterprise>().ToTable(name: nameof(Enterprise), schema: AMS_SCHEMA);
+            modelBuilder.Entity<Manufactory>().ToTable(name: nameof(Manufactory), schema: AMS_SCHEMA);
+            modelBuilder.Entity<SourceAirPollution>().ToTable(name: nameof(SourceAirPollution), schema: AMS_SCHEMA);
+            modelBuilder.Entity<SourceEmission>().ToTable(name: nameof(SourceEmission), schema: AMS_SCHEMA);
+        }
     }
 }

@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230112115041_SourceAirPollution_20230112_00")]
+    partial class SourceAirPollution_20230112_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -923,26 +925,6 @@ namespace SmartEcoAPI.Migrations
                     b.ToTable("SourceAirPollution","ams");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.SourceEmission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<decimal>("EastLongitude");
-
-                    b.Property<string>("Name");
-
-                    b.Property<decimal>("NorthLatitude");
-
-                    b.Property<int>("SourceAirPollutionId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SourceAirPollutionId");
-
-                    b.ToTable("SourceEmission","ams");
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory", b =>
                 {
                     b.Property<int>("Id")
@@ -1383,14 +1365,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.Manufactory", "Manufactory")
                         .WithMany()
                         .HasForeignKey("ManufactoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SourceEmission", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.SourceAirPollution", "SourceAirPollution")
-                        .WithMany()
-                        .HasForeignKey("SourceAirPollutionId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

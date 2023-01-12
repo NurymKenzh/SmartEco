@@ -24,6 +24,12 @@
     <Compile Remove="Migrations\20201029112333_GreemPlantsPassport_20201029_00.Designer.cs" />
     <Compile Remove="Migrations\20220309162840_Question_20220309_00.cs" />
     <Compile Remove="Migrations\20220309162840_Question_20220309_00.Designer.cs" />
+    <Compile Remove="Migrations\20230112110646_Company_20230112_00.cs" />
+    <Compile Remove="Migrations\20230112110646_Company_20230112_00.Designer.cs" />
+    <Compile Remove="Migrations\20230112112352_Enterprise_20230112_00.cs" />
+    <Compile Remove="Migrations\20230112112352_Enterprise_20230112_00.Designer.cs" />
+    <Compile Remove="Migrations\20230112115215_SourceEmission_20230112_00.cs" />
+    <Compile Remove="Migrations\20230112115215_SourceEmission_20230112_00.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>
