@@ -1014,4 +1014,37 @@
   <data name="PostAnalyticsZhanatas" xml:space="preserve">
     <value>Analytics on the posts of Zhanatas</value>
   </data>
+  <data name="City" xml:space="preserve">
+    <value>City</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Company</value>
+  </data>
+  <data name="Enterprise" xml:space="preserve">
+    <value>Enterprise</value>
+  </data>
+  <data name="Manufactory" xml:space="preserve">
+    <value>Manufactory</value>
+  </data>
+  <data name="SourceAirPollution" xml:space="preserve">
+    <value>Source Air Pollution</value>
+  </data>
+  <data name="SourceEmission" xml:space="preserve">
+    <value>Source Emission</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>Companies</value>
+  </data>
+  <data name="Enterprises" xml:space="preserve">
+    <value>Enterprises</value>
+  </data>
+  <data name="Manufactories" xml:space="preserve">
+    <value>Manufactories</value>
+  </data>
+  <data name="SourceAirPollutions" xml:space="preserve">
+    <value>Source Air Pollutions</value>
+  </data>
+  <data name="SourceEmissions" xml:space="preserve">
+    <value>Source Emissions</value>
+  </data>
 </root>

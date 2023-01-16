@@ -1016,4 +1016,37 @@
   <data name="PostAnalyticsZhanatas" xml:space="preserve">
     <value>Аналитика по постам Жанатас</value>
   </data>
+  <data name="City" xml:space="preserve">
+    <value>Город</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Компания</value>
+  </data>
+  <data name="Enterprise" xml:space="preserve">
+    <value>Предприятие</value>
+  </data>
+  <data name="Manufactory" xml:space="preserve">
+    <value>Цех</value>
+  </data>
+  <data name="SourceAirPollution" xml:space="preserve">
+    <value>Источник загрязнения атмосферы</value>
+  </data>
+  <data name="SourceEmission" xml:space="preserve">
+    <value>Источник выбросов</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>Компании</value>
+  </data>
+  <data name="Enterprises" xml:space="preserve">
+    <value>Предприятия</value>
+  </data>
+  <data name="Manufactories" xml:space="preserve">
+    <value>Цеха</value>
+  </data>
+  <data name="SourceAirPollutions" xml:space="preserve">
+    <value>Источники загрязнения атмосферы</value>
+  </data>
+  <data name="SourceEmissions" xml:space="preserve">
+    <value>Источники выбросов</value>
+  </data>
 </root>

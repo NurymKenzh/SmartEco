@@ -1014,4 +1014,37 @@
   <data name="PostAnalyticsZhanatas" xml:space="preserve">
     <value>Жаңатас посттарына аналитика</value>
   </data>
+  <data name="City" xml:space="preserve">
+    <value>Қала</value>
+  </data>
+  <data name="Company" xml:space="preserve">
+    <value>Компания</value>
+  </data>
+  <data name="Enterprise" xml:space="preserve">
+    <value>Кәсіпорын</value>
+  </data>
+  <data name="Manufactory" xml:space="preserve">
+    <value>Фабрика</value>
+  </data>
+  <data name="SourceAirPollution" xml:space="preserve">
+    <value>Ауаның ластануының көзі</value>
+  </data>
+  <data name="SourceEmission" xml:space="preserve">
+    <value>Эмиссия көзі</value>
+  </data>
+  <data name="Companies" xml:space="preserve">
+    <value>Компаниялар</value>
+  </data>
+  <data name="Enterprises" xml:space="preserve">
+    <value>Кәсіпорындар</value>
+  </data>
+  <data name="Manufactories" xml:space="preserve">
+    <value>Мануфактуралар</value>
+  </data>
+  <data name="SourceAirPollutions" xml:space="preserve">
+    <value>Ауаның ластану көздері</value>
+  </data>
+  <data name="SourceEmissions" xml:space="preserve">
+    <value>Эмиссия көздері</value>
+  </data>
 </root>
