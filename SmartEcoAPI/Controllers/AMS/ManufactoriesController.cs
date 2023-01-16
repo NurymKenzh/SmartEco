@@ -12,6 +12,7 @@ namespace SmartEcoAPI.Controllers.AMS
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "admin,moderator,AMS")]
     public class ManufactoriesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -22,7 +23,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Manufactories
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<IEnumerable<Manufactory>>> GetManufactory(string SortOrder,
             string Name,
             int? EnterpriseId,
@@ -71,7 +71,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Manufactories/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<Manufactory>> GetManufactory(int id)
         {
             var manufactory = await _context.Manufactory
@@ -87,7 +86,7 @@ namespace SmartEcoAPI.Controllers.AMS
         }
 
         // PUT: api/Manufactories/5
-        [HttpPut("{id}")]
+        [HttpPut("{id}")
         [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutManufactory(int id, Manufactory manufactory)
         {
@@ -119,7 +118,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // POST: api/Manufactories
         [HttpPost]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Manufactory>> PostManufactory(Manufactory manufactory)
         {
             _context.Manufactory.Add(manufactory);
@@ -130,7 +128,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // DELETE: api/Manufactories/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Manufactory>> DeleteManufactory(int id)
         {
             var manufactory = await _context.Manufactory
@@ -155,7 +152,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Manufactories/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,AMS")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<Manufactory>>> GetManufactoryCount(string Name,
             int? EnterpriseId)
