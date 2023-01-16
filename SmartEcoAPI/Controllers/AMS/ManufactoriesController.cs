@@ -86,8 +86,7 @@ namespace SmartEcoAPI.Controllers.AMS
         }
 
         // PUT: api/Manufactories/5
-        [HttpPut("{id}")
-        [Authorize(Roles = "admin,moderator")]
+        [HttpPut("{id}")]
         public async Task<IActionResult> PutManufactory(int id, Manufactory manufactory)
         {
             if (id != manufactory.Id)
