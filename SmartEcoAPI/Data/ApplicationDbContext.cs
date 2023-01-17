@@ -102,6 +102,8 @@ namespace SmartEcoAPI.Data
         public DbSet<Manufactory> Manufactory { get; set; }
         public DbSet<SourceAirPollution> SourceAirPollution { get; set; }
         public DbSet<SourceEmission> SourceEmission { get; set; }
+        public DbSet<MonitoringParameter> MonitoringParameter { get; set; }
+        public DbSet<MonitoringData> MonitoringData { get; set; }
         #endregion
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
@@ -111,6 +113,8 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<Manufactory>().ToTable(name: nameof(Manufactory), schema: AMS_SCHEMA);
             modelBuilder.Entity<SourceAirPollution>().ToTable(name: nameof(SourceAirPollution), schema: AMS_SCHEMA);
             modelBuilder.Entity<SourceEmission>().ToTable(name: nameof(SourceEmission), schema: AMS_SCHEMA);
+            modelBuilder.Entity<MonitoringParameter>().ToTable(name: nameof(MonitoringParameter), schema: AMS_SCHEMA);
+            modelBuilder.Entity<MonitoringData>().ToTable(name: nameof(MonitoringData), schema: AMS_SCHEMA);
         }
     }
 }

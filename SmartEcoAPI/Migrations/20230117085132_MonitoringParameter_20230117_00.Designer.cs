@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230117085132_MonitoringParameter_20230117_00")]
+    partial class MonitoringParameter_20230117_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -633,28 +635,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MeasuredParameterUnit");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.MonitoringData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("DateTime");
-
-                    b.Property<int>("MonitoringParameterId");
-
-                    b.Property<int>("SourceEmissionId");
-
-                    b.Property<decimal>("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MonitoringParameterId");
-
-                    b.HasIndex("SourceEmissionId");
-
-                    b.ToTable("MonitoringData","ams");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.MonitoringParameter", b =>
@@ -1344,19 +1324,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.PollutionEnvironment", "PollutionEnvironment")
                         .WithMany()
                         .HasForeignKey("PollutionEnvironmentId");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.MonitoringData", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.MonitoringParameter", "MonitoringParameter")
-                        .WithMany()
-                        .HasForeignKey("MonitoringParameterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.SourceEmission", "SourceEmission")
-                        .WithMany()
-                        .HasForeignKey("SourceEmissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.MonitoringPost", b =>
