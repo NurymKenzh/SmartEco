@@ -12,6 +12,7 @@ namespace SmartEcoAPI.Controllers.AMS
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "admin,moderator,AMS")]
     public class SourceAirPollutionsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -22,7 +23,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/SourceAirPollutions
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<IEnumerable<SourceAirPollution>>> GetSourceAirPollution(string SortOrder,
             string Name,
             int? ManufactoryId,
@@ -73,7 +73,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/SourceAirPollutions/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<SourceAirPollution>> GetSourceAirPollution(int id)
         {
             var sourceAirPollution = await _context.SourceAirPollution
@@ -92,7 +91,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // PUT: api/SourceAirPollutions/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutSourceAirPollution(int id, SourceAirPollution sourceAirPollution)
         {
             if (id != sourceAirPollution.Id)
@@ -123,7 +121,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // POST: api/SourceAirPollutions
         [HttpPost]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<SourceAirPollution>> PostSourceAirPollution(SourceAirPollution sourceAirPollution)
         {
             _context.SourceAirPollution.Add(sourceAirPollution);
@@ -134,7 +131,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // DELETE: api/SourceAirPollutions/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<SourceAirPollution>> DeleteSourceAirPollution(int id)
         {
             var sourceAirPollution = await _context.SourceAirPollution
@@ -159,7 +155,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/SourceAirPollutions/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,AMS")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<SourceAirPollution>>> GetSourceAirPollutionCount(string Name,
             int? ManufactoryId)

@@ -13,6 +13,7 @@ namespace SmartEcoAPI.Controllers.AMS
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "admin,moderator,AMS")]
     public class CompaniesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -24,7 +25,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Companies
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompany(string SortOrder,
             string Name,
             int? PageSize,
@@ -61,7 +61,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Companies/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<Company>> GetCompany(int id)
         {
             var company = await _context.Company.FindAsync(id);
@@ -76,7 +75,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // PUT: api/Companies/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutCompany(int id, Company company)
         {
             if (id != company.Id)
@@ -107,7 +105,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // POST: api/Companies
         [HttpPost]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Company>> PostCompany(Company company)
         {
             _context.Company.Add(company);
@@ -118,7 +115,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // DELETE: api/Companies/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Company>> DeleteCompany(int id)
         {
             var company = await _context.Company.FindAsync(id);
@@ -140,7 +136,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Companies/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,AMS")]
         public async Task<ActionResult<IEnumerable<Company>>> GetCompanyCount(string Name)
         {
             var companies = _context.Company

@@ -12,6 +12,7 @@ namespace SmartEcoAPI.Controllers.AMS
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "admin,moderator,AMS")]
     public class SourceEmissionsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -22,7 +23,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/SourceEmissions
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<IEnumerable<SourceEmission>>> GetSourceEmission(string SortOrder,
             string Name,
             int? SourceAirPollutionId,
@@ -74,7 +74,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/SourceEmissions/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<SourceEmission>> GetSourceEmission(int id)
         {
             var sourceEmission = await _context.SourceEmission
@@ -94,7 +93,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // PUT: api/SourceEmissions/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutSourceEmission(int id, SourceEmission sourceEmission)
         {
             if (id != sourceEmission.Id)
@@ -125,7 +123,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // POST: api/SourceEmissions
         [HttpPost]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<SourceEmission>> PostSourceEmission(SourceEmission sourceEmission)
         {
             _context.SourceEmission.Add(sourceEmission);
@@ -136,7 +133,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // DELETE: api/SourceEmissions/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<SourceEmission>> DeleteSourceEmission(int id)
         {
             var sourceEmission = await _context.SourceEmission
@@ -161,7 +157,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/SourceEmissions/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,AMS")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<SourceEmission>>> GetSourceEmissionCount(string Name,
             int? SourceAirPollutionId)

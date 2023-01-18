@@ -12,6 +12,7 @@ namespace SmartEcoAPI.Controllers.AMS
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "admin,moderator,AMS")]
     public class EnterprisesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -22,7 +23,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Enterprises
         [HttpGet]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<IEnumerable<Enterprise>>> GetEnterprise(string SortOrder,
             string Name,
             string City,
@@ -82,7 +82,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Enterprises/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,ASM")]
         public async Task<ActionResult<Enterprise>> GetEnterprise(int id)
         {
             var enterprise = await _context.Enterprise
@@ -99,7 +98,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // PUT: api/Enterprises/5
         [HttpPut("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<IActionResult> PutEnterprise(int id, Enterprise enterprise)
         {
             if (id != enterprise.Id)
@@ -130,7 +128,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // POST: api/Enterprises
         [HttpPost]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Enterprise>> PostEnterprise(Enterprise enterprise)
         {
             _context.Enterprise.Add(enterprise);
@@ -141,7 +138,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // DELETE: api/Enterprises/5
         [HttpDelete("{id}")]
-        [Authorize(Roles = "admin,moderator")]
         public async Task<ActionResult<Enterprise>> DeleteEnterprise(int id)
         {
             var enterprise = await _context.Enterprise
@@ -166,7 +162,6 @@ namespace SmartEcoAPI.Controllers.AMS
 
         // GET: api/Enterprises/Count
         [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,AMS")]
         [ApiExplorerSettings(IgnoreApi = true)]
         public async Task<ActionResult<IEnumerable<Enterprise>>> GetEnterpriseCount(string Name,
             string City,

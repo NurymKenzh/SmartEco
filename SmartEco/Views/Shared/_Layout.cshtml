@@ -74,7 +74,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        @if (Role == "admin" || Role == "moderator"@*|| Role == "Almaty"*@ || Role == "Shymkent")
+                        @if (Role == "admin" || Role == "moderator"@*|| Role == "Almaty"*@ || Role == "Shymkent" || Role == "AMS")
 {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
