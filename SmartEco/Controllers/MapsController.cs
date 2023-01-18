@@ -13,6 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SmartEco.Models;
+using SmartEco.Models.AMS;
 using SmartEco.Models.UPRZA;
 
 namespace SmartEco.Controllers
@@ -901,6 +902,254 @@ namespace SmartEco.Controllers
             ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
 
             ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
+
+            return View();
+        }
+
+        public async Task<IActionResult> AMS()
+        {
+            string role = HttpContext.Session.GetString("Role");
+            if (!(role == "admin" || role == "moderator" || role == "AMS"))
+            {
+                return Redirect("/");
+            }
+
+            string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            List<Company> companies = new List<Company>();
+            string urlCompanies = "api/Companies";
+            HttpResponseMessage responseCompanies = await _HttpApiClient.GetAsync(urlCompanies);
+            if (responseCompanies.IsSuccessStatusCode)
+            {
+                companies = await responseCompanies.Content.ReadAsAsync<List<Company>>();
+            }
+            
+            List<Enterprise> enterprises = new List<Enterprise>();
+            string urlEnterprises = "api/Enterprises";
+            HttpResponseMessage responseEnterprises = await _HttpApiClient.GetAsync(urlEnterprises);
+            if (responseEnterprises.IsSuccessStatusCode)
+            {
+                enterprises = await responseEnterprises.Content.ReadAsAsync<List<Enterprise>>();
+            }
+            JObject enterprisesObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from enterprise in enterprises
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = enterprise.Id,
+                                   Name = enterprise.Name,
+                                   City = enterprise.City,
+                                   CompanyName = enterprise.Company.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(enterprise.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(enterprise.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.EnterprisesLayerJson = enterprisesObject.ToString();
+            ViewBag.Enterprises = enterprises.ToArray();
+
+            List<Manufactory> manufactories = new List<Manufactory>();
+            string urlManufactories = "api/Manufactories";
+            HttpResponseMessage responseManufactories = await _HttpApiClient.GetAsync(urlManufactories);
+            if (responseManufactories.IsSuccessStatusCode)
+            {
+                manufactories = await responseManufactories.Content.ReadAsAsync<List<Manufactory>>();
+            }
+            JObject manufactoriesObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from manufactory in manufactories
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = manufactory.Id,
+                                   Name = manufactory.Name,
+                                   EnterpriseName = manufactory.Enterprise.Name,
+                                   CompanyName = manufactory.Enterprise.Company.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(manufactory.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(manufactory.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.ManufactoriesLayerJson = manufactoriesObject.ToString();
+            ViewBag.Manufactories = manufactories.ToArray();
+
+            List<SourceAirPollution> sourceAirPollutions = new List<SourceAirPollution>();
+            string urlSourceAirPollutions = "api/SourceAirPollutions";
+            HttpResponseMessage responseSourceAirPollutions = await _HttpApiClient.GetAsync(urlSourceAirPollutions);
+            if (responseSourceAirPollutions.IsSuccessStatusCode)
+            {
+                sourceAirPollutions = await responseSourceAirPollutions.Content.ReadAsAsync<List<SourceAirPollution>>();
+            }
+            JObject sourceAirPollutionsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from sourceAirPollution in sourceAirPollutions
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = sourceAirPollution.Id,
+                                   Name = sourceAirPollution.Name,
+                                   ManufactoryName = sourceAirPollution.Manufactory.Name,
+                                   EnterpriseName = sourceAirPollution.Manufactory.Enterprise.Name,
+                                   CompanyName = sourceAirPollution.Manufactory.Enterprise.Company.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(sourceAirPollution.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(sourceAirPollution.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.SourceAirPollutionsLayerJson = sourceAirPollutionsObject.ToString();
+            ViewBag.SourceAirPollutions = sourceAirPollutions.ToArray();
+
+            List<SourceEmission> sourceEmissions = new List<SourceEmission>();
+            string urlSourceEmissions = "api/SourceEmissions";
+            HttpResponseMessage responseSourceEmissions = await _HttpApiClient.GetAsync(urlSourceEmissions);
+            if (responseSourceEmissions.IsSuccessStatusCode)
+            {
+                sourceEmissions = await responseSourceEmissions.Content.ReadAsAsync<List<SourceEmission>>();
+            }
+            JObject sourceEmissionsObject = JObject.FromObject(new
+            {
+                type = "FeatureCollection",
+                crs = new
+                {
+                    type = "name",
+                    properties = new
+                    {
+                        name = "urn:ogc:def:crs:EPSG::3857"
+                    }
+                },
+                features = from sourceEmission in sourceEmissions
+                           select new
+                           {
+                               type = "Feature",
+                               properties = new
+                               {
+                                   Id = sourceEmission.Id,
+                                   Name = sourceEmission.Name,
+                                   SourceAirPollutionName = sourceEmission.SourceAirPollution.Name,
+                                   ManufactoryName = sourceEmission.SourceAirPollution.Manufactory.Name,
+                                   EnterpriseName = sourceEmission.SourceAirPollution.Manufactory.Enterprise.Name,
+                                   CompanyName = sourceEmission.SourceAirPollution.Manufactory.Enterprise.Company.Name
+                               },
+                               geometry = new
+                               {
+                                   type = "Point",
+                                   coordinates = new List<decimal>
+                                    {
+                                        Convert.ToDecimal(sourceEmission.EastLongitude.ToString().Replace(".", decimaldelimiter)),
+                                        Convert.ToDecimal(sourceEmission.NorthLatitude.ToString().Replace(".", decimaldelimiter))
+                                    },
+                               }
+                           }
+            });
+            ViewBag.SourceEmissionsLayerJson = sourceEmissionsObject.ToString();
+            ViewBag.SourceEmissions = sourceEmissions.ToArray();
+
+
+            ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
+            ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
+            if (!Convert.ToBoolean(Startup.Configuration["Server"]))
+            {
+                ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
+            }
+            ViewBag.GeoServerPort = Startup.Configuration["GeoServerPort"].ToString();
+            ViewBag.Companies = companies;
+            //ViewBag.Enterprises = enterprises;
+            //ViewBag.Manufactories = manufactories;
+            //ViewBag.SourceAirPollutions = sourceAirPollutions;
+            //ViewBag.SourceEmissions = sourceEmissions;
+            ////ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            //ViewBag.MonitoringPostMeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            //ViewBag.Pollutants = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode) && m.MPCMaxSingle != null).OrderBy(m => m.Name), "Id", "Name");
+            //ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            //ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            //ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            //ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+
+            //string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            //List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
+
+            //List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
+            //    .Where(m => m.Project != null && m.Project.Name == "Zhanatas"
+            //    && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+            //    && m.PollutionEnvironmentId == 2
+            //    && m.TurnOnOff == true)
+            //    .ToList();
+
+            //JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            //ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
+
+            //JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            //ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
+
+            //ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
+
+            //List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
+            //    .Where(m =>
+            //    m.Project != null && m.Project.Name == "Zhanatas"
+            //    && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
+            //    && m.TurnOnOff == true)
+            //    .ToList();
+
+            //JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
+            //ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+
+            //ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
 
             return View();
         }
