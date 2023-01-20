@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using MimeKit;
+using Newtonsoft.Json.Linq;
 using Npgsql;
 using OfficeOpenXml;
 using SmartEcoAPI.Data;
@@ -666,6 +667,136 @@ namespace SmartEcoAPI.Controllers
             {
                 file.Close();
             }
+        }
+
+        [HttpGet("GetAnalyticAMS")]
+        [Authorize(Roles = "admin,moderator,AMS")]
+        public async Task<ActionResult<MonitoringDataViewModel>> GetAnalyticAMS(string SortOrder,
+            string EnterpriseName,
+            string City,
+            string SourceAirPollutionName,
+            string SourceEmissionName,
+            string MonitoringParameterName,
+            decimal? Value,
+            decimal? MPCMaxSingle,
+            DateTime? DateTimeFrom,
+            DateTime? DateTimeTo,
+            int? PageSize,
+            int? PageNumber)
+        {
+            var monitoringDatas = _context.MonitoringData
+                .Include(m => m.MonitoringParameter)
+                .Include(m => m.SourceEmission)
+                .ThenInclude(m => m.SourceAirPollution)
+                .ThenInclude(m => m.Manufactory)
+                .ThenInclude(m => m.Enterprise)
+                .ThenInclude(m => m.Company)
+                .Where(m => true);
+
+            if (!string.IsNullOrEmpty(EnterpriseName))
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.SourceEmission.SourceAirPollution.Manufactory.Enterprise.Name == EnterpriseName);
+            }
+            if (!string.IsNullOrEmpty(City))
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.SourceEmission.SourceAirPollution.Manufactory.Enterprise.City == City);
+            }
+            if (!string.IsNullOrEmpty(SourceAirPollutionName))
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.SourceEmission.SourceAirPollution.Name == SourceAirPollutionName);
+            }
+            if (!string.IsNullOrEmpty(SourceEmissionName))
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.SourceEmission.Name == SourceEmissionName);
+            }
+            if (!string.IsNullOrEmpty(MonitoringParameterName))
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.MonitoringParameter.Name == MonitoringParameterName);
+            }
+            if (Value != null)
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.Value == Value);
+            }
+            if (MPCMaxSingle != null)
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.MonitoringParameter.MPCMaxSingle == MPCMaxSingle);
+            }
+            if (DateTimeFrom != null)
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.DateTime >= DateTimeFrom);
+            }
+            if (DateTimeTo != null)
+            {
+                monitoringDatas = monitoringDatas.Where(k => k.DateTime <= DateTimeTo);
+            }
+
+            switch (SortOrder)
+            {
+                case "EnterpriseName":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.SourceEmission.SourceAirPollution.Manufactory.Enterprise.Name);
+                    break;
+                case "EnterpriseNameDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.SourceEmission.SourceAirPollution.Manufactory.Enterprise.Name);
+                    break;
+                case "City":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.SourceEmission.SourceAirPollution.Manufactory.Enterprise.City);
+                    break;
+                case "CityDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.SourceEmission.SourceAirPollution.Manufactory.Enterprise.City);
+                    break;
+                case "SourceAirPollutionName":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.SourceEmission.SourceAirPollution.Name);
+                    break;
+                case "SourceAirPollutionNameDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.SourceEmission.SourceAirPollution.Name);
+                    break;
+                case "SourceEmissionName":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.SourceEmission.Name);
+                    break;
+                case "SourceEmissionNameDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.SourceEmission.Name);
+                    break;
+                case "MonitoringParameterName":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.MonitoringParameter.Name);
+                    break;
+                case "MonitoringParameterNameDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.MonitoringParameter.Name);
+                    break;
+                case "Value":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.Value);
+                    break;
+                case "ValueDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.Value);
+                    break;
+                case "MPCMaxSingle":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.MonitoringParameter.MPCMaxSingle);
+                    break;
+                case "MPCMaxSingleDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.MonitoringParameter.MPCMaxSingle);
+                    break;
+                case "DateTime":
+                    monitoringDatas = monitoringDatas.OrderBy(k => k.DateTime);
+                    break;
+                case "DateTimeDesc":
+                    monitoringDatas = monitoringDatas.OrderByDescending(k => k.DateTime);
+                    break;
+                default:
+                    monitoringDatas = monitoringDatas.OrderBy(m => m.Id);
+                    break;
+            }
+
+            var monitoringDatasCount = monitoringDatas.Count();
+
+            if (PageSize != null && PageNumber != null)
+            {
+                monitoringDatas = monitoringDatas.Skip(((int)PageNumber - 1) * (int)PageSize).Take((int)PageSize);
+            }
+
+            return new MonitoringDataViewModel()
+            {
+                MonitoringDatas = await monitoringDatas.ToListAsync(),
+                MonitoringDatasCount = monitoringDatasCount
+            };
         }
     }
 }
