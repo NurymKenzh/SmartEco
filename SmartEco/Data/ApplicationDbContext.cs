@@ -5,7 +5,7 @@ using Microsoft.AspNetCore.Identity.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore;
 using SmartEco.Data;
 using SmartEco.Models;
-using SmartEco.Models.AMS;
+using SmartEco.Models.ASM;
 
 namespace SmartEco.Data
 {
@@ -44,11 +44,11 @@ namespace SmartEco.Data
         public DbSet<SmartEco.Models.SpeciesDiversity> SpeciesDiversity { get; set; }
         public DbSet<SmartEco.Models.Ecopost> Ecopost { get; set; }
         public DbSet<SmartEco.Models.ReceptionRecyclingPoint> ReceptionRecyclingPoint { get; set; }
-        public DbSet<SmartEco.Models.AMS.Company> Company { get; set; }
-        public DbSet<SmartEco.Models.AMS.Enterprise> Enterprise { get; set; }
-        public DbSet<SmartEco.Models.AMS.Manufactory> Manufactory { get; set; }
-        public DbSet<SmartEco.Models.AMS.SourceAirPollution> SourceAirPollution { get; set; }
-        public DbSet<SmartEco.Models.AMS.SourceEmission> SourceEmission { get; set; }
+        public DbSet<SmartEco.Models.ASM.Company> Company { get; set; }
+        public DbSet<SmartEco.Models.ASM.Enterprise> Enterprise { get; set; }
+        public DbSet<SmartEco.Models.ASM.Manufactory> Manufactory { get; set; }
+        public DbSet<SmartEco.Models.ASM.SourceAirPollution> SourceAirPollution { get; set; }
+        public DbSet<SmartEco.Models.ASM.SourceEmission> SourceEmission { get; set; }
         //public DbSet<SmartEco.Models.EcomonMonitoringPoint> EcomonMonitoringPoint { get; set; }
         //public DbSet<SmartEco.Models.Log> Log { get; set; }
     }

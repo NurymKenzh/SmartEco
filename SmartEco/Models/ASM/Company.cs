@@ -7,7 +7,7 @@ using System.Security.AccessControl;
 using System.Threading.Tasks;
 using System.Xml.Linq;
 
-namespace SmartEco.Models.AMS
+namespace SmartEco.Models.ASM
 {
     public class Company
     {

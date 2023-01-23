@@ -1047,13 +1047,16 @@
   <data name="Unit" xml:space="preserve">
     <value />
   </data>
-  <data name="AnalyticAMS" xml:space="preserve">
+  <data name="AnalyticASM" xml:space="preserve">
     <value />
   </data>
   <data name="MonitoringData" xml:space="preserve">
     <value />
   </data>
   <data name="MonitoringParameter" xml:space="preserve">
+    <value />
+  </data>
+  <data name="ASM" xml:space="preserve">
     <value />
   </data>
 </root>

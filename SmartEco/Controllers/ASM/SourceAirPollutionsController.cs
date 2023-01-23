@@ -9,35 +9,35 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SmartEco.Data;
-using SmartEco.Models.AMS;
+using SmartEco.Models.ASM;
 
-namespace SmartEco.Controllers.AMS
+namespace SmartEco.Controllers.ASM
 {
-    public class SourceEmissionsController : Controller
+    public class SourceAirPollutionsController : Controller
     {
         private readonly HttpApiClientController _HttpApiClient;
 
-        public SourceEmissionsController(HttpApiClientController HttpApiClient)
+        public SourceAirPollutionsController(HttpApiClientController HttpApiClient)
         {
             _HttpApiClient = HttpApiClient;
         }
 
-        // GET: SourceEmissions
+        // GET: SourceAirPollutions
         public async Task<IActionResult> Index(string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
-            List<SourceEmission> sourceEmissions = new List<SourceEmission>();
+            List<SourceAirPollution> sourceAirPollutions = new List<SourceAirPollution>();
 
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
 
             ViewBag.NameSort = SortOrder == "Name" ? "NameDesc" : "Name";
-            ViewBag.SourceAirPollutionSort = SortOrder == "SourceAirPollution" ? "SourceAirPollutionDesc" : "SourceAirPollution";
+            ViewBag.ManufactorySort = SortOrder == "Manufactory" ? "ManufactoryDesc" : "Manufactory";
 
-            string url = "api/SourceEmissions",
+            string url = "api/SourceAirPollutions",
                 route = "",
                 routeCount = "";
             if (!string.IsNullOrEmpty(SortOrder))
@@ -52,12 +52,12 @@ namespace SmartEco.Controllers.AMS
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"Name={NameFilter}";
             }
-            if (SourceAirPollutionIdFilter != null)
+            if (ManufactoryIdFilter != null)
             {
                 route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"SourceAirPollutionId={SourceAirPollutionIdFilter}";
+                route += $"ManufactoryId={ManufactoryIdFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
-                routeCount += $"SourceAirPollutionId={SourceAirPollutionIdFilter}";
+                routeCount += $"ManufactoryId={ManufactoryIdFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -92,17 +92,17 @@ namespace SmartEco.Controllers.AMS
                 responseCount = await _HttpApiClient.GetAsync(url + "/count" + routeCount);
             if (response.IsSuccessStatusCode)
             {
-                sourceEmissions = await response.Content.ReadAsAsync<List<SourceEmission>>();
+                sourceAirPollutions = await response.Content.ReadAsAsync<List<SourceAirPollution>>();
             }
-            int sourceEmissionCount = 0;
+            int sourceAirPollutionCount = 0;
             if (responseCount.IsSuccessStatusCode)
             {
-                sourceEmissionCount = await responseCount.Content.ReadAsAsync<int>();
+                sourceAirPollutionCount = await responseCount.Content.ReadAsAsync<int>();
             }
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber != null ? PageNumber : 1;
-            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(sourceEmissionCount / (decimal)PageSize) : 1;
+            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(sourceAirPollutionCount / (decimal)PageSize) : 1;
             ViewBag.StartPage = PageNumber - 5;
             ViewBag.EndPage = PageNumber + 4;
             if (ViewBag.StartPage <= 0)
@@ -119,24 +119,24 @@ namespace SmartEco.Controllers.AMS
                 }
             }
 
-            List<SourceAirPollution> sourceAirPollutions = new List<SourceAirPollution>();
-            string urlSourceAirPollutions = "api/SourceAirPollutions",
-                routeSourceAirPollutions = "";
-            HttpResponseMessage responseSourceAirPollutions = await _HttpApiClient.GetAsync(urlSourceAirPollutions + routeSourceAirPollutions);
-            if (responseSourceAirPollutions.IsSuccessStatusCode)
+            List<Manufactory> manufactories = new List<Manufactory>();
+            string urlManufactories = "api/Manufactories",
+                routeManufactories = "";
+            HttpResponseMessage responseManufactories = await _HttpApiClient.GetAsync(urlManufactories + routeManufactories);
+            if (responseManufactories.IsSuccessStatusCode)
             {
-                sourceAirPollutions = await responseSourceAirPollutions.Content.ReadAsAsync<List<SourceAirPollution>>();
+                manufactories = await responseManufactories.Content.ReadAsAsync<List<Manufactory>>();
             }
-            ViewBag.SourceAirPollutions = new SelectList(sourceAirPollutions.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.Manufactories = new SelectList(manufactories.OrderBy(m => m.Name), "Id", "Name");
 
-            return View(sourceEmissions);
+            return View(sourceAirPollutions);
         }
 
-        // GET: SourceEmissions/Details/5
+        // GET: SourceAirPollutions/Details/5
         public async Task<IActionResult> Details(int? id,
             string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -144,30 +144,30 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            SourceEmission sourceEmission = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/SourceEmissions/{id.ToString()}");
+            SourceAirPollution sourceAirPollution = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/SourceAirPollutions/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                sourceEmission = await response.Content.ReadAsAsync<SourceEmission>();
+                sourceAirPollution = await response.Content.ReadAsAsync<SourceAirPollution>();
             }
-            if (sourceEmission == null)
+            if (sourceAirPollution == null)
             {
                 return NotFound();
             }
 
-            return View(sourceEmission);
+            return View(sourceAirPollution);
         }
 
-        // GET: SourceEmissions/Create
+        // GET: SourceAirPollutions/Create
         public async Task<IActionResult> Create(string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -175,30 +175,30 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
 
-            List<SourceAirPollution> sourceAirPollutions = new List<SourceAirPollution>();
-            string urlSourceAirPollutions = "api/SourceAirPollutions",
-                routeSourceAirPollutions = "";
-            HttpResponseMessage responseSourceAirPollutions = await _HttpApiClient.GetAsync(urlSourceAirPollutions + routeSourceAirPollutions);
-            if (responseSourceAirPollutions.IsSuccessStatusCode)
+            List<Manufactory> manufactories = new List<Manufactory>();
+            string urlManufactories = "api/Manufactories",
+                routeManufactories = "";
+            HttpResponseMessage responseManufactories = await _HttpApiClient.GetAsync(urlManufactories + routeManufactories);
+            if (responseManufactories.IsSuccessStatusCode)
             {
-                sourceAirPollutions = await responseSourceAirPollutions.Content.ReadAsAsync<List<SourceAirPollution>>();
+                manufactories = await responseManufactories.Content.ReadAsAsync<List<Manufactory>>();
             }
-            ViewBag.SourceAirPollutions = new SelectList(sourceAirPollutions.OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.Manufactories = new SelectList(manufactories.OrderBy(m => m.Name), "Id", "Name");
 
             return View();
         }
 
-        // POST: SourceEmissions/Create
+        // POST: SourceAirPollutions/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name,NorthLatitude,EastLongitude,SourceAirPollutionId")] SourceEmission sourceEmission,
+        public async Task<IActionResult> Create([Bind("Id,Name,NorthLatitude,EastLongitude,ManufactoryId")] SourceAirPollution sourceAirPollution,
             string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -206,11 +206,11 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
-                    "api/SourceEmissions", sourceEmission);
+                    "api/SourceAirPollutions", sourceAirPollution);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -225,7 +225,7 @@ namespace SmartEco.Controllers.AMS
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(sourceEmission);
+                    return View(sourceAirPollution);
                 }
 
                 return RedirectToAction(nameof(Index),
@@ -235,28 +235,28 @@ namespace SmartEco.Controllers.AMS
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
                         NameFilter = ViewBag.NameFilter,
-                        SourceAirPollutionIdFilter = ViewBag.SourceAirPollutionIdFilter
+                        ManufactoryIdFilter = ViewBag.ManufactoryIdFilter
                     });
             }
 
-            List<SourceAirPollution> sourceAirPollutions = new List<SourceAirPollution>();
-            string urlSourceAirPollutions = "api/SourceAirPollutions",
-                routeSourceAirPollutions = "";
-            HttpResponseMessage responseSourceAirPollutions = await _HttpApiClient.GetAsync(urlSourceAirPollutions + routeSourceAirPollutions);
-            if (responseSourceAirPollutions.IsSuccessStatusCode)
+            List<Manufactory> manufactories = new List<Manufactory>();
+            string urlManufactories = "api/Manufactories",
+                routeManufactories = "";
+            HttpResponseMessage responseManufactories = await _HttpApiClient.GetAsync(urlManufactories + routeManufactories);
+            if (responseManufactories.IsSuccessStatusCode)
             {
-                sourceAirPollutions = await responseSourceAirPollutions.Content.ReadAsAsync<List<SourceAirPollution>>();
+                manufactories = await responseManufactories.Content.ReadAsAsync<List<Manufactory>>();
             }
-            ViewBag.SourceAirPollutions = new SelectList(sourceAirPollutions.OrderBy(m => m.Name), "Id", "Name", sourceEmission.SourceAirPollutionId);
+            ViewBag.Manufactories = new SelectList(manufactories.OrderBy(m => m.Name), "Id", "Name", sourceAirPollution.ManufactoryId);
 
-            return View(sourceEmission);
+            return View(sourceAirPollution);
         }
 
-        // GET: SourceEmissions/Edit/5
+        // GET: SourceAirPollutions/Edit/5
         public async Task<IActionResult> Edit(int? id,
             string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -264,36 +264,36 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
-            SourceEmission sourceEmission = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/SourceEmissions/{id.ToString()}");
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
+            SourceAirPollution sourceAirPollution = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/SourceAirPollutions/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                sourceEmission = await response.Content.ReadAsAsync<SourceEmission>();
+                sourceAirPollution = await response.Content.ReadAsAsync<SourceAirPollution>();
             }
 
-            List<SourceAirPollution> sourceAirPollutions = new List<SourceAirPollution>();
-            string urlSourceAirPollutions = "api/SourceAirPollutions",
-                routeSourceAirPollutions = "";
-            HttpResponseMessage responseSourceAirPollutions = await _HttpApiClient.GetAsync(urlSourceAirPollutions + routeSourceAirPollutions);
-            if (responseSourceAirPollutions.IsSuccessStatusCode)
+            List<Manufactory> manufactories = new List<Manufactory>();
+            string urlManufactories = "api/Manufactories",
+                routeManufactories = "";
+            HttpResponseMessage responseManufactories = await _HttpApiClient.GetAsync(urlManufactories + routeManufactories);
+            if (responseManufactories.IsSuccessStatusCode)
             {
-                sourceAirPollutions = await responseSourceAirPollutions.Content.ReadAsAsync<List<SourceAirPollution>>();
+                manufactories = await responseManufactories.Content.ReadAsAsync<List<Manufactory>>();
             }
-            ViewBag.SourceAirPollutions = new SelectList(sourceAirPollutions.OrderBy(m => m.Name), "Id", "Name", sourceEmission.SourceAirPollutionId);
+            ViewBag.Manufactories = new SelectList(manufactories.OrderBy(m => m.Name), "Id", "Name", sourceAirPollution.ManufactoryId);
 
-            return View(sourceEmission);
+            return View(sourceAirPollution);
         }
 
-        // POST: SourceEmissions/Edit/5
+        // POST: SourceAirPollutions/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,NorthLatitude,EastLongitude,SourceAirPollutionId")] SourceEmission sourceEmission,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,NorthLatitude,EastLongitude,ManufactoryId")] SourceAirPollution sourceAirPollution,
             string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -301,15 +301,15 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
-            if (id != sourceEmission.Id)
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
+            if (id != sourceAirPollution.Id)
             {
                 return NotFound();
             }
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
-                    $"api/SourceEmissions/{sourceEmission.Id}", sourceEmission);
+                    $"api/SourceAirPollutions/{sourceAirPollution.Id}", sourceAirPollution);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -324,10 +324,10 @@ namespace SmartEco.Controllers.AMS
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(sourceEmission);
+                    return View(sourceAirPollution);
                 }
 
-                sourceEmission = await response.Content.ReadAsAsync<SourceEmission>();
+                sourceAirPollution = await response.Content.ReadAsAsync<SourceAirPollution>();
                 return RedirectToAction(nameof(Index),
                     new
                     {
@@ -335,28 +335,28 @@ namespace SmartEco.Controllers.AMS
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
                         NameFilter = ViewBag.NameFilter,
-                        SourceAirPollutionIdFilter = ViewBag.SourceAirPollutionIdFilter
+                        ManufactoryIdFilter = ViewBag.ManufactoryIdFilter
                     });
             }
 
-            List<SourceAirPollution> sourceAirPollutions = new List<SourceAirPollution>();
-            string urlSourceAirPollutions = "api/SourceAirPollutions",
-                routeSourceAirPollutions = "";
-            HttpResponseMessage responseSourceAirPollutions = await _HttpApiClient.GetAsync(urlSourceAirPollutions + routeSourceAirPollutions);
-            if (responseSourceAirPollutions.IsSuccessStatusCode)
+            List<Manufactory> manufactories = new List<Manufactory>();
+            string urlManufactories = "api/Manufactories",
+                routeManufactories = "";
+            HttpResponseMessage responseManufactories = await _HttpApiClient.GetAsync(urlManufactories + routeManufactories);
+            if (responseManufactories.IsSuccessStatusCode)
             {
-                sourceAirPollutions = await responseSourceAirPollutions.Content.ReadAsAsync<List<SourceAirPollution>>();
+                manufactories = await responseManufactories.Content.ReadAsAsync<List<Manufactory>>();
             }
-            ViewBag.SourceAirPollutions = new SelectList(sourceAirPollutions.OrderBy(m => m.Name), "Id", "Name", sourceEmission.SourceAirPollutionId);
+            ViewBag.Manufactories = new SelectList(manufactories.OrderBy(m => m.Name), "Id", "Name", sourceAirPollution.ManufactoryId);
 
-            return View(sourceEmission);
+            return View(sourceAirPollution);
         }
 
-        // GET: SourceEmissions/Delete/5
+        // GET: SourceAirPollutions/Delete/5
         public async Task<IActionResult> Delete(int? id,
             string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -364,33 +364,33 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            SourceEmission sourceEmission = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/SourceEmissions/{id.ToString()}");
+            SourceAirPollution sourceAirPollution = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/SourceAirPollutions/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                sourceEmission = await response.Content.ReadAsAsync<SourceEmission>();
+                sourceAirPollution = await response.Content.ReadAsAsync<SourceAirPollution>();
             }
-            if (sourceEmission == null)
+            if (sourceAirPollution == null)
             {
                 return NotFound();
             }
 
-            return View(sourceEmission);
+            return View(sourceAirPollution);
         }
 
-        // POST: SourceEmissions/Delete/5
+        // POST: SourceAirPollutions/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id,
             string SortOrder,
             string NameFilter,
-            int? SourceAirPollutionIdFilter,
+            int? ManufactoryIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -398,9 +398,9 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            ViewBag.SourceAirPollutionIdFilter = SourceAirPollutionIdFilter;
+            ViewBag.ManufactoryIdFilter = ManufactoryIdFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
-                $"api/SourceEmissions/{id}");
+                $"api/SourceAirPollutions/{id}");
             return RedirectToAction(nameof(Index),
                     new
                     {
@@ -408,7 +408,7 @@ namespace SmartEco.Controllers.AMS
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
                         NameFilter = ViewBag.NameFilter,
-                        SourceAirPollutionIdFilter = ViewBag.SourceAirPollutionIdFilter
+                        ManufactoryIdFilter = ViewBag.ManufactoryIdFilter
                     });
         }
     }

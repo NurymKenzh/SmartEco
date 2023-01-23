@@ -1052,7 +1052,7 @@
   <data name="Unit" xml:space="preserve">
     <value>Единицы измерения</value>
   </data>
-  <data name="AnalyticAMS" xml:space="preserve">
+  <data name="AnalyticASM" xml:space="preserve">
     <value>Аналитика АСМ</value>
   </data>
   <data name="MonitoringData" xml:space="preserve">
@@ -1060,5 +1060,8 @@
   </data>
   <data name="MonitoringParameter" xml:space="preserve">
     <value>Параметр мониторинга</value>
+  </data>
+  <data name="ASM" xml:space="preserve">
+    <value>АСМ</value>
   </data>
 </root>

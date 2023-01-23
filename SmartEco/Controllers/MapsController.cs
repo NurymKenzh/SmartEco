@@ -13,7 +13,7 @@ using Microsoft.AspNetCore.Mvc.Rendering;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using SmartEco.Models;
-using SmartEco.Models.AMS;
+using SmartEco.Models.ASM;
 using SmartEco.Models.UPRZA;
 
 namespace SmartEco.Controllers
@@ -906,10 +906,10 @@ namespace SmartEco.Controllers
             return View();
         }
 
-        public async Task<IActionResult> AMS()
+        public async Task<IActionResult> ASM()
         {
             string role = HttpContext.Session.GetString("Role");
-            if (!(role == "admin" || role == "moderator" || role == "AMS"))
+            if (!(role == "admin" || role == "moderator" || role == "ASM"))
             {
                 return Redirect("/");
             }

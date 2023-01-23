@@ -10,32 +10,38 @@ using Microsoft.Extensions.Configuration;
 using Newtonsoft.Json;
 using SmartEco.Data;
 using SmartEco.Models;
-using SmartEco.Models.AMS;
+using SmartEco.Models.ASM;
 
-namespace SmartEco.Controllers.AMS
+namespace SmartEco.Controllers.ASM
 {
-    public class CompaniesController : Controller
+    public class EnterprisesController : Controller
     {
         private readonly HttpApiClientController _HttpApiClient;
 
-        public CompaniesController(HttpApiClientController HttpApiClient)
+        public EnterprisesController(HttpApiClientController HttpApiClient)
         {
             _HttpApiClient = HttpApiClient;
         }
 
-        // GET: Companies
+        // GET: Enterprises
         public async Task<IActionResult> Index(string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
-            List<Company> companies = new List<Company>();
+            List<Enterprise> enterprises = new List<Enterprise>();
 
             ViewBag.NameFilter = NameFilter;
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
 
             ViewBag.NameSort = SortOrder == "Name" ? "NameDesc" : "Name";
+            ViewBag.CitySort = SortOrder == "City" ? "CityDesc" : "City";
+            ViewBag.CompanySort = SortOrder == "Company" ? "CompanyDesc" : "Company";
 
-            string url = "api/Companies",
+            string url = "api/Enterprises",
                 route = "",
                 routeCount = "";
             if (!string.IsNullOrEmpty(SortOrder))
@@ -49,6 +55,20 @@ namespace SmartEco.Controllers.AMS
                 route += $"Name={NameFilter}";
                 routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
                 routeCount += $"Name={NameFilter}";
+            }
+            if (CityFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"City={CityFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"City={CityFilter}";
+            }
+            if (CompanyIdFilter != null)
+            {
+                route += string.IsNullOrEmpty(route) ? "?" : "&";
+                route += $"CompanyId={CompanyIdFilter}";
+                routeCount += string.IsNullOrEmpty(routeCount) ? "?" : "&";
+                routeCount += $"CompanyId={CompanyIdFilter}";
             }
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
             var pageSizeList = pageSizeListSection.AsEnumerable().Where(p => p.Value != null);
@@ -83,17 +103,17 @@ namespace SmartEco.Controllers.AMS
                 responseCount = await _HttpApiClient.GetAsync(url + "/count" + routeCount);
             if (response.IsSuccessStatusCode)
             {
-                companies = await response.Content.ReadAsAsync<List<Company>>();
+                enterprises = await response.Content.ReadAsAsync<List<Enterprise>>();
             }
-            int companyCount = 0;
+            int enterpriseCount = 0;
             if (responseCount.IsSuccessStatusCode)
             {
-                companyCount = await responseCount.Content.ReadAsAsync<int>();
+                enterpriseCount = await responseCount.Content.ReadAsAsync<int>();
             }
             ViewBag.SortOrder = SortOrder;
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber != null ? PageNumber : 1;
-            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(companyCount / (decimal)PageSize) : 1;
+            ViewBag.TotalPages = PageSize != null ? (int)Math.Ceiling(enterpriseCount / (decimal)PageSize) : 1;
             ViewBag.StartPage = PageNumber - 5;
             ViewBag.EndPage = PageNumber + 4;
             if (ViewBag.StartPage <= 0)
@@ -110,13 +130,25 @@ namespace SmartEco.Controllers.AMS
                 }
             }
 
-            return View(companies);
+            List<Company> companies = new List<Company>();
+            string urlCompanies = "api/Companies",
+                routeCompanies = "";
+            HttpResponseMessage responseCompanies = await _HttpApiClient.GetAsync(urlCompanies + routeCompanies);
+            if (responseCompanies.IsSuccessStatusCode)
+            {
+                companies = await responseCompanies.Content.ReadAsAsync<List<Company>>();
+            }
+            ViewBag.Companies = new SelectList(companies.OrderBy(m => m.Name), "Id", "Name");
+
+            return View(enterprises);
         }
 
-        // GET: Companies/Details/5
+        // GET: Enterprises/Details/5
         public async Task<IActionResult> Details(int? id,
             string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -124,28 +156,32 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            Company company = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Companies/{id.ToString()}");
+            Enterprise enterprise = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Enterprises/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                company = await response.Content.ReadAsAsync<Company>();
+                enterprise = await response.Content.ReadAsAsync<Enterprise>();
             }
-            if (company == null)
+            if (enterprise == null)
             {
                 return NotFound();
             }
 
-            return View(company);
+            return View(enterprise);
         }
 
-        // GET: Companies/Create
+        // GET: Enterprises/Create
         public async Task<IActionResult> Create(string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -153,18 +189,32 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
+
+            List<Company> companies = new List<Company>();
+            string urlCompanies = "api/Companies",
+                routeCompanies = "";
+            HttpResponseMessage responseCompanies = await _HttpApiClient.GetAsync(urlCompanies + routeCompanies);
+            if (responseCompanies.IsSuccessStatusCode)
+            {
+                companies = await responseCompanies.Content.ReadAsAsync<List<Company>>();
+            }
+            ViewBag.Companies = new SelectList(companies.OrderBy(m => m.Name), "Id", "Name");
 
             return View();
         }
 
-        // POST: Companies/Create
+        // POST: Enterprises/Create
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Name")] Company company,
+        public async Task<IActionResult> Create([Bind("Id,Name,City,NorthLatitude,EastLongitude,CompanyId")] Enterprise enterprise,
             string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -172,10 +222,12 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PostAsJsonAsync(
-                    "api/Companies", company);
+                    "api/Enterprises", enterprise);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -190,7 +242,7 @@ namespace SmartEco.Controllers.AMS
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(company);
+                    return View(enterprise);
                 }
 
                 return RedirectToAction(nameof(Index),
@@ -199,17 +251,31 @@ namespace SmartEco.Controllers.AMS
                         SortOrder = ViewBag.SortOrder,
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
-                        NameFilter = ViewBag.NameFilter
+                        NameFilter = ViewBag.NameFilter,
+                        CityFilter = ViewBag.CityFilter,
+                        CompanyIdFilter = ViewBag.CompanyIdFilter
                     });
             }
 
-            return View(company);
+            List<Company> companies = new List<Company>();
+            string urlCompanies = "api/Companies",
+                routeCompanies = "";
+            HttpResponseMessage responseCompanies = await _HttpApiClient.GetAsync(urlCompanies + routeCompanies);
+            if (responseCompanies.IsSuccessStatusCode)
+            {
+                companies = await responseCompanies.Content.ReadAsAsync<List<Company>>();
+            }
+            ViewBag.Companies = new SelectList(companies.OrderBy(m => m.Name), "Id", "Name", enterprise.CompanyId);
+
+            return View(enterprise);
         }
 
-        // GET: Companies/Edit/5
+        // GET: Enterprises/Edit/5
         public async Task<IActionResult> Edit(int? id,
             string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -217,25 +283,38 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-
-            Company company = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Companies/{id.ToString()}");
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
+            Enterprise enterprise = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Enterprises/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                company = await response.Content.ReadAsAsync<Company>();
+                enterprise = await response.Content.ReadAsAsync<Enterprise>();
             }
 
-            return View(company);
+            List<Company> companies = new List<Company>();
+            string urlCompanies = "api/Companies",
+                routeCompanies = "";
+            HttpResponseMessage responseCompanies = await _HttpApiClient.GetAsync(urlCompanies + routeCompanies);
+            if (responseCompanies.IsSuccessStatusCode)
+            {
+                companies = await responseCompanies.Content.ReadAsAsync<List<Company>>();
+            }
+            ViewBag.Companies = new SelectList(companies.OrderBy(m => m.Name), "Id", "Name", enterprise.CompanyId);
+
+            return View(enterprise);
         }
 
-        // POST: Companies/Edit/5
+        // POST: Enterprises/Edit/5
         // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Name")] Company company,
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Name,City,NorthLatitude,EastLongitude,CompanyId")] Enterprise enterprise,
             string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -243,14 +322,16 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
-            if (id != company.Id)
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
+            if (id != enterprise.Id)
             {
                 return NotFound();
             }
             if (ModelState.IsValid)
             {
                 HttpResponseMessage response = await _HttpApiClient.PutAsJsonAsync(
-                    $"api/Companies/{company.Id}", company);
+                    $"api/Enterprises/{enterprise.Id}", enterprise);
 
                 string OutputViewText = await response.Content.ReadAsStringAsync();
                 OutputViewText = OutputViewText.Replace("<br>", Environment.NewLine);
@@ -265,27 +346,41 @@ namespace SmartEco.Controllers.AMS
                     {
                         ModelState.AddModelError(property.Name, property.Value[0].ToString());
                     }
-                    return View(company);
+                    return View(enterprise);
                 }
 
-                company = await response.Content.ReadAsAsync<Company>();
+                enterprise = await response.Content.ReadAsAsync<Enterprise>();
                 return RedirectToAction(nameof(Index),
                     new
                     {
                         SortOrder = ViewBag.SortOrder,
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
-                        NameFilter = ViewBag.NameFilter
+                        NameFilter = ViewBag.NameFilter,
+                        CityFilter = ViewBag.CityFilter,
+                        CompanyIdFilter = ViewBag.CompanyIdFilter
                     });
             }
 
-            return View(company);
+            List<Company> companies = new List<Company>();
+            string urlCompanies = "api/Companies",
+                routeCompanies = "";
+            HttpResponseMessage responseCompanies = await _HttpApiClient.GetAsync(urlCompanies + routeCompanies);
+            if (responseCompanies.IsSuccessStatusCode)
+            {
+                companies = await responseCompanies.Content.ReadAsAsync<List<Company>>();
+            }
+            ViewBag.Companies = new SelectList(companies.OrderBy(m => m.Name), "Id", "Name", enterprise.CompanyId);
+
+            return View(enterprise);
         }
 
-        // GET: Companies/Delete/5
+        // GET: Enterprises/Delete/5
         public async Task<IActionResult> Delete(int? id,
             string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -293,31 +388,35 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
             if (id == null)
             {
                 return NotFound();
             }
 
-            Company company = null;
-            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Companies/{id.ToString()}");
+            Enterprise enterprise = null;
+            HttpResponseMessage response = await _HttpApiClient.GetAsync($"api/Enterprises/{id.ToString()}");
             if (response.IsSuccessStatusCode)
             {
-                company = await response.Content.ReadAsAsync<Company>();
+                enterprise = await response.Content.ReadAsAsync<Enterprise>();
             }
-            if (company == null)
+            if (enterprise == null)
             {
                 return NotFound();
             }
 
-            return View(company);
+            return View(enterprise);
         }
 
-        // POST: Companies/Delete/5
+        // POST: Enterprises/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> DeleteConfirmed(int id,
             string SortOrder,
             string NameFilter,
+            string CityFilter,
+            int? CompanyIdFilter,
             int? PageSize,
             int? PageNumber)
         {
@@ -325,15 +424,19 @@ namespace SmartEco.Controllers.AMS
             ViewBag.PageSize = PageSize;
             ViewBag.PageNumber = PageNumber;
             ViewBag.NameFilter = NameFilter;
+            ViewBag.CityFilter = CityFilter;
+            ViewBag.CompanyIdFilter = CompanyIdFilter;
             HttpResponseMessage response = await _HttpApiClient.DeleteAsync(
-                $"api/Companies/{id}");
+                $"api/Enterprises/{id}");
             return RedirectToAction(nameof(Index),
                     new
                     {
                         SortOrder = ViewBag.SortOrder,
                         PageSize = ViewBag.PageSize,
                         PageNumber = ViewBag.PageNumber,
-                        NameFilter = ViewBag.NameFilter
+                        NameFilter = ViewBag.NameFilter,
+                        CityFilter = ViewBag.CityFilter,
+                        CompanyIdFilter = ViewBag.CompanyIdFilter
                     });
         }
 

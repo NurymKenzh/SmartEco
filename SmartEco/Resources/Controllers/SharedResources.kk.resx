@@ -1050,7 +1050,7 @@
   <data name="Unit" xml:space="preserve">
     <value>Өлшем бірлік</value>
   </data>
-  <data name="AnalyticAMS" xml:space="preserve">
+  <data name="AnalyticASM" xml:space="preserve">
     <value>Талдауы АСМ</value>
   </data>
   <data name="MonitoringData" xml:space="preserve">
@@ -1058,5 +1058,8 @@
   </data>
   <data name="MonitoringParameter" xml:space="preserve">
     <value>Мониторинг параметр</value>
+  </data>
+  <data name="ASM" xml:space="preserve">
+    <value>АСМ</value>
   </data>
 </root>

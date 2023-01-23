@@ -669,9 +669,9 @@ namespace SmartEcoAPI.Controllers
             }
         }
 
-        [HttpGet("GetAnalyticAMS")]
-        [Authorize(Roles = "admin,moderator,AMS")]
-        public async Task<ActionResult<MonitoringDataViewModel>> GetAnalyticAMS(string SortOrder,
+        [HttpGet("GetAnalyticASM")]
+        [Authorize(Roles = "admin,moderator,ASM")]
+        public async Task<ActionResult<MonitoringDataViewModel>> GetAnalyticASM(string SortOrder,
             string EnterpriseName,
             string City,
             string SourceAirPollutionName,

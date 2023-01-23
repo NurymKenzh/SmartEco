@@ -14,7 +14,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.Extensions.Configuration;
 using SmartEco.Models;
-using SmartEco.Models.AMS;
+using SmartEco.Models.ASM;
 
 namespace SmartEco.Controllers
 {
@@ -975,9 +975,9 @@ namespace SmartEco.Controllers
             return View();
         }
 
-        //public async Task<IActionResult> AnalyticAMS()
+        //public async Task<IActionResult> AnalyticASM()
         //{
-        //    string url = "api/Analytics/GetAnalyticAMS";
+        //    string url = "api/Analytics/GetAnalyticASM";
         //    List<MonitoringData> monitoringDatas = new List<MonitoringData>();
         //    HttpResponseMessage responseMonitoringDatas = await _HttpApiClient.GetAsync(url);
         //    monitoringDatas = await responseMonitoringDatas.Content.ReadAsAsync<List<MonitoringData>>();
@@ -986,7 +986,7 @@ namespace SmartEco.Controllers
         //}
 
         //[HttpPost]
-        public async Task<IActionResult> AnalyticAMS(string SortOrder,
+        public async Task<IActionResult> AnalyticASM(string SortOrder,
             string EnterpriseNameFilter,
             string CityFilter,
             string SourceAirPollutionNameFilter,
@@ -1022,7 +1022,7 @@ namespace SmartEco.Controllers
             ViewBag.MPCMaxSingleSort = SortOrder == "MPCMaxSingle" ? "MPCMaxSingleDesc" : "MPCMaxSingle";
             ViewBag.DateTimeSort = SortOrder == "DateTime" ? "DateTimeDesc" : "DateTime";
 
-            string url = "api/Analytics/GetAnalyticAMS",
+            string url = "api/Analytics/GetAnalyticASM",
                 route = "";
             if (!string.IsNullOrEmpty(SortOrder))
             {

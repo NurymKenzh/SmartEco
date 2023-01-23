@@ -2,10 +2,10 @@
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
 @using Microsoft.AspNetCore.Http
-@using SmartEco.Models.AMS
+@using SmartEco.Models.ASM
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
-    ViewData["Title"] = SharedLocalizer["AMS"];
+    ViewData["Title"] = SharedLocalizer["ASM"];
 }
 @{
     string Role = Context.Session.GetString("Role");
@@ -155,10 +155,10 @@
     <input id="ManufactoriesLayerJson" type="text" value="@ViewBag.ManufactoriesLayerJson" />
     <input id="SourceAirPollutionsLayerJson" type="text" value="@ViewBag.SourceAirPollutionsLayerJson" />
     <input id="SourceEmissionsLayerJson" type="text" value="@ViewBag.SourceEmissionsLayerJson" />
-    <input id="EnterpriseAMS" type="text" value="@SharedLocalizer["Enterprise"]" />
-    <input id="ManufactoryAMS" type="text" value="@SharedLocalizer["Manufactory"]" />
-    <input id="SourceAirPollutionAMS" type="text" value="@SharedLocalizer["SourceAirPollution"]" />
-    <input id="SourceEmissionAMS" type="text" value="@SharedLocalizer["SourceEmission"]" />
+    <input id="EnterpriseASM" type="text" value="@SharedLocalizer["Enterprise"]" />
+    <input id="ManufactoryASM" type="text" value="@SharedLocalizer["Manufactory"]" />
+    <input id="SourceAirPollutionASM" type="text" value="@SharedLocalizer["SourceAirPollution"]" />
+    <input id="SourceEmissionASM" type="text" value="@SharedLocalizer["SourceEmission"]" />
 
     
     <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
@@ -314,7 +314,7 @@
 </div>
 
 <div hidden="hidden">
-    <div id="dialogAMSInfo" title="">
+    <div id="dialogASMInfo" title="">
         <div id="divEnterprise" class="dialog-info-content">
             <ul>
                 <li><a href="#divEnterpriseInfo">@SharedLocalizer["Info"]</a></li>
@@ -966,19 +966,19 @@
     }
 
     var getCoords, getZoom;
-    if (GetCookie("zoomAMS") == null) {
+    if (GetCookie("zoomASM") == null) {
         getZoom = 5.15;
-        document.cookie = "zoomAMS=" + getZoom;
+        document.cookie = "zoomASM=" + getZoom;
     }
     else {
-        getZoom = Number.parseFloat(GetCookie("zoomAMS"));
+        getZoom = Number.parseFloat(GetCookie("zoomASM"));
     }
-    if (GetCookie("coordsAMS") == null) {
+    if (GetCookie("coordsASM") == null) {
         getCoords = [66.14, 48.57];
-        document.cookie = "coordsAMS=" + getCoords;
+        document.cookie = "coordsASM=" + getCoords;
     }
     else {
-        var coordsStringArr = GetCookie("coordsAMS").split(',');
+        var coordsStringArr = GetCookie("coordsASM").split(',');
         getCoords = [Number.parseFloat(coordsStringArr[0]), Number.parseFloat(coordsStringArr[1])];
     }
 
@@ -1045,8 +1045,8 @@
     function DefaultMap() {
         map.getView().setZoom(5.15);
         map.getView().setCenter([7373060.94, 6266381.69]);
-        document.cookie = "zoomAMS=" + 5;
-        document.cookie = "coordsAMS=" + [66.14, 48.57];
+        document.cookie = "zoomASM=" + 5;
+        document.cookie = "coordsASM=" + [66.14, 48.57];
     }
 </script>
 
@@ -1068,9 +1068,9 @@
         $('#EnterpriseCity').text(feature.get('City'));
         $('#divEnterprise').show();
         $("#divEnterprise").tabs();
-        $("#dialogAMSInfo").dialog({
+        $("#dialogASMInfo").dialog({
             resize: DialogResize,
-            title: $('#EnterpriseAMS').val(),
+            title: $('#EnterpriseASM').val(),
             minHeight: 100,
             minWidth: 100,
             width: 750,
@@ -1094,9 +1094,9 @@
         $('.manufactory-name').text(feature.get('Name'));
         $('#divManufactory').show();
         $("#divManufactory").tabs();
-        $("#dialogAMSInfo").dialog({
+        $("#dialogASMInfo").dialog({
             resize: DialogResize,
-            title: $('#ManufactoryAMS').val(),
+            title: $('#ManufactoryASM').val(),
             minHeight: 100,
             minWidth: 100,
             width: 750,
@@ -1121,9 +1121,9 @@
         $('.source-air-pollution-name').text(feature.get('Name'));
         $('#divSourceAirPollution').show();
         $("#divSourceAirPollution").tabs();
-        $("#dialogAMSInfo").dialog({
+        $("#dialogASMInfo").dialog({
             resize: DialogResize,
-            title: $('#SourceAirPollutionAMS').val(),
+            title: $('#SourceAirPollutionASM').val(),
             minHeight: 100,
             minWidth: 100,
             width: 750,
@@ -1149,9 +1149,9 @@
         $('#SourceEmissionName').text(feature.get('Name'));
         $('#divSourceEmission').show();
         $("#divSourceEmission").tabs();
-        $("#dialogAMSInfo").dialog({
+        $("#dialogASMInfo").dialog({
             resize: DialogResize,
-            title: $('#SourceEmissionAMS').val(),
+            title: $('#SourceEmissionASM').val(),
             minHeight: 100,
             minWidth: 100,
             width: 750,
@@ -1225,13 +1225,13 @@
         var zoom = map.getView().getZoom();
         var coords = map.getView().getCenter();
         coords = ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326').toString();
-        if (Number.parseFloat(zoom) != Number.parseFloat(GetCookie("zoomAMS"))) {
-            document.cookie = "zoomAMS=" + zoom;
+        if (Number.parseFloat(zoom) != Number.parseFloat(GetCookie("zoomASM"))) {
+            document.cookie = "zoomASM=" + zoom;
         }
         var coordsArray = coords.split(',');
-        var coordsArrayCookie = GetCookie("coordsAMS").split(',');
+        var coordsArrayCookie = GetCookie("coordsASM").split(',');
         if (Number.parseFloat(coordsArray[0]) != Number.parseFloat(coordsArrayCookie[0]) || Number.parseFloat(coordsArray[1]) != Number.parseFloat(coordsArrayCookie[1])) {
-            document.cookie = "coordsAMS=" + coords;
+            document.cookie = "coordsASM=" + coords;
         }
     }, 1000);
 

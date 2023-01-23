@@ -74,7 +74,7 @@
                 <div class="navbar-collapse collapse d-sm-inline-flex flex-sm-row-reverse">
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
-                        @if (Role == "admin" || Role == "moderator"@*|| Role == "Almaty"*@ || Role == "Shymkent" || Role == "AMS")
+                        @if (Role == "admin" || Role == "moderator"@*|| Role == "Almaty"*@ || Role == "Shymkent" || Role == "ASM")
 {
                     <li class="nav-item">
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
@@ -131,13 +131,13 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
                             </li>
                         }
-                        @if (Role == "AMS")
+                        @if (Role == "ASM")
                         {
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="AMS">@SharedLocalizer["Map"]</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="ASM">@SharedLocalizer["Map"]</a>
                             </li>
                             <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MonitoringData" asp-action="AnalyticAMS">@SharedLocalizer["Analytics"]</a>
+                                <a class="nav-link text-dark" asp-area="" asp-controller="MonitoringData" asp-action="AnalyticASM">@SharedLocalizer["Analytics"]</a>
                             </li>
                         }
                         @*@if (!string.IsNullOrEmpty(Token))

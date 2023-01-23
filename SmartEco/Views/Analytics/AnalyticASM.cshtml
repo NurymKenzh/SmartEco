@@ -1,17 +1,17 @@
-﻿@model IEnumerable<SmartEco.Models.AMS.MonitoringData>
+﻿@model IEnumerable<SmartEco.Models.ASM.MonitoringData>
 @using System.Net
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
 @using Microsoft.AspNetCore.Http
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
-    ViewData["Title"] = SharedLocalizer["AnalyticAMS"];
+    ViewData["Title"] = SharedLocalizer["AnalyticASM"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-<h1>@SharedLocalizer["AnalyticAMS"]</h1>
+<h1>@SharedLocalizer["AnalyticASM"]</h1>
 
-@using (Html.BeginForm("AnalyticAMS", "Analytics", new { SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }, FormMethod.Get))
+@using (Html.BeginForm("AnalyticASM", "Analytics", new { SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter }, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
     @if (ViewBag.EndPage > 1)
@@ -20,11 +20,11 @@
             @if (ViewBag.PageNumber > 1)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
             }
@@ -32,7 +32,7 @@
             @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "AnalyticAMS",
+                    @Html.ActionLink(page.ToString(), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
             }
@@ -40,11 +40,11 @@
             @if (ViewBag.PageNumber < ViewBag.TotalPages)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
             }
@@ -54,50 +54,50 @@
         <thead>
             <tr>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["Enterprise"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["Enterprise"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.EnterpriseNameSort, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.Editor("EnterpriseNameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["City"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["City"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.CitySort, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.Editor("CityFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["SourceAirPollution"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["SourceAirPollution"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SourceAirPollutionNameSort, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.Editor("SourceAirPollutionNameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["SourceEmission"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["SourceEmission"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SourceEmissionNameSort, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.Editor("SourceEmissionNameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["MonitoringParameter"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["MonitoringParameter"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MonitoringParameterNameSort, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.Editor("MonitoringParameterNameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["Value"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["Value"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.ValueSort, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.Editor("ValueFilter", null, new { htmlAttributes = new { @class = "form-control", @type = "number", step="any" }, value = "" })
                 </th>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["DateTime"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["DateTime"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.DateTimeSort, MeasuredParameterIdFilter = ViewBag.MeasuredParameterIdFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter, EcomonMonitoringPointIdFilter = ViewBag.EcomonMonitoringPointIdFilter, KazHydrometAirPostIdFilter = ViewBag.KazHydrometAirPostIdFilter })
                     <br />
                     @Html.TextBox("DateTimeFromFilter", (string)ViewBag.DateTimeFromFilter, new { type = "date", @class = "form-control" }) -
                     @Html.TextBox("DateTimeToFilter", (string)ViewBag.DateTimeToFilter, new { type = "date", @class = "form-control" })
                 </th>
                 <th>
-                    @Html.ActionLink(SharedLocalizer["MPCMaxSingle"], "AnalyticAMS",
+                    @Html.ActionLink(SharedLocalizer["MPCMaxSingle"], "AnalyticASM",
                 new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.MPCMaxSingleSort, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                     <br />
                     @Html.Editor("MPCMaxSingleFilter", null, new { htmlAttributes = new { @class = "form-control", @type = "number", step="any" }, value = "" })
@@ -146,11 +146,11 @@
             @if (ViewBag.PageNumber > 1)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
             }
@@ -158,7 +158,7 @@
             @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
             {
                 <li class="@(page == ViewBag.PageNumber ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "AnalyticAMS",
+                    @Html.ActionLink(page.ToString(), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
             }
@@ -166,11 +166,11 @@
             @if (ViewBag.PageNumber < ViewBag.TotalPages)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "AnalyticAMS",
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "AnalyticASM",
         new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, EnterpriseNameFilter = ViewBag.EnterpriseNameFilter, CityFilter = ViewBag.CityFilter, SourceAirPollutionNameFilter = ViewBag.SourceAirPollutionNameFilter, SourceEmissionNameFilter = ViewBag.SourceEmissionNameFilter, MonitoringParameterNameFilter = ViewBag.MonitoringParameterNameFilter, ValueFilter = ViewBag.ValueFilter, MPCMaxSingleFilter = ViewBag.MPCMaxSingleFilter, DateTimeFromFilter = ViewBag.DateTimeFromFilter, DateTimeToFilter = ViewBag.DateTimeToFilter })
                 </li>
             }
