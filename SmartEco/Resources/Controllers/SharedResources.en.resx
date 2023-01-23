@@ -1062,4 +1062,7 @@
   <data name="ASM" xml:space="preserve">
     <value>ASM</value>
   </data>
+  <data name="Print" xml:space="preserve">
+    <value>Print</value>
+  </data>
 </root>
