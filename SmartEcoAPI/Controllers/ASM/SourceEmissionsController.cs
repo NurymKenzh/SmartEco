@@ -31,6 +31,9 @@ namespace SmartEcoAPI.Controllers.ASM
         {
             var sourceEmissions = _context.SourceEmission
                 .Include(m => m.SourceAirPollution)
+                .ThenInclude(m => m.Manufactory)
+                .ThenInclude(m => m.Enterprise)
+                .ThenInclude(m => m.Company)
                 .Where(k => true);
 
             if (!string.IsNullOrEmpty(Name))
@@ -75,6 +78,9 @@ namespace SmartEcoAPI.Controllers.ASM
         {
             var sourceEmission = await _context.SourceEmission
                 .Include(m => m.SourceAirPollution)
+                .ThenInclude(m => m.Manufactory)
+                .ThenInclude(m => m.Enterprise)
+                .ThenInclude(m => m.Company)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (sourceEmission == null)

@@ -324,6 +324,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AnalyticAMS {
+            get {
+                return ResourceManager.GetString("AnalyticAMS", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Analytics {
             get {
                 return ResourceManager.GetString("Analytics", resourceCulture);
@@ -1701,6 +1710,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string MonitoringData {
+            get {
+                return ResourceManager.GetString("MonitoringData", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string MonitoringParameter {
+            get {
+                return ResourceManager.GetString("MonitoringParameter", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string MonitoringPost {
             get {
                 return ResourceManager.GetString("MonitoringPost", resourceCulture);
@@ -2757,6 +2784,15 @@ namespace SmartEco.Resources.Controllers {
         public static string TypeStation {
             get {
                 return ResourceManager.GetString("TypeStation", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string Unit {
+            get {
+                return ResourceManager.GetString("Unit", resourceCulture);
             }
         }
         

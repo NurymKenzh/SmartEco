@@ -1047,4 +1047,16 @@
   <data name="SourceEmissions" xml:space="preserve">
     <value>Эмиссия көздері</value>
   </data>
+  <data name="Unit" xml:space="preserve">
+    <value>Өлшем бірлік</value>
+  </data>
+  <data name="AnalyticAMS" xml:space="preserve">
+    <value>Талдауы АСМ</value>
+  </data>
+  <data name="MonitoringData" xml:space="preserve">
+    <value>Мониторинг деректер</value>
+  </data>
+  <data name="MonitoringParameter" xml:space="preserve">
+    <value>Мониторинг параметр</value>
+  </data>
 </root>

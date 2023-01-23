@@ -15,4 +15,10 @@ namespace SmartEcoAPI.Models
         public int SourceEmissionId { get; set; }
         public SourceEmission SourceEmission { get; set; }
     }
+
+    public class MonitoringDataViewModel 
+    { 
+        public List<MonitoringData> MonitoringDatas { get; set; } 
+        public int MonitoringDatasCount { get; set; } 
+    };
 }

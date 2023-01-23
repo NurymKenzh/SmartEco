@@ -1049,4 +1049,16 @@
   <data name="SourceEmissions" xml:space="preserve">
     <value>Источники выбросов</value>
   </data>
+  <data name="Unit" xml:space="preserve">
+    <value>Единицы измерения</value>
+  </data>
+  <data name="AnalyticAMS" xml:space="preserve">
+    <value>Аналитика АСМ</value>
+  </data>
+  <data name="MonitoringData" xml:space="preserve">
+    <value>Данные мониторинга</value>
+  </data>
+  <data name="MonitoringParameter" xml:space="preserve">
+    <value>Параметр мониторинга</value>
+  </data>
 </root>

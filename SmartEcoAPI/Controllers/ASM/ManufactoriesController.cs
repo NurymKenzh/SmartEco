@@ -31,6 +31,7 @@ namespace SmartEcoAPI.Controllers.ASM
         {
             var manufactories = _context.Manufactory
                 .Include(m => m.Enterprise)
+                .ThenInclude(m => m.Company)
                 .Where(k => true);
 
             if (!string.IsNullOrEmpty(Name))
@@ -75,6 +76,7 @@ namespace SmartEcoAPI.Controllers.ASM
         {
             var manufactory = await _context.Manufactory
                 .Include(m => m.Enterprise)
+                .ThenInclude(m => m.Company)
                 .FirstOrDefaultAsync(m => m.Id == id);
 
             if (manufactory == null)
