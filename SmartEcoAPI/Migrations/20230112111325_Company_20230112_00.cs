@@ -8,11 +8,11 @@ namespace SmartEcoAPI.Migrations
         protected override void Up(MigrationBuilder migrationBuilder)
         {
             migrationBuilder.EnsureSchema(
-                name: "ams");
+                name: "asm");
 
             migrationBuilder.CreateTable(
                 name: "Company",
-                schema: "ams",
+                schema: "asm",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -29,7 +29,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Company",
-                schema: "ams");
+                schema: "asm");
         }
     }
 }

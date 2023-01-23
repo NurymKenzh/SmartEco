@@ -7,12 +7,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
-namespace SmartEcoAPI.Controllers.AMS
+namespace SmartEcoAPI.Controllers.ASM
 {
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
-    [Authorize(Roles = "admin,moderator,AMS")]
+    [Authorize(Roles = "admin,moderator,ASM")]
     public class SourceAirPollutionsController : ControllerBase
     {
         private readonly ApplicationDbContext _context;

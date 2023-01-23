@@ -132,7 +132,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company","ams");
+                    b.ToTable("Company","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
@@ -198,7 +198,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Enterprise","ams");
+                    b.ToTable("Enterprise","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.Event", b =>

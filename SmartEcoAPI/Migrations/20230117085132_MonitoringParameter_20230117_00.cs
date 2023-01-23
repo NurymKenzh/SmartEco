@@ -9,7 +9,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "MonitoringParameter",
-                schema: "ams",
+                schema: "asm",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -28,7 +28,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "MonitoringParameter",
-                schema: "ams");
+                schema: "asm");
         }
     }
 }

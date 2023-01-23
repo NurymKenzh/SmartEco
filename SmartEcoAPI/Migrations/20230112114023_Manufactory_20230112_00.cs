@@ -9,7 +9,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "Manufactory",
-                schema: "ams",
+                schema: "asm",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -25,7 +25,7 @@ namespace SmartEcoAPI.Migrations
                     table.ForeignKey(
                         name: "FK_Manufactory_Enterprise_EnterpriseId",
                         column: x => x.EnterpriseId,
-                        principalSchema: "ams",
+                        principalSchema: "asm",
                         principalTable: "Enterprise",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -33,7 +33,7 @@ namespace SmartEcoAPI.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_Manufactory_EnterpriseId",
-                schema: "ams",
+                schema: "asm",
                 table: "Manufactory",
                 column: "EnterpriseId");
         }
@@ -42,7 +42,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "Manufactory",
-                schema: "ams");
+                schema: "asm");
         }
     }
 }

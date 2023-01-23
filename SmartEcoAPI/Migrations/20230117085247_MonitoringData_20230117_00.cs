@@ -10,7 +10,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "MonitoringData",
-                schema: "ams",
+                schema: "asm",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -26,14 +26,14 @@ namespace SmartEcoAPI.Migrations
                     table.ForeignKey(
                         name: "FK_MonitoringData_MonitoringParameter_MonitoringParameterId",
                         column: x => x.MonitoringParameterId,
-                        principalSchema: "ams",
+                        principalSchema: "asm",
                         principalTable: "MonitoringParameter",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
                     table.ForeignKey(
                         name: "FK_MonitoringData_SourceEmission_SourceEmissionId",
                         column: x => x.SourceEmissionId,
-                        principalSchema: "ams",
+                        principalSchema: "asm",
                         principalTable: "SourceEmission",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -41,13 +41,13 @@ namespace SmartEcoAPI.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_MonitoringData_MonitoringParameterId",
-                schema: "ams",
+                schema: "asm",
                 table: "MonitoringData",
                 column: "MonitoringParameterId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_MonitoringData_SourceEmissionId",
-                schema: "ams",
+                schema: "asm",
                 table: "MonitoringData",
                 column: "SourceEmissionId");
         }
@@ -56,7 +56,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "MonitoringData",
-                schema: "ams");
+                schema: "asm");
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.CreateTable(
                 name: "SourceEmission",
-                schema: "ams",
+                schema: "asm",
                 columns: table => new
                 {
                     Id = table.Column<int>(nullable: false)
@@ -25,7 +25,7 @@ namespace SmartEcoAPI.Migrations
                     table.ForeignKey(
                         name: "FK_SourceEmission_SourceAirPollution_SourceAirPollutionId",
                         column: x => x.SourceAirPollutionId,
-                        principalSchema: "ams",
+                        principalSchema: "asm",
                         principalTable: "SourceAirPollution",
                         principalColumn: "Id",
                         onDelete: ReferentialAction.Cascade);
@@ -33,7 +33,7 @@ namespace SmartEcoAPI.Migrations
 
             migrationBuilder.CreateIndex(
                 name: "IX_SourceEmission_SourceAirPollutionId",
-                schema: "ams",
+                schema: "asm",
                 table: "SourceEmission",
                 column: "SourceAirPollutionId");
         }
@@ -42,7 +42,7 @@ namespace SmartEcoAPI.Migrations
         {
             migrationBuilder.DropTable(
                 name: "SourceEmission",
-                schema: "ams");
+                schema: "asm");
         }
     }
 }

@@ -9,7 +9,7 @@ namespace SmartEcoAPI.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly string AMS_SCHEMA = "ams";
+        private readonly string ASM_SCHEMA = "asm";
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -96,7 +96,7 @@ namespace SmartEcoAPI.Data
 
         public DbSet<SmartEcoAPI.Models.Answer> Answer { get; set; }
 
-        #region AMS
+        #region ASM
         public DbSet<Company> Company { get; set; }
         public DbSet<Enterprise> Enterprise { get; set; }
         public DbSet<Manufactory> Manufactory { get; set; }
@@ -108,13 +108,13 @@ namespace SmartEcoAPI.Data
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
-            modelBuilder.Entity<Company>().ToTable(name: nameof(Company), schema: AMS_SCHEMA);
-            modelBuilder.Entity<Enterprise>().ToTable(name: nameof(Enterprise), schema: AMS_SCHEMA);
-            modelBuilder.Entity<Manufactory>().ToTable(name: nameof(Manufactory), schema: AMS_SCHEMA);
-            modelBuilder.Entity<SourceAirPollution>().ToTable(name: nameof(SourceAirPollution), schema: AMS_SCHEMA);
-            modelBuilder.Entity<SourceEmission>().ToTable(name: nameof(SourceEmission), schema: AMS_SCHEMA);
-            modelBuilder.Entity<MonitoringParameter>().ToTable(name: nameof(MonitoringParameter), schema: AMS_SCHEMA);
-            modelBuilder.Entity<MonitoringData>().ToTable(name: nameof(MonitoringData), schema: AMS_SCHEMA);
+            modelBuilder.Entity<Company>().ToTable(name: nameof(Company), schema: ASM_SCHEMA);
+            modelBuilder.Entity<Enterprise>().ToTable(name: nameof(Enterprise), schema: ASM_SCHEMA);
+            modelBuilder.Entity<Manufactory>().ToTable(name: nameof(Manufactory), schema: ASM_SCHEMA);
+            modelBuilder.Entity<SourceAirPollution>().ToTable(name: nameof(SourceAirPollution), schema: ASM_SCHEMA);
+            modelBuilder.Entity<SourceEmission>().ToTable(name: nameof(SourceEmission), schema: ASM_SCHEMA);
+            modelBuilder.Entity<MonitoringParameter>().ToTable(name: nameof(MonitoringParameter), schema: ASM_SCHEMA);
+            modelBuilder.Entity<MonitoringData>().ToTable(name: nameof(MonitoringData), schema: ASM_SCHEMA);
         }
     }
 }

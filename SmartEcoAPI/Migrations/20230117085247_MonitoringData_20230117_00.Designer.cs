@@ -132,7 +132,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Company","ams");
+                    b.ToTable("Company","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
@@ -198,7 +198,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasIndex("CompanyId");
 
-                    b.ToTable("Enterprise","ams");
+                    b.ToTable("Enterprise","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.Event", b =>
@@ -536,7 +536,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasIndex("EnterpriseId");
 
-                    b.ToTable("Manufactory","ams");
+                    b.ToTable("Manufactory","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.MeasuredData", b =>
@@ -656,7 +656,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasIndex("SourceEmissionId");
 
-                    b.ToTable("MonitoringData","ams");
+                    b.ToTable("MonitoringData","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.MonitoringParameter", b =>
@@ -672,7 +672,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("MonitoringParameter","ams");
+                    b.ToTable("MonitoringParameter","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.MonitoringPost", b =>
@@ -960,7 +960,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasIndex("ManufactoryId");
 
-                    b.ToTable("SourceAirPollution","ams");
+                    b.ToTable("SourceAirPollution","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.SourceEmission", b =>
@@ -980,7 +980,7 @@ namespace SmartEcoAPI.Migrations
 
                     b.HasIndex("SourceAirPollutionId");
 
-                    b.ToTable("SourceEmission","ams");
+                    b.ToTable("SourceEmission","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory", b =>
