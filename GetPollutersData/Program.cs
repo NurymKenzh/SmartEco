@@ -15,7 +15,8 @@ namespace GetPollutersData
     class Program
     {
         const string FromEmail = "smartecokz@gmail.com",
-            Password = "Qwerty123_",
+            //Password = "Qwerty123_",
+            Password = "skqjcaiyizgljuak",
             POPServer = "pop.gmail.com";
         const int POPPort = 995;
 
@@ -208,34 +209,37 @@ namespace GetPollutersData
                                 }));
                         }
 
-                        DateTime? dateTime = new DateTime(2000, 1, 1);
-                        do
+                        if (measuredDatasSource.Count != 0)
                         {
-                            try
+                            DateTime? dateTime = new DateTime(2000, 1, 1);
+                            do
                             {
-                                dateTime = measuredDatasSource.Where(m => m.DateTime > dateTime).FirstOrDefault().DateTime;
-
-                                var temp = measuredDatasSource.Where(m => m.MeasuredParameterId == 4 && m.DateTime == dateTime).FirstOrDefault().Value;
-                                var pres = measuredDatasSource.Where(m => m.MeasuredParameterId == 1 && m.DateTime == dateTime).FirstOrDefault().Value;
-                                var so2 = measuredDatasSource.Where(m => m.MeasuredParameterId == 9 && m.DateTime == dateTime).FirstOrDefault().Value;
-                                var value = GetValueByFormula(temp, pres, so2);
-
-                                measuredDatasSource.Add(new MeasuredData
+                                try
                                 {
-                                    PollutionSourceId = 5,
-                                    Value = value,
-                                    DateTime = dateTime,
-                                    MeasuredParameterId = 25,
-                                    Averaged = true
-                                });
-                            }
-                            catch
-                            {
+                                    dateTime = measuredDatasSource.Where(m => m.DateTime > dateTime).FirstOrDefault().DateTime;
 
-                            }
+                                    var temp = measuredDatasSource.Where(m => m.MeasuredParameterId == 4 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var pres = measuredDatasSource.Where(m => m.MeasuredParameterId == 1 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var so2 = measuredDatasSource.Where(m => m.MeasuredParameterId == 9 && m.DateTime == dateTime).FirstOrDefault().Value;
+                                    var value = GetValueByFormula(temp, pres, so2);
 
-                        //} while (measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9).Last().DateTime != dateTime);
-                        } while (measuredDatasSource.LastOrDefault().DateTime != dateTime);
+                                    measuredDatasSource.Add(new MeasuredData
+                                    {
+                                        PollutionSourceId = 5,
+                                        Value = value,
+                                        DateTime = dateTime,
+                                        MeasuredParameterId = 25,
+                                        Averaged = true
+                                    });
+                                }
+                                catch
+                                {
+
+                                }
+
+                                //} while (measuredDatasSourceDB.Where(m => m.MeasuredParameterId == 9).Last().DateTime != dateTime);
+                            } while (measuredDatasSource.LastOrDefault().DateTime != dateTime);
+                        }
 
                         measuredDatasSource = measuredDatasSource
                             .OrderBy(m => m.DateTime)
@@ -342,7 +346,9 @@ namespace GetPollutersData
                         query = SearchQuery.DeliveredAfter(DateTime.Parse(dateTime.Value.AddHours(-24).ToString())) //Message sending time
                             .And(SearchQuery.FromContains("balpisystem"));
                     }
-                    foreach (var uid in await inbox.SearchAsync(query))
+
+                    var uniqueIds = await inbox.SearchAsync(query);
+                    foreach (var uid in uniqueIds)
                     {
                         try
                         {
