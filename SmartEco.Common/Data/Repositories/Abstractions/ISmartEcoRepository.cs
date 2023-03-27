@@ -11,7 +11,7 @@ namespace SmartEco.Common.Data.Repositories.Abstractions
 {
     public interface ISmartEcoRepository
     {
-        Task<(IQueryable<Entity>, int)> GetAll<Entity>() where Entity : class;
+        IQueryable<Entity> GetAll<Entity>() where Entity : class;
         IEnumerable<Entity> Get<Entity>() where Entity : class;
         Task<Entity> Get<Entity>(long id) where Entity : class;
         Task Create<Entity>(Entity entity) where Entity : class;

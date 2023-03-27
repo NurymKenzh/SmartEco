@@ -51,4 +51,6 @@ namespace SmartEco.Web.Models
         public int EndPage { get; set; }
         public SelectList PageSizeList { get; set; }
     }
+
+    public record ViewPager(object BaseFilter, Pager Pager);
 }

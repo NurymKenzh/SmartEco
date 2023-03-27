@@ -3,6 +3,7 @@
 @using Microsoft.Extensions.Localization
 @using System.Net
 @using Microsoft.AspNetCore.Http
+@using SmartEco.Web.Models
 @using SmartEco.Web.Models.Filters.Directories
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @model PersonViewModelFilterList
@@ -17,7 +18,7 @@
 @{
     Role role = (Role)(Context.Session.GetInt32("Role") ?? default);
 
-    var filterGeneral = new PersonFilterBase(Model.Filter.PageNumber, Model.Filter.PageSize, Model.Filter.SortOrder, Model.Filter.Email, Model.Filter.RoleId);
+    var filterBase = new PersonFilterBase(Model.Filter.PageNumber, Model.Filter.PageSize, Model.Filter.SortOrder, Model.Filter.Email, Model.Filter.RoleId);
     var filterId = new PersonFilterId(0, Model.Filter.PageNumber, Model.Filter.PageSize, Model.Filter.SortOrder, Model.Filter.Email, Model.Filter.RoleId);
 }
 
@@ -26,43 +27,14 @@
 @if (role is Role.Admin@* || role is Role.Moderator*@)
 {
     <p>
-        @Html.ActionLink(SharedLocalizer["Create"], "Create", filterGeneral, new { @class="btn btn-sm btn-outline-primary" })
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", filterBase, new { @class="btn btn-sm btn-outline-primary" })
     </p>
 }
-@using (Html.BeginForm("Index", "Persons", filterGeneral, FormMethod.Get))
+@using (Html.BeginForm("Index", "Persons", filterBase, FormMethod.Get))
 {
     @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = Model.Filter.SortOrder })
-    @if (Model.Filter.EndPage > 1)
-    {
-        <ul class="pagination">
-            @if (Model.Filter.PageNumber > 1)
-            {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", filterGeneral with { PageNumber = 1 })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber - 1 })
-                </li>
-            }
+    @await Html.PartialAsync("_Pager", new ViewPager(filterBase, Model.Filter))
 
-            @for (var page = Model.Filter.StartPage; page <= Model.Filter.EndPage; page++)
-            {
-                <li class="@(page == Model.Filter.PageNumber ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "Index", filterGeneral with { PageNumber = page })
-                </li>
-            }
-
-            @if (Model.Filter.PageNumber < Model.Filter.TotalPages)
-            {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber + 1 })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.TotalPages})
-                </li>
-            }
-        </ul>
-    }
     <table class="table table-hover table-bordered">
         <thead class="table-light">
             <tr>
@@ -120,35 +92,6 @@
             }
         </tbody>
     </table>
-    @if (Model.Filter.EndPage > 1)
-    {
-        <ul class="pagination">
-            @if (Model.Filter.PageNumber > 1)
-            {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", filterGeneral with { PageNumber = 1 })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber - 1 })
-                </li>
-            }
 
-            @for (var page = Model.Filter.StartPage; page <= Model.Filter.EndPage; page++)
-            {
-                <li class="@(page == Model.Filter.PageNumber ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "Index", filterGeneral with { PageNumber = page })
-                </li>
-            }
-
-            @if (Model.Filter.PageNumber < Model.Filter.TotalPages)
-            {
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.PageNumber + 1 })
-                </li>
-                <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", filterGeneral with { PageNumber = Model.Filter.TotalPages })
-                </li>
-            }
-        </ul>
-    }
+    @await Html.PartialAsync("_Pager", new ViewPager(filterBase, Model.Filter))
 }

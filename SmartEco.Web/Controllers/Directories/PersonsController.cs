@@ -48,7 +48,7 @@ namespace SmartEco.Controllers
             {
                 (var success, personAuthViewModelFilter) = await _personService.CreatePerson(personAuthViewModelFilter);
                 if (success)
-                    return RedirectToAction(nameof(Index), personAuthViewModelFilter.Filter);
+                    return RedirectToAction(nameof(Index), new PersonFilterBase(personAuthViewModelFilter.Filter));
             }
             return View(Views.Get(HttpContext, Directories), personAuthViewModelFilter);
         }
@@ -66,7 +66,7 @@ namespace SmartEco.Controllers
             {
                 (var success, personViewModelFilter) = await _personService.UpdatePerson(personViewModelFilter);
                 if (success)
-                    return RedirectToAction(nameof(Index), personViewModelFilter.Filter);
+                    return RedirectToAction(nameof(Index), new PersonFilterBase(personViewModelFilter.Filter));
             }
             return View(Views.Get(HttpContext, Directories), personViewModelFilter);
         }
@@ -77,11 +77,11 @@ namespace SmartEco.Controllers
             return View(Views.Get(HttpContext, Directories), filterPersons);
         }
 
-        [HttpPost, ActionName("Delete")]
+        [HttpPost, ActionName(nameof(Delete))]
         public async Task<IActionResult> DeleteConfirmed(PersonFilterId filter)
         {
             await _personService.DeletePerson(filter);
-            return RedirectToAction(nameof(Index), filter);
+            return RedirectToAction(nameof(Index), new PersonFilterBase(filter));
         }
     }
 }

@@ -21,8 +21,8 @@ namespace SmartEco.Common.Data.Repositories
         }
 
         #region Base generic CRUD methods
-        public async Task<(IQueryable<Entity>, int)> GetAll<Entity>() where Entity : class
-            => (_context.Set<Entity>().AsQueryable(), await _context.Set<Entity>().CountAsync());
+        public IQueryable<Entity> GetAll<Entity>() where Entity : class
+            => _context.Set<Entity>().AsQueryable();
 
         public IEnumerable<Entity> Get<Entity>() where Entity : class
             => _context.Set<Entity>().AsQueryable();

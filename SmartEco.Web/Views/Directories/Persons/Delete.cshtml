@@ -38,7 +38,7 @@
             <div class="d-flex justify-content-center">
                 <div class="mb-3 btn-group btn-group-sm" role="group" aria-label="Basic outlined example">
                     <a class="btn btn-outline-danger" data-bs-toggle="modal" href="#deleteModalToggle" role="button">@SharedLocalizer["Delete"]</a>
-                    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", (PersonFilterBase)Model.Filter, new { @class="btn btn-outline-secondary" })
+                    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new PersonFilterBase(Model.Filter), new { @class="btn btn-outline-secondary" })
                 </div>
             </div>
             

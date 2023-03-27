@@ -21,19 +21,18 @@ namespace SmartEco.Web.Models.Filters.Directories
         public string RoleSort { get; set; }
     }
 
-    public record PersonFilterBase : BaseFilter, IPersonFilter
+    public record PersonFilterBase(int? PageNumber, int? PageSize, string SortOrder, string Email, int? RoleId) 
+        : BaseFilter(PageNumber, PageSize), IPersonFilter
     {
-        public PersonFilterBase(int? PageNumber, int? PageSize, string SortOrder, string Email, int? RoleId)
-            : base(PageNumber, PageSize)
-        {
-            this.SortOrder = SortOrder;
-            this.Email = Email;
-            this.RoleId = RoleId;
-        }
+        public PersonFilterBase()
+            : this(null, null, null, null, null) { }
 
-        public string Email { get; set; }
-        public int? RoleId { get; set; }
-        public string SortOrder { get; set; }
+        public PersonFilterBase(PersonFilterId personFilterId)
+            : this(personFilterId.PageNumber, personFilterId.PageSize, personFilterId.SortOrder, personFilterId.Email, personFilterId.RoleId) { }
+
+        public string Email { get; set; } = Email;
+        public int? RoleId { get; set; } = RoleId;
+        public string SortOrder { get; set; } = SortOrder;
     }
 
     public record PersonFilterId : PersonFilterBase, IPersonFilter

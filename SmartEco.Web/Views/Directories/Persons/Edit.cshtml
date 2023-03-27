@@ -1,6 +1,7 @@
 ﻿@model SmartEco.Web.Models.Filters.Directories.PersonViewModelFilter
 @using SmartEco.Web.Helpers
 @using Microsoft.Extensions.Localization
+@using SmartEco.Web.Models.Filters.Directories
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["Edit"];
@@ -38,7 +39,7 @@
                 </section>
             </form>
             <div>
-                @Html.ActionLink(SharedLocalizer["BackToList"], "Index", Model.Filter, new { @class="btn btn-secondary" })
+                @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new PersonFilterBase(Model.Filter), new { @class="btn btn-secondary" })
             </div>
         </div>
     </div>

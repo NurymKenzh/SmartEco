@@ -19,7 +19,7 @@ namespace SmartEco.API.Services.Directories
 
         public async Task<GeneralListResponse<Person>> GetPersons(PersonFilter filter)
         {
-            (var persons, var count) = await _repository.GetAll<Person>();
+            var persons = _repository.GetAll<Person>();
 
             if (!string.IsNullOrEmpty(filter.Email))
             {
@@ -38,6 +38,8 @@ namespace SmartEco.API.Services.Directories
                 "RoleDesc" => persons.OrderByDescending(m => m.Role),
                 _ => persons.OrderBy(m => m.Id),
             };
+
+            var count = await persons.CountAsync();
             if (filter.PageSize != null && filter.PageNumber != null)
             {
                 var pageSize = (int)filter.PageSize;
