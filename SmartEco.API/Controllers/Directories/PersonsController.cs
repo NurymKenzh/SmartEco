@@ -57,7 +57,6 @@ namespace SmartEco.API.Controllers.Directories
             var person = await Get(personChanged.Id);
             if (person is not null)
             {
-
                 person.Email = personChanged.Email;
                 person.Role = personChanged.Role;
                 return person;

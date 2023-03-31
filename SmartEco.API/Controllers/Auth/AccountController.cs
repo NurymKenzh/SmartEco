@@ -1,11 +1,8 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SmartEco.API.Services;
 using SmartEco.Common.Models.Requests;
 using SmartEco.Common.Models.Responses;
 using Swashbuckle.AspNetCore.Annotations;
-using System.Net;
-using Formatting = Newtonsoft.Json.Formatting;
 
 namespace SmartEco.API.Controllers.Auth
 {
@@ -14,45 +11,29 @@ namespace SmartEco.API.Controllers.Auth
         private readonly AuthService _authService;
 
         public AccountController(AuthService authService)
-        {
-            _authService = authService;
-        }
+            => _authService = authService;
 
         [SwaggerOperation("Получение токена авторизованного пользователя. Работает только для зарегистрированных пользователей")]
         [HttpPost(nameof(GetToken))]
-        public async Task GetToken(PersonRequest personReq)
-        {
-            var (authResponse, httpStatusCode) = await _authService.GetToken(personReq);
-            await SendAuthResponse(authResponse, httpStatusCode);
-        }
+        public async Task<ActionResult<AuthResponse>> GetToken(PersonRequest personReq)
+            => AuthResponseResult(await _authService.GetToken(personReq));
 
         [SwaggerOperation("Регистрация нового пользователя")]
         [HttpPost(nameof(Register))]
-        public async Task Register(PersonRequest person)
-        {
-
-            var (authResponse, httpStatusCode) = await _authService.Register(Url, Request.Scheme, person);
-            await SendAuthResponse(authResponse, httpStatusCode);
-        }
+        public async Task<ActionResult<AuthResponse>> Register(PersonRequest person)
+            => AuthResponseResult(await _authService.Register(Url, Request.Scheme, person));
 
         [SwaggerOperation("Подтверждение регистрации")]
         [HttpPost(nameof(ConfirmEmail))]
-        public async Task ConfirmEmail(ConfirmRequest confirm)
-        {
-            var (authResponse, httpStatusCode) = await _authService.ConfirmEmail(confirm);
-            await SendAuthResponse(authResponse, httpStatusCode);
-        }
+        public async Task<ActionResult<AuthResponse>> ConfirmEmail(ConfirmRequest confirm)
+            => AuthResponseResult(await _authService.ConfirmEmail(confirm));
 
         [HttpGet(nameof(GetAuthenticated))]
         [ApiExplorerSettings(IgnoreApi = true)]
         public bool GetAuthenticated()
             => User.Identity is not null && User.Identity.IsAuthenticated;
 
-        private async Task SendAuthResponse(AuthResponse response, HttpStatusCode statusCode)
-        {
-            Response.StatusCode = (int)statusCode;
-            Response.ContentType = "application/json";
-            await Response.WriteAsync(JsonConvert.SerializeObject(response, new JsonSerializerSettings { Formatting = Formatting.Indented, NullValueHandling = NullValueHandling.Ignore }));
-        }
+        private ObjectResult AuthResponseResult((int statusCode, AuthResponse authResponse) result)
+            => StatusCode(result.statusCode, result.authResponse);
     }
 }

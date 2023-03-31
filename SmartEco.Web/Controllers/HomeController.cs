@@ -1,11 +1,14 @@
-﻿using Microsoft.AspNetCore.Localization;
+﻿using Microsoft.AspNetCore.Diagnostics;
+using Microsoft.AspNetCore.Localization;
 using Microsoft.AspNetCore.Mvc;
+using Refit;
 using SmartEco.Web.Controllers.Auth;
 using SmartEco.Web.Models;
 using SmartEco.Web.Services.Providers;
 using System.Diagnostics;
+using System.Net;
 
-namespace SmartEco.Web.Controllers.Menu
+namespace SmartEco.Web.Controllers
 {
     public class HomeController : BaseController
     {
@@ -19,11 +22,7 @@ namespace SmartEco.Web.Controllers.Menu
         public async Task<IActionResult> Index()
         {
             var isAuthenticated = await _smartEcoApi.GetAuthenticated();
-            return isAuthenticated 
-                ? View() 
-                : RedirectToAction(
-                    nameof(AccountController.Login),
-                    GetName<AccountController>());
+            return isAuthenticated ? View() : RedirectToLogin();
         }
 
         public IActionResult Directories()
@@ -44,7 +43,17 @@ namespace SmartEco.Web.Controllers.Menu
         [ResponseCache(Duration = 0, Location = ResponseCacheLocation.None, NoStore = true)]
         public IActionResult Error()
         {
-            return View(new ErrorViewModel { RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier });
+            var exceptionHandler = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
+            var exception = exceptionHandler.Error as ApiException;
+            if (exception?.StatusCode is HttpStatusCode.Unauthorized)
+                return RedirectToLogin();
+
+            return View(new ErrorViewModel
+            {
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier,
+                StatusCode = (int?)exception?.StatusCode,
+                Message = exception?.Message ?? exceptionHandler?.Error?.Message
+            });
         }
 
         [HttpPost]
@@ -58,5 +67,10 @@ namespace SmartEco.Web.Controllers.Menu
 
             return LocalRedirect(returnUrl);
         }
+
+        private IActionResult RedirectToLogin()
+            => RedirectToAction(
+                nameof(AccountController.Login),
+                GetName<AccountController>());
     }
 }

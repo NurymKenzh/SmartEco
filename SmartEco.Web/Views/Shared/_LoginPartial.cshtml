@@ -43,7 +43,7 @@
         $('.user').hide();
         $.ajax({
             type: 'POST',
-            url: '@Url.Action("ResetSession", "Account")',
+            url: '@Url.Action("Logout", "Account")',
             success: function (data) {
                 window.location.href = "/";
             },

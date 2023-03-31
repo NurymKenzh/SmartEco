@@ -1,16 +1,13 @@
 ﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
-using Newtonsoft.Json;
 using SmartEco.API.Helpers;
 using SmartEco.API.Options;
 using SmartEco.Common.Data.Repositories.Abstractions;
 using SmartEco.Common.Enums;
 using SmartEco.Common.Models.Requests;
 using System.IdentityModel.Tokens.Jwt;
-using System.Net;
 using System.Security.Claims;
-using System;
 using SmartEco.Common.Data.Entities;
 using SmartEco.Common.Models.Responses;
 
@@ -20,61 +17,49 @@ namespace SmartEco.API.Services
     {
         private readonly ISmartEcoRepository _repository;
         private readonly IEmailService _emailService;
+        private readonly IConfiguration _configuration;
 
-        public AuthService(ISmartEcoRepository repository, IEmailService emailService)
+        public AuthService(ISmartEcoRepository repository, IEmailService emailService, IConfiguration configuration)
         {
             _repository = repository;
             _emailService = emailService;
+            _configuration = configuration;
         }
 
-        public async Task<(AuthResponse, HttpStatusCode)> GetToken(PersonRequest personReq)
+        public async Task<(int, AuthResponse)> GetToken(PersonRequest personReq)
         {
             var email = personReq.Email;
             var password = personReq.Password;
 
             var identity = await GetIdentity(email, password);
-            if (identity == null)
+            if (identity is null)
             {
-                var authResponse = new AuthResponse
-                {
-                    Message = "Invalid username or password."
-                };
-                return (authResponse, HttpStatusCode.Unauthorized);
+                return (StatusCodes.Status400BadRequest, new() { Message = "Invalid username or password." });
             }
             else
             {
-                var encodedJwt = CreateToken(email, password, identity);
+                var encodedJwt = CreateToken(identity);
                 var person = await _repository.GetFirstOrDefault<Person>(p => p.Email == identity.Name);
-                var authResponse = new AuthResponse
+                return (StatusCodes.Status200OK, new()
                 {
                     AccessToken = encodedJwt,
                     Email = identity.Name,
                     RoleId = person.RoleId,
                     Role = person?.Role.ToString()
-                };
-                return (authResponse, HttpStatusCode.OK);
+                });
             }
         }
 
-        public async Task<(AuthResponse, HttpStatusCode)> Register(IUrlHelper urlHelper, string scheme, PersonRequest person)
+        public async Task<(int, AuthResponse)> Register(IUrlHelper urlHelper, string scheme, PersonRequest person)
         {
-
-            var authResponse = new AuthResponse();
             if (string.IsNullOrEmpty(person.Password) || person.Password.Length < 6)
-            {
-                authResponse.Message = $"The Password must be at least 6 characters long.";
-                return (authResponse, HttpStatusCode.Unauthorized);
-            }
+                return (StatusCodes.Status400BadRequest, new() { Message = $"The Password must be at least 6 characters long." });
+
             if (!IsValidEmail(person.Email))
-            {
-                authResponse.Message = $"{person.Email} is not a valid email.";
-                return (authResponse, HttpStatusCode.Unauthorized);
-            }
+                return (StatusCodes.Status400BadRequest, new() { Message = $"{person.Email} is not a valid email." });
+
             if (await PersonExist(person.Email))
-            {
-                authResponse.Message = $"User with {person.Email} email already exist.";
-                return (authResponse, HttpStatusCode.Unauthorized);
-            }
+                return (StatusCodes.Status400BadRequest, new() { Message = $"User with {person.Email} email already exist." });
 
             var dateTime = DateTime.UtcNow.ToString();
             string code = StringCipher.Encrypt(dateTime);
@@ -90,34 +75,40 @@ namespace SmartEco.API.Services
                     PasswordСiphered = pass 
                 },
                 protocol: scheme,
-                host: "localhost:3573")
+                host: _configuration.GetValue<string>("EmailConfirmHost"))
                 .Replace("/api", "");
 
-            var send = await _emailService.SendAsync(new[] { person.Email }, "Confirm your account",
-                       $"Confirm your registration by clicking on the link: <a href='{callbackUrl}'>link to confirm</a>");
+            var isSended = await _emailService.SendAsync(new[] { person.Email }, "Confirm your account",
+                $"Confirm your registration by clicking on the link: <a href='{callbackUrl}'>link to confirm</a>");
 
-            authResponse.Message = send
-                ? $"To complete the registration, check your email {person.Email} and follow the link provided in the email"
-                : $"Error when sending email to {person.Email}";
-
-            return (authResponse, HttpStatusCode.OK);
+            return (StatusCodes.Status200OK, new()
+            {
+                Message = isSended
+                    ? $"To complete the registration, check your email {person.Email} and follow the link provided in the email"
+                    : $"Error when sending email to {person.Email}"
+            });
         }
 
-        public async Task<(AuthResponse, HttpStatusCode)> ConfirmEmail(ConfirmRequest confirm)
+        public async Task<(int, AuthResponse)> ConfirmEmail(ConfirmRequest confirm)
         {
-            var authResponse = new AuthResponse();
-
-            string token = StringCipher.Decrypt(confirm.Code);
-            if (confirm.Code is null || !DateTime.TryParse(token, out DateTime dateTime) || dateTime.AddDays(1) < DateTime.UtcNow)
+            string token, email, password;
+            try
             {
-                authResponse.Message = $"The link is invalid. Please try again.";
-                return (authResponse, HttpStatusCode.Unauthorized);
+                token = StringCipher.Decrypt(confirm.Code);
+                email = StringCipher.Decrypt(confirm.EmailСiphered);
+                password = StringCipher.Decrypt(confirm.PasswordСiphered);
+            }
+            catch
+            {
+                return (StatusCodes.Status400BadRequest, new() { Message = $"The link is invalid. Please try again." });
+            }
+
+            if (DateTime.TryParse(token, out DateTime dateTime) is false || dateTime.AddDays(1) < DateTime.UtcNow)
+            {
+                return (StatusCodes.Status400BadRequest, new() { Message = $"The link is invalid. Please try again." });
             }
             else
             {
-                string email = StringCipher.Decrypt(confirm.EmailСiphered);
-                string password = StringCipher.Decrypt(confirm.PasswordСiphered);
-
                 var person = new Person
                 {
                     Email = email,
@@ -129,17 +120,18 @@ namespace SmartEco.API.Services
                 await _repository.Create(person);
 
                 var identity = await GetIdentity(person.Email, person.Password);
-                var encodedJwt = CreateToken(person.Email, person.Password, identity);
-                authResponse = new AuthResponse
+                if (identity is not null)
+                    return (StatusCodes.Status400BadRequest, new() { Message = $"Failed to register. Please try again." });
+
+                var encodedJwt = CreateToken(identity);
+                return (StatusCodes.Status200OK, new()
                 {
                     AccessToken = encodedJwt,
                     Email = identity.Name,
                     RoleId = person.RoleId,
                     Role = person.Role.ToString(),
                     Message = $"User {person.Email} successfully registered!"
-                };
-
-                return (authResponse, HttpStatusCode.OK);
+                });
             }
         }
 
@@ -171,26 +163,25 @@ namespace SmartEco.API.Services
             return hashed;
         }
 
-        private async Task<ClaimsIdentity> GetIdentity(string Email, string Password)
+        private async Task<ClaimsIdentity> GetIdentity(string email, string password)
         {
-            string passwordHash = GetHash(Password);
-            Person person = await _repository.GetFirstOrDefault<Person>(x => x.Email == Email && x.PasswordHash == passwordHash);
-            if (person != null)
+            string passwordHash = GetHash(password);
+            Person person = await _repository.GetFirstOrDefault<Person>(x => x.Email == email && x.PasswordHash == passwordHash);
+            if (person is not null)
             {
                 var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
                     new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role.ToString())
                 };
-                ClaimsIdentity claimsIdentity =
-                new ClaimsIdentity(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
+                ClaimsIdentity claimsIdentity = new(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
                 return claimsIdentity;
             }
             // если пользователя не найдено
             return null;
         }
 
-        private bool IsValidEmail(string email)
+        private static bool IsValidEmail(string email)
         {
             try
             {
@@ -209,7 +200,7 @@ namespace SmartEco.API.Services
             return person != null;
         }
 
-        private string CreateToken(string email, string password, ClaimsIdentity identity)
+        private static string CreateToken(ClaimsIdentity identity)
         {
             var now = DateTime.UtcNow;
             // создаем JWT-токен

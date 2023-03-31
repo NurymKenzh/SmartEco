@@ -1,6 +1,4 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
-using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
-using SmartEco.Common.Enums;
 using SmartEco.Common.Models.Filters.Directories;
 using SmartEco.Web.Models.Auth;
 

@@ -1,7 +1,5 @@
 ﻿using SmartEco.Common.Enums;
 using System.ComponentModel.DataAnnotations;
-using System.Security.AccessControl;
-using System.Xml.Linq;
 
 namespace SmartEco.Web.Models.Auth
 {

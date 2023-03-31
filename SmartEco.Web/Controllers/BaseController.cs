@@ -5,9 +5,8 @@ namespace SmartEco.Web.Controllers
     public class BaseController : Controller
     {
         #region View subfolders
-        private protected string Auth = "Auth";
-
-        private protected string Directories = "Directories";
+        private protected static string Auth => "Auth";
+        private protected static string Directories => "Directories";
         #endregion
 
         public string GetName<C>() where C : Controller

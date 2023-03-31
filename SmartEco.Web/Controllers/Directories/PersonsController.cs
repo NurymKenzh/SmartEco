@@ -1,24 +1,17 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Mvc.Rendering;
-using Newtonsoft.Json;
-using SmartEco.Common.Enums;
 using SmartEco.Web.Controllers;
 using SmartEco.Web.Helpers.Constants;
-using SmartEco.Web.Models.Auth;
 using SmartEco.Web.Models.Filters.Directories;
-using SmartEco.Web.Services;
 using SmartEco.Web.Services.Directories;
 
 namespace SmartEco.Controllers
 {
     public class PersonsController : BaseController
     {
-        private readonly CrudService _crudService;
         private readonly PersonService _personService;
 
-        public PersonsController(CrudService crudService, PersonService personService)
+        public PersonsController(PersonService personService)
         {
-            _crudService = crudService;
             _personService = personService;
         }
 

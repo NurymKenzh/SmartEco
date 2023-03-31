@@ -5,14 +5,8 @@ using System.Text.Json;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
 using Microsoft.IdentityModel.Tokens;
 using SmartEco.API.Options;
-using SmartEco.Common.Data.Contexts;
-using Microsoft.EntityFrameworkCore;
-using System;
 using SmartEco.Common.Extensions;
-using SmartEco.Common.Data.Repositories.Abstractions;
-using SmartEco.Common.Data.Repositories;
-using SmartEco.API.Services;
-using SmartEco.API.Services.Directories;
+using SmartEco.API.Extensions;
 
 namespace SmartEco.API
 {
@@ -28,9 +22,6 @@ namespace SmartEco.API
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
-            services.AddDbContext<SmartEcoDbContext>(options =>
-                options.UseNpgsql(Configuration.GetConnectionString("DefaultConnection")));
-
             services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
                     .AddJwtBearer(options =>
                     {
@@ -94,11 +85,8 @@ namespace SmartEco.API
                 });
             });
 
-            services.RegisterRepository();
-            services.AddTransient<AuthService>();
-            services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
-            services.AddScoped<IEmailService, EmailService>();
-            services.AddScoped<PersonFilteringService>();
+            services.RegisterRepository(Configuration);
+            services.AddCustomServices();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)

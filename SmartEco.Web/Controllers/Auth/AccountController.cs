@@ -1,12 +1,9 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using SmartEco.Common.Models.Requests;
-using SmartEco.Web.Controllers.Menu;
 using SmartEco.Web.Helpers.Constants;
 using SmartEco.Web.Models.Auth;
 using SmartEco.Web.Services;
-using SmartEco.Web.Services.Providers;
-using System.Net;
 
 namespace SmartEco.Web.Controllers.Auth
 {
@@ -75,7 +72,7 @@ namespace SmartEco.Web.Controllers.Auth
             => HttpContext.Session.GetString("Email");
 
         [HttpPost]
-        public void ResetSession()
+        public void Logout()
             => _authService.ResetSession(HttpContext.Session);
     }
 }

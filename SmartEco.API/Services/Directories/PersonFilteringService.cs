@@ -3,8 +3,6 @@ using SmartEco.API.Models.Filters.Directories;
 using SmartEco.Common.Data.Entities;
 using SmartEco.Common.Data.Repositories.Abstractions;
 using SmartEco.Common.Models.Responses;
-using System.Linq;
-using System.Xml.Linq;
 
 namespace SmartEco.API.Services.Directories
 {

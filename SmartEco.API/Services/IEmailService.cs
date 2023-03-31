@@ -40,7 +40,7 @@ namespace SmartEco.API.Services
 
                 return true;
             }
-            catch (Exception ex)
+            catch
             {
                 return false;
             }

@@ -1,12 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
-using SmartEco.Web.Services.Providers;
-using Microsoft.Extensions.DependencyInjection.Extensions;
 using SmartEco.Web.Helpers;
 using SmartEco.Web.Helpers.Filters;
-using SmartEco.Web.Services;
 using SmartEco.Web.Extensions;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 
 namespace SmartEco
 {
@@ -52,16 +50,9 @@ namespace SmartEco
                 .AddRazorRuntimeCompilation();
 
             services.AddDatabaseDeveloperPageExceptionFilter();
-
             services.TryAddSingleton<IHttpContextAccessor, HttpContextAccessor>();
-            services.AddHttpClient<ISmartEcoApi, SmartEcoApi>(client =>
-            {
-                client.BaseAddress = new Uri(Configuration.GetValue<string>("SmartEcoApiUrl"));
-                client.Timeout = TimeSpan.FromMinutes(5);
 
-            });
-
-            services.AddCustomServices();
+            services.AddCustomServices(Configuration);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -73,11 +64,9 @@ namespace SmartEco
             }
             else
             {
-                //app.UseExceptionHandler("/Home/Error");
+                app.UseExceptionHandler("/Home/Error");
                 // The default HSTS value is 30 days. You may want to change this for production scenarios, see https://aka.ms/aspnetcore-hsts.
                 //app.UseHsts();
-                app.UseDeveloperExceptionPage();
-                app.UseMigrationsEndPoint();
             }
 
             var supportedCultures = new[]
