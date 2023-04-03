@@ -4,12 +4,11 @@ using SmartEco.Web.Models.Auth;
 
 namespace SmartEco.Web.Models.Filters.Directories
 {
+    //Filter with additional sorting fields and Pager for 'Index'
     public class PersonFilterPager : Pager, IPersonFilter
     {
         public PersonFilterPager(int totalItems, int? page = null, int? pageSize = null)
-            : base(totalItems, page, pageSize)
-        {
-        }
+            : base(totalItems, page, pageSize) { }
 
         public string Email { get; set; }
         public int? RoleId { get; set; }
@@ -19,20 +18,31 @@ namespace SmartEco.Web.Models.Filters.Directories
         public string RoleSort { get; set; }
     }
 
-    public record PersonFilterBase(int? PageNumber, int? PageSize, string SortOrder, string Email, int? RoleId) 
-        : BaseFilter(PageNumber, PageSize), IPersonFilter
+    //Basic filter for all pages
+    //Required to send filtering to the server
+    public record PersonFilterBase: BaseFilter, IPersonFilter
     {
-        public PersonFilterBase()
-            : this(null, null, null, null, null) { }
+        //To initialize empty object for controller
+        public PersonFilterBase() { }
+
+        public PersonFilterBase(int? PageNumber, int? PageSize, string SortOrder, string Email, int? RoleId)
+            : base(PageNumber, PageSize) 
+        {
+            this.SortOrder = SortOrder;
+            this.RoleId = RoleId;
+            this.Email = Email;
+        }
 
         public PersonFilterBase(PersonFilterId personFilterId)
             : this(personFilterId.PageNumber, personFilterId.PageSize, personFilterId.SortOrder, personFilterId.Email, personFilterId.RoleId) { }
 
-        public string Email { get; set; } = Email;
-        public int? RoleId { get; set; } = RoleId;
-        public string SortOrder { get; set; } = SortOrder;
+        public string Email { get; set; }
+        public int? RoleId { get; set; }
+        public string SortOrder { get; set; }
     }
 
+    //Filter with additional field 'Id'
+    //Required to get the item after click 'Create', 'Edit', 'Delete'
     public record PersonFilterId : PersonFilterBase, IPersonFilter
     {
         public PersonFilterId(long Id, int? PageNumber, int? PageSize, string SortOrder, string Email, int? RoleId)
@@ -48,7 +58,10 @@ namespace SmartEco.Web.Models.Filters.Directories
     }
 
     public record PersonViewModelFilter(PersonFilterId Filter, PersonViewModel Person, SelectList Roles);
+
+    //To display list users in 'Index'
     public record PersonViewModelFilterList(PersonFilterPager Filter, IEnumerable<PersonViewModel> Persons, SelectList Roles);
 
+    //To create new user in system. Used model with passwords
     public record PersonAuthViewModelFilter(PersonFilterId Filter, PersonAuthViewModel Person, SelectList Roles);
 }
