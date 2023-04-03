@@ -1,6 +1,21 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
+:root {
+    --border-bg: #dee2e6;
+    --navbar-color: rgba(0,0,0,.9);
+}
+
+[data-theme="dark"] {
+    --bs-body-bg: #121212;
+    --border-bg: #3b3c3e;
+    --bs-white-rgb: #121212;
+    --bs-body-color: #eef3f9; /*text*/
+    --bs-dark-rgb: #eef3f9; /*text*/
+    --bs-text-opacity: 1;
+    --navbar-color: #eef3f9; /*text*/
+}
+
 a.navbar-brand {
   white-space: normal;
   text-align: center;
@@ -42,8 +57,8 @@ html {
 }
 
 body {
-  /* Margin bottom by footer height */
-  margin-bottom: 60px;
+    /* Margin bottom by footer height */
+    margin-bottom: 60px;
 }
 .footer {
   position: absolute;
@@ -303,4 +318,69 @@ body {
 
 .btn-sort:active {
     background-color: #bed7fb;
+}
+
+/*Toggle swither for dark mode*/
+
+#darkModeContainer {
+    display: inline-block;
+    float: right;
+    margin-right: 1%;
+}
+
+#switcherDarkMode {
+    opacity: 0;
+    position: absolute;
+}
+
+#labelDarkMode {
+    width: 50px;
+    /*height: 26px;*/
+    /*background-color: #111;*/
+    border: 1px solid var(--border-bg);
+    /*display: flex;*/
+    border-radius: 50px;
+    /*align-items: center;*/
+    justify-content: space-between;
+    padding: 5px;
+    /*position: relative;*/
+    transform: scale(1.2);
+    display: inline-flex;
+    /*flex-wrap: wrap;*/
+    cursor: pointer;
+}
+
+.ball {
+    width: 20px;
+    height: 20px;
+    background-color: var(--border-bg);
+    position: absolute;
+    top: 3px;
+    left: 2px;
+    border-radius: 50%;
+    transition: transform 0.2s linear;
+}
+
+/*  target the elemenent after the label*/
+#switcherDarkMode:checked + #labelDarkMode .ball {
+    transform: translateX(24px);
+}
+
+/*Dark mode*/
+.border-top, .border-bottom {
+    border-color: var(--border-bg) !important;
+}
+
+.form-select {
+    background-color: var(--bs-body-bg);
+    border-color: var(--border-bg);
+    color: var(--bs-dark-rgb);
+}
+
+nav {
+    background-color: var(--bs-body-bg) !important;
+}
+
+.navbar-light .navbar-brand, .navbar-brand:focus, .navbar-light .navbar-brand:hover {
+    color: var(--navbar-color);
 }
