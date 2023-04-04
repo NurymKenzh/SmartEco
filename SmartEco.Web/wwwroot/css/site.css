@@ -4,6 +4,18 @@ for details on configuring this project to bundle and minify static web assets. 
 :root {
     --border-bg: #dee2e6;
     --navbar-color: rgba(0,0,0,.9);
+    --form-control-bg: #fff;
+    --input-autofill-bg: #e8f0fe;
+    --table-header-bg: #f8f9fa;
+    --table-border-bg: #dfe0e1;
+    --pagination-border-bg: #ddd;
+    --pagination-bg: #fff;
+    --pagination-focus-border-bg: #eee;
+    --pagination-focus-bg: #ddd;
+    --pagination-focus-text-bg: #23527c;
+    --btn-sort-hover-text: #000;
+    --btn-sort-hover-bg: #e7f0fd;
+    --btn-sort-active-bg: #bed7fb;
 }
 
 [data-theme="dark"] {
@@ -14,6 +26,18 @@ for details on configuring this project to bundle and minify static web assets. 
     --bs-dark-rgb: #eef3f9; /*text*/
     --bs-text-opacity: 1;
     --navbar-color: #eef3f9; /*text*/
+    --form-control-bg: #121212;
+    --input-autofill-bg: #212732; /*autofill browser*/
+    --table-header-bg: #1f2021; /*table header background*/
+    --table-border-bg: #383839;
+    --pagination-border-bg: #353535;
+    --pagination-bg: #121212;
+    --pagination-focus-border-bg: #898989;
+    --pagination-focus-bg: #282828;
+    --pagination-focus-text-bg: #3e93e5;
+    --btn-sort-hover-text: #fff;
+    --btn-sort-hover-bg: #202831;
+    --btn-sort-active-bg: #233d5a;
 }
 
 a.navbar-brand {
@@ -93,8 +117,8 @@ body {
             line-height: 1.42857143;
             color: #337ab7;
             text-decoration: none;
-            background-color: #fff;
-            border: 1px solid #ddd;
+            background-color: var(--pagination-bg);
+            border: 1px solid var(--pagination-border-bg);
         }
 
         .pagination > li:first-child > a,
@@ -115,9 +139,9 @@ body {
         .pagination > li > a:focus,
         .pagination > li > span:focus {
             z-index: 2;
-            color: #23527c;
-            background-color: #eee;
-            border-color: #ddd;
+            color: var(--pagination-focus-text-bg);
+            background-color: var(--pagination-focus-bg);
+            border-color: var(--pagination-focus-border-bg)
         }
 
     .pagination > .active > a,
@@ -311,15 +335,6 @@ body {
     word-wrap: break-word;
 }
 
-.btn-sort:hover {
-    color: #000;
-    background-color: #e7f0fd;
-}
-
-.btn-sort:active {
-    background-color: #bed7fb;
-}
-
 /*Toggle swither for dark mode*/
 
 #darkModeContainer {
@@ -383,4 +398,39 @@ nav {
 
 .navbar-light .navbar-brand, .navbar-brand:focus, .navbar-light .navbar-brand:hover {
     color: var(--navbar-color);
+}
+
+.fa-sun-o, td {
+    color: var(--bs-dark-rgb);
+}
+
+.form-control, .form-control:focus {
+    background-color: var(--form-control-bg);
+    color: var(--bs-dark-rgb) !important;
+    border-color: var(--border-bg);
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px var(--input-autofill-bg) inset !important;
+    -webkit-text-fill-color: var(--bs-dark-rgb) !important;
+}
+
+table > thead > tr > th {
+    background-color: var(--table-header-bg) !important;
+}
+
+table, thead {
+    border-color: var(--table-border-bg) !important;
+}
+
+.btn-sort:hover {
+    color: var(--btn-sort-hover-text);
+    background-color: var(--btn-sort-hover-bg);
+}
+
+.btn-sort:active {
+    background-color: var(--btn-sort-active-bg);
 }
