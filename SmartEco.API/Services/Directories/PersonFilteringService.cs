@@ -21,7 +21,7 @@ namespace SmartEco.API.Services.Directories
 
             if (!string.IsNullOrEmpty(filter.Email))
             {
-                persons = persons.Where(m => m.Email.ToLower().Contains(filter.Email.ToLower()));
+                persons = persons.Where(m => m.Email.Contains(filter.Email));
             }
             if (filter.RoleId != null)
             {

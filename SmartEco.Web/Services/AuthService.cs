@@ -17,7 +17,7 @@ namespace SmartEco.Web.Services
             _smartEcoApi = smartEcoApi;
         }
 
-        public async Task<string> Register(PersonAuthViewModel model)
+        public async Task<string?> Register(PersonAuthViewModel model)
         {
             var personRequest = new PersonRequest
             {
@@ -28,13 +28,13 @@ namespace SmartEco.Web.Services
             return authResponse?.Message;
         }
 
-        public async Task<string> ConfirmEmail(ConfirmRequest confirm)
+        public async Task<string?> ConfirmEmail(ConfirmRequest confirm)
         {
             var authResponse = await GetAuthResponse(confirm, _smartEcoApi.ConfirmEmail);
             return authResponse?.Message;
         }
 
-        public async Task<AuthResponse> GetToken(ISession session, string email, string password)
+        public async Task<AuthResponse?> GetToken(ISession session, string email, string password)
         {
             var person = new PersonRequest
             {
@@ -42,7 +42,7 @@ namespace SmartEco.Web.Services
                 Password = password
             };
             var authResponse = await GetAuthResponse(person, _smartEcoApi.GetToken);
-            SetSession(session, authResponse.AccessToken, authResponse.RoleId, authResponse.Email);
+            SetSession(session, authResponse?.AccessToken, authResponse?.RoleId, authResponse?.Email);
             return authResponse;
         }
 
@@ -53,7 +53,7 @@ namespace SmartEco.Web.Services
             session.Remove("Email");
         }
 
-        private static void SetSession(ISession session, string token, int? role, string email)
+        private static void SetSession(ISession session, string? token, int? role, string? email)
         {
             if (token is not null)
                 session.SetString("Token", token);
@@ -64,7 +64,7 @@ namespace SmartEco.Web.Services
         }
 
         //For display error if invalid request data (BadRequest)
-        private static async Task<AuthResponse> GetAuthResponse<TRequest>(TRequest request, Func<TRequest, Task<AuthResponse>> authRequest)
+        private static async Task<AuthResponse?> GetAuthResponse<TRequest>(TRequest request, Func<TRequest, Task<AuthResponse>> authRequest)
         {
             try
             {
@@ -72,7 +72,7 @@ namespace SmartEco.Web.Services
             }
             catch (ApiException exception)
             {
-                if (exception.StatusCode is HttpStatusCode.BadRequest)
+                if (exception.StatusCode is HttpStatusCode.BadRequest && exception.Content is not null)
                     return JsonConvert.DeserializeObject<AuthResponse>(exception.Content);
 
                 throw exception;

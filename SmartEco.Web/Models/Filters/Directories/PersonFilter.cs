@@ -10,12 +10,12 @@ namespace SmartEco.Web.Models.Filters.Directories
         public PersonFilterPager(int totalItems, int? page = null, int? pageSize = null)
             : base(totalItems, page, pageSize) { }
 
-        public string Email { get; set; }
+        public string? Email { get; set; }
         public int? RoleId { get; set; }
-        public string SortOrder { get; set; }
+        public string? SortOrder { get; set; }
 
-        public string EmailSort { get; set; }
-        public string RoleSort { get; set; }
+        public string? EmailSort { get; set; }
+        public string? RoleSort { get; set; }
     }
 
     //Basic filter for all pages
@@ -25,7 +25,7 @@ namespace SmartEco.Web.Models.Filters.Directories
         //To initialize empty object for controller
         public PersonFilterBase() { }
 
-        public PersonFilterBase(int? PageNumber, int? PageSize, string SortOrder, string Email, int? RoleId)
+        public PersonFilterBase(int? PageNumber, int? PageSize, string? SortOrder, string? Email, int? RoleId)
             : base(PageNumber, PageSize) 
         {
             this.SortOrder = SortOrder;
@@ -36,9 +36,9 @@ namespace SmartEco.Web.Models.Filters.Directories
         public PersonFilterBase(PersonFilterId personFilterId)
             : this(personFilterId.PageNumber, personFilterId.PageSize, personFilterId.SortOrder, personFilterId.Email, personFilterId.RoleId) { }
 
-        public string Email { get; set; }
+        public string? Email { get; set; }
         public int? RoleId { get; set; }
-        public string SortOrder { get; set; }
+        public string? SortOrder { get; set; }
     }
 
     //Filter with additional field 'Id'
@@ -63,5 +63,5 @@ namespace SmartEco.Web.Models.Filters.Directories
     public record PersonViewModelFilterList(PersonFilterPager Filter, IEnumerable<PersonViewModel> Persons, SelectList Roles);
 
     //To create new user in system. Used model with passwords
-    public record PersonAuthViewModelFilter(PersonFilterId Filter, PersonAuthViewModel Person, SelectList Roles);
+    public record PersonAuthViewModelFilter(PersonFilterId Filter, PersonAuthViewModel? Person, SelectList Roles);
 }

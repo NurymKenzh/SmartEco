@@ -40,10 +40,10 @@ namespace SmartEco.Web.Services.Directories
 
         public async Task<(bool, PersonAuthViewModelFilter)> CreatePerson(PersonAuthViewModelFilter personAuthViewModelFilter)
         {
-            var response = await _smartEcoApi.CreateObject("Persons/Create", personAuthViewModelFilter.Person);
+            var response = await _smartEcoApi.CreateObject("Persons/Create", personAuthViewModelFilter.Person!);
             return (response.IsSuccessStatusCode, personAuthViewModelFilter with
             {
-                Roles = GetSelectListRoles(personAuthViewModelFilter.Person.Role)
+                Roles = GetSelectListRoles(personAuthViewModelFilter.Person!.Role)
             });
         }
 

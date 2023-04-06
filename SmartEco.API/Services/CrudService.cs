@@ -1,4 +1,5 @@
-﻿using SmartEco.Common.Data.Repositories.Abstractions;
+﻿using Microsoft.AspNetCore.Mvc;
+using SmartEco.Common.Data.Repositories.Abstractions;
 
 namespace SmartEco.API.Services
 {
@@ -11,28 +12,87 @@ namespace SmartEco.API.Services
             _repository = repository;
         }
 
-        public IEnumerable<Entity> Get()
-            =>  _repository.Get<Entity>();
+        public async Task<ActionResult> Get(long id)
+        {
+            try
+            {
+                var entity = await _repository.Get<Entity>(id);
+                if(entity is null)
+                    return new StatusCodeResult(StatusCodes.Status204NoContent);
 
-        public async Task<Entity> Get(long id)
-            => await _repository.Get<Entity>(id);
+                return new ObjectResult(entity);
+            }
+            catch
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
 
-        public async Task Create(Entity entity)
-            => await _repository.Create(entity);
+        public async Task<ActionResult> Create(Entity entity)
+        {
+            try
+            {
+                await _repository.Create(entity);
+                return new StatusCodeResult(StatusCodes.Status201Created);
+            }
+            catch (ArgumentNullException)
+            {
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            }
+            catch(Exception)
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
 
-        public async Task Update(Entity entity)
-            => await _repository.Update(entity);
+        public async Task<ActionResult> Update(long id, Entity entity)
+        {
+            try
+            {
+                var entityDb = await _repository.Get<Entity>(id);
+                if(entityDb is null)
+                    return new StatusCodeResult(StatusCodes.Status404NotFound);
 
-        public async Task Delete(long id)
-            => await _repository.Delete<Entity>(id);
+                await _repository.Update(entity);
+                return new StatusCodeResult(StatusCodes.Status202Accepted);
+            }
+            catch (ArgumentNullException)
+            {
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            }
+            catch
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
+
+        public async Task<ActionResult> Delete(long id)
+        {
+            try
+            {
+                var entityDb = await _repository.Get<Entity>(id);
+                if (entityDb is null)
+                    return new StatusCodeResult(StatusCodes.Status404NotFound);
+
+                await _repository.Delete<Entity>(id);
+                return new StatusCodeResult(StatusCodes.Status202Accepted);
+            }
+            catch (ArgumentNullException)
+            {
+                return new StatusCodeResult(StatusCodes.Status400BadRequest);
+            }
+            catch
+            {
+                return new StatusCodeResult(StatusCodes.Status500InternalServerError);
+            }
+        }
     }
 
     public interface ICrudService<Entity> where Entity : class
     {
-        IEnumerable<Entity> Get();
-        Task<Entity> Get(long id);
-        Task Create(Entity entity);
-        Task Update(Entity entity);
-        Task Delete(long id);
+        Task<ActionResult> Get(long id);
+        Task<ActionResult> Create(Entity entity);
+        Task<ActionResult> Update(long id, Entity entity);
+        Task<ActionResult> Delete(long id);
     }
 }

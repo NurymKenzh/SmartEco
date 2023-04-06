@@ -20,7 +20,7 @@ namespace SmartEco.Web.Extensions
             services.AddTransient<AuthHeaderHandler>();
             services
                 .AddRefitClient<ISmartEcoApi>()
-                .ConfigureHttpClient(client => client.BaseAddress = new Uri(configuration.GetValue<string>("SmartEcoApiUrl")))
+                .ConfigureHttpClient(client => client.BaseAddress = new Uri(configuration.GetValue<string>("SmartEcoApiUrl")!))
                 .SetHandlerLifetime(TimeSpan.FromMinutes(5))
                 .AddHttpMessageHandler<AuthHeaderHandler>();
         }

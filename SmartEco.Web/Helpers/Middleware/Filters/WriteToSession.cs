@@ -9,10 +9,10 @@ namespace SmartEco.Web.Helpers.Filters
         }
         public void OnActionExecuting(ActionExecutingContext context)
         {
-            string actionName = context.HttpContext.Request.RouteValues["action"].ToString();
-            string controllerName = context.HttpContext.Request.RouteValues["controller"].ToString();
-            context.HttpContext.Session.SetString("controller", controllerName);
-            context.HttpContext.Session.SetString("action", actionName);
+            var actionName = context.HttpContext.Request.RouteValues["action"]?.ToString();
+            var controllerName = context.HttpContext.Request.RouteValues["controller"]?.ToString();
+            context.HttpContext.Session.SetString("controller", controllerName!);
+            context.HttpContext.Session.SetString("action", actionName!);
         }
     }
 }

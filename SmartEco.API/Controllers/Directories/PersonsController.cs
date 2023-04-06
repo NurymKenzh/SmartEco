@@ -4,6 +4,7 @@ using SmartEco.API.Models.Filters.Directories;
 using SmartEco.API.Services;
 using SmartEco.API.Services.Directories;
 using SmartEco.Common.Data.Entities;
+using SmartEco.Common.Data.Repositories.Abstractions;
 using SmartEco.Common.Enums;
 using SmartEco.Common.Models.Responses;
 
@@ -15,11 +16,13 @@ namespace SmartEco.API.Controllers.Directories
     {
         private readonly PersonFilteringService _personFiltering;
         private readonly ICrudService<Person> _crudService;
+        private readonly ISmartEcoRepository _repository;
 
-        public PersonsController(ICrudService<Person> crudService, PersonFilteringService personFiltering)
+        public PersonsController(ICrudService<Person> crudService, PersonFilteringService personFiltering, ISmartEcoRepository repository)
         {
             _crudService = crudService;
             _personFiltering = personFiltering;
+            _repository = repository;
         }
 
         [HttpPost(nameof(Get))]
@@ -27,41 +30,39 @@ namespace SmartEco.API.Controllers.Directories
             => await _personFiltering.GetPersons(filter);
 
         [HttpGet("Get/{id}")]
-        public async Task<Person> Get(long id)
+        public async Task<ActionResult<Person?>> Get(long id)
             => await _crudService.Get(id);
 
         [HttpPost(nameof(Create))]
-        public async Task Create(Person person)
+        public async Task<ActionResult> Create(Person person)
             => await _crudService.Create(CreateWithHash(person));
 
         [HttpPut(nameof(Update))]
-        public async Task Update(Person person)
-            => await _crudService.Update(await Change(person));
+        public async Task<ActionResult> Update(Person person)
+            => await Change(person);
 
         [HttpDelete("Delete/{id}")]
-        public async Task Delete(long id)
+        public async Task<ActionResult> Delete(long id)
             => await _crudService.Delete(id);
 
         private static Person CreateWithHash(Person person)
         {
-            if (person is not null)
-            {
-                person.PasswordHash = AuthService.GetHash(person.Password);
-                return person;
-            }
-            return null;
+            ArgumentNullException.ThrowIfNull(person, nameof(person));
+            person.PasswordHash = AuthService.GetHash(person.Password!);
+            return person;
         }
 
-        private async Task<Person> Change(Person personChanged)
+        private async Task<ActionResult> Change(Person personChanged)
         {
-            var person = await Get(personChanged.Id);
-            if (person is not null)
-            {
-                person.Email = personChanged.Email;
-                person.Role = personChanged.Role;
-                return person;
-            }
-            return null;
+            ArgumentNullException.ThrowIfNull(personChanged, nameof(personChanged));
+
+            var person = await _repository.Get<Person>(personChanged.Id);
+            if (person is null)
+                return new StatusCodeResult(StatusCodes.Status404NotFound);
+
+            person.Email = personChanged.Email;
+            person.Role = personChanged.Role;
+            return await _crudService.Update(person.Id, person);
         }
     }
 }

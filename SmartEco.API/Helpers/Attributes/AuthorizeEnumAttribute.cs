@@ -16,15 +16,15 @@ namespace SmartEco.API.Helpers.Attributes
 
         public void OnAuthorization(AuthorizationFilterContext context)
         {
-            var isAuthenticated = context.HttpContext.User.Identity.IsAuthenticated;
-            if (!isAuthenticated)
+            var isAuthenticated = context.HttpContext.User.Identity?.IsAuthenticated;
+            if (isAuthenticated is false)
             {
                 context.Result = new UnauthorizedResult();
                 return;
             }
             var user = context.HttpContext.User;
-            var hasAllRequredClaims = _requiredRoles.Any(role => context.HttpContext.User.HasClaim(x => x.Value == role.ToString()));
-            if (!hasAllRequredClaims)
+            var hasAllRequredClaims = _requiredRoles.Any(role => context.HttpContext.User.HasClaim(x => x.Value == nameof(role)));
+            if (hasAllRequredClaims is false)
             {
                 context.Result = new ForbidResult();
                 return;

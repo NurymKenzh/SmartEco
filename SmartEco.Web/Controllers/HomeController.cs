@@ -25,7 +25,7 @@ namespace SmartEco.Web.Controllers
             return isAuthenticated ? View() : RedirectToLogin();
         }
 
-        public IActionResult Directories()
+        public new IActionResult Directories()
         {
             return View();
         }
@@ -44,7 +44,7 @@ namespace SmartEco.Web.Controllers
         public IActionResult Error()
         {
             var exceptionHandler = HttpContext.Features.Get<IExceptionHandlerPathFeature>();
-            var exception = exceptionHandler.Error as ApiException;
+            var exception = exceptionHandler?.Error as ApiException;
             if (exception?.StatusCode is HttpStatusCode.Unauthorized)
                 return RedirectToLogin();
 

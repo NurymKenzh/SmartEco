@@ -7,21 +7,15 @@ namespace SmartEco.Common.Data.Entities
     public class Person
     {
         public long Id { get; set; }
-        public string Email { get; set; }
+        public required string Email { get; set; }
 
         [NotMapped]
-        public string Password { get; set; }
-        public string PasswordHash { get; set; }
+        public string? Password { get; set; }
+        public string? PasswordHash { get; set; }
         public virtual int? RoleId
         {
-            get
-            {
-                return (int?)this.Role;
-            }
-            set
-            {
-                Role = (Role)value;
-            }
+            get =>(int?)this.Role;
+            set => Role = (Role?)value;
         }
         [EnumDataType(typeof(Role))]
         public Role? Role { get; set; }

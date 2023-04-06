@@ -31,23 +31,20 @@ namespace SmartEco.API.Services
             var email = personReq.Email;
             var password = personReq.Password;
 
-            var identity = await GetIdentity(email, password);
-            if (identity is null)
-            {
+            string passwordHash = GetHash(password);
+            var person = await _repository.GetFirstOrDefault<Person>(p => p.Email.Equals(email) && p.PasswordHash == passwordHash);
+            if (person is null)
                 return (StatusCodes.Status400BadRequest, new() { Message = "Invalid username or password." });
-            }
-            else
+
+            var identity = GetIdentity(person);
+            var encodedJwt = CreateToken(identity);
+            return (StatusCodes.Status200OK, new()
             {
-                var encodedJwt = CreateToken(identity);
-                var person = await _repository.GetFirstOrDefault<Person>(p => p.Email == identity.Name);
-                return (StatusCodes.Status200OK, new()
-                {
-                    AccessToken = encodedJwt,
-                    Email = identity.Name,
-                    RoleId = person.RoleId,
-                    Role = person?.Role.ToString()
-                });
-            }
+                AccessToken = encodedJwt,
+                Email = identity.Name,
+                RoleId = person.RoleId,
+                Role = person?.Role.ToString()
+            });
         }
 
         public async Task<(int, AuthResponse)> Register(IUrlHelper urlHelper, string scheme, PersonRequest person)
@@ -75,8 +72,7 @@ namespace SmartEco.API.Services
                     PasswordСiphered = pass 
                 },
                 protocol: scheme,
-                host: _configuration.GetValue<string>("EmailConfirmHost"))
-                .Replace("/api", "");
+                host: _configuration.GetValue<string>("EmailConfirmHost"))?.Replace("/api", "");
 
             var isSended = await _emailService.SendAsync(new[] { person.Email }, "Confirm your account",
                 $"Confirm your registration by clicking on the link: <a href='{callbackUrl}'>link to confirm</a>");
@@ -119,17 +115,18 @@ namespace SmartEco.API.Services
 
                 await _repository.Create(person);
 
-                var identity = await GetIdentity(person.Email, person.Password);
-                if (identity is not null)
+                var isPersonCreated = await _repository.IsAnyEntity<Person>(p => p.Email.Equals(person.Email) && p.PasswordHash == person.PasswordHash);
+                if (isPersonCreated is false)
                     return (StatusCodes.Status400BadRequest, new() { Message = $"Failed to register. Please try again." });
 
+                var identity = GetIdentity(person);
                 var encodedJwt = CreateToken(identity);
                 return (StatusCodes.Status200OK, new()
                 {
                     AccessToken = encodedJwt,
                     Email = identity.Name,
                     RoleId = person.RoleId,
-                    Role = person.Role.ToString(),
+                    Role = nameof(person.Role),
                     Message = $"User {person.Email} successfully registered!"
                 });
             }
@@ -163,22 +160,14 @@ namespace SmartEco.API.Services
             return hashed;
         }
 
-        private async Task<ClaimsIdentity> GetIdentity(string email, string password)
+        private ClaimsIdentity GetIdentity(Person person)
         {
-            string passwordHash = GetHash(password);
-            Person person = await _repository.GetFirstOrDefault<Person>(x => x.Email == email && x.PasswordHash == passwordHash);
-            if (person is not null)
-            {
-                var claims = new List<Claim>
+            var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role.ToString())
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, nameof(person.Role))
                 };
-                ClaimsIdentity claimsIdentity = new(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
-                return claimsIdentity;
-            }
-            // если пользователя не найдено
-            return null;
+            return new(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
         }
 
         private static bool IsValidEmail(string email)
@@ -194,12 +183,6 @@ namespace SmartEco.API.Services
             }
         }
 
-        private async Task<bool> PersonExist(string email)
-        {
-            var person = await _repository.GetFirstOrDefault<Person>(p => p.Email == email);
-            return person != null;
-        }
-
         private static string CreateToken(ClaimsIdentity identity)
         {
             var now = DateTime.UtcNow;
@@ -211,8 +194,10 @@ namespace SmartEco.API.Services
                 claims: identity.Claims,
                 expires: now.Add(TimeSpan.FromMinutes(AuthOptions.LIFETIME)),
                 signingCredentials: new SigningCredentials(AuthOptions.GetSymmetricSecurityKey(), SecurityAlgorithms.HmacSha256));
-            var encodedJwt = new JwtSecurityTokenHandler().WriteToken(jwt);
-            return encodedJwt;
+            return new JwtSecurityTokenHandler().WriteToken(jwt);
         }
+
+        private async Task<bool> PersonExist(string email)
+            => await _repository.IsAnyEntity<Person>(p => p.Email.Equals(email));
     }
 }

@@ -15,7 +15,7 @@ namespace SmartEco
             Configuration = configuration;
         }
 
-        public static IConfiguration Configuration { get; set; }
+        public static IConfiguration Configuration { get; private set; } = null!;
 
         public void ConfigureServices(IServiceCollection services)
         {

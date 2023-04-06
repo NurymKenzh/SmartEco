@@ -16,7 +16,7 @@ namespace SmartEco.Common.Data.Contexts
             modelBuilder
                 .Entity<Person>()
                 .Property(e => e.Role)
-                .HasConversion(role => role.ToString(), role => (Role)Enum.Parse(typeof(Role), role));
+                .HasConversion(role => role.ToString(), role => (Role)Enum.Parse(typeof(Role), role ?? nameof(Role.User)));
         }
 
         public DbSet<Person> Person { get; set; }

@@ -25,9 +25,9 @@ namespace SmartEco.Web.Controllers.Auth
         public async Task<IActionResult> Login(PersonAuthViewModel person)
         {
             var authResponse = await _authService.GetToken(HttpContext.Session, person.Email, person.Password);
-            if (string.IsNullOrEmpty(authResponse.AccessToken))
+            if (string.IsNullOrEmpty(authResponse?.AccessToken))
             {
-                ViewBag.Message = authResponse.Message;
+                ViewBag.Message = authResponse?.Message;
                 return View(Views.Get(HttpContext, Auth), person);
             }
             else
@@ -40,7 +40,7 @@ namespace SmartEco.Web.Controllers.Auth
 
         [HttpGet]
         [AllowAnonymous]
-        public IActionResult Register(string returnUrl = null)
+        public IActionResult Register(string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             return View(Views.Get(HttpContext, Auth));
@@ -49,7 +49,7 @@ namespace SmartEco.Web.Controllers.Auth
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Register(PersonAuthViewModel model, string returnUrl = null)
+        public async Task<IActionResult> Register(PersonAuthViewModel model, string? returnUrl = null)
         {
             ViewData["ReturnUrl"] = returnUrl;
             if (ModelState.IsValid)
@@ -68,7 +68,7 @@ namespace SmartEco.Web.Controllers.Auth
         }
 
         [HttpGet]
-        public string GetEmail()
+        public string? GetEmail()
             => HttpContext.Session.GetString("Email");
 
         [HttpPost]

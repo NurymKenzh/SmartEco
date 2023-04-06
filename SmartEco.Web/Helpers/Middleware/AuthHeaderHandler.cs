@@ -13,7 +13,7 @@ namespace SmartEco.Web.Helpers.Middleware
 
         protected override async Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
         {
-            var token = _httpContextAccessor.HttpContext.Session.GetString("Token");
+            var token = _httpContextAccessor.HttpContext?.Session.GetString("Token");
 
             request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", token);
 
