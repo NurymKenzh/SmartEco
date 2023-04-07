@@ -23,7 +23,7 @@ namespace SmartEco.API.Helpers.Attributes
                 return;
             }
             var user = context.HttpContext.User;
-            var hasAllRequredClaims = _requiredRoles.Any(role => context.HttpContext.User.HasClaim(x => x.Value == nameof(role)));
+            var hasAllRequredClaims = _requiredRoles.Any(role => context.HttpContext.User.HasClaim(x => x.Value == role.ToString()));
             if (hasAllRequredClaims is false)
             {
                 context.Result = new ForbidResult();

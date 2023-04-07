@@ -126,7 +126,7 @@ namespace SmartEco.API.Services
                     AccessToken = encodedJwt,
                     Email = identity.Name,
                     RoleId = person.RoleId,
-                    Role = nameof(person.Role),
+                    Role = person.Role.ToString(),
                     Message = $"User {person.Email} successfully registered!"
                 });
             }
@@ -165,7 +165,7 @@ namespace SmartEco.API.Services
             var claims = new List<Claim>
                 {
                     new Claim(ClaimsIdentity.DefaultNameClaimType, person.Email),
-                    new Claim(ClaimsIdentity.DefaultRoleClaimType, nameof(person.Role))
+                    new Claim(ClaimsIdentity.DefaultRoleClaimType, person.Role.ToString()!)
                 };
             return new(claims, "Token", ClaimsIdentity.DefaultNameClaimType, ClaimsIdentity.DefaultRoleClaimType);
         }
