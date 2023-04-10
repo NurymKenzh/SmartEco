@@ -1,0 +1,46 @@
+﻿@import "../lib/bootstrap/scss/_functions.scss";
+// Default variable overrides
+
+@import "../lib/bootstrap/scss/_variables.scss";
+@import "../lib/bootstrap/scss/_variables-dark.scss";
+
+//Custom variables
+$bs-border-color: var(--bs-border-color);
+
+#darkModeContainer {
+    display: inline-block;
+    float: right;
+    margin-right: 1%;
+}
+
+#switcherDarkMode {
+    opacity: 0;
+    position: absolute;
+}
+
+#labelDarkMode {
+    width: 50px;
+    border: $border-width $border-style $bs-border-color;
+    border-radius: 50px;
+    justify-content: space-between;
+    padding: 5px;
+    transform: scale(1.2);
+    display: inline-flex;
+    cursor: pointer;
+}
+
+.ball {
+    width: 20px;
+    height: 20px;
+    background-color: $bs-border-color;
+    position: absolute;
+    top: 3px;
+    left: 2px;
+    border-radius: 50%;
+    transition: transform 0.2s linear;
+}
+
+/*  target the elemenent after the label*/
+#switcherDarkMode:checked + #labelDarkMode .ball {
+    transform: translateX(24px);
+}
