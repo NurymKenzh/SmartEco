@@ -8,11 +8,11 @@ toggleSwitch.addEventListener('change', switchTheme, false);
 function switchTheme(e) {
     if (e.target.checked) {
         localStorage.setItem('theme', 'dark');
-        document.documentElement.setAttribute('data-theme', 'dark');
+        document.documentElement.setAttribute('data-bs-theme', 'dark');
         toggleSwitch.checked = true;
     } else {
         localStorage.setItem('theme', 'light');
-        document.documentElement.setAttribute('data-theme', 'light');
+        document.documentElement.setAttribute('data-bs-theme', 'light');
         toggleSwitch.checked = false;
     }
 }
@@ -36,7 +36,7 @@ function detectColorScheme() {
 
     //dark theme preferred, set document with a `data-theme` attribute
     if (theme == "dark") {
-        document.documentElement.setAttribute("data-theme", "dark");
+        document.documentElement.setAttribute("data-bs-theme", "dark");
         toggleSwitch.checked = true;
     }
 }

@@ -1,7 +1,7 @@
 ﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
 for details on configuring this project to bundle and minify static web assets. */
 
-:root {
+/*:root {
     --border-bg: #dee2e6;
     --navbar-color: rgba(0,0,0,.9);
     --form-control-bg: #fff;
@@ -16,20 +16,20 @@ for details on configuring this project to bundle and minify static web assets. 
     --btn-sort-hover-text: #000;
     --btn-sort-hover-bg: #e7f0fd;
     --btn-sort-active-bg: #bed7fb;
-}
+}*/
 
-[data-theme="dark"] {
+/*[data-theme="dark"] {
     --bs-body-bg: #121212;
     --border-bg: #3b3c3e;
     --bs-white-rgb: #121212;
-    --bs-body-color: #eef3f9; /*text*/
-    --bs-dark-rgb: #eef3f9; /*text*/
-    --bs-text-opacity: 1;
-    --navbar-color: #eef3f9; /*text*/
-    --form-control-bg: #121212;
-    --input-autofill-bg: #212732; /*autofill browser*/
-    --table-header-bg: #1f2021; /*table header background*/
-    --table-border-bg: #383839;
+    --bs-body-color: #eef3f9;*/ /*text*/
+    /*--bs-dark-rgb: #eef3f9;*/ /*text*/
+    /*--bs-text-opacity: 1;
+    --navbar-color: #eef3f9;*/ /*text*/
+    /*--form-control-bg: #121212;
+    --input-autofill-bg: #212732;*/ /*autofill browser*/
+    /*--table-header-bg: #1f2021;*/ /*table header background*/
+    /*--table-border-bg: #383839;
     --pagination-border-bg: #353535;
     --pagination-bg: #121212;
     --pagination-focus-border-bg: #898989;
@@ -38,66 +38,66 @@ for details on configuring this project to bundle and minify static web assets. 
     --btn-sort-hover-text: #fff;
     --btn-sort-hover-bg: #202831;
     --btn-sort-active-bg: #233d5a;
-}
+}*/
 
-a.navbar-brand {
+/*a.navbar-brand {
   white-space: normal;
   text-align: center;
   word-break: break-all;
-}
+}*/
 
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+/*html {
   font-size: 14px;
 }
 @media (min-width: 768px) {
   html {
     font-size: 16px;
   }
-}
+}*/
 
-.border-top {
+/*.border-top {
   border-top: 1px solid #e5e5e5;
 }
 .border-bottom {
   border-bottom: 1px solid #e5e5e5;
-}
+}*/
 
-.box-shadow {
+/*.box-shadow {
   box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
-}
+}*/
 
-button.accept-policy {
+/*button.accept-policy {
   font-size: 1rem;
   line-height: inherit;
 }
-
+*/
 /* Sticky footer styles
 -------------------------------------------------- */
-html {
+/*html {
   position: relative;
   min-height: 100%;
-}
+}*/
 
-body {
+/*body {*/
     /* Margin bottom by footer height */
-    margin-bottom: 60px;
-}
-.footer {
-  position: absolute;
-  bottom: 0;
-  width: 100%;
-  white-space: nowrap;
-  /* Set the fixed height of the footer here */
-  height: 60px;
-  line-height: 60px; /* Vertically center the text there */
-}
+    /*margin-bottom: 60px;
+}*/
+/*.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    padding-right: 1%;
+    padding-left: 1%;
+}*/
 
 
 /* pagination
 -------------------------------------------------- */
-.pagination {
+/*.pagination {
     display: inline-block;
     padding-left: 0;
     margin: 20px 0;
@@ -117,8 +117,8 @@ body {
             line-height: 1.42857143;
             color: #337ab7;
             text-decoration: none;
-            background-color: var(--pagination-bg);
-            border: 1px solid var(--pagination-border-bg);
+            background-color: #fff;
+            border: 1px solid #ddd;
         }
 
         .pagination > li:first-child > a,
@@ -139,9 +139,9 @@ body {
         .pagination > li > a:focus,
         .pagination > li > span:focus {
             z-index: 2;
-            color: var(--pagination-focus-text-bg);
-            background-color: var(--pagination-focus-bg);
-            border-color: var(--pagination-focus-border-bg)
+            color: #23527c;
+            background-color: #ddd;
+            border-color: #ddd;
         }
 
     .pagination > .active > a,
@@ -205,20 +205,15 @@ body {
 .pagination-sm > li:last-child > span {
     border-top-right-radius: 3px;
     border-bottom-right-radius: 3px;
-}
+}*/
 
 /* custom style
 -------------------------------------------------- */
-
-.footer {
-    padding-right: 10px;
-}
-
-.nav-link {
+/*.nav-link {
     border-width: 0px;
-}
+}*/
 
-.text-center {
+/*.text-center {
     height: 79.6vh;
 }
 
@@ -229,12 +224,7 @@ body {
     background-position: center center;
     position: relative;
     background-size: contain;
-}
-
-.footer {
-    height: 70px;
-    padding-left: 10px;
-}
+}*/
 
 .map {
     width: 60%;
@@ -337,52 +327,10 @@ body {
 
 /*Toggle swither for dark mode*/
 
-#darkModeContainer {
-    display: inline-block;
-    float: right;
-    margin-right: 1%;
-}
 
-#switcherDarkMode {
-    opacity: 0;
-    position: absolute;
-}
-
-#labelDarkMode {
-    width: 50px;
-    /*height: 26px;*/
-    /*background-color: #111;*/
-    border: 1px solid var(--border-bg);
-    /*display: flex;*/
-    border-radius: 50px;
-    /*align-items: center;*/
-    justify-content: space-between;
-    padding: 5px;
-    /*position: relative;*/
-    transform: scale(1.2);
-    display: inline-flex;
-    /*flex-wrap: wrap;*/
-    cursor: pointer;
-}
-
-.ball {
-    width: 20px;
-    height: 20px;
-    background-color: var(--border-bg);
-    position: absolute;
-    top: 3px;
-    left: 2px;
-    border-radius: 50%;
-    transition: transform 0.2s linear;
-}
-
-/*  target the elemenent after the label*/
-#switcherDarkMode:checked + #labelDarkMode .ball {
-    transform: translateX(24px);
-}
 
 /*Dark mode*/
-.border-top, .border-bottom {
+/*.border-top, .border-bottom {
     border-color: var(--border-bg) !important;
 }
 
@@ -433,4 +381,4 @@ table, thead {
 
 .btn-sort:active {
     background-color: var(--btn-sort-active-bg);
-}
+}*/

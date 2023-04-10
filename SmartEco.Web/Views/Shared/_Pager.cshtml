@@ -9,28 +9,28 @@
     <ul class="pagination">
         @if (Model.Pager.PageNumber > 1)
         {
-            <li>
-                @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), 1))
+            <li class="page-item">
+                @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), 1), new { @class="page-link" })
             </li>
-            <li>
-                @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), Model.Pager.PageNumber - 1))
+            <li class="page-item">
+                @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), Model.Pager.PageNumber - 1), new { @class="page-link" })
             </li>
         }
 
         @for (var page = Model.Pager.StartPage; page <= Model.Pager.EndPage; page++)
         {
-            <li class="@(page == Model.Pager.PageNumber ? "active" : "")">
-                @Html.ActionLink(page.ToString(), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), page))
+            <li class="page-item @(page == Model.Pager.PageNumber ? "active" : "")">
+                @Html.ActionLink(page.ToString(), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), page), new { @class="page-link" })
             </li>
         }
 
         @if (Model.Pager.PageNumber < Model.Pager.TotalPages)
         {
-            <li>
-                @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), Model.Pager.PageNumber + 1))
+            <li class="page-item">
+                @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), Model.Pager.PageNumber + 1), new { @class="page-link" })
             </li>
-            <li>
-                @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), Model.Pager.TotalPages))
+            <li class="page-item">
+                @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", Model.BaseFilter.CloneSetValue(nameof(Pager.PageNumber), Model.Pager.TotalPages), new { @class="page-link" })
             </li>
         }
     </ul>

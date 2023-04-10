@@ -1,8 +1,74 @@
-﻿/*$body-bg: #b6ff00;
+﻿@import "../lib/bootstrap/scss/_functions.scss";
+// Default variable overrides
 
-@import "../lib/bootstrap/scss/bootstrap.scss";
+@import "../lib/bootstrap/scss/_variables.scss";
+@import "../lib/bootstrap/scss/_variables-dark.scss";
+@import "../lib/bootstrap/scss/_mixins.scss";
 
-[data-theme="dark"] {
-    $body-bg: #ff6a00;
+// Create own map
+$custom-colors: ( "pink": $pink );
+// Merge the maps
+$theme-colors: map-merge($theme-colors, $custom-colors);
+
+// Create custom button/button-outline
+.btn-pink {
+    @include button-variant($pink, darken($pink, 7.5%), darken($pink, 10%), lighten($pink,5%), lighten($pink, 10%), darken($pink,30%));
 }
-*/
+
+.btn-outline-pink {
+    @include button-outline-variant($pink, #222222, lighten($pink,5%), $pink);
+}
+
+// Transparent background label for autofill browser
+section {
+    div {
+        label{
+            &::after{
+                opacity: .0
+            }
+        }
+    }
+}
+
+// Colors header of table in light/dark mode
+@mixin table-header-background($thead-table-bg, $opacity: 1) {
+    background-color: rgba($thead-table-bg, $opacity);
+}
+
+[data-bs-theme=light] table {
+    thead {
+        @include table-header-background($gray-100);
+    }
+}
+
+[data-bs-theme=dark] table {
+    thead {
+        @include table-header-background($gray-800, .3);
+    }
+}
+
+//Center alignment of image and content (login, register)
+//Image on start page
+.text-center {
+    height: 79.6vh;
+}
+
+.image {
+    height: 100%;
+    width: 100%;
+    background: url(/images/SmartEcoLogo2.png) no-repeat;
+    background-position: center center;
+    position: relative;
+    background-size: contain;
+}
+
+// Footer style
+.footer {
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+    white-space: nowrap;
+    line-height: 60px;
+    padding-right: 1%;
+    padding-left: 1%;
+}
