@@ -62,11 +62,11 @@ namespace SmartEco.Web.Services.Directories
             return response.IsSuccessStatusCode;
         }
 
-        public static SelectList GetSelectListRoles(Role? role = null)
+        public static SelectList GetSelectListRoles(Role? selectedRole = null)
             => new(Enum.GetValues(typeof(Role)).Cast<Role>().Select(role => new SelectListItem 
             {
                 Text = role.ToString(),
                 Value = ((int)role).ToString()
-            }).ToList(), "Value", "Text", role);
+            }).ToList(), "Value", "Text", selectedRole);
     }
 }

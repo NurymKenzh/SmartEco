@@ -1,5 +1,4 @@
-﻿using Microsoft.AspNetCore.Cryptography.KeyDerivation;
-using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Mvc;
 using Microsoft.IdentityModel.Tokens;
 using SmartEco.API.Helpers;
 using SmartEco.API.Options;
@@ -10,6 +9,8 @@ using System.IdentityModel.Tokens.Jwt;
 using System.Security.Claims;
 using SmartEco.Common.Data.Entities;
 using SmartEco.Common.Models.Responses;
+using System.ComponentModel.DataAnnotations;
+using SmartEco.Common.Services;
 
 namespace SmartEco.API.Services
 {
@@ -31,10 +32,11 @@ namespace SmartEco.API.Services
             var email = personReq.Email;
             var password = personReq.Password;
 
-            string passwordHash = GetHash(password);
-            var person = await _repository.GetFirstOrDefault<Person>(p => p.Email.Equals(email) && p.PasswordHash == passwordHash);
+            var person = await _repository.GetFirstOrDefault<Person>(p => p.Email.Equals(email));
             if (person is null)
-                return (StatusCodes.Status400BadRequest, new() { Message = "Invalid username or password." });
+                return (StatusCodes.Status400BadRequest, new() { Message = "Invalid username." });
+            if (PasswordHasher.IsNotVerify(password, person.PasswordHash!))
+                return (StatusCodes.Status400BadRequest, new() { Message = "Invalid password." });
 
             var identity = GetIdentity(person);
             var encodedJwt = CreateToken(identity);
@@ -49,7 +51,7 @@ namespace SmartEco.API.Services
 
         public async Task<(int, AuthResponse)> Register(IUrlHelper urlHelper, string scheme, PersonRequest person)
         {
-            if (string.IsNullOrEmpty(person.Password) || person.Password.Length < 6)
+            if (person.Password.Length < 6)
                 return (StatusCodes.Status400BadRequest, new() { Message = $"The Password must be at least 6 characters long." });
 
             if (!IsValidEmail(person.Email))
@@ -59,22 +61,19 @@ namespace SmartEco.API.Services
                 return (StatusCodes.Status400BadRequest, new() { Message = $"User with {person.Email} email already exist." });
 
             var dateTime = DateTime.UtcNow.ToString();
-            string code = StringCipher.Encrypt(dateTime);
-            string email = StringCipher.Encrypt(person.Email);
-            string pass = StringCipher.Encrypt(person.Password);
             var callbackUrl = urlHelper.Action(
                 action: "ConfirmEmail",
                 controller: "Account",
                 values: new 
                 { 
-                    Code = code, 
-                    EmailСiphered = email, 
-                    PasswordСiphered = pass 
+                    Code = StringCipher.Encrypt(dateTime), 
+                    EmailСiphered = StringCipher.Encrypt(person.Email), 
+                    PasswordСiphered = StringCipher.Encrypt(person.Password)
                 },
                 protocol: scheme,
                 host: _configuration.GetValue<string>("EmailConfirmHost"))?.Replace("/api", "");
 
-            var isSended = await _emailService.SendAsync(new[] { person.Email }, "Confirm your account",
+            var isSended = await _emailService.SendAsync(new[] { person.Email }, "Confirm your SmartEco account",
                 $"Confirm your registration by clicking on the link: <a href='{callbackUrl}'>link to confirm</a>");
 
             return (StatusCodes.Status200OK, new()
@@ -103,64 +102,32 @@ namespace SmartEco.API.Services
             {
                 return (StatusCodes.Status400BadRequest, new() { Message = $"The link is invalid. Please try again." });
             }
-            else
+
+            var person = new Person
             {
-                var person = new Person
-                {
-                    Email = email,
-                    Password = password,
-                    Role = Role.User,
-                    PasswordHash = GetHash(password)
-                };
+                Email = email,
+                Password = password,
+                Role = Role.User,
+                PasswordHash = PasswordHasher.GetHash(password)
+            };
 
-                await _repository.Create(person);
+            await _repository.Create(person);
+            if (person.Id == default)
+                return (StatusCodes.Status400BadRequest, new() { Message = $"Failed to register. Please try again." });
 
-                var isPersonCreated = await _repository.IsAnyEntity<Person>(p => p.Email.Equals(person.Email) && p.PasswordHash == person.PasswordHash);
-                if (isPersonCreated is false)
-                    return (StatusCodes.Status400BadRequest, new() { Message = $"Failed to register. Please try again." });
-
-                var identity = GetIdentity(person);
-                var encodedJwt = CreateToken(identity);
-                return (StatusCodes.Status200OK, new()
-                {
-                    AccessToken = encodedJwt,
-                    Email = identity.Name,
-                    RoleId = person.RoleId,
-                    Role = person.Role.ToString(),
-                    Message = $"User {person.Email} successfully registered!"
-                });
-            }
+            var identity = GetIdentity(person);
+            var encodedJwt = CreateToken(identity);
+            return (StatusCodes.Status200OK, new()
+            {
+                AccessToken = encodedJwt,
+                Email = identity.Name,
+                RoleId = person.RoleId,
+                Role = person.Role.ToString(),
+                Message = $"User {person.Email} successfully registered!"
+            });
         }
 
-        public static string GetHash(string Password)
-        {
-            byte[] salt = new byte[128 / 8];
-            salt[0] = 1;
-            salt[1] = 6;
-            salt[2] = 1;
-            salt[3] = 4;
-            salt[4] = 23;
-            salt[5] = 123;
-            salt[6] = 56;
-            salt[7] = 6;
-            salt[8] = 65;
-            salt[9] = 89;
-            salt[10] = 3;
-            salt[11] = 12;
-            salt[12] = 1;
-            salt[13] = 76;
-            salt[14] = 122;
-            salt[15] = 54;
-            string hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password: Password,
-                salt: salt,
-                prf: KeyDerivationPrf.HMACSHA1,
-                iterationCount: 10000,
-                numBytesRequested: 256 / 8));
-            return hashed;
-        }
-
-        private ClaimsIdentity GetIdentity(Person person)
+        private static ClaimsIdentity GetIdentity(Person person)
         {
             var claims = new List<Claim>
                 {
@@ -171,22 +138,11 @@ namespace SmartEco.API.Services
         }
 
         private static bool IsValidEmail(string email)
-        {
-            try
-            {
-                var addr = new System.Net.Mail.MailAddress(email);
-                return addr.Address == email;
-            }
-            catch
-            {
-                return false;
-            }
-        }
+            => new EmailAddressAttribute().IsValid(email);
 
         private static string CreateToken(ClaimsIdentity identity)
         {
             var now = DateTime.UtcNow;
-            // создаем JWT-токен
             var jwt = new JwtSecurityToken(
                 issuer: AuthOptions.ISSUER,
                 audience: AuthOptions.AUDIENCE,

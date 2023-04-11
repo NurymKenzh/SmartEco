@@ -9,7 +9,6 @@ namespace SmartEco.API.Extensions
         {
             services.AddTransient<AuthService>();
             services.AddScoped(typeof(ICrudService<>), typeof(CrudService<>));
-            services.AddScoped<IEmailService, EmailService>();
             services.AddScoped<PersonFilteringService>();
         }
     }

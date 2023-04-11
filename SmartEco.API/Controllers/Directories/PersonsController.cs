@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SmartEco.API.Helpers;
 using SmartEco.API.Helpers.Attributes;
 using SmartEco.API.Models.Filters.Directories;
 using SmartEco.API.Services;
@@ -48,7 +49,7 @@ namespace SmartEco.API.Controllers.Directories
         private static Person CreateWithHash(Person person)
         {
             ArgumentNullException.ThrowIfNull(person, nameof(person));
-            person.PasswordHash = AuthService.GetHash(person.Password!);
+            person.PasswordHash = PasswordHasher.GetHash(person.Password!);
             return person;
         }
 

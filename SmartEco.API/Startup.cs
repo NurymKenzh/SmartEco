@@ -86,6 +86,7 @@ namespace SmartEco.API
             });
 
             services.RegisterRepository(Configuration);
+            services.AddEmailSender(Configuration);
             services.AddCustomServices();
         }
 
