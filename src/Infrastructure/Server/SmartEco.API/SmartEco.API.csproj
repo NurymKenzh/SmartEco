@@ -29,7 +29,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SmartEco.Common\SmartEco.Common.csproj" />
+    <ProjectReference Include="..\..\..\Common\SmartEco.Common\SmartEco.Common.csproj" />
   </ItemGroup>
 
 </Project>
