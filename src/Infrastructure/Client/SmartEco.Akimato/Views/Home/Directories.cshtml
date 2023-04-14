@@ -1,0 +1,103 @@
+﻿@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Directories"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+@*@if (Role == "admin" || Role == "moderator")
+    {
+        <a class="btn btn-outline-light" asp-controller="KATOes" asp-action="Index">@SharedLocalizer["KATOes"]</a>
+        <hr />
+        <a class="btn btn-outline-light" asp-controller="PollutionEnvironments" asp-action="Index">@SharedLocalizer["PollutionEnvironments"]</a>
+        <a class="btn btn-outline-light" asp-controller="MeasuredParameterUnits" asp-action="Index">@SharedLocalizer["MeasuredParameterUnits"]</a>
+        <a class="btn btn-outline-light" asp-controller="MeasuredParameters" asp-action="Index">@SharedLocalizer["MeasuredParameters"]</a>
+        <a class="btn btn-outline-light" asp-controller="DataProviders" asp-action="Index">@SharedLocalizer["DataProviders"]</a>
+        <br />
+        <a class="btn btn-outline-light" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+        <a class="btn btn-outline-light" asp-controller="Ecoposts" asp-action="Index">@SharedLocalizer["Ecoposts"]</a>
+        <a class="btn btn-outline-light" asp-controller="PollutionSources" asp-action="Index">@SharedLocalizer["PollutionSources"]</a>
+        <a class="btn btn-outline-light" asp-controller="Projects" asp-action="Index">@SharedLocalizer["Projects"]</a>
+        <a class="btn btn-outline-light" asp-controller="LEDScreens" asp-action="Index">@SharedLocalizer["LEDScreens"]</a>
+        <a class="btn btn-outline-light" asp-controller="AuthorizedAuthorities" asp-action="Index">@SharedLocalizer["AuthorizedAuthorities"]</a>
+        <a class="btn btn-outline-light" asp-controller="PlantationsTypes" asp-action="Index">@SharedLocalizer["PlantationsTypes"]</a>
+        <a class="btn btn-outline-light" asp-controller="PlantationsStateTypes" asp-action="Index">@SharedLocalizer["PlantationsStateTypes"]</a>
+        <a class="btn btn-outline-light" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+        <hr />
+        <a class="btn btn-outline-light" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+        <br />
+    }
+@if (Role == "KaragandaRegion")
+{
+    <a class="btn btn-outline-light" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+    <a class="btn btn-outline-light" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+    <hr />
+    <a class="btn btn-outline-light" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+}
+else if (Role == "Arys")
+{
+    <a class="btn btn-outline-light" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+}
+else if (Role == "Almaty")
+{
+    <a class="btn btn-outline-light" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+    <a class="btn btn-outline-light" asp-controller="Ecoposts" asp-action="Index">@SharedLocalizer["Ecoposts"]</a>
+    <a class="btn btn-outline-light" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+}
+else if (Role == "Shymkent")
+{
+    <a class="btn btn-outline-light" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+}*@
+
+@if (Role == "admin" || Role == "moderator")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="KATOes" asp-action="Index">@SharedLocalizer["KATOes"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PollutionEnvironments" asp-action="Index">@SharedLocalizer["PollutionEnvironments"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MeasuredParameterUnits" asp-action="Index">@SharedLocalizer["MeasuredParameterUnits"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MeasuredParameters" asp-action="Index">@SharedLocalizer["MeasuredParameters"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="DataProviders" asp-action="Index">@SharedLocalizer["DataProviders"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Ecoposts" asp-action="Index">@SharedLocalizer["Ecoposts"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PollutionSources" asp-action="Index">@SharedLocalizer["PollutionSources"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Projects" asp-action="Index">@SharedLocalizer["Projects"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="LEDScreens" asp-action="Index">@SharedLocalizer["LEDScreens"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="AuthorizedAuthorities" asp-action="Index">@SharedLocalizer["AuthorizedAuthorities"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PlantationsTypes" asp-action="Index">@SharedLocalizer["PlantationsTypes"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PlantationsStateTypes" asp-action="Index">@SharedLocalizer["PlantationsStateTypes"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+    </div>
+}
+else if (Role == "KaragandaRegion")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+    </div>
+}
+else if (Role == "Arys")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
+    </div>
+}
+else if (Role == "Almaty")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Ecoposts" asp-action="Index">@SharedLocalizer["Ecoposts"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="ReceptionRecyclingPoints" asp-action="Index">@SharedLocalizer["ReceptionRecyclingPoints"]</a>
+    </div>
+}
+else if (Role == "Shymkent")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
+    </div>
+}

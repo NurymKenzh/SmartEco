@@ -1,0 +1,412 @@
+﻿/* Please see documentation at https://docs.microsoft.com/aspnet/core/client-side/bundling-and-minification
+for details on configuring this project to bundle and minify static web assets. */
+
+a.navbar-brand {
+  white-space: normal;
+  text-align: center;
+  word-break: break-all;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  font-size: 14px;
+}
+@media (min-width: 768px) {
+  html {
+    font-size: 16px;
+  }
+}
+
+.border-top {
+  border-top: 1px solid #e5e5e5;
+}
+.border-bottom {
+  border-bottom: 1px solid #e5e5e5;
+}
+
+.box-shadow {
+  box-shadow: 0 .25rem .75rem rgba(0, 0, 0, .05);
+}
+
+button.accept-policy {
+  font-size: 1rem;
+  line-height: inherit;
+}
+
+/* Sticky footer styles
+-------------------------------------------------- */
+html {
+  position: relative;
+  min-height: 100%;
+}
+
+body {
+  /* Margin bottom by footer height */
+  margin-bottom: 60px;
+}
+.footer {
+  position: absolute;
+  bottom: 0;
+  width: 100%;
+  white-space: nowrap;
+  /* Set the fixed height of the footer here */
+  height: 60px;
+  line-height: 60px; /* Vertically center the text there */
+}
+
+
+/* pagination
+-------------------------------------------------- */
+.pagination {
+    display: inline-block;
+    padding-left: 0;
+    margin: 20px 0;
+    border-radius: 4px;
+}
+
+    .pagination > li {
+        display: inline;
+    }
+
+        .pagination > li > a,
+        .pagination > li > span {
+            position: relative;
+            float: left;
+            padding: 6px 12px;
+            margin-left: -1px;
+            line-height: 1.42857143;
+            color: #337ab7;
+            text-decoration: none;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+
+        .pagination > li:first-child > a,
+        .pagination > li:first-child > span {
+            margin-left: 0;
+            border-top-left-radius: 4px;
+            border-bottom-left-radius: 4px;
+        }
+
+        .pagination > li:last-child > a,
+        .pagination > li:last-child > span {
+            border-top-right-radius: 4px;
+            border-bottom-right-radius: 4px;
+        }
+
+        .pagination > li > a:hover,
+        .pagination > li > span:hover,
+        .pagination > li > a:focus,
+        .pagination > li > span:focus {
+            z-index: 2;
+            color: #23527c;
+            background-color: #eee;
+            border-color: #ddd;
+        }
+
+    .pagination > .active > a,
+    .pagination > .active > span,
+    .pagination > .active > a:hover,
+    .pagination > .active > span:hover,
+    .pagination > .active > a:focus,
+    .pagination > .active > span:focus {
+        z-index: 3;
+        color: #fff;
+        cursor: default;
+        background-color: #337ab7;
+        border-color: #337ab7;
+    }
+
+    .pagination > .disabled > span,
+    .pagination > .disabled > span:hover,
+    .pagination > .disabled > span:focus,
+    .pagination > .disabled > a,
+    .pagination > .disabled > a:hover,
+    .pagination > .disabled > a:focus {
+        color: #777;
+        cursor: not-allowed;
+        background-color: #fff;
+        border-color: #ddd;
+    }
+
+.pagination-lg > li > a,
+.pagination-lg > li > span {
+    padding: 10px 16px;
+    font-size: 18px;
+    line-height: 1.3333333;
+}
+
+.pagination-lg > li:first-child > a,
+.pagination-lg > li:first-child > span {
+    border-top-left-radius: 6px;
+    border-bottom-left-radius: 6px;
+}
+
+.pagination-lg > li:last-child > a,
+.pagination-lg > li:last-child > span {
+    border-top-right-radius: 6px;
+    border-bottom-right-radius: 6px;
+}
+
+.pagination-sm > li > a,
+.pagination-sm > li > span {
+    padding: 5px 10px;
+    font-size: 12px;
+    line-height: 1.5;
+}
+
+.pagination-sm > li:first-child > a,
+.pagination-sm > li:first-child > span {
+    border-top-left-radius: 3px;
+    border-bottom-left-radius: 3px;
+}
+
+.pagination-sm > li:last-child > a,
+.pagination-sm > li:last-child > span {
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+}
+
+/* custom style
+-------------------------------------------------- */
+.container {
+    width: 100%;
+    max-width: 100%;
+}
+
+.footer {
+    padding-right: 10px;
+}
+
+.nav-link {
+    border-width: 0px;
+}
+
+.text-center {
+    height: 79.6vh;
+}
+
+.image {
+    height: 100%;
+    width: 100%;
+    background: url(/images/ICMAOS.png) no-repeat;
+    background-position: center center;
+    position: relative;
+}
+
+.footer {
+    height: 70px;
+    padding-left: 10px;
+}
+
+.map {
+    width: 60%;
+    height: 100%;
+    float: left;
+}
+
+:-webkit-full-screen::backdrop {
+    background-color: #fff;
+}
+
+.sidepanel {
+    background: rgba(0, 0, 0, .05);
+    width: 20%;
+    height: 100%;
+    /*height: calc(100vh - 159px);*/
+    float: left;
+    padding: 10px;
+    overflow-y: auto;
+}
+
+.sidepanel-title {
+    width: 100%;
+    /*font-size: 3em;*/
+    /*color: #ffffff;*/
+    display: block;
+    /*text-align: center;*/
+}
+
+.sidepanel hr {
+    margin: 0;
+}
+
+.sidepanel input[type='checkbox'] {
+    margin-right: 5px;
+}
+
+.sidepanel input[type='range'] {
+    width: 100%;
+}
+
+.sidepanelRight-hide {
+    top: 4.5em;
+    right: .5em;
+}
+
+.sidepanelLeft-hide {
+    top: 4.5em;
+    left: .5em;
+}
+
+.info-input {
+    max-width: 150px;
+    display: inline;
+}
+
+.info-input-select {
+    max-width: 623px;
+}
+
+.dialog-info-content {
+    width: 100%;
+    height: 100%;
+}
+
+.dialog-info-tab-div {
+    width: 100%;
+    height: calc(100% - 44px);
+    overflow:auto;
+}
+
+.dialog-info-table {
+    width: 100%;
+    height: 100%;
+}
+
+.dialog-info-tab-table {
+    width: 100%;
+    height: calc(100% - 104px);
+    margin-top: 10px;
+}
+
+.btn-link-post{
+    padding: 0px;
+}
+
+.table-analytics {
+    text-align: right;
+}
+
+.analystScrollCheck {
+    overflow: auto;
+    height: 300px;
+}
+
+.btn-text-wrap {
+    white-space: normal !important;
+    word-wrap: break-word;
+}
+
+/* FOR DARK STYLE
+-------------------------------------------------- */
+
+a {
+    color: #ffc107 !important;
+}
+
+    a:hover {
+        color: #ffebaf !important;
+    }
+
+li > a:hover {
+    color: #ffebaf !important;
+    background-color: #343a40 !important;
+}
+
+.pagination > li > a {
+    background-color: #343a40 !important;
+}
+
+.pagination > .active > a,
+.pagination > .active > span, 
+.pagination > .active > a:hover, 
+.pagination > .active > span:hover, 
+.pagination > .active > a:focus, 
+.pagination > .active > span:focus {
+    background-color: #6c757d !important;
+    border-color: #6c757d !important;
+}
+
+.btn-outline-light {
+    margin-bottom: 1rem;
+}
+
+.image {
+    background-size: contain;
+}
+
+header > nav {
+    box-shadow: 0 0.25rem 0.35rem rgb(0 123 255 / 25%) !important;
+}
+
+footer {
+    border-top: 1px solid rgb(0 123 255 / 50%) !important
+}
+
+/* Links as button-tile */
+
+.tile {
+    width: 220px;
+    height: 220px;
+    font-weight: bold;
+    font-size: x-large;
+    display: inline-flex;
+    align-content: center;
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+.tile-container {
+    flex-wrap: wrap;
+    justify-content: center;
+}
+
+a.animated-button:link, a.animated-button:visited {
+    position: relative;
+    overflow: hidden;
+    text-shadow: 0 0 1px rgba(0, 0, 0, 0.2), 0 1px 0 rgba(0, 0, 0, 0.2);
+    -webkit-transition: all 1s ease;
+    -moz-transition: all 1s ease;
+    -o-transition: all 1s ease;
+    transition: all 1s ease;
+}
+
+    a.animated-button:link:after, a.animated-button:visited:after {
+        content: "";
+        position: absolute;
+        height: 0%;
+        left: 50%;
+        top: 50%;
+        width: 150%;
+        z-index: -1;
+        -webkit-transition: all 0.75s ease 0s;
+        -moz-transition: all 0.75s ease 0s;
+        -o-transition: all 0.75s ease 0s;
+        transition: all 0.75s ease 0s;
+    }
+
+    a.animated-button:link:hover, a.animated-button:visited:hover {
+        color: #FFF;
+        text-shadow: none;
+    }
+
+        a.animated-button:link:hover:after, a.animated-button:visited:hover:after {
+            height: 220px;
+            width: 220px;
+        }
+
+/* Victoria Buttons */
+
+a.animated-button.victoria-one {
+    border: 1px solid rgb(0 123 255 / 50%);
+}
+
+    a.animated-button.victoria-one:after {
+        background: rgb(0 123 255 / 25%);
+        -moz-transform: translateX(-50%) translateY(-50%);
+        -ms-transform: translateX(-50%) translateY(-50%);
+        -webkit-transform: translateX(-50%) translateY(-50%);
+        transform: translateX(-50%) translateY(-50%));
+    }

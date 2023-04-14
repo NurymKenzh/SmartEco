@@ -1,0 +1,266 @@
+﻿@model SmartEco.Akimato.Models.MonitoringPost
+
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Edit"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+
+<h1>@SharedLocalizer["Edit"]</h1>
+
+<h4>@SharedLocalizer["MonitoringPost"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" id="MonitoringPostId" />
+            <div class="form-group">
+                <label asp-for="Number" class="control-label"></label>
+                <input asp-for="Number" class="form-control" />
+                <span asp-validation-for="Number" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="TurnOnOff" class="control-label"></label>
+                <input asp-for="TurnOnOff" type="checkbox">
+            </div>
+            <div class="form-group">
+                <label asp-for="Automatic" class="control-label"></label>
+                <input asp-for="Automatic" type="checkbox">
+            </div>
+            <div class="form-group">
+                <div id="map" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div class="form-group">
+                <label asp-for="NorthLatitude" class="control-label"></label>
+                <input id="NorthLatitude" asp-for="NorthLatitude" class="form-control" onchange="ChangeCoordinates()" />
+                <span asp-validation-for="NorthLatitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EastLongitude" class="control-label"></label>
+                <input id="EastLongitude" asp-for="EastLongitude" class="form-control" onchange="ChangeCoordinates()" />
+                <span asp-validation-for="EastLongitude" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdditionalInformation" class="control-label"></label>
+                @*<input asp-for="AdditionalInformation" class="form-control" />*@
+                @Html.TextArea("AdditionalInformation", null, new { @class = "form-control", rows = 5 })
+                <span asp-validation-for="AdditionalInformation" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MN" class="control-label"></label>
+                <input asp-for="MN" class="form-control" />
+                <span asp-validation-for="MN" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PhoneNumber" class="control-label"></label>
+                <input asp-for="PhoneNumber" class="form-control" />
+                <span asp-validation-for="PhoneNumber" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="KazhydrometID" class="control-label"></label>
+                <input asp-for="KazhydrometID" class="form-control" />
+                <span asp-validation-for="KazhydrometID" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="DataProviderId" class="control-label"></label>
+                <select asp-for="DataProviderId" class="form-control" asp-items="ViewBag.DataProviders" id="DataProviderId" onchange="ChangeMeasuredParameters()"></select>
+                <span asp-validation-for="DataProviderId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PollutionEnvironmentId" class="control-label"></label>
+                <select asp-for="PollutionEnvironmentId" class="form-control" asp-items="ViewBag.PollutionEnvironments" id="PollutionEnvironmentId" onchange="ChangeMeasuredParameters()"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="ProjectId" class="control-label"></label>
+                <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.Projects"></select>
+            </div>
+            <table class="table">
+                <thead>
+                    <tr>
+                        <th>
+                            @SharedLocalizer["Sensors"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["MeasuredParameters"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["Minimum"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["Maximum"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["MinMeasuredValue"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["MaxMeasuredValue"]
+                        </th>
+                        <th>
+                            @SharedLocalizer["Coefficient"]
+                        </th>
+                    </tr>
+                </thead>
+                <tbody id="tableMeasuredParametersBody">
+                    @*@foreach (MonitoringPostMeasuredParameters item in ViewBag.MonitoringPostMeasuredParameters)
+                    {
+                        <tr>
+                            <td>
+                                <input type="checkbox" name="Sensors" class="form-control" value="@item.Id" checked=@item.Sensor>
+                            </td>
+                            <td>
+                                @item.MeasuredParameter.Name
+                            </td>
+                            <td>
+                                <input type="text" name="Minimum" value=@item.Min class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="Maximum" value=@item.Max class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="MinMeasuredValue" value=@item.MinMeasuredValue class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="MaxMeasuredValue" value=@item.MaxMeasuredValue class="form-control">
+                            </td>
+                            <td>
+                                <input type="text" name="Coefficient" value=@item.Coefficient class="form-control">
+                            </td>
+                        </tr>
+                    }*@
+                </tbody>
+            </table>
+            <div hidden="hidden">
+                @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
+                @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("NumberFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("NameFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("DataProviderIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("PollutionEnvironmentIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("MNFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["Save"]" class="btn btn-outline-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NumberFilter = ViewBag.NumberFilter, NameFilter = ViewBag.NameFilter, DataProviderIdFilter = ViewBag.DataProviderIdFilter, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, MNFilter = ViewBag.MNFilter })
+</div>
+
+@*@section Scripts {
+        @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+    }*@
+
+<script>
+    $.validator.methods.range = function (value, element, param) {
+        var globalizedValue = value.replace(",", ".");
+        return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+    }
+    $.validator.methods.number = function (value, element) {
+        return this.optional(element) || /-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+    }
+</script>
+
+<script type="text/javascript">
+    var source = new ol.source.Vector();
+    var layer = new ol.layer.Vector({
+        source: source
+    });
+
+    var map = new ol.Map({
+        target: 'map',
+        layers: [
+            new ol.layer.Tile({
+                source: new ol.source.OSM()
+            }),
+            layer
+        ],
+        view: new ol.View({
+            center: ol.proj.fromLonLat([68.291, 47.5172]),
+            zoom: 4
+        })
+    });
+
+    map.on('click', function (event) {
+        var coordinates = event.coordinate;
+        var thing = new ol.geom.Point(
+            coordinates
+        );
+        var featurething = new ol.Feature({
+            geometry: thing
+        });
+        source.clear();
+        source.addFeature(featurething);
+        $('#NorthLatitude').val(ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')[1].toString().replace('.', ','));
+        $('#EastLongitude').val(ol.proj.transform(coordinates, 'EPSG:3857', 'EPSG:4326')[0].toString().replace('.', ','));
+    });
+
+    function ChangeCoordinates() {
+        var coordinates = [parseFloat($('#EastLongitude').val().toString().replace(',', '.')), parseFloat($('#NorthLatitude').val().toString().replace(',', '.'))];
+        coordinates = ol.proj.transform(coordinates, 'EPSG:4326', 'EPSG:3857');
+        var thing = new ol.geom.Point(
+            [coordinates[0], coordinates[1]]
+        );
+        var featurething = new ol.Feature({
+            geometry: thing
+        });
+        source.clear();
+        source.addFeature(featurething);
+    };
+
+    function ChangeMeasuredParameters() {
+        $.ajax({
+            url: '@Url.Action("GetMeasuredParameters", "MonitoringPosts")',
+            data: {
+                DataProviderId: $('#DataProviderId').val(),
+                PollutionEnvironmentId: $('#PollutionEnvironmentId').val(),
+                MonitoringPostId: $('#MonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var htmlTable = '';
+                $.each(data.monitoringPostMeasuredParameters, function (i) {
+                    var checked = '';
+                    if (data.monitoringPostMeasuredParameters[i].sensor == true) {
+                        checked = ' checked=true';
+                    }
+                    htmlTable += '<tr>';
+                    htmlTable +=
+                        '<td><input type="checkbox" name="Sensors" class="form-control" value="' + data.monitoringPostMeasuredParameters[i].id + '"' + checked + '></td > ' +
+                        '<td>' + data.monitoringPostMeasuredParameters[i].measuredParameter.name + '</td>' +
+                        '<td><input type="text" name="Minimum" value="' + (data.monitoringPostMeasuredParameters[i].min != null ? data.monitoringPostMeasuredParameters[i].min : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="Maximum" value="' + (data.monitoringPostMeasuredParameters[i].max != null ? data.monitoringPostMeasuredParameters[i].max : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="MinMeasuredValue" value="' + (data.monitoringPostMeasuredParameters[i].minMeasuredValue != null ? data.monitoringPostMeasuredParameters[i].minMeasuredValue : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="MaxMeasuredValue" value="' + (data.monitoringPostMeasuredParameters[i].maxMeasuredValue != null ? data.monitoringPostMeasuredParameters[i].maxMeasuredValue : '') + '" class="form-control"></td>' +
+                        '<td><input type="text" name="Coefficient" value="' + (data.monitoringPostMeasuredParameters[i].coefficient != null ? data.monitoringPostMeasuredParameters[i].coefficient : '') + '" class="form-control"></td>';
+                    htmlTable += '</tr>';
+                });
+                $('#tableMeasuredParametersBody').empty();
+                $('#tableMeasuredParametersBody').append(htmlTable);
+            },
+            error: function () {
+            }
+        })
+    }
+
+    $(document).ready(function () {
+        ChangeCoordinates();
+        ChangeMeasuredParameters();
+    });
+</script>
+

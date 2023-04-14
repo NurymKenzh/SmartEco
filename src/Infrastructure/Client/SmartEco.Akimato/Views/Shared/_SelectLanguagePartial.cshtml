@@ -1,0 +1,135 @@
+﻿@using SmartEco.Akimato.Controllers
+@using Microsoft.AspNetCore.Builder
+@using Microsoft.AspNetCore.Localization
+@using Microsoft.Extensions.Options
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@inject IOptions<RequestLocalizationOptions> LocOptions
+@{
+    var requestCulture = Context.Features.Get<IRequestCultureFeature>();
+    var cultureItems = new List<SelectListItem>
+{
+new SelectListItem(){ Value = "kk", Text = "Қазақ", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "kk" },
+new SelectListItem(){ Value = "ru", Text = "Русский", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "ru" },
+new SelectListItem(){ Value = "en", Text = "English", Selected = requestCulture.RequestCulture.Culture.TwoLetterISOLanguageName == "en" }
+};
+    var returnUrl = string.IsNullOrEmpty(Context.Request.Path) ? "~/" : $"~{Context.Request.Path.Value + Context.Request.QueryString.Value}";
+}
+
+@*<div title="Request culture provider: @requestCulture?.Provider?.GetType().Name" style="display: inline-block; float: right;">
+        <form id="selectLanguage" asp-controller="Home" asp-action="SetLanguage" asp-route-returnUrl="@returnUrl" method="post" class="form-horizontal" role="form">
+            <label class="menu language-label" asp-for="@requestCulture.RequestCulture.UICulture.Name">@SharedLocalizer["Language"]:</label>
+            <select class="language-select" name="culture" onchange="this.form.submit();" asp-for="@requestCulture.RequestCulture.UICulture.Name" asp-items="cultureItems"></select>
+        </form>
+    </div>*@
+
+<!-- Languages dropdown    -->
+<li class="nav-fill dropdown dropup" style="display: inline-block; float: right;">
+    <a id="languages" rel="nofollow" data-target="#" href="#" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false" class="dropdown-toggle" style="visibility:hidden"><span id="spanMain" class="d-none d-sm-inline-block">Русский</span></a>
+    <ul aria-labelledby="languages" class="dropdown-menu dropdown-menu-right bg-dark" style="min-width: 0.8em;">
+        <li><a id="lang2" rel="nofollow" href="#" class="dropdown-item">English</a></li>
+        <li><a id="lang3" rel="nofollow" href="#" class="dropdown-item">Қазақ</a></li>
+    </ul>
+</li>
+
+<script>
+        $("#lang2").on('click', function () {
+            var culture = "";
+            if (document.getElementById("lang2").lastChild.data == "English") {
+                culture = "en";
+
+                sessionStorage.setItem('span', 'English');
+
+                sessionStorage.setItem('lang2', 'Русский');
+
+                sessionStorage.setItem('lang3', 'Қазақ');
+            }
+            if (document.getElementById("lang2").lastChild.data == "Русский") {
+                culture = "ru";
+
+                sessionStorage.setItem('span', 'Русский');
+
+                sessionStorage.setItem('lang2', 'English');
+
+                sessionStorage.setItem('lang3', 'Қазақ');
+            }
+            var returnUrl = "";
+            if ('@string.IsNullOrEmpty(Context.Request.Path)') {
+                returnUrl = "~/";
+            }
+            else {
+                returnUrl = "$~" + '@Context.Request.Path.Value' + '@Context.Request.QueryString.Value';
+            }
+            $.ajax({
+                url: '@Url.Action("SetLanguage", "Home")',
+                data: {
+                    culture: culture,
+                    returnUrl: returnUrl
+                },
+                type: 'POST',
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                }
+            });
+        });
+        $("#lang3").on('click', function () {
+            var culture = "";
+            if (document.getElementById("lang3").lastChild.data == "Қазақ") {
+                culture = "kk";
+
+                sessionStorage.setItem('span', 'Қазақ');
+
+                sessionStorage.setItem('lang2', 'Русский');
+
+                sessionStorage.setItem('lang3', 'English');
+            }
+            if (document.getElementById("lang3").lastChild.data == "English") {
+                culture = "en";
+
+                sessionStorage.setItem('span', 'English');
+
+                sessionStorage.setItem('lang2', 'Русский');
+
+                sessionStorage.setItem('lang3', 'Қазақ');
+            }
+            var returnUrl = "";
+            if ('@string.IsNullOrEmpty(Context.Request.Path)') {
+                returnUrl = "~/";
+            }
+            else {
+                returnUrl = "$~" + '@Context.Request.Path.Value' + '@Context.Request.QueryString.Value';
+            }
+            $.ajax({
+                url: '@Url.Action("SetLanguage", "Home")',
+                data: {
+                    culture: culture,
+                    returnUrl: returnUrl
+                },
+                type: 'POST',
+                success: function (data) {
+                    window.location.reload();
+                },
+                error: function () {
+                }
+            });
+            //culture = "kk";
+            //$("#selectLanguage").submit();
+        });
+</script>
+
+<script>
+    $(document).ready(function () {
+        if (sessionStorage.getItem('span') != null) {
+            document.getElementById("spanMain").innerText = sessionStorage.getItem('span');
+        }
+        if (sessionStorage.getItem('lang2') != null) {
+            document.getElementById("lang2").lastChild.data = sessionStorage.getItem('lang2');
+        }
+        if (sessionStorage.getItem('lang3') != null) {
+            document.getElementById("lang3").lastChild.data = sessionStorage.getItem('lang3');
+        }
+        document.getElementById("languages").style.visibility = "visible";
+    });
+</script>

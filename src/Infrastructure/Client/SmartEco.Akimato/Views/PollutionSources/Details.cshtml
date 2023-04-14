@@ -1,0 +1,170 @@
+﻿@model SmartEco.Akimato.Models.PollutionSource
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Details"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+<script src="~/lib/jquery/dist/jquery.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
+<script src="~/lib/chart.js/dist/Chart.js"></script>
+<h1>@SharedLocalizer["Details"]</h1>
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+<div>
+    <h4 id="PollutionSource">@SharedLocalizer["PollutionSource"]</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NorthLatitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NorthLatitude)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.EastLongitude)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.EastLongitude)
+        </dd>
+        <dt class="col-sm-2">
+            @SharedLocalizer["Pollutant"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DropDownList("PollutantId", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control", @id = "PollutantId", @onchange = "GetPollutionSourceDatas()" })
+        </dd>
+        <dt class="col-sm-2" id="DateTime">
+            @SharedLocalizer["DateTime"]
+        </dt>
+        <dd class="col-sm-10">
+            @Html.TextBox("DateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control", @id = "DateFrom", @onchange = "GetPollutionSourceDatas()" })
+            @Html.TextBox("TimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control", @id = "TimeFrom", @onchange = "GetPollutionSourceDatas()" })
+            -
+            @Html.TextBox("DateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control", @id = "DateTo", @onchange = "GetPollutionSourceDatas()" })
+            @Html.TextBox("TimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control", @id = "TimeTo", @onchange = "GetPollutionSourceDatas()" })
+        </dd>
+        <dt class="col-sm-2">
+            @SharedLocalizer["Chart"]
+        </dt>
+        <dd class="col-sm-10">
+            <canvas id="chartPollutionSourceDatas"></canvas>
+        </dd>
+    </dl>
+</div>
+@if (Role == "admin" || Role == "moderator")
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = Model.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameFilter = ViewBag.NameFilter }) |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameFilter = ViewBag.NameFilter })
+    </div>
+}
+else
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameFilter = ViewBag.NameFilter })
+    </div>
+}
+<div hidden="hidden">
+    <input id="PollutionSourceId" value="@Model.Id" />
+    <input id="Value" value="@SharedLocalizer["Value"]" />
+</div>
+<script>
+    function GetPollutionSourceDatas() {
+        $.ajax({
+            url: '@Url.Action("GetPollutionSourceDatas")',
+            data: {
+                PollutantId: $('#PollutantId').val(),
+                PollutionSourceId: $('#PollutionSourceId').val(),
+                DateFrom: $('#DateFrom').val(),
+                TimeFrom: $('#TimeFrom').val(),
+                DateTo: $('#DateTo').val(),
+                TimeTo: $('#TimeTo').val(),
+            },
+            type: 'POST',
+            success: function (data) {
+                ChangeChart(data);
+            },
+            error: function () {
+                //alert('Error');
+            }
+        })
+    }
+    var ChartPollutionSourceDatas = null;
+    function ChangeChart(data) {
+        if (ChartPollutionSourceDatas != null) {
+            ChartPollutionSourceDatas.destroy();
+        }
+        var ctx1 = document.getElementById("chartPollutionSourceDatas").getContext('2d');
+        var data1 = [];
+        for (var i = 0; i < data.pollutionsourcedatas.length; i++) {
+            data1.push({
+                'x': moment(data.pollutionsourcedatas[i].dateTime),
+                'y': data.pollutionsourcedatas[i].value
+            });
+        }
+        ChartPollutionSourceDatas = new Chart(ctx1, {
+            type: 'scatter',
+            data: {
+                datasets: [{
+                    label: $("#PollutantId option:selected").text(),
+                    data: data1,
+                    backgroundColor: 'rgba(85,255,0,1)',
+                    borderColor: 'rgba(85,255,0,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                }]
+            },
+            options: {
+                spanGaps: true,
+                title: {
+                    display: true,
+                    text: $("#PollutionSource0").text()
+                },
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        time: {
+                            displayFormats: {
+                                second: 'lll',
+                                minute: 'lll',
+                                hour: 'lll',
+                                day: 'lll',
+                                week: 'lll',
+                                month: 'lll',
+                                quarter: 'lll',
+                                year: 'lll',
+                            }
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#DateTime").text()
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#Value").val()
+                        }
+                    }]
+                }
+            }
+        });
+    }
+    $(document).ready(function () {
+        GetPollutionSourceDatas();
+    });
+</script>

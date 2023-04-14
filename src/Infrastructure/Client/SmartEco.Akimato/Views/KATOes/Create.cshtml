@@ -1,0 +1,75 @@
+﻿@model SmartEco.Akimato.Models.KATO
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Create"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Create"]</h1>
+
+<h4>@SharedLocalizer["KATO"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Code" class="control-label"></label>
+                <input asp-for="Code" class="form-control" />
+                <span asp-validation-for="Code" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Level" class="control-label"></label>
+                <input asp-for="Level" class="form-control" />
+                <span asp-validation-for="Level" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AreaType" class="control-label"></label>
+                <input asp-for="AreaType" class="form-control" />
+                <span asp-validation-for="AreaType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="EgovId" class="control-label"></label>
+                <input asp-for="EgovId" class="form-control" />
+                <span asp-validation-for="EgovId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="ParentEgovId" class="control-label"></label>
+                <input asp-for="ParentEgovId" class="form-control" />
+                <span asp-validation-for="ParentEgovId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NameKK" class="control-label"></label>
+                <input asp-for="NameKK" class="form-control" />
+                <span asp-validation-for="NameKK" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="NameRU" class="control-label"></label>
+                <input asp-for="NameRU" class="form-control" />
+                <span asp-validation-for="NameRU" class="text-danger"></span>
+            </div>
+            <div hidden="hidden">
+                @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
+                @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("CodeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("LevelFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("NameKKFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("NameRUFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["Create"]" class="btn btn-outline-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, CodeFilter = ViewBag.CodeFilter, LevelFilter = ViewBag.LevelFilter, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}

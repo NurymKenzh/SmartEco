@@ -1,0 +1,157 @@
+﻿@using System.Net
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["PostAnalyticsAlmaty"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/css/bootstrap-select.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-select/1.13.1/js/bootstrap-select.min.js"></script>
+
+<style>
+    a{
+        color: black!important;
+    }
+</style>
+
+<h1>@SharedLocalizer["PostAnalyticsAlmaty"]</h1>
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="PostAnalyticsAlmaty">
+            <div class="form-group">
+                @Html.TextBox("DateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "DateTimeFrom" })
+                -
+                @Html.TextBox("DateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "DateTimeTo" })
+            </div>
+
+            <div hidden="hidden">
+                <input id="TimeFrom" name="TimeFrom" type="text" value="@ViewBag.TimeFrom" />
+                <input id="TimeTo" name="TimeTo" type="text" value="@ViewBag.TimeTo" />
+            </div>
+
+            <div>
+                <p>Clarity:</p>
+                <select id="CheckBoxClarityList" class="form-group selectpicker" name="MonitoringPostsId"
+                        multiple
+                        data-live-search="true"
+                        data-live-search-style="contains"
+                        data-actions-box="true"
+                        data-select-all-text="Выбрать все"
+                        data-deselect-all-text="Отменить все"
+                        data-none-selected-text="Ничего не выбрано"
+                        data-none-results-text="Нет подходящих результатов для {0}"
+                        data-selected-text-format="count"
+                        data-count-selected-text="{0} выбрано"
+                        data-size="10">
+                    @*Selection of posts for analytics*@
+                </select>
+            </div>
+
+            <div>
+                <p>Ecoservice:</p>
+                <select id="CheckBoxEcoserviceList" class="form-group selectpicker" name="MonitoringPostsId"
+                        multiple
+                        data-live-search="true"
+                        data-live-search-style="contains"
+                        data-actions-box="true"
+                        data-select-all-text="Выбрать все"
+                        data-deselect-all-text="Отменить все"
+                        data-none-selected-text="Ничего не выбрано"
+                        data-none-results-text="Нет подходящих результатов для {0}"
+                        data-selected-text-format="count"
+                        data-count-selected-text="{0} выбрано"
+                        data-size="10">
+                    @*Selection of posts for analytics*@
+                </select>
+            </div>
+
+            <div>
+                <p>Kazhydromet:</p>
+                <select id="CheckBoxKazhydrometList" class="form-group selectpicker" name="MonitoringPostsId"
+                        multiple
+                        data-live-search="true"
+                        data-live-search-style="contains"
+                        data-actions-box="true"
+                        data-select-all-text="Выбрать все"
+                        data-deselect-all-text="Отменить все"
+                        data-none-selected-text="Ничего не выбрано"
+                        data-none-results-text="Нет подходящих результатов для {0}"
+                        data-selected-text-format="count"
+                        data-count-selected-text="{0} выбрано"
+                        data-size="10">
+                    @*Selection of posts for analytics*@
+                </select>
+            </div>
+
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["SendExcel"]" class="btn btn-outline-primary" onclick="ExcelFormation()" />
+            </div>
+        </form>
+        <div id="ExcelFormationBlock">
+            <p id="TextExcelFormation">@ViewBag.ExcelSent</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('select').selectpicker();
+
+    function ExcelFormation() {
+        var excelFormationBlock = document.getElementById('ExcelFormationBlock');
+        $('#TextExcelFormation').text("Формирование Excel-файла...");
+    }
+
+    function GetMonitoringPosts() {
+        $.ajax({
+            url: '@Url.Action("GetMonitoringPosts", "Analytics")',
+            data: {
+                projectName: "Almaty",
+                akimato: true
+            },
+            type: 'POST',
+            success: function (data) {
+                $('#CheckBoxClarityList').empty();
+                $('#CheckBoxEcoserviceList').empty();
+                $('#CheckBoxKazhydrometList').empty();
+                $.each(data, function (i) {
+                    var name = data[i].additionalInformation != null ? data[i].additionalInformation : data[i].name;
+                    if (data[i].dataProviderId == 4) {
+                        $('#CheckBoxClarityList').append($('<option>', {
+                            value: data[i].id,
+                            text: name
+                        }));
+                    }
+                    if (data[i].dataProviderId == 3) {
+                        $('#CheckBoxEcoserviceList').append($('<option>', {
+                            value: data[i].id,
+                            text: name
+                        }));
+                    }
+                    if (data[i].dataProviderId == 1) {
+                        $('#CheckBoxKazhydrometList').append($('<option>', {
+                            value: data[i].id,
+                            text: name
+                        }));
+                    }
+                });
+                $('#CheckBoxClarityList').selectpicker('refresh');
+                $('#CheckBoxEcoserviceList').selectpicker('refresh');
+                $('#CheckBoxKazhydrometList').selectpicker('refresh');
+            },
+            error: function () {
+            }
+        })
+    }
+</script>
+
+@* window.onload *@
+<script>
+    window.onload = function start() {
+        GetMonitoringPosts();
+    }
+</script>

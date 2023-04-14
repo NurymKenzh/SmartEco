@@ -46,7 +46,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEco.Common.Data", "src
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Common", "Common", "{0383E471-43DE-4BF7-B70B-C2AF237B9A0F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SmartEco.Common.Test", "tests\Common\SmartEco.Common.Test\SmartEco.Common.Test.csproj", "{E4265505-B99E-4A7D-B659-E204F5686904}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEco.Common.Test", "tests\Common\SmartEco.Common.Test\SmartEco.Common.Test.csproj", "{E4265505-B99E-4A7D-B659-E204F5686904}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEcoAPI.Akimato", "src\Infrastructure\Server\SmartEcoAPI.Akimato\SmartEcoAPI.Akimato.csproj", "{0E24E4FD-D05E-41BB-8933-6EFB3120F1AB}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEco.Akimato", "src\Infrastructure\Client\SmartEco.Akimato\SmartEco.Akimato.csproj", "{CF8F01CE-8B90-4E58-8545-BC90257489D9}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clarity", "src\Infrastructure\Services\Clarity\Clarity.csproj", "{71DBF7B0-C906-491B-9E68-1134508AA2DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -102,6 +108,18 @@ Global
 		{E4265505-B99E-4A7D-B659-E204F5686904}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{E4265505-B99E-4A7D-B659-E204F5686904}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{E4265505-B99E-4A7D-B659-E204F5686904}.Release|Any CPU.Build.0 = Release|Any CPU
+		{0E24E4FD-D05E-41BB-8933-6EFB3120F1AB}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{0E24E4FD-D05E-41BB-8933-6EFB3120F1AB}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{0E24E4FD-D05E-41BB-8933-6EFB3120F1AB}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{0E24E4FD-D05E-41BB-8933-6EFB3120F1AB}.Release|Any CPU.Build.0 = Release|Any CPU
+		{CF8F01CE-8B90-4E58-8545-BC90257489D9}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CF8F01CE-8B90-4E58-8545-BC90257489D9}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CF8F01CE-8B90-4E58-8545-BC90257489D9}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CF8F01CE-8B90-4E58-8545-BC90257489D9}.Release|Any CPU.Build.0 = Release|Any CPU
+		{71DBF7B0-C906-491B-9E68-1134508AA2DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{71DBF7B0-C906-491B-9E68-1134508AA2DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{71DBF7B0-C906-491B-9E68-1134508AA2DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{71DBF7B0-C906-491B-9E68-1134508AA2DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -125,6 +143,9 @@ Global
 		{24BEAA5A-EB6C-4FAC-95E9-3303AC74FFA0} = {E9350196-710A-49D7-83F8-D50E7C70EB46}
 		{0383E471-43DE-4BF7-B70B-C2AF237B9A0F} = {5F0E3EA3-B0EB-4685-951A-CAFA29961304}
 		{E4265505-B99E-4A7D-B659-E204F5686904} = {0383E471-43DE-4BF7-B70B-C2AF237B9A0F}
+		{0E24E4FD-D05E-41BB-8933-6EFB3120F1AB} = {EC8FDAF7-158B-4791-B4C1-92E69339AD5A}
+		{CF8F01CE-8B90-4E58-8545-BC90257489D9} = {81CDA0CE-BB67-4D62-B050-DE8D8F2CDA9B}
+		{71DBF7B0-C906-491B-9E68-1134508AA2DF} = {CAE7D6E1-74F1-4B09-A139-DE3DBFD3FC33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {726BEB27-F4C8-43AD-8112-7A9DCB2D6D0F}

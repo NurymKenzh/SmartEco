@@ -1,0 +1,58 @@
+﻿@using System.Net
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Analytics"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+    string Token = Context.Session.GetString("Token");
+}
+@*@if (Role == "admin" || Role == "moderator")
+    {
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="EcoserviceMonitoringPosts">@SharedLocalizer["EcoserviceMonitoringPosts"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="ComparisonMeasuredParameters">@SharedLocalizer["ComparisonMeasuredParameters"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="PostAnalytics">@SharedLocalizer["PostAnalytics"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="PostAnalyticsAlmaty">@SharedLocalizer["PostAnalyticsAlmaty"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="AllMonitoringPosts">@SharedLocalizer["AllMonitoringPosts"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="CalcAirPollutantModel">@SharedLocalizer["AirPollutantModel"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="ComparisonTargetValue">@SharedLocalizer["ComparisonTargetValue"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="ZhanatasEcoserviceMonitoringPosts">@SharedLocalizer["ZhanatasEcoserviceMonitoringPosts"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="PostAnalyticsZhanatas">@SharedLocalizer["PostAnalyticsZhanatas"]</a>
+    }
+    else if (Role == "KaragandaRegion")
+    {
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="EcoserviceMonitoringPosts">@SharedLocalizer["EcoserviceMonitoringPosts"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="ComparisonMeasuredParameters">@SharedLocalizer["ComparisonMeasuredParameters"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="PostAnalytics">@SharedLocalizer["PostAnalytics"]</a>
+    }
+    else if (Role == "Almaty")
+    {
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="PostAnalyticsAlmaty">@SharedLocalizer["PostAnalyticsAlmaty"]</a>
+
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="ComparisonTargetValue">@SharedLocalizer["ComparisonTargetValue"]</a>
+    }
+    else if (Role == "Zhanatas")
+    {
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="ZhanatasEcoserviceMonitoringPosts">@SharedLocalizer["ZhanatasEcoserviceMonitoringPosts"]</a>
+        <a class="btn btn-outline-light" asp-controller="Analytics" asp-action="PostAnalyticsZhanatas">@SharedLocalizer["PostAnalyticsZhanatas"]</a>
+    }*@
+
+@if (!string.IsNullOrEmpty(Token))
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Analytics" asp-action="PostAnalyticsAlmaty">@SharedLocalizer["PostAnalyticsAlmaty"]</a>
+    </div>
+}

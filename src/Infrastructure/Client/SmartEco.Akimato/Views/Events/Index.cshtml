@@ -1,0 +1,172 @@
+﻿@model IEnumerable<SmartEco.Akimato.Models.Event>
+@using System.Net
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["Events"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Events"]</h1>
+
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent" || Role == "KaragandaRegion")
+{
+    <p>
+        @Html.ActionLink(SharedLocalizer["Create"], "Create", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+    </p>
+}
+@using (Html.BeginForm("Index", "Events", new { SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = ViewBag.SortOrder })
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                    new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table table-hover">
+        <thead>
+            <tr>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().NameKK).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameKKSort, NameKKFilter = ViewBag.NameKKFilter })
+                    <br />
+                    @Html.Editor("NameKKFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().NameRU).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameRUSort, NameRUFilter = ViewBag.NameRUFilter })
+                    <br />
+                    @Html.Editor("NameRUFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().NameEN).ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.NameENSort, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                    <br />
+                    @Html.Editor("NameENFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    <th>
+                        @Html.ActionLink(Html.DisplayNameFor(c => c.ToList().FirstOrDefault().ProjectId).ToString(), "Index",
+                            new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.ProjectSort, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                        <br />
+                        @Html.DropDownList("ProjectIdFilter", (IEnumerable<SelectListItem>)ViewBag.Projects, "", htmlAttributes: new { @class = "form-control" })
+                    </th>
+                }
+                <th>
+                    @Html.DropDownList("PageSize", (IEnumerable<SelectListItem>)ViewBag.PageSizeList, htmlAttributes: new { @class = "form-control" })
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-outline-light">
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NameKK)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NameRU)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.NameEN)
+                    </td>
+                    @if (Role == "admin" || Role == "moderator")
+                    {
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Project.Name)
+                        </td>
+                    }
+                    @if (Role == "admin" || Role == "moderator" || Role == "Almaty" || Role == "Shymkent" || Role == "KaragandaRegion")
+                    {
+                        <td>
+                            @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter }) |
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter }) |
+                            @Html.ActionLink(SharedLocalizer["Delete"], "Delete", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (ViewBag.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (ViewBag.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber - 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+            }
+
+            @for (var page = (int)ViewBag.StartPage; page <= (int)ViewBag.EndPage; page++)
+            {
+                <li class="@(page == ViewBag.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = page, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+            }
+
+            @if (ViewBag.PageNumber < ViewBag.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.PageNumber + 1, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index",
+                        new { PageSize = ViewBag.PageSize, PageNumber = ViewBag.TotalPages, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, NameENFilter = ViewBag.NameENFilter, ProjectIdFilter = ViewBag.ProjectIdFilter })
+                </li>
+            }
+        </ul>
+    }
+}

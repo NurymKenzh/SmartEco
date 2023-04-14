@@ -1,0 +1,80 @@
+﻿@model SmartEco.Akimato.Models.TreesByFacilityManagementMeasuresList
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["Delete"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Delete"]</h1>
+
+<h3>@SharedLocalizer["Delete"]?</h3>
+<div>
+    <h4>@SharedLocalizer["TreesByFacilityManagementMeasuresList"]</h4>
+    <hr />
+    <dl class="row">
+        <dt>
+            @Html.DisplayNameFor(model => model.GreemPlantsPassport)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.GreemPlantsPassport.GreenObject)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.PlantationsType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.PlantationsType.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.BusinessEventsPlantationsType)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.BusinessEventsPlantationsType.Name)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SanitaryPruning)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SanitaryPruning)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.CrownFormation)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.CrownFormation)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.SanitaryFelling)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.SanitaryFelling)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.MaintenanceWork)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.MaintenanceWork)
+        </dd>
+        <dt>
+            @Html.DisplayNameFor(model => model.Quantity)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Quantity)
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div hidden="hidden">
+            @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
+            @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("GreemPlantsPassportIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("PlantationsTypeIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </div>
+        <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-outline-danger" /> |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, GreemPlantsPassportIdFilter = ViewBag.GreemPlantsPassportIdFilter, PlantationsTypeIdFilter = ViewBag.PlantationsTypeIdFilter })
+    </form>
+</div>

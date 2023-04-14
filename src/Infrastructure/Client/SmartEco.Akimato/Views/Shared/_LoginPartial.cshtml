@@ -1,0 +1,81 @@
+@using Microsoft.AspNetCore.Identity
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@inject SignInManager<IdentityUser> SignInManager
+@inject UserManager<IdentityUser> UserManager
+
+<ul class="nav navbar-nav navbar-right">
+    <li class="nav-item user" style="display: none;">
+        <a id="usera" class="nav-link text-light"></a>
+    </li>
+    <li class="nav-item user" style="display: none;">
+        <button id="logOut" class="nav-link btn btn-link text-light">@SharedLocalizer["LogOut"]</button>
+    </li>
+
+    <li class="nav-item login" style="display: none;">
+            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Register">@SharedLocalizer["Register"]</a>
+    </li>
+
+    @*@if (Context.Request.Path != "/Maps/AlmatyFree")
+    {
+        <li class="nav-item login" style="display: none;">
+            <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Register">@SharedLocalizer["Register"]</a>
+        </li>
+    }
+    <li class="nav-item login" style="display: none;">
+        <a class="nav-link text-light" asp-area="" asp-controller="Account" asp-action="Login">@SharedLocalizer["SignIn"]</a>
+    </li>*@
+</ul>
+@{
+    bool server = Convert.ToBoolean(Startup.Configuration["Server"]);
+    string APIUrl = server ? Startup.Configuration["APIUrlServerGlobal"] : Startup.Configuration["APIUrlDebug"];
+}
+<script>
+    var tokenKey = "accessToken";
+    $(document).ready(function() {
+        $.ajax({
+            type: 'GET',
+            url: '@APIUrl' + 'api/Account/GetEmail',
+            beforeSend: function (xhr) {
+                var token = sessionStorage.getItem(tokenKey);
+                xhr.setRequestHeader("Authorization", "Bearer " + token);
+            },
+            success: function (data) {
+                if (data != null) {
+                    $('#usera').html(data);
+                    $('.user').show();
+                    $('.login').hide();
+                }
+                else {
+                    $('.login').show();
+                    $('.user').remove();
+                }
+            },
+            fail: function (data) {
+                $('.login').show();
+                $('.user').hide();
+            }
+        });
+    });
+
+    $('#logOut').click(function (e) {
+        e.preventDefault();
+        $('.login').show();
+        $('.user').hide();
+        sessionStorage.removeItem(tokenKey);
+        $.ajax({
+            type: 'POST',
+            url: '@Url.Action("SetToken", "Account")',
+            data: {
+                Token: "",
+                Role: ""
+            },
+            success: function (data) {
+                window.location.href = "/";
+            },
+            error: function () {
+            }
+        })
+    });
+</script>

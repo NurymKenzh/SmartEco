@@ -1,0 +1,315 @@
+﻿@model SmartEco.Akimato.Models.TargetValue
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["Create"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+<div hidden="hidden">
+    <input id="Delete" type="text" value="@SharedLocalizer["Delete"]" />
+</div>
+
+<h1>@SharedLocalizer["Create"]</h1>
+
+<h4>@SharedLocalizer["TargetValue"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="All" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Target.PollutionEnvironmentId" class="control-label"></label>
+                <select id="PollutionEnvironmentId" asp-for="Target.PollutionEnvironmentId" class="form-control" asp-items="ViewBag.PollutionEnvironments" onchange="ChangePollutionEnvironment()"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetId" class="control-label"></label>
+                <select id="TargetId" asp-for="TargetId" class="form-control" asp-items="ViewBag.Targets" onchange="ChangeTarget()"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Target.MeasuredParameterUnitId" class="control-label"></label>
+                <select id="MeasuredParameterUnitId" asp-for="Target.MeasuredParameterUnitId" class="form-control" asp-items="ViewBag.MeasuredParameterUnits" disabled="disabled"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetTerritory.TerritoryTypeId" class="control-label"></label>
+                <select id="TerritoryTypeId" asp-for="TargetTerritory.TerritoryTypeId" class="form-control" asp-items="ViewBag.TerritoryTypes" onchange="ChangeTerritoryType()"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetTerritoryId" class="control-label"></label>
+                <select id="TargetTerritoryId" asp-for="TargetTerritoryId" class="form-control" asp-items="ViewBag.TargetTerritories"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Year" class="control-label"></label>
+                <select asp-for="Year" class="form-control" asp-items="ViewBag.Year"></select>
+            </div>
+            <div class="form-group">
+                <label asp-for="TargetValueType" class="control-label"></label>
+                <div class="form-control">
+                    @Html.RadioButtonFor(model => model.TargetValueType, true, new { @name = "TargetValueType", @onclick = "ChangeTargetValueType()" }) @SharedLocalizer["Actual"]
+                    @Html.RadioButtonFor(model => model.TargetValueType, false, new { @name = "TargetValueType", @onclick = "ChangeTargetValueType()" }) @SharedLocalizer["Planned"]
+                </div>
+                <span asp-validation-for="TargetValueType" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Value" class="control-label"></label>
+                <input asp-for="Value" class="form-control" />
+                <span asp-validation-for="Value" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdditionalInformationKK" class="control-label"></label>
+                @Html.TextArea("AdditionalInformationKK", null, new { @class = "form-control", rows = 5 })
+                <span asp-validation-for="AdditionalInformationKK" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="AdditionalInformationRU" class="control-label"></label>
+                @Html.TextArea("AdditionalInformationRU", null, new { @class = "form-control", rows = 5 })
+                <span asp-validation-for="AdditionalInformationRU" class="text-danger"></span>
+            </div>
+            @if (Role == "admin" || Role == "moderator")
+            {
+                <div class="form-group">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <select asp-for="ProjectId" class="form-control" asp-items="ViewBag.Projects"></select>
+                </div>
+            }
+            else if (Role == "KaragandaRegion")
+            {
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <input asp-for="ProjectId" class="form-control" value="1" />
+                </div>
+            }
+            else if (Role == "Almaty")
+            {
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <input asp-for="ProjectId" class="form-control" value="3" />
+                </div>
+            }
+            else if (Role == "Shymkent")
+            {
+                <div class="form-group" hidden="hidden">
+                    <label asp-for="ProjectId" class="control-label"></label>
+                    <input asp-for="ProjectId" class="form-control" value="4" />
+                </div>
+            }
+            <div>
+                <a href="@Url.Action("Index", "AActivities")" class="font-weight-bold">@SharedLocalizer["AActivities"]</a>
+            </div>
+            <table class="table">
+                <tr>
+                    <th>@SharedLocalizer["Name"]</th>
+                    <th>@SharedLocalizer["EfficiencyContribution"]</th>
+                    <th></th>
+                </tr>
+                <tbody id="BodyActivities">
+                    <tr>
+                        <td colspan="2"><select id="AActivities" class="form-control" asp-items="ViewBag.AActivities"></select></td>
+                        <td><input type="button" value="@SharedLocalizer["Add"]" class="btn btn-outline-primary" onclick="AddActivity();" /></td>
+                    </tr>
+                </tbody>
+            </table>
+            <div id="ContributionExceeds" hidden>
+                <p class="text-danger">@SharedLocalizer["ContributionExceeds"]</p>
+            </div>
+            <div hidden="hidden">
+                @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
+                @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("PollutionEnvironmentIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("TargetIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("MeasuredParameterUnitIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("TerritoryTypeIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("TargetTerritoryIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("YearFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                @Html.Editor("TargetValueTypeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            </div>
+            <div class="form-group">
+                <input id="CreateBtn" type="submit" value="@SharedLocalizer["Create"]" class="btn btn-outline-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, PollutionEnvironmentIdFilter = ViewBag.PollutionEnvironmentIdFilter, TargetIdFilter = ViewBag.TargetIdFilter, MeasuredParameterUnitIdFilter = ViewBag.MeasuredParameterUnitIdFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter, TargetTerritoryIdFilter = ViewBag.TargetTerritoryIdFilter, YearFilter = ViewBag.YearFilter, TargetValueTypeFilter = ViewBag.TargetValueTypeFilter })
+</div>
+
+<script>
+    $(document).ready(function () {
+        ChangeTargetValueType();
+    });
+
+    $.validator.methods.range = function (value, element, param) {
+        var globalizedValue = value.replace(",", ".");
+        return this.optional(element) || (globalizedValue >= param[0] && globalizedValue <= param[1]);
+    }
+    $.validator.methods.number = function (value, element) {
+        return this.optional(element) || /-?(?:\d+|\d{1,3}(?:[\s\.,]\d{3})+)(?:[\.,]\d+)?$/.test(value);
+    }
+
+    function ChangePollutionEnvironment() {
+        $.ajax({
+            url: '@Url.Action("GetTargetsByPollutionEnvironmentId")',
+            data: { PollutionEnvironmentId: $('#PollutionEnvironmentId').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    optionhtml += '<option value="' + data[i]['id'] + '"' +
+                        (data[i]['id'] == $('#TargetId').val() ? 'selected' : '') +
+                        '>' + data[i]['name'] +
+                        '</option>';
+                });
+                $("#TargetId").empty();
+                $('#TargetId').append(optionhtml);
+                ChangeTarget();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeTarget() {
+        $.ajax({
+            url: '@Url.Action("MeasuredParameterUnitIdByTargetId")',
+            data: { TargetId: $('#TargetId').val() },
+            type: 'POST',
+            success: function (data) {
+                $("#MeasuredParameterUnitId").val(data);
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeTerritoryType() {
+        $.ajax({
+            url: '@Url.Action("GetTargetTerritoriesByTerritoryTypeId")',
+            data: { TerritoryTypeId: $('#TerritoryTypeId').val() },
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    optionhtml += '<option value="' + data[i]['id'] + '"' +
+                        (data[i]['id'] == $('#TargetTerritoryId').val() ? 'selected' : '') +
+                        '>' + data[i]['name'] +
+                        '</option>';
+                });
+                $("#TargetTerritoryId").empty();
+                $('#TargetTerritoryId').append(optionhtml);
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function ChangeTargetValueType() {
+        if ($("input[name='TargetValueType']:checked").val() == "True") {
+            $('.efficiency').prop('disabled', false);
+        }
+        else {
+            $('.efficiency').prop('disabled', true);
+            $('.efficiency').val('');
+        }
+    };
+
+    function ChangeEfficiency() {
+        var efficiency = [],
+            sum = 0;
+        $("input[name='EfficiencyActivities']").each(function () {
+            efficiency.push($(this).val());
+        });
+        $.each(efficiency, function () {
+            sum += parseFloat(this) || 0;
+        });
+        if (sum > 100) {
+            $('#ContributionExceeds').prop("hidden", false);
+            $('#CreateBtn').prop('disabled', true);
+        }
+        else {
+            $('#ContributionExceeds').prop("hidden", true);
+            $('#CreateBtn').prop('disabled', false);
+        }
+    };
+
+    function DeleteActivity(id) {
+        $('#' + id).remove();
+        var IDs = $("tr[id]")         // find spans with ID attribute
+            .map(function () { return this.id; }) // convert to set of IDs
+            .get(); // convert to instance of Array (optional)
+        $.ajax({
+            url: '@Url.Action("GetAActivities")',
+            type: 'POST',
+            success: function (data) {
+                var optionhtml = '';
+                $.each(data, function (i) {
+                    if (IDs.indexOf(data[i]['id'].toString()) == -1 || IDs.length == 0) {
+                        optionhtml += '<option value="' + data[i]['id'] + '"' +
+                            (data[i]['id'] == $('#AActivities').val() ? 'selected' : '') +
+                            '>' + data[i]['name'] +
+                            '</option>';
+                    }
+                });
+                $("#AActivities").empty();
+                $('#AActivities').append(optionhtml);
+                ChangeTargetValueType();
+            },
+            error: function () {
+            }
+        });
+    };
+
+    function AddActivity() {
+        var id = $('#AActivities').val();
+        var IDs = $("tr[id]")         // find spans with ID attribute
+            .map(function () { return this.id; }) // convert to set of IDs
+            .get(); // convert to instance of Array (optional)
+        IDs.push(id);
+         $.ajax({
+            url: '@Url.Action("GetEfficiencyById")',
+            data: { Id: id },
+            type: 'POST',
+            success: function (efficiency) {
+                var optionhtml = '';
+                optionhtml += '<tr name="IdActivities" id="' + id + '">' +
+                    '<td name="NameActivities">' + $('#AActivities option:selected').text() +
+                    '<input name="IdActivities" type="hidden" value="' + id +'" />' +
+                    '</td>' +
+                    '<td><input name="EfficiencyActivities" class="form-control efficiency" value="' + efficiency + '" onkeyup="ChangeEfficiency();" /></td>' +
+                    '<td><input type="button" value="' + $('#Delete').val() + '" class="btn btn-outline-danger" onclick="DeleteActivity(' + id + ');" /></td>' +
+                    '</tr>';
+                $('#BodyActivities').append(optionhtml);
+                $.ajax({
+                    url: '@Url.Action("GetAActivities")',
+                    type: 'POST',
+                    success: function (data) {
+                        optionhtml = '';
+                        $.each(data, function (i) {
+                            if (IDs.indexOf(data[i]['id'].toString()) == -1 || IDs.length == 0) {
+                                optionhtml += '<option value="' + data[i]['id'] + '"' +
+                                    (data[i]['id'] == $('#AActivities').val() ? 'selected' : '') +
+                                    '>' + data[i]['name'] +
+                                    '</option>';
+                            }
+                        });
+                        $("#AActivities").empty();
+                        $('#AActivities').append(optionhtml);
+                        ChangeTargetValueType();
+                        ChangeEfficiency();
+                    },
+                    error: function () {
+                    }
+                });
+            },
+            error: function () {
+            }
+        });
+    };
+</script>

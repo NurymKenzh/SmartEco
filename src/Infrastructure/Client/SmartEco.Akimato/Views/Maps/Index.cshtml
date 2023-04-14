@@ -1,0 +1,108 @@
+﻿@using System.Net
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Maps"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@*@if (Role == "admin" || Role == "moderator")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Aktau">@SharedLocalizer["Aktau"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["KaragandaRegion"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Arys">@SharedLocalizer["Arys"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Almaty"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Altynalmas">@SharedLocalizer["Altynalmas"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Zhanatas">@SharedLocalizer["Zhanatas"]</a>
+    }
+    else if (Role == "KaragandaRegion")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["KaragandaRegion"]</a>
+    }
+    else if (Role == "Arys")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Arys">@SharedLocalizer["Arys"]</a>
+    }
+    else if (Role == "Almaty")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Almaty"]</a>
+    }
+    else if (Role == "Shymkent")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
+    }
+    else if (Role == "Kazhydromet")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["KaragandaRegion"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Almaty"]</a>
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
+    }
+    else if (Role == "Altynalmas")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Altynalmas">@SharedLocalizer["Altynalmas"]</a>
+    }
+    else if (Role == "Zhanatas")
+    {
+        <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Zhanatas">@SharedLocalizer["Zhanatas"]</a>
+    }*@
+
+@if (Role == "admin" || Role == "moderator")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Aktau">@SharedLocalizer["Aktau"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["KaragandaRegion"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Arys">@SharedLocalizer["Arys"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Almaty"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Altynalmas">@SharedLocalizer["Altynalmas"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Zhanatas">@SharedLocalizer["Zhanatas"]</a>
+    </div>
+}
+else if (Role == "KaragandaRegion")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["KaragandaRegion"]</a>
+    </div>
+}
+else if (Role == "Arys")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Arys">@SharedLocalizer["Arys"]</a>
+    </div>
+}
+else if (Role == "Almaty")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Almaty"]</a>
+    </div>
+}
+else if (Role == "Shymkent")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
+    </div>
+}
+else if (Role == "Kazhydromet")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="KaragandaRegion">@SharedLocalizer["KaragandaRegion"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Almaty">@SharedLocalizer["Almaty"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Shymkent"]</a>
+    </div>
+}
+else if (Role == "Altynalmas")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Altynalmas">@SharedLocalizer["Altynalmas"]</a>
+    </div>
+}
+else if (Role == "Zhanatas")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Maps" asp-action="Zhanatas">@SharedLocalizer["Zhanatas"]</a>
+    </div>
+}

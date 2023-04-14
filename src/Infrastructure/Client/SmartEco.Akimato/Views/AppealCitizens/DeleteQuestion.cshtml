@@ -1,0 +1,31 @@
+﻿@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Delete"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+@if(Role == "admin" || Role == "moderator")
+{
+    <h3>@SharedLocalizer["DeleteQuestionByAdmin"]</h3>
+}
+else
+{
+    <h3>@SharedLocalizer["DeleteQuestion"]</h3>
+}
+<div>
+    <form asp-action="Delete">
+        <input name="id" type="hidden" value="@ViewBag.QuestionId" />
+        <div hidden="hidden">
+            @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </div>
+        <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-outline-danger" /> |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize })
+    </form>
+</div>

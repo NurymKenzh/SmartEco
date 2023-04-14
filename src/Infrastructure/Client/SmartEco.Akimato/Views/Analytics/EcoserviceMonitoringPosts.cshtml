@@ -1,0 +1,142 @@
+﻿@using System.Net
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["EcoserviceMonitoringPosts"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+<h1>@SharedLocalizer["EcoserviceMonitoringPosts"]</h1>
+
+@*<input type="date" id="Date"/>
+    <input type="time" id="Time" />*@
+
+<table class="table table-analytics" id="TableAnalytics">
+    <tr>
+        <td>
+            @if (Role == "admin" || Role == "moderator")
+            {
+                <label>
+                    @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "GetData()" })
+                    @SharedLocalizer["Averaged"]
+                </label>
+            }
+            else
+            {
+                <div hidden="hidden">
+                    <label>
+                        @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "GetData()" })
+                        @SharedLocalizer["Averaged"]
+                    </label>
+                </div>
+            }
+        </td>
+        <td></td>
+        @foreach (MeasuredParameter measuredParameter in ViewBag.MeasuredParameters)
+        {
+            <td>
+                @measuredParameter.Name
+            </td>
+        }
+    </tr>
+    <tr>
+        <td>
+            @SharedLocalizer["AdditionalInformation"]
+        </td>
+        <td>
+            @SharedLocalizer["Name"]
+        </td>
+    </tr>
+    @foreach (MonitoringPost monitoringPost in ViewBag.EcoserviceAirMonitoringPosts)
+    {
+        <tr>
+            <td>
+                @monitoringPost.AdditionalInformation
+            </td>
+            <td>
+                @monitoringPost.Name
+            </td>
+            @foreach (MeasuredParameter measuredParameter in ViewBag.MeasuredParameters)
+            {
+                string id = $"{monitoringPost.Id}_{measuredParameter.Id}";
+                <td id="@id"></td>
+            }
+        </tr>
+    }
+</table>
+<script>
+    var ids = [];
+</script>
+@foreach (MonitoringPost monitoringPost in ViewBag.EcoserviceAirMonitoringPosts)
+{
+    @foreach (MeasuredParameter measuredParameter in ViewBag.MeasuredParameters)
+    {
+        string id = $"{monitoringPost.Id}_{measuredParameter.Id}";
+        <script>
+                ids.push('@id');
+        </script>
+    }
+}
+<script>
+    var duration = 6000;
+    function GetData() {
+        function getData() {
+            let now = new Date();
+            var MS_PER_MINUTE = 60000;
+            var past = new Date(now - @ViewBag.PastMinutes * MS_PER_MINUTE);
+            var dateTo = now.getFullYear() + "-" + ("0" + (now.getMonth() + 1)).slice(-2) + "-" + ("0" + now.getDate()).slice(-2);
+            var timeTo = ("0" + now.getHours()).slice(-2) + ':' + ('0'+now.getMinutes()).slice(-2) + ':' + ("0" + now.getSeconds()).slice(-2);
+            var dateFrom = past.getFullYear() + "-" + ("0" + (past.getMonth() + 1)).slice(-2) + "-" + ("0" + past.getDate()).slice(-2);
+            var timeFrom = ("0" + past.getHours()).slice(-2) + ':' + ('0'+past.getMinutes()).slice(-2) + ':' + ("0" + past.getSeconds()).slice(-2);
+            $.ajax({
+                url: '@Url.Action("GetMeasuredDatasAnalytic", "MeasuredDatas")',
+                data: {
+                    DateFrom: dateFrom,
+                    TimeFrom: timeFrom,
+                    DateTo: dateTo,
+                    TimeTo: timeTo,
+                    Averaged: $('#Averaged').is(':checked')
+                },
+                type: 'POST',
+                success: function (data) {
+                    //clear table
+                    var td = document.getElementsByTagName("td");
+                    for (i = 0; i < td.length; i++) {
+                        if (td[i].id != "") {
+                            td[i].innerHTML = "";
+                            $('#' + td[i].id).css("background-color", "#fff");
+                        }
+                    }
+                    //parse data
+                    for (var i = 0; i < data.measureddatas.length; i++) {
+                        var id = data.measureddatas[i].monitoringPostId + '_' + data.measureddatas[i].measuredParameterId;
+                        $('#' + id).text(parseFloat(data.measureddatas[i].value).toFixed(2));
+                        if (data.measureddatas[i].value >= data.measureddatas[i].measuredParameter.mpc
+                            && data.measureddatas[i].measuredParameter.mpc != null) {
+                            $('#' + id).css("background-color", "red");
+                        }
+                    }
+                    for (var i = 0; i < ids.length; i++) {
+                        if ($('#' + ids[i]).text() === '' || $('#' + ids[i]).text() === null) {
+                            $('#' + ids[i]).css("background-color", "silver");
+                        }
+                    }
+                },
+                error: function () {
+                }
+            })
+        }
+        getData();
+        window.setInterval(function () {
+            getData();
+        }, duration * 10);
+    }
+
+    window.onload = function start() {
+        GetData();
+    }
+</script>

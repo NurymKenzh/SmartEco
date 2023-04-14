@@ -1,0 +1,24 @@
+﻿
+@{
+    ViewData["Title"] = "SetMaximumValue";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<div class="row">
+    <div class="col-md-6">
+        <form asp-action="SetMaximumValue">
+            <div class="form-group">
+                <input type="submit" value="Установить максимальные значения измеряемых параметров" class="btn btn-outline-primary" onclick="SetingMaxValue()" />
+            </div>
+        </form>
+        <div id="SetingMaxValueBlock">
+            <p id="TextSetingMaxValue">@ViewBag.SetMaxValue</p>
+        </div>
+    </div>
+</div>
+
+<script>
+    function SetingMaxValue() {
+        $('#TextSetingMaxValue').text("Установка максимальных значений...");
+    }
+</script>

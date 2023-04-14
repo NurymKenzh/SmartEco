@@ -1,0 +1,2250 @@
+﻿@using System.Net
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using Newtonsoft.Json
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Almaty"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
+<script src="~/lib/chart.js/dist/Chart.js"></script>
+<script src="~/lib/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
+<link href="~/lib/jstree/dist/themes/default/style.css" rel="stylesheet" />
+<script src="~/lib/jstree/dist/jstree.js"></script>
+@*<script src="~/lib/turf.js/turf515.min.js"></script>*@
+<script src="~/lib/turf.js/turf516.min.js"></script>
+
+<!-- ol-ext -->
+<link rel="stylesheet" href="https://viglino.github.io/ol-ext/dist/ol-ext.css" />
+<script type="text/javascript" src="https://viglino.github.io/ol-ext/dist/ol-ext.js"></script>
+
+<style>
+    /*.map {
+        height: calc(100vh - 159px);
+    }*/
+
+    .ol-custom-overviewmap,
+    .ol-custom-overviewmap.ol-uncollapsible {
+        bottom: auto;
+        left: auto;
+        right: 0.5em;
+        top: 2.5em;
+    }
+
+        .ol-custom-overviewmap:not(.ol-collapsed) {
+            border: 1px solid black;
+        }
+
+        .ol-custom-overviewmap .ol-overviewmap-map {
+            border: none;
+            width: 300px;
+        }
+
+        .ol-custom-overviewmap .ol-overviewmap-box {
+            border: 2px solid red;
+        }
+
+        .ol-custom-overviewmap:not(.ol-collapsed) button {
+            bottom: auto;
+            left: auto;
+            right: 1px;
+            top: 1px;
+        }
+
+    /*.ol-rotate {
+            top: 170px;
+            right: 0;
+        }*/
+
+    .fullscreen:-moz-full-screen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
+
+    .fullscreen:-webkit-full-screen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
+
+    .fullscreen:-ms-fullscreen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
+
+    .fullscreen:fullscreen {
+        /*height: 100%;*/
+        height: calc(100vh - 159px);
+    }
+
+    .fullscreen {
+        margin-bottom: 10px;
+        width: 100%;
+        /*height: 400px;*/
+        height: calc(100vh - 159px);
+    }
+
+    /*.ol-rotate {
+        top: 3em;
+    }*/
+
+    .no-checkbox i.jstree-checkbox {
+        display: none;
+    }
+
+    .is-checkbox i.jstree-checkbox {
+        display: inline-block;
+    }
+
+    /*jstree word wrap*/
+    .jstree-anchor {
+        /*enable wrapping*/
+        white-space: normal !important;
+        /*ensure lower nodes move down*/
+        height: auto !important;
+        /*offset icon width*/
+        padding-right: 24px;
+    }
+
+    #DispersionBlock {
+        background-color: #cccccc;
+    }
+</style>
+
+<div hidden="hidden">
+    <input id="GeoServerWorkspace" type="text" value="@ViewBag.GeoServerWorkspace" />
+    <input id="GeoServerAddress" type="text" value="@ViewBag.GeoServerAddress" />
+    <input id="GeoServerPort" type="text" value="@ViewBag.GeoServerPort" />
+    <input id="KazHydrometAirMonitoringPostsAutomaticLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson" />
+    <input id="KazHydrometAirMonitoringPostsHandsLayerJson" type="text" value="@ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson" />
+    <input id="EcoserviceAirMonitoringPostsLayerJson" type="text" value="@ViewBag.EcoserviceAirMonitoringPostsLayerJson" />
+    <input id="PollutionSourcesLayerJson" type="text" value="@ViewBag.PollutionSourcesLayerJson" />
+    <input id="LEDScreensLayerJson" type="text" value="@ViewBag.LEDScreensLayerJson" />
+    <input id="EcopostsLayerJson" type="text" value="@ViewBag.EcopostsLayerJson" />
+    <input id="ReceptionRecyclingPointsLayerJson" type="text" value="@ViewBag.ReceptionRecyclingPointsLayerJson" />
+    <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
+    <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
+    <input id="MPCMaxSingle" type="text" value="@SharedLocalizer["MPCMaxSingle"]" />
+    <input id="MPCDailyAverage" type="text" value="@SharedLocalizer["MPCDailyAverage"]" />
+    <input id="DailyAveraged" type="text" value="@SharedLocalizer["DailyAveraged"]" />
+    <input id="KazHydrometAirPost" type="text" value="@SharedLocalizer["KazHydrometAirPost"]" />
+    <input id="KazHydrometAirPosts" type="text" value="@SharedLocalizer["KazHydrometAirPosts"]" />
+    <input id="Automatic" type="text" value="@SharedLocalizer["Automatic"]" />
+    <input id="Hands" type="text" value="@SharedLocalizer["Hands"]" />
+    <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirStation"]" />
+    <input id="EcoserviceAirPosts" type="text" value="@SharedLocalizer["EcoserviceAirStations"]" />
+    <input id="ShowHideLeftPanelText" type="text" value="@SharedLocalizer["ShowHideLeftPanelText"]" />
+    <input id="ShowHideRightPanelText" type="text" value="@SharedLocalizer["ShowHideRightPanelText"]" />
+    <input id="More" type="text" value="@SharedLocalizer["More"]" />
+    <input id="Smaller" type="text" value="@SharedLocalizer["Smaller"]" />
+    <input id="PollutantSpread" type="text" value="@SharedLocalizer["DispersionPollutants"]" />
+    <input id="ReceptionRecyclingPoint" type="text" value="@SharedLocalizer["ReceptionRecyclingPoint"]" />
+</div>
+
+<div id="fullscreen" class="fullscreen">
+    <div id="sidepanelLeft" class="sidepanel">
+        <label>
+            @SharedLocalizer["EcoserviceAirStations"]
+        </label>
+        <table>
+            @{
+                MonitoringPost[] ecoserviceAirMonitoringPosts = ViewBag.EcoserviceAirMonitoringPosts;
+            }
+            @foreach (MonitoringPost monitoringPost in ecoserviceAirMonitoringPosts.OrderBy(m => m.Name))
+            {
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name - @monitoringPost.AdditionalInformation</button>
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+        <hr />
+        <label>
+            @SharedLocalizer["KazHydrometAirPosts"]
+        </label>
+        <table>
+            @{
+                MonitoringPost[] kazHydrometAirMonitoringPosts = ViewBag.KazHydrometAirMonitoringPosts;
+            }
+            @foreach (MonitoringPost monitoringPost in kazHydrometAirMonitoringPosts.OrderBy(m => m.Name))
+            {
+                <tr>
+                    <td>
+                        <button type="button" class="btn btn-link btn-link-post" onclick="SelectPost(@monitoringPost.Id)">@monitoringPost.Name - @monitoringPost.AdditionalInformation</button>
+                    </td>
+                </tr>
+            }
+        </table>
+        <br />
+        <hr />
+        <br />
+        <div>
+            <input type="button" value="Карта по-умолчанию" class="btn btn-outline-light" onclick="DefaultMap()">
+        </div>
+        <br />
+        <hr />
+    </div>
+    <div id="map" class="map"></div>
+    <div id="sidepanelRight" class="sidepanel">
+        <label>
+            <input type="checkbox" id="layerEcoserviceAirMonitoringPostsShow" onchange="ChangeLayers()" checked="checked">
+            @SharedLocalizer["EcoserviceAirStations"]
+            <img src="~/images/EcoserviceAirMonitoringPostPanel.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerEcoserviceAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+        <label>
+            <input type="checkbox" id="layerKazHydrometAirMonitoringPostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["KazHydrometAirPosts"]
+            <img src="~/images/KazHydrometAirMonitoringPostAutoPanel.png" style="width:16px;height:16px;" />
+            <img src="~/images/KazHydrometAirMonitoringPostHandsPanel.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerKazHydrometAirMonitoringPostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
+        @*PollutionSources*@
+        <label>
+            <input type="checkbox" id="layerPollutionSourcesShow" onchange="ChangeLayers()">
+            @SharedLocalizer["PollutionSources"]
+            <img src="~/images/PollutionSources.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerPollutionSourcesOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
+        @*LEDScreens*@
+        <label>
+            <input type="checkbox" id="layerLEDScreensShow" onchange="ChangeLayers()">
+            @SharedLocalizer["LEDScreens"]
+            <img src="~/images/LEDScreenPanel.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerLEDScreensOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
+        @*Ecoposts*@
+        <label>
+            <input type="checkbox" id="layerEcopostsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["Ecoposts"]
+            <img src="~/images/EcopostPanel.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerEcopostsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
+        @*ReceptionRecyclingPoints*@
+        <label>
+            <input type="checkbox" id="layerReceptionRecyclingPointsShow" onchange="ChangeLayers()">
+            @SharedLocalizer["ReceptionRecyclingPoints"]
+            <img src="~/images/ReceptionRecyclingPointPanel.png" style="width:16px;height:16px;" />
+        </label>
+        <br />
+        <input id="layerReceptionRecyclingPointsOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <hr />
+
+        <label><input type="checkbox" id="layerBaseShow" onchange="ChangeLayers()" checked="checked">@SharedLocalizer["BaseLayer"]</label>
+        <br />
+        <label style="position: relative; left: 5%;"><input type="checkbox" id="inverted" onchange="SetFilter()" checked="checked">@SharedLocalizer["Inverted"]</label>
+        <br />
+        <input id="layerBaseOpacity" type="range" min="0" max="100" value="100" oninput="ChangeLayers()" />
+        <select id="layerBaseType" class="form-control form-control-sm" onchange="ChangeLayers()">
+            <option value="OSM">OpenStreetMap</option>
+            <option value="BingAerialWithLabels">Bing Aerial</option>
+            <option value="BingRoadStatic">Bing Road (static)</option>
+            <option value="BingRoadDynamic">Bing Road (dynamic)</option>
+            <option value="HERENormalDay">HERE Normal Day</option>
+            <option value="HERENormalDayTransit">HERE Normal Day Transit</option>
+            <option value="HERETerrainDay">HERE Terrain Day</option>
+            <option value="HEREHybridDay">HERE Hybrid Day</option>
+            <option value="StamenWatercolor">Stamen Watercolor</option>
+            <option value="StamenTerrain">Stamen Terrain</option>
+            <option value="StamenToner">Stamen Toner</option>
+            <option value="ArcGIS">ArcGIS</option>
+            <option value="ThunderforestOpenCycleMap">Thunderforest OpenCycleMap</option>
+            <option value="ThunderforestTransport">Thunderforest Transport</option>
+            <option value="ThunderforestLandscape">Thunderforest Landscape</option>
+            <option value="ThunderforestOutdoors">Thunderforest Outdoors</option>
+            <option value="ThunderforestTransportDark">Thunderforest Transport Dark</option>
+            <option value="ThunderforestSpinalMap">Thunderforest Spinal Map</option>
+            <option value="ThunderforestPioneer">Thunderforest Pioneer</option>
+            <option value="ThunderforestMobileAtlas">Thunderforest Mobile Atlas</option>
+            <option value="ThunderforestNeighbourhood">Thunderforest Neighbourhood</option>
+        </select>
+        <br />
+        <hr />
+        <div id="DispersionBlock">
+            <label>
+                <input type="checkbox" id="layerPollutantSpreadShow" onchange="ChangeLayers()">
+                @SharedLocalizer["DispersionPollutants"]
+            </label>
+            <br />
+            <input id="layerPollutantSpreadOpacity" type="range" min="0" max="100" value="80" oninput="ChangeLayers()" />
+            <br />
+            <label>@SharedLocalizer["Time"]</label>: <label id="time20Label"></label>
+            <input id="time20" type="range" min="0" value="0" max="0" step="1">
+            <label>@SharedLocalizer["MeasuredParameter"]</label>
+            <br />
+            @Html.DropDownList("PollutantSpreadMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.Pollutants, htmlAttributes: new { @class = "form-control info-input-select", @id = "PollutantSpreadMeasuredParameterId", @onchange = "PollutantSpreadChange()" })
+            <br />
+            <hr />
+        </div>
+    </div>
+</div>
+
+<div hidden="hidden">
+    <div id="dialogMonitoringPostInfo" title="">
+        <div id="divEcoserviceAirPost" class="dialog-info-content">
+            <ul>
+                <li><a href="#divEcoserviceAirPostAQI">@SharedLocalizer["AQI"]</a></li>
+                <li><a href="#divEcoserviceAirPostInfo">@SharedLocalizer["Info"]</a></li>
+                <li><a href="#divEcoserviceAirPostChart">@SharedLocalizer["Chart"]</a></li>
+                <li><a href="#divEcoserviceAirPostTable">@SharedLocalizer["Table"]</a></li>
+            </ul>
+            <div id="divEcoserviceAirPostAQI" class="dialog-info-tab-div">
+                <input id="EcoserviceAirMonitoringMonitoringPostId" type="hidden" />
+                <table id="tablePollutantsConcentration" class="table-bordered dialog-info-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @SharedLocalizer["Pollutants"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["Concentration"]
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+            <div id="divEcoserviceAirPostInfo" class="dialog-info-tab-div">
+                <input id="EcoserviceAirMonitoringMonitoringPostId" type="hidden" />
+                <table class="table-bordered dialog-info-table">
+                    <tr>
+                        <td>
+                            @SharedLocalizer["DataProvider"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostDataProviderName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["PollutionEnvironment"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostPollutionEnvironmentName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["Number"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostNumber"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["Name"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostName"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["TypeStation"]
+                        </td>
+                        <td id="KazHydrometAirMonitoringPostType"></td>
+                    </tr>
+                    <tr>
+                        <td>
+                            @SharedLocalizer["AdditionalInformation"]
+                        </td>
+                        <td id="EcoserviceAirMonitoringPostAdditionalInformation"></td>
+                    </tr>
+                </table>
+            </div>
+            <div id="divEcoserviceAirPostChart" class="dialog-info-tab-div">
+                @Html.DropDownList("ChartMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MonitoringPostMeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMeasuredParameterId", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "ChartTimeFrom", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "ChartDateFrom", @onchange = "ChartGetMeasuredDatas()" })
+                -
+                @Html.TextBox("ChartTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "ChartTimeTo", @onchange = "ChartGetMeasuredDatas()" })
+                @Html.TextBox("ChartDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "ChartDateTo", @onchange = "ChartGetMeasuredDatas()" })
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    <label>
+                        @Html.CheckBox("ChartAveraged", true, new { @id = "ChartAveraged", @onchange = "ChartGetMeasuredDatas()" })
+                        @SharedLocalizer["Averaged"]
+                    </label>
+                }
+                else
+                {
+                    <div hidden="hidden">
+                        <label>
+                            @Html.CheckBox("ChartAveraged", true, new { @id = "ChartAveraged", @onchange = "ChartGetMeasuredDatas()" })
+                            @SharedLocalizer["Averaged"]
+                        </label>
+                    </div>
+                }
+                <canvas id="chartMeasuredDatas"></canvas>
+            </div>
+            <div id="divEcoserviceAirPostTable" class="dialog-info-tab-div">
+                @Html.DropDownList("TableMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MonitoringPostMeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "TableMeasuredParameterId", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableTimeFrom", (string)ViewBag.TimeFrom, new { type = "time", @class = "form-control info-input", @id = "TableTimeFrom", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "TableDateFrom", @onchange = "TableGetMeasuredDatas()" })
+                -
+                @Html.TextBox("TableTimeTo", (string)ViewBag.TimeTo, new { type = "time", @class = "form-control info-input", @id = "TableTimeTo", @onchange = "TableGetMeasuredDatas()" })
+                @Html.TextBox("TableDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "TableDateTo", @onchange = "TableGetMeasuredDatas()" })
+                @if (Role == "admin" || Role == "moderator")
+                {
+                    <label>
+                        @Html.CheckBox("TableAveraged", true, new { @id = "TableAveraged", @onchange = "TableGetMeasuredDatas()" })
+                        @SharedLocalizer["Averaged"]
+                    </label>
+                }
+                else
+                {
+                    <div hidden="hidden">
+                        <label>
+                            @Html.CheckBox("TableAveraged", true, new { @id = "TableAveraged", @onchange = "TableGetMeasuredDatas()" })
+                            @SharedLocalizer["Averaged"]
+                        </label>
+                    </div>
+                }
+                <table id="tableMeasuredDatas" class="table-bordered dialog-info-tab-table">
+                    <thead>
+                        <tr>
+                            <th>
+                                @SharedLocalizer["DateTime"]
+                            </th>
+                            <th>
+                                @SharedLocalizer["Value"]
+                            </th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div hidden="hidden">
+    <div id="dialogPollutantSpreadInfo" title="">
+        <table id="tablePollutantSpread" class="table-bordered">
+            <tr>
+                <td>
+                    @SharedLocalizer["MPCshare"]
+                </td>
+                <td id="tablePollutantSpreadMPCshare"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["Pollutant"]
+                </td>
+                <td id="tablePollutantSpreadName"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["Value"]
+                </td>
+                <td id="tablePollutantSpreadValue"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+<div hidden="hidden">
+    <div id="dialogReceptionRecyclingPointInfo" title="">
+        <table id="tableReceptionRecyclingPoint" class="table-bordered">
+            <tr>
+                <td>
+                    @SharedLocalizer["Organization"]
+                </td>
+                <td id="tableReceptionRecyclingPointOrganization"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["Address"]
+                </td>
+                <td id="tableReceptionRecyclingPointAddress"></td>
+            </tr>
+            <tr>
+                <td>
+                    @SharedLocalizer["TypesRaw"]
+                </td>
+                <td id="tableReceptionRecyclingPointTypesRaw"></td>
+            </tr>
+        </table>
+    </div>
+</div>
+
+@* layers *@
+<script>
+    var layers = [];
+
+    var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
+    var HEREappCode = 'D9-h9iVhjgUB_9eUlFETXA';
+
+    var Source_OSM = new ol.source.OSM();
+    layers.push(new ol.layer.Tile({
+        source: Source_OSM
+    }));
+    layers[0].set('name', 'Base');
+
+    Source_BingAerialWithLabels = new ol.source.BingMaps({
+        key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+        imagerySet: 'AerialWithLabels',
+    });
+    Source_BingRoadStatic = new ol.source.BingMaps({
+        key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+        imagerySet: 'Road',
+    });
+    Source_BingRoadDynamic = new ol.source.BingMaps({
+        key: 'AvXWBeyEt0tMq0Cmi-TdlXA6qG2GDpuV1UcSbSqNXbfHcQ41GFYtjpu0gz8RS6-b',
+        imagerySet: 'RoadOnDemand',
+    });
+
+    var urlTpl = 'https://{1-4}.{base}.maps.cit.api.here.com' +
+        '/{type}/2.1/maptile/newest/{scheme}/{z}/{x}/{y}/256/png' +
+        '?app_id={app_id}&app_code={app_code}';
+    function HEREcreateUrl(tpl, HERElayerDesc) {
+        return tpl
+            .replace('{base}', HERElayerDesc.base)
+            .replace('{type}', HERElayerDesc.type)
+            .replace('{scheme}', HERElayerDesc.scheme)
+            .replace('{app_id}', HERElayerDesc.app_id)
+            .replace('{app_code}', HERElayerDesc.app_code);
+    };
+
+    var HERElayerDescNormalDay = {
+        base: 'base',
+        type: 'maptile',
+        scheme: 'normal.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERENormalDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescNormalDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescNormalDayTransit = {
+        base: 'base',
+        type: 'maptile',
+        scheme: 'normal.day.transit',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERENormalDayTransit = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescNormalDayTransit),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescTerrainDay = {
+        base: 'aerial',
+        type: 'maptile',
+        scheme: 'terrain.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HERETerrainDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescTerrainDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' +
+            '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var HERElayerDescHybridDay = {
+        base: 'aerial',
+        type: 'maptile',
+        scheme: 'hybrid.day',
+        app_id: HEREappId,
+        app_code: HEREappCode
+    };
+    var Source_HEREHybridDay = new ol.source.XYZ({
+        url: HEREcreateUrl(urlTpl, HERElayerDescHybridDay),
+        attributions: 'Map Tiles &copy; ' + new Date().getFullYear() + ' ' + '<a href="http://developer.here.com">HERE</a>'
+    });
+
+    var Source_StamenWatercolor = new ol.source.Stamen({
+        layer: 'watercolor'
+    });
+
+    var Source_StamenTerrain = new ol.source.Stamen({
+        layer: 'terrain'
+    });
+
+    var Source_StamenToner = new ol.source.Stamen({
+        layer: 'toner'
+    });
+
+    var Source_ArcGIS = new ol.source.XYZ({
+        attributions: 'Tiles © <a href="https://services.arcgisonline.com/ArcGIS/' +
+            'rest/services/World_Topo_Map/MapServer">ArcGIS</a>',
+        url: 'https://server.arcgisonline.com/ArcGIS/rest/services/' +
+            'World_Topo_Map/MapServer/tile/{z}/{y}/{x}'
+    });
+
+    var Source_ThunderforestOpenCycleMap = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/cycle/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestTransport = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/transport/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestLandscape = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/landscape/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestOutdoors = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/outdoors/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestTransportDark = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/transport-dark/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestSpinalMap = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/spinal-map/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestPioneer = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/pioneer/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestMobileAtlas = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/mobile-atlas/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var Source_ThunderforestNeighbourhood = new ol.source.XYZ({
+        url: 'https://{a-c}.tile.thunderforest.com/neighbourhood/{z}/{x}/{y}.png' +
+            '?apikey=6746f4299ea3479aba8726b09f049c1b'
+    });
+
+    var KazHydrometAirMonitoringPostsAutoStyle = {
+        activeGreen: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeYellow: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoYellow.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeOrange: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoOrange.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeViolet: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostAutoViolet.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        inactive: new ol.style.Style({
+            image: new ol.style.Icon(({
+                //src: '/images/KazHydrometAirMonitoringPostAutoInactive.png',
+                src: '/images/KazHydrometAirMonitoringPostAutoGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        })
+    };
+    function KazHydrometAirMonitoringPostsAutoStyleFunction(feature) {
+        if (inactiveKazHydrometPosts.includes(feature.get('Id'))) {
+            return KazHydrometAirMonitoringPostsAutoStyle.inactive;
+        }
+        else if (colorPostsId.includes(feature.get('Id'))) {
+            var number = colorPostsId.indexOf(feature.get('Id'));
+            var value = colorPostsAQI[number];
+            if (value <= 0.2) {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeGreen;
+            }
+            else if (value <= 0.5) {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeYellow;
+            }
+            else if (value <= 1) {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeOrange;
+            }
+            else {
+                return KazHydrometAirMonitoringPostsAutoStyle.activeViolet;
+            }
+        }
+        else {
+            return KazHydrometAirMonitoringPostsAutoStyle.activeGreen;
+        }
+    }
+    var KazHydrometAirMonitoringPostsAutomaticLayerJson = $("#KazHydrometAirMonitoringPostsAutomaticLayerJson").val();
+    var Source_KazHydrometAirMonitoringPostsAutomatic = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsAutomaticLayerJson, {
+
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometAirMonitoringPostsAutomatic = new ol.layer.Vector({
+        source: Source_KazHydrometAirMonitoringPostsAutomatic,
+        style: KazHydrometAirMonitoringPostsAutoStyleFunction,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometAirMonitoringPostsAutomatic.set('name', 'KazHydrometAirMonitoringPostsAutomatic');
+    layers.push(Layer_KazHydrometAirMonitoringPostsAutomatic);
+    Layer_KazHydrometAirMonitoringPostsAutomatic.setVisible(false);
+
+    var KazHydrometAirMonitoringPostsHandsStyle = {
+        activeGreen: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeYellow: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsYellow.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeOrange: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsOrange.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        activeViolet: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/KazHydrometAirMonitoringPostHandsViolet.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        }),
+        inactive: new ol.style.Style({
+            image: new ol.style.Icon(({
+                //src: '/images/KazHydrometAirMonitoringPostHandsInactive.png',
+                src: '/images/KazHydrometAirMonitoringPostHandsGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                scale: 0.5
+            }))
+        })
+    };
+    function KazHydrometAirMonitoringPostsHandsStyleFunction(feature) {
+        if (inactiveKazHydrometPosts.includes(feature.get('Id'))) {
+            return KazHydrometAirMonitoringPostsHandsStyle.inactive;
+        }
+        else if (colorPostsId.includes(feature.get('Id'))) {
+            var number = colorPostsId.indexOf(feature.get('Id'));
+            var value = colorPostsAQI[number];
+            if (value <= 0.2) {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeGreen;
+            }
+            else if (value <= 0.5) {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeYellow;
+            }
+            else if (value <= 1) {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeOrange;
+            }
+            else {
+                return KazHydrometAirMonitoringPostsHandsStyle.activeViolet;
+            }
+        }
+        else {
+            return KazHydrometAirMonitoringPostsHandsStyle.activeGreen;
+        }
+    }
+    var KazHydrometAirMonitoringPostsHandsLayerJson = $("#KazHydrometAirMonitoringPostsHandsLayerJson").val();
+    var Source_KazHydrometAirMonitoringPostsHands = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(KazHydrometAirMonitoringPostsHandsLayerJson, {
+
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_KazHydrometAirMonitoringPostsHands = new ol.layer.Vector({
+        source: Source_KazHydrometAirMonitoringPostsHands,
+        style: KazHydrometAirMonitoringPostsHandsStyleFunction,
+        renderBuffer: 200
+    });
+    Layer_KazHydrometAirMonitoringPostsHands.set('name', 'KazHydrometAirMonitoringPostsHands');
+    layers.push(Layer_KazHydrometAirMonitoringPostsHands);
+    Layer_KazHydrometAirMonitoringPostsHands.setVisible(false)
+
+    var EcoserviceAirMonitoringPostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/EcoserviceAirMonitoringPost.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            scale: 0.0625
+        }))
+    });
+
+    var EcoserviceAirMonitoringPostsStyle = {
+        activeGreen: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+        activeYellow: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostYellow.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+        activeOrange: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostOrange.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+        activeViolet: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/EcoserviceAirMonitoringPostViolet.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+        inactive: new ol.style.Style({
+            image: new ol.style.Icon(({
+                //src: '/images/EcoserviceAirMonitoringPostInactive.png',
+                src: '/images/EcoserviceAirMonitoringPostGreen.png',
+                anchor: [0.5, 0.5],
+                anchorXUnits: 'fraction',
+                anchorYUnits: 'fraction',
+                //scale: 0.0625
+                scale: 0.5
+            }))
+        }),
+    };
+    function EcoserviceAirMonitoringPostsStyleFunction(feature) {
+        if (inactivePosts.includes(feature.get('Id'))) {
+            return EcoserviceAirMonitoringPostsStyle.inactive;
+        }
+        else if (colorPostsId.includes(feature.get('Id'))) {
+            var number = colorPostsId.indexOf(feature.get('Id'));
+            var value = colorPostsAQI[number];
+            if (value <= 0.2) {
+                return EcoserviceAirMonitoringPostsStyle.activeGreen;
+            }
+            else if (value <= 0.5) {
+                return EcoserviceAirMonitoringPostsStyle.activeYellow;
+            }
+            else if (value <= 1) {
+                return EcoserviceAirMonitoringPostsStyle.activeOrange;
+            }
+            else {
+                return EcoserviceAirMonitoringPostsStyle.activeViolet;
+            }
+        }
+        else {
+            return EcoserviceAirMonitoringPostsStyle.activeGreen;
+        }
+    }
+    var EcoserviceAirMonitoringPostsLayerJson = $("#EcoserviceAirMonitoringPostsLayerJson").val();
+    var Source_EcoserviceAirMonitoringPosts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(EcoserviceAirMonitoringPostsLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_EcoserviceAirMonitoringPosts = new ol.layer.Vector({
+        source: Source_EcoserviceAirMonitoringPosts,
+        style: EcoserviceAirMonitoringPostsStyleFunction,
+        renderBuffer: 200
+    });
+    Layer_EcoserviceAirMonitoringPosts.set('name', 'EcoserviceAirMonitoringPosts');
+    layers.push(Layer_EcoserviceAirMonitoringPosts);
+
+    //Pollution Sources
+    var PollutionSourcesStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/PollutionSources.png'
+        }))
+    });
+    var PollutionSourcesLayerJson = $("#PollutionSourcesLayerJson").val();
+    var Source_PollutionSources = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(PollutionSourcesLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_PollutionSources = new ol.layer.Vector({
+        source: Source_PollutionSources,
+        style: PollutionSourcesStyle,
+        renderBuffer: 200
+    });
+    Layer_PollutionSources.set('name', 'PollutionSources');
+    Layer_PollutionSources.setVisible(false);
+    layers.push(Layer_PollutionSources);
+
+    //LEDScreens
+    var LEDScreensStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/LEDScreen.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            //scale: 0.0625
+            scale: 0.5
+        }))
+    });
+    var LEDScreensLayerJson = $("#LEDScreensLayerJson").val();
+    var Source_LEDScreens = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(LEDScreensLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_LEDScreens = new ol.layer.Vector({
+        source: Source_LEDScreens,
+        style: LEDScreensStyle,
+        renderBuffer: 200
+    });
+    Layer_LEDScreens.set('name', 'LEDScreens');
+    Layer_LEDScreens.setVisible(false);
+    layers.push(Layer_LEDScreens);
+
+    //Ecoposts
+    var EcopostsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/Ecopost.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            //scale: 0.0625
+            scale: 0.5
+        }))
+    });
+    var EcopostsLayerJson = $("#EcopostsLayerJson").val();
+    var Source_Ecoposts = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(EcopostsLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_Ecoposts = new ol.layer.Vector({
+        source: Source_Ecoposts,
+        style: EcopostsStyle,
+        renderBuffer: 200
+    });
+    Layer_Ecoposts.set('name', 'Ecoposts');
+    Layer_Ecoposts.setVisible(false);
+    layers.push(Layer_Ecoposts);
+
+    //ReceptionRecyclingPoints
+    var ReceptionRecyclingPointsStyle = new ol.style.Style({
+        image: new ol.style.Icon(({
+            src: '/images/ReceptionRecyclingPoint.png',
+            anchor: [0.5, 0.5],
+            anchorXUnits: 'fraction',
+            anchorYUnits: 'fraction',
+            //scale: 0.0625
+            scale: 0.5
+        }))
+    });
+    var ReceptionRecyclingPointsLayerJson = $("#ReceptionRecyclingPointsLayerJson").val();
+    var Source_ReceptionRecyclingPoints = new ol.source.Vector({
+        features: (new ol.format.GeoJSON()).readFeatures(ReceptionRecyclingPointsLayerJson, {
+            dataProjection: 'EPSG:4326',
+            featureProjection: 'EPSG:3857'
+        })
+    });
+    var Layer_ReceptionRecyclingPoints = new ol.layer.Vector({
+        source: Source_ReceptionRecyclingPoints,
+        style: ReceptionRecyclingPointsStyle,
+        renderBuffer: 200
+    });
+    Layer_ReceptionRecyclingPoints.set('name', 'ReceptionRecyclingPoints');
+    Layer_ReceptionRecyclingPoints.setVisible(false);
+    layers.push(Layer_ReceptionRecyclingPoints);
+
+    function ChangeLayers() {
+        map.getLayers().forEach(function (layer) {
+            if (layer.get('name') == 'Base') {
+                layer.setVisible(document.getElementById("layerBaseShow").checked);
+                layer.setOpacity($('#layerBaseOpacity').val() / 100)
+                if ($('#layerBaseType').val() == 'OSM') {
+                    layer.setSource(Source_OSM);
+                }
+                else if ($('#layerBaseType').val() == 'BingAerialWithLabels') {
+                    layer.setSource(Source_BingAerialWithLabels);
+                }
+                else if ($('#layerBaseType').val() == 'BingRoadStatic') {
+                    layer.setSource(Source_BingRoadStatic);
+                }
+                else if ($('#layerBaseType').val() == 'BingRoadDynamic') {
+                    layer.setSource(Source_BingRoadDynamic);
+                }
+                else if ($('#layerBaseType').val() == 'HERENormalDay') {
+                    layer.setSource(Source_HERENormalDay);
+                }
+                else if ($('#layerBaseType').val() == 'HERENormalDayTransit') {
+                    layer.setSource(Source_HERENormalDayTransit);
+                }
+                else if ($('#layerBaseType').val() == 'HERETerrainDay') {
+                    layer.setSource(Source_HERETerrainDay);
+                }
+                else if ($('#layerBaseType').val() == 'HEREHybridDay') {
+                    layer.setSource(Source_HEREHybridDay);
+                }
+                else if ($('#layerBaseType').val() == 'StamenWatercolor') {
+                    layer.setSource(Source_StamenWatercolor);
+                }
+                else if ($('#layerBaseType').val() == 'StamenTerrain') {
+                    layer.setSource(Source_StamenTerrain);
+                }
+                else if ($('#layerBaseType').val() == 'StamenToner') {
+                    layer.setSource(Source_StamenToner);
+                }
+                else if ($('#layerBaseType').val() == 'ArcGIS') {
+                    layer.setSource(Source_ArcGIS);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestOpenCycleMap') {
+                    layer.setSource(Source_ThunderforestOpenCycleMap);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestTransport') {
+                    layer.setSource(Source_ThunderforestTransport);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestLandscape') {
+                    layer.setSource(Source_ThunderforestLandscape);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestOutdoors') {
+                    layer.setSource(Source_ThunderforestOutdoors);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestTransportDark') {
+                    layer.setSource(Source_ThunderforestTransportDark);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestSpinalMap') {
+                    layer.setSource(Source_ThunderforestSpinalMap);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestPioneer') {
+                    layer.setSource(Source_ThunderforestPioneer);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestMobileAtlas') {
+                    layer.setSource(Source_ThunderforestMobileAtlas);
+                }
+                else if ($('#layerBaseType').val() == 'ThunderforestNeighbourhood') {
+                    layer.setSource(Source_ThunderforestNeighbourhood);
+                }
+            }
+            if (layer.get('name') == 'KazHydrometAirMonitoringPostsAutomatic' || layer.get('name') == 'KazHydrometAirMonitoringPostsHands') {
+                layer.setVisible(document.getElementById("layerKazHydrometAirMonitoringPostsShow").checked);
+                layer.setOpacity($('#layerKazHydrometAirMonitoringPostsOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'EcoserviceAirMonitoringPosts') {
+                layer.setVisible(document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked);
+                layer.setOpacity($('#layerEcoserviceAirMonitoringPostsOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'AlmatyPollutantSpread') {
+                layer.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
+                layer.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'PollutionSources') {
+                layer.setVisible(document.getElementById("layerPollutionSourcesShow").checked);
+                layer.setOpacity($('#layerPollutionSourcesOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'LEDScreens') {
+                layer.setVisible(document.getElementById("layerLEDScreensShow").checked);
+                layer.setOpacity($('#layerLEDScreensOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'Ecoposts') {
+                layer.setVisible(document.getElementById("layerEcopostsShow").checked);
+                layer.setOpacity($('#layerEcopostsOpacity').val() / 100)
+            }
+            if (layer.get('name') == 'ReceptionRecyclingPoints') {
+                layer.setVisible(document.getElementById("layerReceptionRecyclingPointsShow").checked);
+                layer.setOpacity($('#layerReceptionRecyclingPointsOpacity').val() / 100)
+            }
+        })
+    }
+</script>
+
+@* Panels *@
+<script>
+    // левая панель
+    window.app = {};
+    var app = window.app;
+    app.ShowHideSidePanelLeft = function (opt_options) {
+        var options = opt_options || {};
+        var button = document.createElement('button');
+        button.id = "sidepanelleftshowhide";
+        button.innerHTML = '«';
+        button.title = $("#ShowHideLeftPanelText").val();
+        var this_ = this;
+        var handleShowHideSidePanelLeft = function () {
+            if (document.getElementById("sidepanelLeft").offsetWidth == 0) {
+                if (document.getElementById("sidepanelRight").offsetWidth != 0) {
+                    $('#sidepanelLeft').addClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "60%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelLeft').addClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+            }
+            else {
+                if (document.getElementById("sidepanelRight").offsetWidth != 0) {
+                    $('#sidepanelLeft').removeClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelLeft').removeClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "100%");
+                    map.updateSize();
+                }
+            }
+        };
+        button.addEventListener('click', handleShowHideSidePanelLeft, false);
+        var element = document.createElement('div');
+        element.className = 'sidepanelLeft-hide ol-unselectable ol-control';
+        element.appendChild(button);
+        ol.control.Control.call(this, {
+            element: element,
+            target: options.target
+        });
+    }
+    ol.inherits(app.ShowHideSidePanelLeft, ol.control.Control);
+
+    // правая панель
+    app.ShowHideSidePanelRight = function (opt_options) {
+        var options = opt_options || {};
+        var button = document.createElement('button');
+        button.id = "sidepanelrightshowhide";
+        button.innerHTML = '»';
+        button.title = $("#ShowHideRightPanelText").val();
+        var this_ = this;
+        var handleShowHideSidePanelRight = function () {
+            if (document.getElementById("sidepanelRight").offsetWidth == 0) {
+                if (document.getElementById("sidepanelLeft").offsetWidth != 0) {
+                    $('#sidepanelRight').addClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "60%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelRight').addClass("d-block");
+                    button.innerHTML = '»';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+            }
+            else {
+                if (document.getElementById("sidepanelLeft").offsetWidth != 0) {
+                    $('#sidepanelRight').removeClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "80%");
+                    map.updateSize();
+                }
+                else {
+                    $('#sidepanelRight').removeClass("d-block");
+                    button.innerHTML = '«';
+                    $('#map').css("width", "100%");
+                    map.updateSize();
+                }
+            }
+        };
+        button.addEventListener('click', handleShowHideSidePanelRight, false);
+        var element = document.createElement('div');
+        element.className = 'sidepanelRight-hide ol-unselectable ol-control';
+        element.appendChild(button);
+        ol.control.Control.call(this, {
+            element: element,
+            target: options.target
+        });
+    }
+    ol.inherits(app.ShowHideSidePanelRight, ol.control.Control);
+
+    $(document).ready(function (e) {
+        map.updateSize();
+        $('#sidepanelRight').addClass("d-none d-block");
+        $('#sidepanelLeft').addClass("d-none d-block");
+        window.addEventListener('resize', function (event) {
+            $('#map').css("width", "100%");
+            map.updateSize();
+            // показать правую панель
+            $('#sidepanelRight').removeClass("d-block");
+            var button = document.getElementById('sidepanelrightshowhide');
+            button.innerHTML = '«';
+            // показать левую панель
+            $('#sidepanelLeft').removeClass("d-block");
+            var button = document.getElementById('sidepanelleftshowhide');
+            button.innerHTML = '»';
+            map.updateSize();
+        });
+    });
+</script>
+
+@* map *@
+<script>
+    function GetCookie(cookieName) {
+        var results = document.cookie.match('(^|;) ?' + cookieName + '=([^;]*)(;|$)');
+        if (results) {
+            return (unescape(results[2]));
+        }
+        else {
+            return null;
+        }
+    }
+
+    var getCoords, getZoom;
+    if (GetCookie("zoomAlmaty") == null) {
+        getZoom = 11;
+        document.cookie = "zoomAlmaty=" + getZoom;
+    }
+    else {
+        getZoom = Number.parseFloat(GetCookie("zoomAlmaty"));
+    }
+    if (GetCookie("coordsAlmaty") == null) {
+        getCoords = [76.93, 43.26];
+        document.cookie = "coordsAlmaty=" + getCoords;
+    }
+    else {
+        var coordsStringArr = GetCookie("coordsAlmaty").split(',');
+        getCoords = [Number.parseFloat(coordsStringArr[0]), Number.parseFloat(coordsStringArr[1])];
+    }
+
+    var overviewMapControl = new ol.control.OverviewMap({
+        className: 'ol-overviewmap ol-custom-overviewmap',
+        collapseLabel: '\u00BB',
+        label: '\u00AB',
+        collapsed: true
+    });
+
+    var map = new ol.Map({
+        controls: new ol.control.defaults({ attributionOptions: { collapsible: true } }).extend([
+            new ol.control.ScaleLine(),
+            overviewMapControl,
+            new app.ShowHideSidePanelRight(),
+            new app.ShowHideSidePanelLeft(),
+            new ol.control.FullScreen({
+                source: 'fullscreen'
+            })
+        ]),
+        target: document.getElementById('map'),//'map',
+        layers: layers,
+        view: new ol.View({
+            center: ol.proj.fromLonLat(getCoords),
+            zoom: getZoom
+        })
+    });
+
+    map.on('click', function (evt) {
+        var layerName = '';
+        var feature = map.forEachFeatureAtPixel(evt.pixel, function (feature, layer) {
+            layerName = layer.get('name');
+            if (layer.get('name') == 'KazHydrometAirMonitoringPostsAutomatic'
+                || layer.get('name') == 'KazHydrometAirMonitoringPostsHands'
+                || layer.get('name') == 'EcoserviceAirMonitoringPosts'
+                || layer.get('name') == 'ReceptionRecyclingPoints') {
+                return feature;
+            }
+        });
+        if (feature) {
+            $('.dialog-info-content').hide();
+            if (layerName == 'EcoserviceAirMonitoringPosts' || layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
+                $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
+                $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+                $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+                $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
+                $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+                if (feature.get('Automatic') == true) {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+                }
+                else if (feature.get('Automatic') == false) {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Hands").val());
+                }
+                else {
+                    $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+                }
+                $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+                $('#divEcoserviceAirPost').show();
+                $("#divEcoserviceAirPost").tabs();
+                var title = $('#EcoserviceAirPost').val();
+                if (layerName == 'KazHydrometAirMonitoringPostsAutomatic' || layerName == 'KazHydrometAirMonitoringPostsHands') {
+                    title = $('#KazHydrometAirPost').val();
+                }
+                $("#dialogMonitoringPostInfo").dialog({
+                    resize: DialogResize,
+                    title: title,
+                    minHeight: 100,
+                    minWidth: 100,
+                    width: 750,
+                    maxHeight: window.innerHeight
+                });
+                GetPollutantsConcentration();
+                GetMeasuredParameters();
+            }
+            else if (layerName == 'ReceptionRecyclingPoints') {
+                $('#tableReceptionRecyclingPointOrganization').text(feature.get('Organization'));
+                $('#tableReceptionRecyclingPointAddress').text(feature.get('Address'));
+                $('#tableReceptionRecyclingPointTypesRaw').text(feature.get('TypesRaw'));
+                var title = $('#ReceptionRecyclingPoint').val();
+                $("#dialogReceptionRecyclingPointInfo").dialog({
+                    resize: DialogResize,
+                    title: title,
+                    minHeight: 100,
+                    minWidth: 100,
+                    width: 350,
+                    maxHeight: window.innerHeight
+                });
+            }
+        }
+        else {
+            var layerAlmatyPollutantSpread = [];
+            map.getLayers().forEach(function (layer) {
+                if (layer != null) {
+                    if (layer.get('name') == 'AlmatyPollutantSpread') {
+                        layerAlmatyPollutantSpread.push(layer);
+                    }
+                }
+            })
+            if ($('#layerPollutantSpreadShow').is(':checked')) {
+                AjaxCycle(0, layerAlmatyPollutantSpread);
+                function AjaxCycle(i, layerAlmatyPollutantSpread) {
+                    var viewResolution = (map.getView().getResolution());
+                    var url = layerAlmatyPollutantSpread[i].getSource().getGetFeatureInfoUrl(
+                        evt.coordinate, viewResolution, 'EPSG:3857',
+                        {
+                            'INFO_FORMAT': 'text/javascript'
+                            //'FEATURE_COUNT': '10000'
+                        });
+                    if (url) {
+                        var parser = new ol.format.GeoJSON();
+                        $.ajax({
+                            jsonp: false,
+                            jsonpCallback: 'getJson',
+                            type: 'GET',
+                            url: url + "&format_options=callback:getJson",
+                            async: false,
+                            dataType: 'jsonp',
+                            //jsonpCallback: 'parseResponse',
+                            error: function (xhr, status, error) {
+                            }
+                        }).then(function (response) {
+                            var result = parser.readFeatures(response);
+                            if (result.length > 0) {
+                                var gray_index = response.features[0].properties.GRAY_INDEX;
+                                $.ajax({
+                                    url: '@Url.Action("GetMeasuredParameterMPC", "Maps")',
+                                    data: {
+                                        GrayIndex: gray_index.toString(),
+                                        MeasuredParameterId: $('#PollutantSpreadMeasuredParameterId').val()
+                                    },
+                                    type: 'POST',
+                                    success: function (data) {
+                                        $('#tablePollutantSpreadMPCshare').text(gray_index);
+                                        $('#tablePollutantSpreadName').text(data.name);
+                                        $('#tablePollutantSpreadValue').text(data.value);
+                                        var title = $('#PollutantSpread').val();
+                                        $("#dialogPollutantSpreadInfo").dialog({
+                                            resize: DialogResize,
+                                            title: title,
+                                            minHeight: 100,
+                                            minWidth: 100,
+                                            width: 350,
+                                            maxHeight: window.innerHeight
+                                        });
+                                    },
+                                    error: function () {
+                                        //error
+                                    }
+                                })
+                            }
+                            else {
+                                if (i < layerAlmatyPollutantSpread.length - 1) {
+                                    i += 1;
+                                    AjaxCycle(i, layerAlmatyPollutantSpread);
+                                }
+                            }
+                        });
+                    }
+                }
+            }
+        }
+    });
+
+    function DialogResize(event, ui) {
+        var heightPadding = parseInt($(this).css('padding-top'), 0) + parseInt($(this).css('padding-bottom'), 0),
+            widthPadding = parseInt($(this).css('padding-left'), 0) + parseInt($(this).css('padding-right'), 0),
+            titlebarMargin = parseInt($(this).prev('.ui-dialog-titlebar').css('margin-bottom'), 0);
+        $(this).height($(this).parent().height() - $(this).prev('.ui-dialog-titlebar').outerHeight(true) - heightPadding - titlebarMargin);
+        $(this).width($(this).prev('.ui-dialog-titlebar').outerWidth(true) - widthPadding);
+    }
+
+    function DefaultMap() {
+        map.getView().setZoom(11);
+        map.getView().setCenter([8563808.43, 5351630.60]);
+        document.cookie = "zoomAlmaty=" + 10;
+        document.cookie = "coordsAlmaty=" + [76.93, 43.26];
+    }
+
+    // Custom filter invert map
+    var layer = layers[0];
+
+    var filter = new ol.filter.Colorize();
+    layer.addFilter(filter);
+
+    function SetFilter() {
+        filter.setActive($("#inverted").prop('checked'));
+        var f = 'invert';
+        switch (f) {
+            case 'invert':
+                filter.setFilter(f);
+                break;
+            default:
+                filter.setFilter({
+                    operation: f, red: Number($("#red").val()),
+                    green: Number($("#green").val()), blue: Number($("#blue").val()),
+                    value: Number($("#val").val()),
+                });
+                break;
+
+        }
+    }
+    SetFilter();
+</script>
+
+@*  GetPollutantsConcentration, ChartGetMeasuredDatas, TableGetMeasuredDatas, ChangeChart *@
+<script>
+    function GetPollutantsConcentration() {
+        $("#tablePollutantsConcentration").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetPollutantsConcentration", "LEDScreens")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var tablehtml = '';
+                $.each(data.jsonResult, function (i) {
+                    if (data.jsonResult[i].aqi <= 0.2) {
+                        tablehtml += '<tr><td>' + data.jsonResult[i].pollutant + '</td><td>' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                    else if (data.jsonResult[i].aqi <= 0.5) {
+                        tablehtml += '<tr><td style="background: #ff9f33;">' + data.jsonResult[i].pollutant + '</td><td style="background: #ff9f33;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                    else if (data.jsonResult[i].aqi <= 1) {
+                        tablehtml += '<tr><td style="background: #cc0033;">' + data.jsonResult[i].pollutant + '</td><td style="background: #cc0033;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                    else {
+                        tablehtml += '<tr><td style="background: #9b0064;">' + data.jsonResult[i].pollutant + '</td><td style="background: #9b0064;">' + data.jsonResult[i].aqi.toFixed(5) + '</td></tr>';
+                    }
+                });
+                $('#tablePollutantsConcentration tbody').empty();
+                $('#tablePollutantsConcentration tbody').append(tablehtml);
+                $("#tablePollutantsConcentration").LoadingOverlay("hide");
+            },
+            error: function () {
+                $("#tablePollutantsConcentration").LoadingOverlay("hide");
+            }
+        })
+    }
+
+    function ChartGetMinMax(data) {
+        $.ajax({
+            url: '@Url.Action("GetMinMax", "Maps")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#ChartMeasuredParameterId').val()
+            },
+            type: 'POST',
+            success: function (dataMinMax) {
+                var min = null;
+                var max = null;
+                var minMeasured = null;
+                //var maxMeasured = null;
+                if (dataMinMax.min != null) {
+                    min = parseFloat(dataMinMax.min);
+                }
+                if (dataMinMax.max != null) {
+                    max = parseFloat(dataMinMax.max);
+                }
+                if (dataMinMax.minMeasured != null) {
+                    minMeasured = parseFloat(dataMinMax.minMeasured);
+                }
+                //if (dataMinMax.maxMeasured != null) {
+                //    maxMeasured = parseFloat(dataMinMax.maxMeasured);
+                //}
+                ChangeChart(data, min, max, minMeasured);
+            },
+            error: function () {
+                ChangeChart(data, null, null, null);
+            }
+        })
+    }
+
+    function GetMeasuredParameters() {
+        $.ajax({
+            url: '@Url.Action("GetMeasuredParameters", "Maps")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var optionhtmlChart = '';
+                var optionhtmlTable = '';
+                $.each(data, function (i) {
+                    var text = "";
+                    if ($('#ChartMeasuredParameterId').val() == data[i].measuredParameter.id) {
+                        optionhtmlChart += '<option selected value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>'
+                    }
+                    else {
+                        optionhtmlChart += '<option value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>';
+                    }
+                    if ($('#TableMeasuredParameterId').val() == data[i].measuredParameter.id) {
+                        optionhtmlTable += '<option selected value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>'
+                    }
+                    else {
+                        optionhtmlTable += '<option value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>';
+                    }
+                });
+                $('#TableMeasuredParameterId').empty();
+                $('#TableMeasuredParameterId').append(optionhtmlTable);
+                $('#ChartMeasuredParameterId').empty();
+                $('#ChartMeasuredParameterId').append(optionhtmlChart);
+                ChartGetMeasuredDatas();
+                TableGetMeasuredDatas();
+            },
+            error: function () {
+                //
+            }
+        })
+    };
+
+    function ChartGetMeasuredDatas() {
+        $("#chartMeasuredDatas").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetMeasuredDatas", "MeasuredDatas")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#ChartMeasuredParameterId').val(),
+                DateFrom: $('#ChartDateFrom').val(),
+                TimeFrom: $('#ChartTimeFrom').val(),
+                DateTo: $('#ChartDateTo').val(),
+                TimeTo: $('#ChartTimeTo').val(),
+                Averaged: $('#ChartAveraged').is(':checked'),
+            },
+            type: 'POST',
+            success: function (data) {
+                ChartGetMinMax(data);
+            },
+            error: function () {
+                $("#chartMeasuredDatas").LoadingOverlay("hide");
+            }
+        })
+    };
+
+    var ChartMeasuredDatas = null;
+    function ChangeChart(data, min, max, minMeasured) {
+        if (ChartMeasuredDatas != null) {
+            ChartMeasuredDatas.destroy();
+        }
+        var ctx1 = document.getElementById("chartMeasuredDatas").getContext('2d');
+        var data1 = [],
+            data2 = [],
+            data3 = [],
+            data4 = [],
+            values = [];
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            values.push(parseFloat(data.measureddatas[i].value).toFixed(3));
+            if (data.measureddatas[0].measuredParameter.mpcMaxSingle != null) {
+                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpcMaxSingle).toFixed(3));
+            }
+            if (data.measureddatas[0].measuredParameter.mpcDailyAverage != null) {
+                values.push(parseFloat(data.measureddatas[i].measuredParameter.mpcDailyAverage).toFixed(3));
+            }
+        }
+        //if (min == null) {
+            min = Math.min.apply(null, values);
+            if (min > 1) {
+                min = Math.floor(min);
+            }
+        //}
+        //if (max == null) {
+            max = Math.max.apply(null, values);
+            if (max > 1) {
+                max = Math.ceil(max);
+            }
+        //}
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            data1.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.measureddatas[i].value).toFixed(3)
+            });
+            data2.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcMaxSingle).toFixed(3)
+            });
+            data3.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.dailyAverage).toFixed(3)
+            });
+            data4.push({
+                'x': moment(data.measureddatas[i].dateTime),
+                'y': parseFloat(data.measureddatas[i].measuredParameter.mpcDailyAverage).toFixed(3)
+            });
+        }
+        var datasets = [];
+        var MPCMaxSingle = null;
+        var MPCDailyAverage = null;
+        datasets.push({
+            label: $("#ChartMeasuredParameterId option:selected").text(),
+            data: data1,
+            colors: ['', 'rgba(255,100,100,1)', 'rgba(85,255,0,1)', 'orange'],
+            backgroundColor: 'rgba(85,255,0,1)',
+            borderColor: 'rgba(85,255,0,1)',
+            borderWidth: 3,
+            fill: false,
+            showLine: true,
+            lineTension: 0
+        });
+        if (data.measureddatas.length > 0) {
+            if (data.measureddatas[0].measuredParameter.mpcMaxSingle != null) {
+                MPCMaxSingle = parseFloat(data.measureddatas[0].measuredParameter.mpcMaxSingle).toFixed(3);
+                datasets.push({
+                    label: $("#MPCMaxSingle").val(),
+                    data: data2,
+                    backgroundColor: 'rgba(255,0,0,1)',
+                    borderColor: 'rgba(255,100,100,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                });
+            }
+            // add daily averaged
+            if (data.dailyAverage != null) {
+                datasets.push({
+                    label: $("#DailyAveraged").val(),
+                    data: data3,
+                    backgroundColor: 'rgba(85,255,255,1)',
+                    borderColor: 'rgba(85,255,255,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                });
+            }
+            if (data.measureddatas[0].measuredParameter.mpcDailyAverage != null) {
+                MPCDailyAverage = parseFloat(data.measureddatas[0].measuredParameter.mpcDailyAverage).toFixed(3);
+                datasets.push({
+                    label: $("#MPCDailyAverage").val(),
+                    data: data4,
+                    backgroundColor: 'rgba(255,0,255,1)',
+                    borderColor: 'rgba(255,100,255,1)',
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                });
+            }
+        }
+        Chart.defaults.multicolorLine = Chart.defaults.line;
+        Chart.controllers.multicolorLine = Chart.controllers.line.extend({
+            draw: function (ease) {
+                var
+                    startIndex = 0,
+                    meta = this.getMeta(),
+                    points = meta.data || [],
+                    colors = this.getDataset().colors,
+                    area = this.chart.chartArea,
+                    originalDatasets = meta.dataset._children
+                        .filter(function (data) {
+                            return !isNaN(data._view.y);
+                        });
+
+                function _setColor(newColor, meta, i) {
+                    meta.dataset._view.borderColor = newColor;
+                    meta.data[i]._view.backgroundColor = newColor;
+                    meta.data[i]._view.borderColor = newColor;
+                }
+
+                function _setBorderDash(meta, i) {
+                    if (i != data1.length + 1) {
+                        if (minMeasured != null && data1[i - 2].y <= minMeasured && data1[i - 1].y <= minMeasured) {
+                            meta.dataset._view.borderDash = [3, 3];
+                            meta.data[i - 2]._view.borderDash = [3, 3];
+                        }
+                        else {
+                            meta.dataset._view.borderDash = [0, 0];
+                            meta.data[i - 2]._view.borderDash = [0, 0];
+                        }
+                    }
+                }
+
+                if (!colors) {
+                    Chart.controllers.line.prototype.draw.call(this, ease);
+                    return;
+                }
+
+                for (var i = 2; i < data1.length + 2; i++) {
+                    var numb = parseFloat(data1[i - 2].y);
+                    var numbNext = parseFloat(data1[i - 2].y);
+                    if (i != data1.length + 1) {
+                        numbNext = parseFloat(data1[i - 1].y);
+                    }
+                    MPCMaxSingle = MPCMaxSingle;
+                    if (numb <= MPCMaxSingle && MPCMaxSingle != null && i != data1.length + 1 && numbNext >= MPCMaxSingle) {
+                        _setColor(colors[3], meta, i - 2);
+                        meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
+                        meta.dataset.draw();
+                        startIndex = i - 1;
+                    }
+                    else if (numb >= MPCMaxSingle && MPCMaxSingle != null && i != data1.length + 1 && numbNext <= MPCMaxSingle) {
+                        _setColor(colors[3], meta, i - 2);
+                        meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
+                        meta.dataset.draw();
+                        startIndex = i - 1;
+                    }
+                    else if (numb >= MPCMaxSingle && MPCMaxSingle != null) {
+                        _setColor(colors[1], meta, i - 2);
+                        meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
+                        meta.dataset.draw();
+                        startIndex = i - 1;
+                    }
+                    else {
+                        _setColor(colors[2], meta, i - 2);
+                        meta.dataset._children = originalDatasets.slice(startIndex, i);
+                        _setBorderDash(meta, i);
+                        meta.dataset.draw();
+                        startIndex = i - 1;
+                    }
+                }
+
+                meta.dataset._children = originalDatasets.slice(startIndex);
+                meta.dataset.draw();
+                meta.dataset._children = originalDatasets;
+
+                points.forEach(function (point) {
+                    point.draw(area);
+                });
+            }
+        });
+        ChartMeasuredDatas = new Chart(ctx1, {
+            type: 'multicolorLine',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                spanGaps: true,
+                title: {
+                    display: true,
+                    text: $("#EcoserviceAirPost").text()
+                },
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        time: {
+                            displayFormats: {
+                                second: 'gggg-MM-DD HH:mm:ss',
+                                minute: 'gggg-MM-DD HH:mm:ss',
+                                hour: 'gggg-MM-DD HH:mm:ss',
+                                day: 'gggg-MM-DD HH:mm:ss',
+                                week: 'gggg-MM-DD HH:mm:ss',
+                                month: 'gggg-MM-DD HH:mm:ss',
+                                quarter: 'gggg-MM-DD HH:mm:ss',
+                                year: 'gggg-MM-DD HH:mm:ss',
+                            },
+                            tooltipFormat: 'gggg-MM-DD HH:mm:ss'
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#DateTime").val()
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#Value").val()
+                        },
+                        ticks: {
+                            min: min,
+                            max: max
+                        }
+                    }]
+                }
+            }
+        });
+        $("#chartMeasuredDatas").LoadingOverlay("hide");
+        }
+
+    function TableGetMeasuredDatas() {
+        $("#tableMeasuredDatas").LoadingOverlay("show");
+        $.ajax({
+            url: '@Url.Action("GetMeasuredDatas", "MeasuredDatas")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#TableMeasuredParameterId').val(),
+                DateFrom: $('#TableDateFrom').val(),
+                TimeFrom: $('#TableTimeFrom').val(),
+                DateTo: $('#TableDateTo').val(),
+                TimeTo: $('#TableTimeTo').val(),
+                Averaged: $('#TableAveraged').is(':checked'),
+            },
+            type: 'POST',
+            success: function (data) {
+                TableGetMinMax(data);
+            },
+            error: function () {
+                $("#tableMeasuredDatas").LoadingOverlay("hide");
+            }
+        })
+    };
+
+    function TableGetMinMax(data) {
+        $.ajax({
+            url: '@Url.Action("GetMinMax", "Maps")',
+            data: {
+                MonitoringPostId: $('#EcoserviceAirMonitoringMonitoringPostId').val(),
+                MeasuredParameterId: $('#TableMeasuredParameterId').val()
+            },
+            type: 'POST',
+            success: function (dataMinMax) {
+                var minMeasured = null;
+                var maxMeasured = null;
+                if (dataMinMax.minMeasured != null) {
+                    minMeasured = parseFloat(dataMinMax.minMeasured);
+                }
+                if (dataMinMax.maxMeasured != null) {
+                    maxMeasured = parseFloat(dataMinMax.maxMeasured);
+                }
+                ChangeTable(data, minMeasured, maxMeasured);
+            },
+            error: function () {
+                ChangeTable(data, null, null);
+            }
+        })
+    }
+
+    function ChangeTable(data, minMeasured, maxMeasured) {
+        $("#tableMeasuredDatas").find("tr:gt(0)").remove();
+        if (minMeasured != null || maxMeasured != null)
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            if (minMeasured != null && data.measureddatas[i].value < minMeasured) {
+                data.measureddatas[i].value = $("#Smaller").val() + " " + parseFloat(minMeasured).toFixed(2);
+            }
+            else if (maxMeasured != null && data.measureddatas[i].value > maxMeasured) {
+                data.measureddatas[i].value = $("#More").val() + " " + parseFloat(maxMeasured).toFixed(2);
+            }
+            else {
+                data.measureddatas[i].value = parseFloat(data.measureddatas[i].value).toFixed(2);
+            }
+        }
+        var tablehtml = '';
+        for (var i = 0; i < data.measureddatas.length; i++) {
+            tablehtml += '<tr><td>' + data.measureddatas[i].dateTime + '</td><td>' + data.measureddatas[i].value + '</td></tr>';
+        }
+        $('#tableMeasuredDatas tbody').append(tablehtml);
+        $("#tableMeasuredDatas").LoadingOverlay("hide");
+    };
+</script>
+
+@* FlashFeature, FlashExceedPosts, GetExceedPosts *@
+<script>
+    var durationExceed = 3000;
+    function FlashFeature(feature) {
+        var start = new Date().getTime();
+        var listenerKey = map.on('postcompose', animate);
+
+        function animate(event) {
+            var vectorContext = event.vectorContext;
+            var frameState = event.frameState;
+            var flashGeom = feature.getGeometry().clone();
+            var elapsed = frameState.time - start;
+            var elapsedRatio = elapsed / durationExceed;
+            // radius will be 5 at start and 30 at end.
+            var radius = ol.easing.easeOut(elapsedRatio) * 25 + 5;
+            var opacity = ol.easing.easeOut(1 - elapsedRatio);
+            var style = new ol.style.Style({
+                image: new ol.style.Circle({
+                    radius: radius,
+                    stroke: new ol.style.Stroke({
+                        color: 'rgba(255, 0, 0, ' + opacity + ')',
+                        width: 3.25 + opacity
+                    })
+                })
+            });
+            vectorContext.setStyle(style);
+            vectorContext.drawGeometry(flashGeom);
+            if (elapsed > durationExceed) {
+                ol.Observable.unByKey(listenerKey);
+                return;
+            }
+            map.render();
+        }
+        map.render();
+    }
+
+    function FlashExceedPosts() {
+        window.setInterval(function () {
+            var source = Layer_EcoserviceAirMonitoringPosts.getSource();
+            var features = source.getFeatures();
+            for (var i in features) {
+                var feature = features[i];
+                if (jQuery.inArray(feature.get('Id'), exceedPosts) >= 0 && (document.getElementById("layerEcoserviceAirMonitoringPostsShow").checked == true)) {
+                    FlashFeature(feature);
+                }
+            }
+        }, durationExceed);
+    }
+
+    var exceedPosts = [];
+    function GetExceedPosts() {
+        function getExceedPosts() {
+            @*$.ajax({
+                url: '@Url.Action("GetMPCExceedEcoservicePosts", "MonitoringPosts")',
+                type: 'POST',
+                success: function (data) {
+                    exceedPosts = data.ids;
+                },
+                error: function () {
+                }
+            })*@
+        }
+        getExceedPosts();
+        window.setInterval(function () {
+            getExceedPosts();
+        }, durationExceed * 10);
+    }
+</script>
+
+@* GetInactiveEcoservicePosts *@
+<script>
+    var durationInactive = 3000;
+    var inactivePosts = [];
+    function GetInactivePosts() {
+        function getInactivePosts() {
+            $.ajax({
+                url: '@Url.Action("GetInactiveEcoservicePosts", "MonitoringPosts")',
+                type: 'POST',
+                success: function (data) {
+                    inactivePosts = data.ids;
+                    //Layer_EcoserviceAirMonitoringPosts.refresh({force:true});
+                    //Layer_EcoserviceAirMonitoringPosts.redraw();
+                    Layer_EcoserviceAirMonitoringPosts.getSource().changed();
+                },
+                error: function () {
+                }
+            })
+        }
+        getInactivePosts();
+        window.setInterval(function () {
+            getInactivePosts();
+        }, durationInactive * 10);
+    }
+</script>
+
+@* GetInactiveKazHydrometPosts *@
+<script>
+    var durationKazHydrometInactive = 3000;
+    var inactiveKazHydrometPosts = [];
+    function GetInactiveKazHydrometPosts() {
+        function getInactiveKazHydrometPosts() {
+            $.ajax({
+                url: '@Url.Action("GetInactiveKazHydrometPosts", "MonitoringPosts")',
+                type: 'POST',
+                success: function (data) {
+                    inactiveKazHydrometPosts = data.ids;
+                    Layer_KazHydrometAirMonitoringPostsHands.getSource().changed();
+                    Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().changed();
+                },
+                error: function () {
+                }
+            })
+        }
+        getInactiveKazHydrometPosts();
+        window.setInterval(function () {
+            getInactiveKazHydrometPosts();
+        }, durationKazHydrometInactive * 10);
+    }
+</script>
+
+@* GetAQI *@
+<script>
+    var durationAQI = 3000;
+    var colorPostsId = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensId)),
+        colorPostsAQI = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensAQI));
+    var projectName = 'Almaty';
+    function GetAQI() {
+        function getAQI() {
+            $.ajax({
+                url: '@Url.Action("GetAQIPosts", "LEDScreens")',
+                data: {
+                    ProjectName: projectName,
+                },
+                //dataType: 'json',
+                type: 'POST',
+                //contentType: 'application/json',
+                success: function (data) {
+                    $.each(data.jsonResult, function (i) {
+                        colorPostsId[i] = data.jsonResult[i].id;
+                        colorPostsAQI[i] = data.jsonResult[i].aqi;
+                    });
+                    Layer_EcoserviceAirMonitoringPosts.getSource().changed();
+                    Layer_KazHydrometAirMonitoringPostsHands.getSource().changed();
+                    Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().changed();
+                },
+                error: function () {
+                }
+            })
+        }
+        window.setInterval(function () {
+            getAQI();
+        }, durationAQI * 10);
+    }
+</script>
+
+@* SelectPost *@
+<script>
+    function SelectPost(id) {
+        var features = Layer_EcoserviceAirMonitoringPosts.getSource().getFeatures();
+        $.each(Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().getFeatures(), function (i) {
+            features.push(Layer_KazHydrometAirMonitoringPostsAutomatic.getSource().getFeatures()[i]);
+        });
+        $.each(Layer_KazHydrometAirMonitoringPostsHands.getSource().getFeatures(), function (i) {
+            features.push(Layer_KazHydrometAirMonitoringPostsHands.getSource().getFeatures()[i]);
+        });
+        var feature = features.find(f => f.get('Id') === id);
+        if (feature) {
+            //alert(feature.getGeometry().getExtent());
+            //map.getView().fit(feature.getGeometry(), map.getSize());
+            //map.getView().animate({ zoom: 10 }, { center: feature.getGeometry() });
+            //alert(ol.extent.getCenter(feature.getGeometry().getExtent()));
+            map.getView().animate({ zoom: 15 }, { center: ol.extent.getCenter(feature.getGeometry().getExtent()) });
+            $('.dialog-info-content').hide();
+            $('#EcoserviceAirMonitoringMonitoringPostId').val(feature.get('Id'));
+            $('#EcoserviceAirMonitoringPostDataProviderName').text(feature.get('DataProviderName'));
+            $('#EcoserviceAirMonitoringPostPollutionEnvironmentName').text(feature.get('PollutionEnvironmentName'));
+            $('#EcoserviceAirMonitoringPostNumber').text(feature.get('Number'));
+            $('#EcoserviceAirMonitoringPostName').text(feature.get('Name'));
+            if (feature.get('Automatic') == true) {
+                $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+            }
+            else if (feature.get('Automatic') == false) {
+                $('#KazHydrometAirMonitoringPostType').text($("#Hands").val());
+            }
+            else {
+                $('#KazHydrometAirMonitoringPostType').text($("#Automatic").val());
+            }
+            $('#EcoserviceAirMonitoringPostAdditionalInformation').text(feature.get('AdditionalInformation'));
+            $('#divEcoserviceAirPost').show();
+            $("#divEcoserviceAirPost").tabs();
+            $("#dialogMonitoringPostInfo").dialog({
+                resize: DialogResize,
+                title: $('#EcoserviceAirPost').val(),
+                minHeight: 100,
+                minWidth: 100,
+                width: 750,
+                maxHeight: window.innerHeight
+            });
+            GetMeasuredParameters();
+            ChartGetMeasuredDatas();
+            TableGetMeasuredDatas();
+        }
+    }
+</script>
+
+@* window.setInterval (restore zoom, coords) *@
+<script>
+    window.setInterval(function () {
+        var zoom = map.getView().getZoom();
+        var coords = map.getView().getCenter();
+        coords = ol.proj.transform(coords, 'EPSG:3857', 'EPSG:4326').toString();
+        if (Number.parseFloat(zoom) != Number.parseFloat(GetCookie("zoomAlmaty"))) {
+            document.cookie = "zoomAlmaty=" + zoom;
+        }
+        var coordsArray = coords.split(',');
+        var coordsArrayCookie = GetCookie("coordsAlmaty").split(',');
+        if (Number.parseFloat(coordsArray[0]) != Number.parseFloat(coordsArrayCookie[0]) || Number.parseFloat(coordsArray[1]) != Number.parseFloat(coordsArrayCookie[1])) {
+            document.cookie = "coordsAlmaty=" + coords;
+        }
+    }, 1000);
+
+    window.setInterval(function () {
+        ChangeLayers();
+    }, 1);
+</script>
+
+@* PollutantSpreadChange *@
+<script>
+    var geoserverWorkspace = $('#GeoServerWorkspace').val(),
+        geoserverAddress = $('#GeoServerAddress').val(),
+        geoserverPort = $('#GeoServerPort').val();
+
+    var times20 = [];
+
+    $.ajax({
+        url: '@Url.Action("GetTodayTimes20")',
+        type: 'POST',
+        success: function (data) {
+            times20 = data.times20;
+            $("#time20").attr({
+                "max": times20.length - 1,
+                "value": times20.length - 1
+            });
+            $("#time20Label").text(moment(times20[times20.length - 1]).format('HH:mm'));
+            PollutantSpreadChange();
+        },
+        error: function () {
+        }
+    })
+
+    var input = document.getElementById('time20'),
+        output = document.getElementById('time20Label');
+    input.oninput = function () {
+        output.innerHTML = moment(times20[this.value]).format('HH:mm');
+        PollutantSpreadChange();
+    };
+    input.oninput();
+
+    function PollutantSpreadChange() {
+        // remove old layers
+        map.getLayers().forEach(function (layer) {
+            if (layer != null) {
+                if (layer.get('name') == 'AlmatyPollutantSpread') {
+                    map.removeLayer(layer);
+                }
+            }
+        })
+        // add new layers
+        var layer_name = 'AlmatyPollutantSpread_' + $('#PollutantSpreadMeasuredParameterId').val() + '_' +
+            (new Date($.now())).getFullYear() +
+            ('0' + ((new Date($.now())).getMonth() + 1)).slice(-2) +
+            ('0' + (new Date($.now())).getDate()).slice(-2) +
+            $('#time20Label').text().replace(":", "") + '00';
+        $.ajax({
+            url: '@Url.Action("GetLayersCount")',
+            type: 'POST',
+            data: {
+                LayerBaseName: layer_name
+            },
+            success: function (data) {
+                // remove old layers
+                map.getLayers().forEach(function (layer) {
+                    if (layer != null) {
+                        if (layer.get('name') == 'AlmatyPollutantSpread') {
+                            map.removeLayer(layer);
+                        }
+                    }
+                })
+                for (i = 1; i <= data.count; i++) {
+                    var layer_name_current = layer_name + '_' + i.toString();
+                    var Source_AlmatyPollutantSpread = new ol.source.TileWMS({
+                        url: 'http://' + geoserverAddress + ':' + geoserverPort + '/geoserver/' + geoserverWorkspace + '/wms?',
+                        params: {
+                            'LAYERS': geoserverWorkspace + ':' + layer_name_current,
+                            'VERSION': '1.1.0',
+                            'FORMAT': 'image/png',
+                            'TILED': true
+                        },
+                        serverType: 'geoserver'
+                    });
+                    var Layer_AlmatyPollutantSpread = new ol.layer.Tile({
+                        source: Source_AlmatyPollutantSpread
+                    });
+                    Layer_AlmatyPollutantSpread.set('name', 'AlmatyPollutantSpread');
+                    Layer_AlmatyPollutantSpread.setVisible(document.getElementById("layerPollutantSpreadShow").checked);
+                    Layer_AlmatyPollutantSpread.setOpacity($('#layerPollutantSpreadOpacity').val() / 100)
+                    map.getLayers().insertAt(1, Layer_AlmatyPollutantSpread);
+                }
+            },
+            error: function () {
+            }
+        })
+    };
+</script>
+
+@* window.onload *@
+<script>
+    window.onload = function start() {
+        FlashExceedPosts();
+        GetExceedPosts();
+        GetInactivePosts();
+        GetInactiveKazHydrometPosts();
+        GetAQI();
+        ChangeLayers();
+    }
+</script>

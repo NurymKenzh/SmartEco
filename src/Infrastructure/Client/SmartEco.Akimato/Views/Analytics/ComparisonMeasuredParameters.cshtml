@@ -1,0 +1,255 @@
+﻿@using System.Net
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["ComparisonMeasuredParameters"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+<link href="~/lib/jquery-ui/jquery-ui.css" rel="stylesheet" />
+<script src="~/lib/jquery-ui/jquery-ui.js"></script>
+<script src="~/lib/moment.js/moment.js"></script>
+<script src="~/lib/chart.js/dist/Chart.js"></script>
+<script src="~/lib/gasparesganga-jquery-loading-overlay/src/loadingoverlay.js"></script>
+
+<div hidden="hidden">
+    <input id="Value" type="text" value="@SharedLocalizer["Value"]" />
+    <input id="DateTime" type="text" value="@SharedLocalizer["DateTime"]" />
+    <input id="EcoserviceAirPost" type="text" value="@SharedLocalizer["EcoserviceAirPost"]" />
+    <input id="TimeFrom" type="text" value="@ViewBag.TimeFrom" />
+    <input id="TimeTo" type="text" value="@ViewBag.TimeTo" />
+</div>
+
+<h1>@SharedLocalizer["ComparisonMeasuredParameters"]</h1>
+
+<div class="row">
+    <div id="divEcoserviceAirPostChart" class="col-md-6">
+        @Html.TextBox("ChartDateFrom", (string)ViewBag.DateFrom, new { type = "date", @class = "form-control info-input", @id = "ChartDateFrom", @onchange = "ChartGetMeasuredParameters()" })
+        -
+        @Html.TextBox("ChartDateTo", (string)ViewBag.DateTo, new { type = "date", @class = "form-control info-input", @id = "ChartDateTo", @onchange = "ChartGetMeasuredParameters()" })
+        @Html.DropDownList("ChartMonitoringPostId", (IEnumerable<SelectListItem>)ViewBag.EcoserviceAirMonitoringPosts, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMonitoringPostId", @onchange = "ChartGetMeasuredParameters()" })
+        @Html.DropDownList("ChartMeasuredParameterId", (IEnumerable<SelectListItem>)ViewBag.MonitoringPostMeasuredParameters, htmlAttributes: new { @class = "form-control info-input-select", @id = "ChartMeasuredParameterId", @onchange = "ChartGetMeasuredParameters()" })
+        @if (Role == "admin" || Role == "moderator")
+        {
+            <label>
+                @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "ChartGetMeasuredDatas()" })
+                @SharedLocalizer["Averaged"]
+            </label>
+        }
+        else
+        {
+            <div hidden="hidden">
+                <label>
+                    @Html.CheckBox("Averaged", true, new { @id = "Averaged", @onchange = "ChartGetMeasuredDatas()" })
+                    @SharedLocalizer["Averaged"]
+                </label>
+            </div>
+        }
+    </div>
+    <div id="CheckBoxList" class="col-md-3 form-control analystScrollCheck">
+        @*@foreach (var item in ViewBag.MonitoringPostMeasuredParameters)
+            {
+                <label>
+                    @Html.CheckBox(item.Name, false, new { id = item.Id, onchange = "ChartGetMeasuredParameters()" })
+                    @item.Name
+                </label>
+                <br />
+            }*@
+    </div>
+</div>
+<div class="col-md-9">
+    <canvas id="chartMeasuredDatas"></canvas>
+</div>
+
+<script>
+    function ChartGetMeasuredParameters() {
+        $.ajax({
+            url: '@Url.Action("GetMeasuredParameters", "Analytics")',
+            data: {
+                MonitoringPostId: $('#ChartMonitoringPostId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var optionhtmlChart = '';
+                $.each(data, function (i) {
+                    if ($('#ChartMeasuredParameterId').val() == data[i].measuredParameter.id) {
+                        optionhtmlChart += '<option selected value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>'
+                    }
+                    else {
+                        optionhtmlChart += '<option value="' + data[i].measuredParameter.id + '"' +
+                            '>' + data[i].measuredParameter.name +
+                            '</option>';
+                    }
+                });
+                $('#ChartMeasuredParameterId').empty();
+                $('#ChartMeasuredParameterId').append(optionhtmlChart);
+                ChartGetMeasuredParametersForUnit();
+            },
+            error: function () {
+                //
+            }
+        })
+    };
+
+    function ChartGetMeasuredParametersForUnit() {
+        $.ajax({
+            url: '@Url.Action("GetMeasuredParametersForUnit", "Analytics")',
+            data: {
+                MeasuredParameterId: $('#ChartMeasuredParameterId').val()
+            },
+            type: 'POST',
+            success: function (data) {
+                var checkBoxHtml = '';
+                $.each(data, function (i) {
+                    if ($('#ChartMeasuredParameterId').val() != data[i].id) {
+                        checkBoxHtml += '<input type="checkbox" name="checkbox" id="' + data[i].id + '" value="' + data[i].name + '" onchange = "ChartGetMeasuredDatas()">' +
+                            '<label for="' + data[i].id + '">' + data[i].name + '</label>' +
+                            '<br />';
+                    }
+                });
+                $('#CheckBoxList').empty();
+                $('#CheckBoxList').append(checkBoxHtml);
+                ChartGetMeasuredDatas()
+            },
+            error: function () {
+            }
+        })
+    }
+
+    var ChartMeasuredDatas = null;
+    function ChangeChart(datasets) {
+        if (ChartMeasuredDatas != null) {
+            ChartMeasuredDatas.destroy();
+        }
+        var ctx1 = document.getElementById("chartMeasuredDatas").getContext('2d');
+        ChartMeasuredDatas = new Chart(ctx1, {
+            type: 'scatter',
+            data: {
+                datasets: datasets
+            },
+            options: {
+                spanGaps: true,
+                title: {
+                    display: true,
+                    text: $("#EcoserviceAirPost").text()
+                },
+                scales: {
+                    xAxes: [{
+                        type: "time",
+                        time: {
+                            displayFormats: {
+                                second: 'gggg-MM-DD HH:mm:ss',
+                                minute: 'gggg-MM-DD HH:mm:ss',
+                                hour: 'gggg-MM-DD HH:mm:ss',
+                                day: 'gggg-MM-DD HH:mm:ss',
+                                week: 'gggg-MM-DD HH:mm:ss',
+                                month: 'gggg-MM-DD HH:mm:ss',
+                                quarter: 'gggg-MM-DD HH:mm:ss',
+                                year: 'gggg-MM-DD HH:mm:ss',
+                            },
+                            tooltipFormat: 'gggg-MM-DD HH:mm:ss'
+                        },
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#DateTime").val()
+                        }
+                    }],
+                    yAxes: [{
+                        display: true,
+                        scaleLabel: {
+                            display: true,
+                            labelString: $("#Value").val()
+                        }
+                    }]
+                }
+            }
+        });
+        $("#chartMeasuredDatas").LoadingOverlay("hide");
+    }
+
+    function ChartGetMeasuredDatas() {
+        var arrayId = [];
+        var arrayText = [];
+        arrayId.push($('#ChartMeasuredParameterId').val());
+        arrayText.push($("#ChartMeasuredParameterId option:selected").text());
+        var checkboxes = document.querySelectorAll('input[type=checkbox]:checked');
+        for (var i = 0; i < checkboxes.length; i++) {
+            if (checkboxes[i].id != "Averaged") {
+                arrayId.push(checkboxes[i].id);
+                arrayText.push(checkboxes[i].value);
+            }
+        }
+
+        $("#chartMeasuredDatas").LoadingOverlay("show");
+        var datasets = [];
+        AjaxCycle(0, arrayId, arrayText, datasets);
+    };
+
+    function AjaxCycle(j, arrayId, arrayText, datasets) {
+        var letters = '0123456789ABCDEF';
+        var color = '#';
+        for (var k = 0; k < 6; k++) {
+            color += letters[Math.floor(Math.random() * 16)];
+        }
+        $.ajax({
+            url: '@Url.Action("GetMeasuredDatas", "Analytics")',
+            data: {
+                MonitoringPostId: $('#ChartMonitoringPostId').val(),
+                MeasuredParameterId: arrayId[j],
+                DateFrom: $('#ChartDateFrom').val(),
+                TimeFrom: $('#TimeFrom').val(),
+                DateTo: $('#ChartDateTo').val(),
+                TimeTo: $('#TimeTo').val(),
+                Averaged: $('#Averaged').is(':checked')
+            },
+            type: 'POST',
+            success: function (data) {
+                var data1 = [];
+                if (data.length > 0) {
+                    for (var i = 0; i < data.length; i++) {
+                        data1.push({
+                            'x': moment(data[i].dateTime),
+                            'y': parseFloat(data[i].value).toFixed(3)
+                        });
+                    }
+                }
+                datasets.push({
+                    label: arrayText[j],
+                    data: data1,
+                    colors: color,
+                    backgroundColor: color,
+                    borderColor: color,
+                    borderWidth: 3,
+                    fill: false,
+                    showLine: true,
+                    lineTension: 0
+                });
+                if (j < arrayId.length - 1) {
+                    j += 1;
+                    AjaxCycle(j, arrayId, arrayText, datasets);
+                }
+                else {
+                    ChangeChart(datasets)
+                }
+            },
+            error: function () {
+                $("#chartMeasuredDatas").LoadingOverlay("hide");
+            }
+        })
+    }
+</script>
+
+@* window.onload *@
+<script>
+    window.onload = function start() {
+        ChartGetMeasuredParameters();
+    }
+</script>

@@ -1,0 +1,159 @@
+﻿@model SmartEco.Akimato.Models.TargetTerritory
+@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = SharedLocalizer["Delete"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+<h1>@SharedLocalizer["Delete"]</h1>
+
+<h3>@SharedLocalizer["Delete"]?</h3>
+<div>
+    <h4>@SharedLocalizer["TargetTerritory"]</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.TerritoryType)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.TerritoryType.Name)
+        </dd>
+        @if (Model.KATOId != null)
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.KATO)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.KATO.Name)
+            </dd>
+        }
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NameKK)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameKK)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.NameRU)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.NameRU)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.GISConnectionCode)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.GISConnectionCode)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Post)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Post)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AdditionalInformationKK)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AdditionalInformationKK)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.AdditionalInformationRU)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.AdditionalInformationRU)
+        </dd>
+        @if (Role == "admin" || Role == "moderator")
+        {
+            <dt class="col-sm-2">
+                @Html.DisplayNameFor(model => model.Project)
+            </dt>
+            <dd class="col-sm-10">
+                @Html.DisplayFor(model => model.Project.Name)
+            </dd>
+        }
+        <dt class="col-sm-2">
+            @SharedLocalizer["RelatedItems"]
+        </dt>
+        <dd class="col-sm-10">
+            @if (((IQueryable<TargetValue>)ViewBag.TargetValues).Count() > 0)
+            {
+                <table class="table red">
+                    <tr>
+                        <th>
+                            @SharedLocalizer["TargetValues"]
+                        </th>
+                    </tr>
+                    @foreach (var item in (IQueryable<TargetValue>)ViewBag.TargetValues)
+                    {
+                        <tr>
+                            <td>
+                                @item.Year
+                            </td>
+                            <td>
+                                <a asp-controller="TargetValues" asp-action="Edit" asp-route-id="@item.Id">@SharedLocalizer["Edit"]</a> |
+                                <a asp-controller="TargetValues" asp-action="Details" asp-route-id="@item.Id">@SharedLocalizer["Details"]</a> |
+                                <a asp-controller="TargetValues" asp-action="Delete" asp-route-id="@item.Id">@SharedLocalizer["Delete"]</a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+            @if (((IQueryable<AActivity>)ViewBag.AActivities).Count() > 0)
+            {
+                <table class="table red">
+                    <tr>
+                        <th>
+                            @SharedLocalizer["AActivities"]
+                        </th>
+                    </tr>
+                    @foreach (var item in (IQueryable<AActivity>)ViewBag.AActivities)
+                    {
+                        <tr>
+                            <td>
+                                @item.Year
+                            </td>
+                            <td>
+                                <a asp-controller="AActivities" asp-action="Edit" asp-route-id="@item.Id">@SharedLocalizer["Edit"]</a> |
+                                <a asp-controller="AActivities" asp-action="Details" asp-route-id="@item.Id">@SharedLocalizer["Details"]</a> |
+                                <a asp-controller="AActivities" asp-action="Delete" asp-route-id="@item.Id">@SharedLocalizer["Delete"]</a>
+                            </td>
+                        </tr>
+                    }
+                </table>
+            }
+        </dd>
+    </dl>
+
+    <form asp-action="Delete">
+        <input type="hidden" asp-for="Id" />
+        <div hidden="hidden">
+            @Html.Editor("SortOrder", null, new { value = ViewBag.SortOrder })
+            @Html.Editor("PageSize", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("PageNumber", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("NameKKFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("NameRUFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("NameENFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("GISConnectionCodeFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+            @Html.Editor("TerritoryTypeIdFilter", null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </div>
+        @if ((((IQueryable<TargetValue>)ViewBag.TargetValues).Count() == 0)
+     && (((IQueryable<AActivity>)ViewBag.AActivities).Count() == 0))
+        {
+            <input type="submit" value="@SharedLocalizer["Delete"]" class="btn btn-outline-light" />
+        }
+        else
+        {
+            <input type="submit" value="@SharedLocalizer["Delete"]" disabled="disabled" class="btn btn-outline-light" />
+        }
+        |   @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new { PageNumber = ViewBag.PageNumber, PageSize = ViewBag.PageSize, SortOrder = ViewBag.SortOrder, NameKKFilter = ViewBag.NameKKFilter, NameRUFilter = ViewBag.NameRUFilter, GISConnectionCodeFilter = ViewBag.GISConnectionCodeFilter, TerritoryTypeIdFilter = ViewBag.TerritoryTypeIdFilter })
+
+    </form>
+</div>

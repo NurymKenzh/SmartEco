@@ -1,0 +1,177 @@
+﻿@using SmartEco.Akimato.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Data"];
+}
+@{
+    string Role = Context.Session.GetString("Role");
+}
+@*@if (Role == "admin" || Role == "moderator")
+    {
+        <a class="btn btn-outline-light" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+        <a class="btn btn-outline-light" asp-controller="Layers" asp-action="Index">@SharedLocalizer["Layers"]</a>
+        <a class="btn btn-outline-light" asp-controller="MeasuredParameters" asp-action="SetMaximumValue">Установка максимального значения измеряемых параметров</a>
+        <hr />
+        <a class="btn btn-outline-light" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-outline-light" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-outline-light" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-outline-light" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    }
+    else if (Role == "KaragandaRegion")
+    {
+        <a class="btn btn-outline-light" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+        <hr />
+        <a class="btn btn-outline-light" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-outline-light" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-outline-light" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-outline-light" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    }
+    else if (Role == "Arys")
+    {
+        <a class="btn btn-outline-light" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+    }
+    else if (Role == "Almaty")
+    {
+        <a class="btn btn-outline-light" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-outline-light" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-outline-light" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-outline-light" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    }
+    else if (Role == "Shymkent")
+    {
+        <a class="btn btn-outline-light" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-outline-light" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-outline-light" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-outline-light" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-outline-light" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-outline-light" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-outline-light" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    }*@
+
+@*
+
+
+    <a class="btn btn-outline-light" asp-controller="Logs" asp-action="Index">@SharedLocalizer["History"]</a>
+    <a class="btn btn-outline-light" asp-controller="Pollutants" asp-action="Index">@SharedLocalizer["Pollutants"]</a>
+
+    <a class="btn btn-outline-light" asp-controller="PollutionSourceDatas" asp-action="Index">@SharedLocalizer["PollutionSourceDatas"]</a>
+    <a class="btn btn-outline-light" asp-controller="KazHydrometAirPosts" asp-action="Index">@SharedLocalizer["KazHydrometAirPosts"]</a>
+    <a class="btn btn-outline-light" asp-controller="KazHydrometSoilPosts" asp-action="Index">@SharedLocalizer["KazHydrometSoilPosts"]</a>
+
+
+
+
+    <a class="btn btn-outline-light" asp-controller="Maps" asp-action="Index">@SharedLocalizer["Map"]</a>
+*@
+
+@if (Role == "admin" || Role == "moderator")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Layers" asp-action="Index">@SharedLocalizer["Layers"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MeasuredParameters" asp-action="SetMaximumValue">Установка максимального значения измеряемых параметров</a>
+
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    </div>
+}
+else if (Role == "KaragandaRegion")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    </div>
+}
+else if (Role == "Arys")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="MeasuredDatas" asp-action="Index">@SharedLocalizer["MeasuredDatas"]</a>
+    </div>
+}
+else if (Role == "Almaty")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    </div>
+}
+else if (Role == "Shymkent")
+{
+    <div class="d-flex tile-container">
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Targets" asp-action="Index">@SharedLocalizer["Targets"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Events" asp-action="Index">@SharedLocalizer["Events"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetTerritories" asp-action="Index">@SharedLocalizer["TargetTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TargetValues" asp-action="Index">@SharedLocalizer["TargetValues"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="AActivities" asp-action="Index">@SharedLocalizer["AActivities"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="Executors" asp-action="Index">@SharedLocalizer["Executors"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciallyProtectedNaturalTerritories" asp-action="Index">@SharedLocalizer["SpeciallyProtectedNaturalTerritories"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="GreemPlantsPassports" asp-action="Index">@SharedLocalizer["GreemPlantsPassports"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByObjectTableOfTheBreedStateLists" asp-action="Index">@SharedLocalizer["TreesByObjectTableOfTheBreedStateLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="TreesByFacilityManagementMeasuresLists" asp-action="Index">@SharedLocalizer["TreesByFacilityManagementMeasuresLists"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="PlantationsStates" asp-action="Index">@SharedLocalizer["PlantationsStates"]</a>
+        <a class="btn btn-text-wrap tile m-1 animated-button victoria-one" asp-controller="SpeciesDiversities" asp-action="Index">@SharedLocalizer["SpeciesDiversities"]</a>
+    </div>
+}
