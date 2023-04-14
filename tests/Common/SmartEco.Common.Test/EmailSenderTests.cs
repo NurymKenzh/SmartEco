@@ -16,8 +16,8 @@ namespace SmartEco.Common.Test
     /// </summary>
     public class EmailSenderTests
     {
-        private readonly string[] validToEmails = { "ilyatstr@gmail.com" };
-        private readonly string attachmentPathValid = @"C:\Users\AvtrElias\Desktop\test_attachment.txt";
+        private readonly string[] validToEmails = { "example@gmail.com" };
+        private readonly string attachmentPathValid = @"C:\Users\%UserName%\Desktop\test_attachment.txt";
         private readonly EmailOptions _emailOptions;
         private readonly Mock<IOptions<EmailOptions>> _mockEmailOptions;
 
