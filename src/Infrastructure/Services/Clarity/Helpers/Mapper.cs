@@ -13,6 +13,7 @@ namespace Clarity.Helpers
             {typeof(Pm25ConcMass), 2},
             {typeof(Pm10ConcMass), 3},
             {typeof(Temperature), 4},
+            {typeof(No2Conc), 13},
             {typeof(RelHumid), 19}
         };
 
@@ -21,6 +22,7 @@ namespace Clarity.Helpers
             {typeof(Pm25ConcMass), true},
             {typeof(Pm10ConcMass), true},
             {typeof(Temperature), false},
+            {typeof(No2Conc), true},
             {typeof(RelHumid), false}
         };
 
@@ -42,6 +44,8 @@ namespace Clarity.Helpers
                         measuredDatas.Add(ToMeasuredData(clarityMeasurement.Characteristics.Pm10ConcMass, clarityMeasurement.Time, monitoringPost.Id));
                     if (clarityMeasurement.Characteristics?.Temperature != null)
                         measuredDatas.Add(ToMeasuredData(clarityMeasurement.Characteristics.Temperature, clarityMeasurement.Time, monitoringPost.Id));
+                    if (clarityMeasurement.Characteristics?.No2Conc != null)
+                        measuredDatas.Add(ToMeasuredData(clarityMeasurement.Characteristics.No2Conc, clarityMeasurement.Time, monitoringPost.Id));
                     if (clarityMeasurement.Characteristics?.RelHumid != null)
                         measuredDatas.Add(ToMeasuredData(clarityMeasurement.Characteristics.RelHumid, clarityMeasurement.Time, monitoringPost.Id));
                 }
