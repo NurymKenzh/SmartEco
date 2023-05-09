@@ -644,7 +644,8 @@ namespace GetPostsData
                         try
                         {
                             connection.Execute($"DELETE FROM public.\"MeasuredData\" " +
-                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;", commandTimeout: 86400);
+                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null " +
+                                $"AND \"MonitoringPostId\" <> 234 AND \"MonitoringPostId\" <> 235;", commandTimeout: 86400); //exclude Zhanatas posts
                         }
                         catch
                         {
@@ -822,7 +823,8 @@ namespace GetPostsData
                         try
                         {
                             connection.Execute($"DELETE FROM public.\"MeasuredData\" " +
-                                $"WHERE \"DateTime\" < '{dateTimeZhanatasLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null;", commandTimeout: 86400);
+                                $"WHERE \"DateTime\" < '{dateTimeZhanatasLast.ToString("yyyy-MM-dd")}' AND \"DateTime\" is not null " +
+                                $"AND (\"MonitoringPostId\" = 234 OR \"MonitoringPostId\" = 235);", commandTimeout: 86400); //Zhanatas posts
                         }
                         catch
                         {
