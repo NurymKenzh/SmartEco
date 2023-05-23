@@ -520,6 +520,11 @@
 
 @* layers *@
 <script>
+    var inactivePosts = [];
+    var inactiveKazHydrometPosts = [];
+    var colorPostsId = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensId)),
+        colorPostsAQI = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensAQI));
+
     var layers = [];
 
     var HEREappId = 'SLdBasp4s1oq2oUbVGxy';
@@ -2192,7 +2197,6 @@
 @* GetInactiveEcoservicePosts *@
 <script>
     var durationInactive = 3000;
-    var inactivePosts = [];
     function GetInactivePosts() {
         function getInactivePosts() {
             $.ajax({
@@ -2218,7 +2222,6 @@
 @* GetInactiveKazHydrometPosts *@
 <script>
     var durationKazHydrometInactive = 3000;
-    var inactiveKazHydrometPosts = [];
     function GetInactiveKazHydrometPosts() {
         function getInactiveKazHydrometPosts() {
             $.ajax({
@@ -2243,8 +2246,6 @@
 @* GetAQI *@
 <script>
     var durationAQI = 3000;
-    var colorPostsId = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensId)),
-        colorPostsAQI = @Html.Raw(JsonConvert.SerializeObject(ViewBag.LEDScreensAQI));
     var projectName = 'Almaty';
     function GetAQI() {
         function getAQI() {
