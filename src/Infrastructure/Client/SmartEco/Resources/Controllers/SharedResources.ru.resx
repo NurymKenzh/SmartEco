@@ -1067,4 +1067,7 @@
   <data name="Print" xml:space="preserve">
     <value>Печать</value>
   </data>
+  <data name="Oskemen" xml:space="preserve">
+    <value>Устькаман</value>
+  </data>
 </root>

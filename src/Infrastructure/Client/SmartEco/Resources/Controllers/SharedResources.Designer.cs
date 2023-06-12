@@ -1962,6 +1962,15 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string Oskemen {
+            get {
+                return ResourceManager.GetString("Oskemen", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string OtherCapitalStructures {
             get {
                 return ResourceManager.GetString("OtherCapitalStructures", resourceCulture);

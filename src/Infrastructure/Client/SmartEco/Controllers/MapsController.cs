@@ -1163,6 +1163,67 @@ namespace SmartEco.Controllers
             return View();
         }
 
+        public async Task<IActionResult> Oskemen()
+        {
+            string role = HttpContext.Session.GetString("Role");
+            if (!(role == "admin" || role == "moderator" || role == "Oskemen" || role == "Kazhydromet"))
+            {
+                return Redirect("/");
+            }
+
+            List<MeasuredParameter> measuredParameters = await GetMeasuredParameters();
+
+            ViewBag.GeoServerWorkspace = Startup.Configuration["GeoServerWorkspace"].ToString();
+            ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressServer"].ToString();
+            if (!Convert.ToBoolean(Startup.Configuration["Server"]))
+            {
+                ViewBag.GeoServerAddress = Startup.Configuration["GeoServerAddressDebug"].ToString();
+            }
+            ViewBag.GeoServerPort = Startup.Configuration["GeoServerPort"].ToString();
+            //ViewBag.MeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.MonitoringPostMeasuredParameters = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode)).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.Pollutants = new SelectList(measuredParameters.Where(m => !string.IsNullOrEmpty(m.OceanusCode) && m.MPCMaxSingle != null).OrderBy(m => m.Name), "Id", "Name");
+            ViewBag.DateFrom = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeFrom = (DateTime.Today).ToString("HH:mm:ss");
+            ViewBag.DateTo = (DateTime.Now).ToString("yyyy-MM-dd");
+            ViewBag.TimeTo = new DateTime(2000, 1, 1, 23, 59, 00).ToString("HH:mm:ss");
+
+            string decimaldelimiter = CultureInfo.CurrentCulture.NumberFormat.NumberDecimalSeparator;
+
+            List<MonitoringPost> monitoringPosts = await GetMonitoringPosts();
+
+            List<MonitoringPost> kazHydrometAirMonitoringPosts = monitoringPosts
+                .Where(m => m.Project != null && m.Project.Name == "Oskemen"
+                && m.DataProvider.Name == Startup.Configuration["KazhydrometName"].ToString()
+                && m.PollutionEnvironmentId == 2
+                && m.TurnOnOff == true)
+                .ToList();
+
+            JObject kazHydrometAirMonitoringPostsAutomaticObject = GetObjectKazHydrometAirMonitoringPostsAutomatic(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            ViewBag.KazHydrometAirMonitoringPostsAutomaticLayerJson = kazHydrometAirMonitoringPostsAutomaticObject.ToString();
+
+            JObject kazHydrometAirMonitoringPostsHandsObject = GetObjectKazHydrometAirMonitoringPostsHands(decimaldelimiter, kazHydrometAirMonitoringPosts);
+            ViewBag.KazHydrometAirMonitoringPostsHandsLayerJson = kazHydrometAirMonitoringPostsHandsObject.ToString();
+
+            ViewBag.KazHydrometAirMonitoringPosts = kazHydrometAirMonitoringPosts.ToArray();
+
+            List<MonitoringPost> ecoserviceAirMonitoringPosts = monitoringPosts
+                .Where(m => /*m.NorthLatitude >= 46.00M && m.NorthLatitude <= 51.00M*/
+                m.Project != null && m.Project.Name == "Oskemen"
+                && m.DataProvider.Name == Startup.Configuration["EcoserviceName"].ToString()
+                && m.TurnOnOff == true)
+                .ToList();
+
+            JObject ecoserviceAirMonitoringPostsObject = GetObjectEcoserviceAirMonitoringPosts(decimaldelimiter, ecoserviceAirMonitoringPosts);
+            ViewBag.EcoserviceAirMonitoringPostsLayerJson = ecoserviceAirMonitoringPostsObject.ToString();
+
+            ViewBag.EcoserviceAirMonitoringPosts = ecoserviceAirMonitoringPosts.ToArray();
+
+            (ViewBag.LEDScreensId, ViewBag.LEDScreensAQI) = await GetAQIPosts("Oskemen");
+
+            return View();
+        }
+
         public async Task<JObject> GetObjectPollutionSources(string decimaldelimiter)
         {
             string urlPollutionSources = "api/PollutionSources";

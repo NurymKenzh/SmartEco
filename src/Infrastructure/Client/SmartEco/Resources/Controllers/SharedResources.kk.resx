@@ -1065,4 +1065,7 @@
   <data name="Print" xml:space="preserve">
     <value>Баспа</value>
   </data>
+  <data name="Oskemen" xml:space="preserve">
+    <value>Өскемен</value>
+  </data>
 </root>

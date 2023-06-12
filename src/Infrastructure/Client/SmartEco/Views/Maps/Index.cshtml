@@ -19,6 +19,7 @@
     <a class="btn btn-default" asp-controller="Maps" asp-action="Altynalmas">@SharedLocalizer["Altynalmas"]</a>
     <a class="btn btn-default" asp-controller="Maps" asp-action="Zhanatas">@SharedLocalizer["Zhanatas"]</a>
     <a class="btn btn-default" asp-controller="Maps" asp-action="ASM">@SharedLocalizer["ASM"]</a>
+    <a class="btn btn-default" asp-controller="Maps" asp-action="Oskemen">@SharedLocalizer["Oskemen"]</a>
 }
 else if (Role == "KaragandaRegion")
 {
@@ -53,4 +54,8 @@ else if (Role == "Zhanatas")
 else if (Role == "ASM")
 {
     <a class="btn btn-default" asp-controller="Maps" asp-action="ASM">@SharedLocalizer["ASM"]</a>
+}
+else if (Role == "Oskemen")
+{
+    <a class="btn btn-default" asp-controller="Maps" asp-action="Oskemen">@SharedLocalizer["Oskemen"]</a>
 }
