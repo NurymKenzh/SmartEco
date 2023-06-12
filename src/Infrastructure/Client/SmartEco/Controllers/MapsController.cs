@@ -29,6 +29,12 @@ namespace SmartEco.Controllers
             _HttpApiClient = HttpApiClient;
         }
 
+        public enum Maps
+        {
+            Almaty,
+            KaragandaRegion
+        };
+
         public async Task<IActionResult> Index()
         {
             return View();
@@ -238,6 +244,53 @@ namespace SmartEco.Controllers
 
             JObject objectPollutionSources = await GetObjectPollutionSources(decimaldelimiter);
             ViewBag.PollutionSourcesLayerJson = objectPollutionSources.ToString();
+
+            //Data for calculate dissipation
+            string urlMeasuredDatas = "api/MeasuredDatas",
+                 route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={52}";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MeasuredParameterId={4}";
+            List<MeasuredData> measuredDatas = new List<MeasuredData>();
+            HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={52}";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MeasuredParameterId={5}";
+            measuredDatas = new List<MeasuredData>();
+            responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            route = "";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MonitoringPostId={52}";
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"MeasuredParameterId={6}";
+            measuredDatas = new List<MeasuredData>();
+            responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
+            measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
+            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+
+            ViewBag.Temperature = temperature;
+            ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
+            ViewBag.DirectionWind = directionWind;
+
+            List<SelectListItem> pollutants = new List<SelectListItem>
+            {
+                new SelectListItem() { Text = "Азот (II) оксид (Азота оксид) (6)", Value = "12" },
+                new SelectListItem() { Text = "Азота (IV) диоксид (Азота диоксид) (4)", Value = "13" },
+                new SelectListItem() { Text = "Сера диоксид (Ангидрид сернистый, Сернистый газ, Сера (IV) оксид) (516)", Value = "16" },
+                new SelectListItem() { Text = "Углерод оксид (Окись углерода, Угарный газ) (584)", Value = "17" },
+                new SelectListItem() { Text = "Взвешенные частицы PM2,5", Value = "3" },
+                new SelectListItem() { Text = "Взвешенные частицы PM10", Value = "2" }
+            };
+            ViewBag.PollutantsDessipation = pollutants;
 
             (ViewBag.LEDScreensId, ViewBag.LEDScreensAQI) = await GetAQIPosts("KaragandaRegion");
 
@@ -1556,6 +1609,7 @@ namespace SmartEco.Controllers
 
         [HttpPost]
         public async Task<ActionResult> CalculateDissipation(
+            Maps map,
             float temperature,
             float windSpeed,
             float startSpeed,
@@ -1572,6 +1626,7 @@ namespace SmartEco.Controllers
         {
             int code = 0301;
             decimal pdk = 0.4m;
+            var step = 100;
 
             switch (pollutants)
             {
@@ -1607,67 +1662,19 @@ namespace SmartEco.Controllers
             //measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
 
             //var measuredDatas = await GetMeasuredDatas(null, pollutants, new DateTime(2000, 1, 1), DateTime.Now, true);
-            List<MeasuredData> measuredDatas = new List<MeasuredData>()
-            {
-                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 12, Value = 3.4711m},
-                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 13, Value = 21.3608m},
-                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 16, Value = 53.5362m},
-                new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 17, Value = 2.5523m},
 
-                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 12, Value = 2.4711m},
-                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 13, Value = 23.3608m},
-                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 16, Value = 49.5362m},
-                new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 17, Value = 5.5523m}
-            };
-            if (pollutants == 2)
-            {
-                var measuredDatasPM10 = await GetMeasuredDatas(10, 2, new DateTime(2000, 1, 1), DateTime.Now, true);
-                measuredDatasPM10 = measuredDatasPM10.OrderBy(m => m.DateTime).ToList();
-                MeasuredData measuredDataPM101 = new MeasuredData {
-                    PollutionSourceId = 3,
-                    MeasuredParameterId = 2,
-                    Value = measuredDatasPM10.LastOrDefault().Value
-                };
-                MeasuredData measuredDataPM102 = new MeasuredData
-                {
-                    PollutionSourceId = 4,
-                    MeasuredParameterId = 2,
-                    Value = measuredDatasPM10.LastOrDefault().Value
-                };
-                measuredDatas.Add(measuredDataPM101);
-                measuredDatas.Add(measuredDataPM102);
-            }
-            if (pollutants == 3)
-            {
-                var measuredDatasPM25 = await GetMeasuredDatas(10, 3, new DateTime(2000, 1, 1), DateTime.Now, true);
-                measuredDatasPM25 = measuredDatasPM25.OrderBy(m => m.DateTime).ToList();
-                MeasuredData measuredDataPM251 = new MeasuredData
-                {
-                    PollutionSourceId = 3,
-                    MeasuredParameterId = 3,
-                    Value = measuredDatasPM25.LastOrDefault().Value
-                };
-                MeasuredData measuredDataPM252 = new MeasuredData
-                {
-                    PollutionSourceId = 4,
-                    MeasuredParameterId = 3,
-                    Value = measuredDatasPM25.LastOrDefault().Value
-                };
-                measuredDatas.Add(measuredDataPM251);
-                measuredDatas.Add(measuredDataPM252);
-            }
+            List<double> pollutantsValue = await GetValuePollutantsMoq(map, pollutants);
 
-            List<double> pollutantsValue = new List<double>();
-            pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
-            pollutantsValue.Add(Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 4).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value));
+            List<double> longitude = GetLongitudeMoq(map);
+            List<double> latitude = GetLatitudeMoq(map);
 
-            List<double> longitude = new List<double> { 8572410, 8572371 };
-            List<double> latitude = new List<double> { 5376722, 5376650 };
+            List<double> height = GetHeight(map);
+            List<double> diameter = GetDiameter(map);
+            List<double> flow_temperature = GetFlowTemperature(map);
+            List<double> flow_speed = GetFlowSpeed(map);
 
-            List<double> height = new List<double> { 20, 4 };
-            List<double> diameter = new List<double> { 0.5, 0.25 };
-            List<double> flow_temperature = new List<double> { 24, 20 };
-            List<double> flow_speed = new List<double> { 1, 8.5 };
+            var startPointY = longitude.Min() - step;
+            var startPointX = latitude.Max() + step;
 
             var reqCalCreate = new ReqCalcCreate();
             for (int i = 0; i < pollutantsValue.Count; i++)
@@ -1752,15 +1759,15 @@ namespace SmartEco.Controllers
                         CenterPoint = new CenterPoint()
                         {
                             //X и Y временно поменяны местами, чтобы было правильное отображение
-                            Y = 8572343.29,
-                            X = 5376759.33,
+                            Y = startPointY,
+                            X = startPointX,
                             Z = 0
                         },
                         Width = width,
                         Length = length,
                         Height = 1,
-                        StepByWidth = 100,
-                        StepByLength = 100
+                        StepByWidth = step,
+                        StepByLength = step
                     }
                 }
             };
@@ -1834,6 +1841,151 @@ namespace SmartEco.Controllers
                 answer
             });
         }
+
+        private async Task<List<double>> GetValuePollutantsMoq(Maps map, int pollutants)
+        {
+            List<double> pollutantsValue = new List<double>();
+            if (map is Maps.Almaty)
+            {
+                List<MeasuredData> measuredDatas = new List<MeasuredData>()
+                {
+                    new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 12, Value = 3.4711m},
+                    new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 13, Value = 21.3608m},
+                    new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 16, Value = 53.5362m},
+                    new MeasuredData {PollutionSourceId = 3, MeasuredParameterId = 17, Value = 2.5523m},
+
+                    new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 12, Value = 2.4711m},
+                    new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 13, Value = 23.3608m},
+                    new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 16, Value = 49.5362m},
+                    new MeasuredData {PollutionSourceId = 4, MeasuredParameterId = 17, Value = 5.5523m}
+                };
+                if (pollutants == 2)
+                {
+                    var measuredDatasPM10 = await GetMeasuredDatas(10, 2, new DateTime(2000, 1, 1), DateTime.Now, true);
+                    measuredDatasPM10 = measuredDatasPM10.OrderBy(m => m.DateTime).ToList();
+                    MeasuredData measuredDataPM101 = new MeasuredData {
+                        PollutionSourceId = 3,
+                        MeasuredParameterId = 2,
+                        Value = measuredDatasPM10.LastOrDefault().Value
+                    };
+                    MeasuredData measuredDataPM102 = new MeasuredData
+                    {
+                        PollutionSourceId = 4,
+                        MeasuredParameterId = 2,
+                        Value = measuredDatasPM10.LastOrDefault().Value
+                    };
+                    measuredDatas.Add(measuredDataPM101);
+                    measuredDatas.Add(measuredDataPM102);
+                }
+                if (pollutants == 3)
+                {
+                    var measuredDatasPM25 = await GetMeasuredDatas(10, 3, new DateTime(2000, 1, 1), DateTime.Now, true);
+                    measuredDatasPM25 = measuredDatasPM25.OrderBy(m => m.DateTime).ToList();
+                    MeasuredData measuredDataPM251 = new MeasuredData
+                    {
+                        PollutionSourceId = 3,
+                        MeasuredParameterId = 3,
+                        Value = measuredDatasPM25.LastOrDefault().Value
+                    };
+                    MeasuredData measuredDataPM252 = new MeasuredData
+                    {
+                        PollutionSourceId = 4,
+                        MeasuredParameterId = 3,
+                        Value = measuredDatasPM25.LastOrDefault().Value
+                    };
+                    measuredDatas.Add(measuredDataPM251);
+                    measuredDatas.Add(measuredDataPM252);
+                }
+
+                pollutantsValue = new List<double>
+                {
+                    Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 3).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value),
+                    Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 4).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value)
+                };
+            }
+            else
+            {
+                List<MeasuredData> measuredDatas = new List<MeasuredData>()
+                {
+                    new MeasuredData {PollutionSourceId = 8, MeasuredParameterId = 12, Value = 3.4711m},
+                    new MeasuredData {PollutionSourceId = 8, MeasuredParameterId = 13, Value = 21.3608m},
+                    new MeasuredData {PollutionSourceId = 8, MeasuredParameterId = 16, Value = 53.5362m},
+                    new MeasuredData {PollutionSourceId = 8, MeasuredParameterId = 17, Value = 2.5523m},
+                    new MeasuredData {PollutionSourceId = 8, MeasuredParameterId = 2, Value = 1.6433m},
+                    new MeasuredData {PollutionSourceId = 8, MeasuredParameterId = 3, Value = 4.7396m},
+                };
+
+                pollutantsValue = new List<double>
+                {
+                    Convert.ToDouble(measuredDatas.Where(p => p.PollutionSourceId == 8).LastOrDefault(p => p.MeasuredParameterId == pollutants).Value)
+                };
+            }
+            return pollutantsValue;
+        }
+
+        #region CalculateDissipationMoq
+
+        private static List<double> GetLongitudeMoq(Maps map)
+        {
+            switch (map)
+            {
+                case Maps.Almaty: return new List<double> { 8572410, 8572371 };
+                case Maps.KaragandaRegion: return new List<double> { 7538883 }; //жезказганский медеплавильный завод
+                default: return new List<double> { 8572410, 8572371 };
+            }
+        }
+
+        private static List<double> GetLatitudeMoq(Maps map)
+        {
+            switch (map)
+            {
+                case Maps.Almaty: return new List<double> { 5376722, 5376650 };
+                case Maps.KaragandaRegion: return new List<double> { 6069209 }; //жезказганский медеплавильный завод
+                default: return new List<double> { 5376722, 5376650 };
+            }
+        }
+
+        private static List<double> GetHeight(Maps map)
+        {
+            switch (map)
+            {
+                case Maps.Almaty: return new List<double> { 20, 4 };
+                case Maps.KaragandaRegion: return new List<double> { 15 }; //жезказганский медеплавильный завод
+                default: return new List<double> { 20, 4 };
+            }
+        }
+
+        private static List<double> GetDiameter(Maps map)
+        {
+            switch (map)
+            {
+                case Maps.Almaty: return new List<double> { 0.5, 0.25 };
+                case Maps.KaragandaRegion: return new List<double> { 2 }; //жезказганский медеплавильный завод
+                default: return new List<double> { 0.5, 0.25 };
+            }
+        }
+
+        private static List<double> GetFlowTemperature(Maps map)
+        {
+            switch (map)
+            {
+                case Maps.Almaty: return new List<double> { 24, 20 };
+                case Maps.KaragandaRegion: return new List<double> { 22 }; //жезказганский медеплавильный завод
+                default: return new List<double> { 24, 20 };
+            }
+        }
+
+        private static List<double> GetFlowSpeed(Maps map)
+        {
+            switch (map)
+            {
+                case Maps.Almaty: return new List<double> { 1, 8.5 };
+                case Maps.KaragandaRegion: return new List<double> { 1.75 }; //жезказганский медеплавильный завод
+                default: return new List<double> { 1, 8.5 };
+            }
+        }
+
+        #endregion CalculateDissipationMoq
 
         private Process CurlExecute(string Arguments)
         {

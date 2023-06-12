@@ -3267,6 +3267,11 @@
         }
     };
 
+    const MapEnum = { 
+        Almaty : @Convert.ToInt16(SmartEco.Controllers.MapsController.Maps.Almaty),
+        KaragandaRegion : @Convert.ToInt16(SmartEco.Controllers.MapsController.Maps.KaragandaRegion)
+      }
+
     function CalculateDissipation() {
         var temperature = $('#Temperature').val();
         var windSpeed = $('#WindSpeed').val();
@@ -3287,6 +3292,7 @@
         $.ajax({
             url: '@Url.Action("CalculateDissipation")',
             data: {
+                map: MapEnum.Almaty,
                 temperature: temperature,
                 windSpeed: windSpeed,
                 startSpeed: startSpeed,
