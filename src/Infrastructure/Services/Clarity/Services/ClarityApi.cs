@@ -16,12 +16,12 @@ namespace Clarity.Services
             { "x-api-key", "X2KiJnasqMzQdsy9xsKdceARyADtVVidMqgCQnnH" }
         };
 
-        public async Task<List<ClarityMeasurement>> GetMeasurements(string timeFrequency, DateTime time)
+        public async Task<List<ClarityMeasurement>> GetMeasurements(string timeFrequency, DateTime startTime, DateTime endTime)
         {
             using (var client = CreateHttpClient())
             {
                 List<ClarityMeasurement> clarityMeasurements = new List<ClarityMeasurement>();
-                var response = await client.GetAsync($"/v1/measurements?&outputFrequency={timeFrequency}&startTime={time:s}Z&endTime={time:s}Z");
+                var response = await client.GetAsync($"/v1/measurements?&outputFrequency={timeFrequency}&startTime={startTime:s}Z&endTime={endTime:s}Z");
 
                 if (response.IsSuccessStatusCode)
                 {
