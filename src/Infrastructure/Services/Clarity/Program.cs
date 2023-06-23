@@ -31,8 +31,8 @@ namespace Clarity
 
                         var clarityMeasurements = await new ClarityApi().GetMeasurements(
                             timeFrequency: "hour", 
-                            startTime: lastDateTime.Trim(TimeSpan.TicksPerHour), 
-                            endTime: lastDateTime.AddHours(1).Trim(TimeSpan.TicksPerHour));
+                            startTime: lastDateTime.AddHours(1).Trim(TimeSpan.TicksPerHour), 
+                            endTime: lastDateTime.AddHours(2).Trim(TimeSpan.TicksPerHour));
                         LogConsole($"Get Data from Clarity finished | Count: {clarityMeasurements.Count()} | Date: {clarityMeasurements.FirstOrDefault()?.Time}");
 
                         var measuredDatas = Mapper
