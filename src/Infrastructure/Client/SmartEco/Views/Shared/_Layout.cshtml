@@ -80,7 +80,7 @@
                         <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
                     </li>
                 }
-                        @if (!string.IsNullOrEmpty(Role) && Role != "Almaty")
+                        @if (!string.IsNullOrEmpty(Role) && (Role != "Almaty" || Role != "Oskemen"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Data">@SharedLocalizer["Data"]</a>
