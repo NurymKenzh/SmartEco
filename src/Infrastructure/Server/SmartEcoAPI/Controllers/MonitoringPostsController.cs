@@ -112,7 +112,8 @@ namespace SmartEcoAPI.Controllers
 
         // GET: api/MonitoringPosts/5
         [HttpGet("{id}")]
-        [Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        //[Authorize(Roles = "admin,moderator,KaragandaRegion,Arys")]
+        [Authorize]
         public async Task<ActionResult<MonitoringPost>> GetMonitoringPost(long id)
         {
             //var monitoringPost = await _context.MonitoringPost.FindAsync(id);
