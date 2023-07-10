@@ -121,18 +121,6 @@ namespace SmartEcoAPI.Migrations
                     b.ToTable("AuthorizedAuthority");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.Company", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("Company","asm");
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.DataProvider", b =>
                 {
                     b.Property<int>("Id")
@@ -175,28 +163,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("Ecopost");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.Enterprise", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("City");
-
-                    b.Property<int>("CompanyId");
-
-                    b.Property<decimal>("EastLongitude");
-
-                    b.Property<string>("Name");
-
-                    b.Property<decimal>("NorthLatitude");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("CompanyId");
-
-                    b.ToTable("Enterprise","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.Event", b =>
@@ -517,26 +483,6 @@ namespace SmartEcoAPI.Migrations
                     b.ToTable("Log");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.Manufactory", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<decimal>("EastLongitude");
-
-                    b.Property<int>("EnterpriseId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<decimal>("NorthLatitude");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("EnterpriseId");
-
-                    b.ToTable("Manufactory","asm");
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.MeasuredData", b =>
                 {
                     b.Property<long>("Id")
@@ -633,44 +579,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("MeasuredParameterUnit");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.MonitoringData", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<DateTime>("DateTime");
-
-                    b.Property<int>("MonitoringParameterId");
-
-                    b.Property<int>("SourceEmissionId");
-
-                    b.Property<decimal>("Value");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("MonitoringParameterId");
-
-                    b.HasIndex("SourceEmissionId");
-
-                    b.ToTable("MonitoringData","asm");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.MonitoringParameter", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<decimal?>("MPCMaxSingle");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("Unit");
-
-                    b.HasKey("Id");
-
-                    b.ToTable("MonitoringParameter","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.MonitoringPost", b =>
@@ -939,46 +847,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasIndex("ProjectId");
 
                     b.ToTable("ReceptionRecyclingPoint");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SourceAirPollution", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<decimal>("EastLongitude");
-
-                    b.Property<int>("ManufactoryId");
-
-                    b.Property<string>("Name");
-
-                    b.Property<decimal>("NorthLatitude");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("ManufactoryId");
-
-                    b.ToTable("SourceAirPollution","asm");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SourceEmission", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<decimal>("EastLongitude");
-
-                    b.Property<string>("Name");
-
-                    b.Property<decimal>("NorthLatitude");
-
-                    b.Property<int>("SourceAirPollutionId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("SourceAirPollutionId");
-
-                    b.ToTable("SourceEmission","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory", b =>
@@ -1265,14 +1133,6 @@ namespace SmartEcoAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.Enterprise", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.Company", "Company")
-                        .WithMany()
-                        .HasForeignKey("CompanyId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.Event", b =>
                 {
                     b.HasOne("SmartEcoAPI.Models.Project", "Project")
@@ -1311,14 +1171,6 @@ namespace SmartEcoAPI.Migrations
                         .HasForeignKey("PollutionEnvironmentId");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.Manufactory", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.Enterprise", "Enterprise")
-                        .WithMany()
-                        .HasForeignKey("EnterpriseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.MeasuredData", b =>
                 {
                     b.HasOne("SmartEcoAPI.Models.MeasuredParameter", "MeasuredParameter")
@@ -1344,19 +1196,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.PollutionEnvironment", "PollutionEnvironment")
                         .WithMany()
                         .HasForeignKey("PollutionEnvironmentId");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.MonitoringData", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.MonitoringParameter", "MonitoringParameter")
-                        .WithMany()
-                        .HasForeignKey("MonitoringParameterId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.SourceEmission", "SourceEmission")
-                        .WithMany()
-                        .HasForeignKey("SourceEmissionId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.MonitoringPost", b =>
@@ -1427,22 +1266,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.Project", "Project")
                         .WithMany()
                         .HasForeignKey("ProjectId");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SourceAirPollution", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.Manufactory", "Manufactory")
-                        .WithMany()
-                        .HasForeignKey("ManufactoryId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.SourceEmission", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.SourceAirPollution", "SourceAirPollution")
-                        .WithMany()
-                        .HasForeignKey("SourceAirPollutionId")
-                        .OnDelete(DeleteBehavior.Cascade);
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.SpeciallyProtectedNaturalTerritory", b =>
