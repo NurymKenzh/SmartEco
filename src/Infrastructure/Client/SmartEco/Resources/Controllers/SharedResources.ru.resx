@@ -1070,4 +1070,10 @@
   <data name="Oskemen" xml:space="preserve">
     <value>Устькаман</value>
   </data>
+  <data name="EnterpriseType" xml:space="preserve">
+    <value>Тип предприятия</value>
+  </data>
+  <data name="EnterpriseTypes" xml:space="preserve">
+    <value>Типы предприятий</value>
+  </data>
 </root>

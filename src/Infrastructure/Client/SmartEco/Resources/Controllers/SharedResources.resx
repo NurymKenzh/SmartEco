@@ -1065,4 +1065,10 @@
   <data name="Oskemen" xml:space="preserve">
     <value />
   </data>
+  <data name="EnterpriseType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="EnterpriseTypes" xml:space="preserve">
+    <value />
+  </data>
 </root>

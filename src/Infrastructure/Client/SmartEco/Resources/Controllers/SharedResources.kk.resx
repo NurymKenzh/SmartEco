@@ -1068,4 +1068,10 @@
   <data name="Oskemen" xml:space="preserve">
     <value>Өскемен</value>
   </data>
+  <data name="EnterpriseType" xml:space="preserve">
+    <value>Кәсіпорын түрі</value>
+  </data>
+  <data name="EnterpriseTypes" xml:space="preserve">
+    <value>Кәсіпорын түрлері</value>
+  </data>
 </root>

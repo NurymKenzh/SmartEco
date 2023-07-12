@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
+using SmartEco.Services;
 
 namespace SmartEco
 {
@@ -46,6 +47,14 @@ namespace SmartEco
                 .AddEntityFrameworkStores<ApplicationDbContext>();
 
             services.AddTransient<Controllers.HttpApiClientController, Controllers.HttpApiClientController>();
+
+            services.AddTransient<AuthenticationHttpClientHandler>();
+            services.AddHttpClient<SmartEcoApi>(httpClient =>
+            {
+                var isServer = Convert.ToBoolean(Configuration["Server"]);
+                string apiUrl = isServer ? Configuration["APIUrlServer"] : Configuration["APIUrlDebug"];
+                httpClient.BaseAddress = new Uri(apiUrl);
+            }).AddHttpMessageHandler<AuthenticationHttpClientHandler>();
 
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 

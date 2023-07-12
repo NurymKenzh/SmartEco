@@ -1017,6 +1017,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string EnterpriseType {
+            get {
+                return ResourceManager.GetString("EnterpriseType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string EnterpriseTypes {
+            get {
+                return ResourceManager.GetString("EnterpriseTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string EquippedPlaygrounds {
             get {
                 return ResourceManager.GetString("EquippedPlaygrounds", resourceCulture);

@@ -4,13 +4,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using SmartEcoAPI.Models;
+using SmartEcoAPI.Models.ASM;
 
 namespace SmartEcoAPI.Data
 {
     public class ApplicationDbContext : DbContext
     {
-        private readonly string ASM_SCHEMA = "asm";
-
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
         {
@@ -97,11 +96,12 @@ namespace SmartEcoAPI.Data
         public DbSet<SmartEcoAPI.Models.Answer> Answer { get; set; }
 
         #region ASM
+        public DbSet<EnterpriseType> EnterpriseType { get; set; }
         #endregion
+    }
 
-        protected override void OnModelCreating(ModelBuilder modelBuilder)
-        {
-            //modelBuilder.Entity<Enterprise>().ToTable(name: nameof(Enterprise), schema: ASM_SCHEMA);
-        }
+    public static class SchemaType
+    {
+        public const string Asm = "asm";
     }
 }
