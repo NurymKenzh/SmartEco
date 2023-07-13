@@ -11,7 +11,7 @@ namespace Clarity.Services
 {
     public class DatabaseService
     {
-        private readonly string _connectionString = "Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres";
+        private readonly string _connectionString = "Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres;Timeout=300;CommandTimeout=300";
 
         public List<MonitoringPost> GetMonitoringPosts()
         {
