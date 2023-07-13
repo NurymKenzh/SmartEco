@@ -167,7 +167,13 @@ namespace GetPostsData
                                             adequateDateTimePost = false;
                                         }
 
-                                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                                        var valueArray = value.Split("-Rtd=");
+                                        if (valueArray.Length < 2 || string.IsNullOrEmpty(valueArray[1]))
+                                            continue;
+
+                                        if (!decimal.TryParse(valueArray[1].Split("&&")[0], out decimal measuredValue))
+                                            continue;
+
                                         if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
                                         {
                                             if (coef != null)
@@ -285,7 +291,13 @@ namespace GetPostsData
                                             adequateDateTimePost = false;
                                         }
 
-                                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                                        var valueArray = value.Split("-Rtd=");
+                                        if (valueArray.Length < 2 || string.IsNullOrEmpty(valueArray[1]))
+                                            continue;
+
+                                        if (!decimal.TryParse(valueArray[1].Split("&&")[0], out decimal measuredValue))
+                                            continue;
+
                                         if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
                                         {
                                             if (coef != null)
