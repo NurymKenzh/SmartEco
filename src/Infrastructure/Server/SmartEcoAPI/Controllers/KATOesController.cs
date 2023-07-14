@@ -352,5 +352,20 @@ namespace SmartEcoAPI.Controllers
 
             return Ok(count);
         }
+
+        // GET: api/KATOes/5
+        [HttpGet("GetByCode/{code}")]
+        [Authorize(Roles = "admin,moderator")]
+        public async Task<ActionResult<KATO>> GetKATOByCode(string code)
+        {
+            var KATO = await _context.KATO.FirstOrDefaultAsync(k => k.Code == code);
+
+            if (KATO == null)
+            {
+                return NotFound();
+            }
+
+            return KATO;
+        }
     }
 }

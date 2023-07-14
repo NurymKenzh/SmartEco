@@ -97,6 +97,7 @@ namespace SmartEcoAPI.Data
 
         #region ASM
         public DbSet<EnterpriseType> EnterpriseType { get; set; }
+        public DbSet<Enterprise> Enterprise{ get; set; }
         #endregion
     }
 

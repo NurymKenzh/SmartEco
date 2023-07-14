@@ -56,6 +56,11 @@ namespace SmartEco
                 httpClient.BaseAddress = new Uri(apiUrl);
             }).AddHttpMessageHandler<AuthenticationHttpClientHandler>();
 
+            services.AddHttpClient<StatGovKzApi>(httpClient =>
+            {
+                httpClient.BaseAddress = new Uri(Configuration["StatGovKzApiUrl"]);
+            });
+
             services.AddLocalization(opts => { opts.ResourcesPath = "Resources"; });
 
             services.AddDistributedMemoryCache();

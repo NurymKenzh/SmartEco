@@ -1076,4 +1076,7 @@
   <data name="EnterpriseTypes" xml:space="preserve">
     <value>Типы предприятий</value>
   </data>
+  <data name="Reset" xml:space="preserve">
+    <value>Сбросить</value>
+  </data>
 </root>

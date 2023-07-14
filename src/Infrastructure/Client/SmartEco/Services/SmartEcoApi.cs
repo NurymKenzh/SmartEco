@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Threading;
 using System.Text;
 using System;
+using Newtonsoft.Json;
 
 namespace SmartEco.Services
 {
@@ -19,13 +20,19 @@ namespace SmartEco.Services
             Client.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
         }
 
-        public HttpRequestMessage CreateRequest(HttpMethod httpMethod, string uriRelative, string body = null)
+        public HttpRequestMessage CreateRequest(HttpMethod httpMethod, string uriRelative, object body = null)
         {
             var uri = new Uri(Client.BaseAddress, new Uri(uriRelative, UriKind.Relative));
-            var httpRequestMessage = new HttpRequestMessage(httpMethod, uri);
-            if (body != null)
-                httpRequestMessage.Content = new StringContent(body, Encoding.UTF8, "application/json");
+            string bodyContent;
+            if (body is null)
+                bodyContent = JsonConvert.SerializeObject(new object());
+            else
+                bodyContent = JsonConvert.SerializeObject(body);
 
+            var httpRequestMessage = new HttpRequestMessage(httpMethod, uri)
+            {
+                Content = new StringContent(bodyContent, Encoding.UTF8, "application/json")
+            };
             return httpRequestMessage;
         }
     }

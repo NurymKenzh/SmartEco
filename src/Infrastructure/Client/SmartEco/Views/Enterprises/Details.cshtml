@@ -1,0 +1,157 @@
+﻿@model SmartEco.Models.ASM.EnterpriseViewModel
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Details"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+@*<h1>@SharedLocalizer["Details"]</h1>
+@{
+    string Role = Context.Session.GetString("Role");
+}
+<div>
+    <h4>@SharedLocalizer["Enterprise"]</h4>
+    <hr />
+    <dl class="row">
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.Id)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.Id)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.Bin)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.Bin)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.Name)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.KatoId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.Kato.KatoComplexName)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.EnterpriseTypeId)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.EnterpriseType.Name)
+        </dd>
+        <dt class="col-sm-2">
+            @Html.DisplayNameFor(model => model.Item.Contacts)
+        </dt>
+        <dd class="col-sm-10">
+            @Html.DisplayFor(model => model.Item.Contacts)
+        </dd>
+    </dl>
+</div>
+@if (Role == "admin" || Role == "moderator" || Role == "ASM")
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new EnterpriseFilterId { Id = Model.Item.Id, PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
+            BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter }) |
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
+            BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
+    </div>
+}
+else
+{
+    <div>
+        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
+            BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
+    </div>
+}*@
+
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+<div>
+    <h4>@SharedLocalizer["Enterprise"] «@Model.Item.Name»</h4>
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link active" data-toggle="tab" href="#Details">Общие сведения</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Structure">Структура и расположение</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#PollutionSources">Источники загрязнения атмосферы</a>
+        </li>
+    </ul>
+
+    <div class="tab-content p-3">
+        <div class="tab-pane fade show active" id="Details">
+            <dl class="row">
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Item.Id)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Item.Id)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Item.Bin)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Item.Bin)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Item.Name)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Item.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Item.KatoId)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Item.Kato.KatoComplexName)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Item.EnterpriseTypeId)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Item.EnterpriseType.Name)
+                </dd>
+                <dt class="col-sm-2">
+                    @Html.DisplayNameFor(model => model.Item.Contacts)
+                </dt>
+                <dd class="col-sm-10">
+                    @Html.DisplayFor(model => model.Item.Contacts)
+                </dd>
+            </dl>
+            @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+            {
+                <div>
+                    @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new EnterpriseFilterId { Id = Model.Item.Id, PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
+                BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter }) |
+                    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
+                BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
+                </div>
+            }
+            else
+            {
+                <div>
+                    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
+                BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
+                </div>
+            }
+        </div>
+        <div class="tab-pane fade" id="Structure">
+            <h2 class="h4 mb-3">Структура и расположение</h2>
+        </div>
+        <div class="tab-pane fade" id="PollutionSources">
+            <h2 class="h4 mb-3">Источники загрязнения атмосферы</h2>
+        </div>
+    </div>
+</div>

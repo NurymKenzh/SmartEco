@@ -75,11 +75,11 @@
                     <partial name="_LoginPartial" />
                     <ul class="navbar-nav flex-grow-1">
                         @if (Role == "admin" || Role == "moderator"@*|| Role == "Almaty"*@ || Role == "Shymkent" || Role == "ASM")
-{
-                    <li class="nav-item">
-                        <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
-                    </li>
-                }
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
+                            </li>
+                        }
                         @if (!string.IsNullOrEmpty(Role) && (Role != "Almaty" || Role != "Oskemen"))
                         {
                             <li class="nav-item">
@@ -115,9 +115,6 @@
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Zhanatas">@SharedLocalizer["Map"]</a>
                             </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
-                            </li>
                         }
                         @if (Role == "Kazhydromet")
                         {
@@ -125,19 +122,16 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Index">@SharedLocalizer["Map"]</a>
                             </li>
                         }
-                        @if (Role == "admin" || Role == "moderator")
+                        @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Enterprises" asp-action="Index">@SharedLocalizer["Enterprises"]</a>
+                            </li>
+                        }
+                        @if (Role == "admin" || Role == "moderator" || Role == "Zhanatas")
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Analytics" asp-action="Index">@SharedLocalizer["Analytics"]</a>
-                            </li>
-                        }
-                        @if (Role == "ASM")
-                        {
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="ASM">@SharedLocalizer["Map"]</a>
-                            </li>
-                            <li class="nav-item">
-                                <a class="nav-link text-dark" asp-area="" asp-controller="MonitoringData" asp-action="AnalyticASM">@SharedLocalizer["Analytics"]</a>
                             </li>
                         }
                         @if (Role == "Oskemen")
@@ -150,17 +144,17 @@
                             </li>
                         }
                         @*@if (!string.IsNullOrEmpty(Token))
-        {*@
+                        {*@
                         <li class="nav-item">
                             <a class="nav-link text-dark" asp-area="" asp-controller="AppealCitizens" asp-action="Index">@SharedLocalizer["AppealCitizens"]</a>
                         </li>
                         @*}*@
                         @*@if (string.IsNullOrEmpty(Token))
-        {
-            <li class="nav-item mx-auto">
-                <a class="nav-link text-dark font-weight-bold" style="text-decoration: underline; color: green !important;" asp-area="" asp-controller="Maps" asp-action="AlmatyFree">@SharedLocalizer["Map"] @SharedLocalizer["Almaty"]</a>
-            </li>
-        }*@
+                        {
+                            <li class="nav-item mx-auto">
+                                <a class="nav-link text-dark font-weight-bold" style="text-decoration: underline; color: green !important;" asp-area="" asp-controller="Maps" asp-action="AlmatyFree">@SharedLocalizer["Map"] @SharedLocalizer["Almaty"]</a>
+                            </li>
+                        }*@
                     </ul>
                 </div>
             </div>

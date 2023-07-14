@@ -36,8 +36,7 @@ namespace SmartEco.Controllers.ASM
                 PageSize = pager.PageSize,
                 PageNumber = pager.PageNumber,
             };
-            var bodyContent = JsonConvert.SerializeObject(enterpriseTypesRequest);
-            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlEnterpriseTypes, bodyContent);
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlEnterpriseTypes, enterpriseTypesRequest);
             var response = await _smartEcoApi.Client.SendAsync(request);
 
             int enterpriseTypesCount = 0;
@@ -97,8 +96,8 @@ namespace SmartEco.Controllers.ASM
         {
             if (ModelState.IsValid)
             {
-                var bodyContent = JsonConvert.SerializeObject(enterpriseTypeViewModel.Item);
-                var request = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlEnterpriseTypes, bodyContent);
+                var body = enterpriseTypeViewModel.Item;
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlEnterpriseTypes, body);
                 var response = await _smartEcoApi.Client.SendAsync(request);
 
                 try
@@ -142,8 +141,8 @@ namespace SmartEco.Controllers.ASM
         {
             if (ModelState.IsValid)
             {
-                var bodyContent = JsonConvert.SerializeObject(enterpriseTypeViewModel.Item);
-                var request = _smartEcoApi.CreateRequest(HttpMethod.Put, $"{_urlEnterpriseTypes}/{enterpriseTypeViewModel.Item.Id}", bodyContent);
+                var body = enterpriseTypeViewModel.Item;
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Put, $"{_urlEnterpriseTypes}/{enterpriseTypeViewModel.Item.Id}", body);
                 var response = await _smartEcoApi.Client.SendAsync(request);
 
                 try

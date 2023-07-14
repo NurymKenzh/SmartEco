@@ -1,0 +1,71 @@
+﻿@model SmartEco.Models.ASM.EnterpriseViewModel
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Create"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Create"]</h1>
+
+<h4>@SharedLocalizer["Enterprise"]</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="Create">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <label asp-for="Item.Bin" class="control-label"></label>
+                <input asp-for="Item.Bin" class="form-control" data-url="@Url.Action("GetEnterpriseFromStatGovKz", "Enterprises")" />
+                <span asp-validation-for="Item.Bin" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.Name" class="control-label"></label>
+                <input asp-for="Item.Name" class="form-control" readonly />
+                <span asp-validation-for="Item.Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.Kato" class="control-label"></label>
+                <input asp-for="Item.KatoId" class="form-control" hidden />
+                <input asp-for="Item.Kato" class="form-control" readonly />
+                <span asp-validation-for="Item.KatoId" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.EnterpriseTypeId" class="control-label"></label>
+                <select asp-for="Item.EnterpriseTypeId" class="form-control" asp-items="Model.EnterpriseTypesSelectList">
+                    <option selected></option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label asp-for="Item.Contacts" class="control-label"></label>
+                <input asp-for="Item.Contacts" class="form-control" />
+                <span asp-validation-for="Item.Contacts" class="text-danger"></span>
+            </div>
+            <div hidden="hidden">
+                <input asp-for="@Model.Filter.SortOrder" type="hidden" />
+                <input asp-for="@Model.Filter.PageSize" type="hidden" />
+                <input asp-for="@Model.Filter.PageNumber" type="hidden" />
+                <input asp-for="@Model.Filter.BinFilter" type="hidden" />
+                <input asp-for="@Model.Filter.NameFilter" type="hidden" />
+                <input asp-for="@Model.Filter.KatoComplexFilter" type="hidden" />
+                <input asp-for="@Model.Filter.EnterpriseTypeIdFilter" type="hidden" />
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["Create"]" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
+        BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script src="~/js/checkEnterprise.js"></script>
