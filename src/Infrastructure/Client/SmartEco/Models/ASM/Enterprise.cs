@@ -21,6 +21,7 @@ namespace SmartEco.Models.ASM
         [Required]
         [Display(Name = "Город или регион (КАТО)")]
         public int KatoId { get; set; }
+        [Display(Name = "Город или регион (КАТО)")]
         public KATO Kato { get; set; }
 
         [Display(Name = "Тип предприятия")]

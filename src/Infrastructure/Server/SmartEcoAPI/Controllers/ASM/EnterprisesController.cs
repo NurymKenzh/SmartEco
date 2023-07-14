@@ -153,23 +153,5 @@ namespace SmartEcoAPI.Controllers.ASM
         {
             return _context.Enterprise.Any(e => e.Id == id);
         }
-
-        // GET: api/Enterprises/Count
-        [HttpGet("count")]
-        [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<IEnumerable<Enterprise>>> GetEnterpriseCount(string Name)
-        {
-            var enterprises = _context.Enterprise
-                .Where(m => true);
-
-            if (!string.IsNullOrEmpty(Name))
-            {
-                enterprises = enterprises.Where(m => m.Name.ToLower().Contains(Name.ToLower()));
-            }
-
-            int count = await enterprises.CountAsync();
-
-            return Ok(count);
-        }
     }
 }
