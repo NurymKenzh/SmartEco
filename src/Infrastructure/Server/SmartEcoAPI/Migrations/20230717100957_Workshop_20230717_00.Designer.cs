@@ -2,6 +2,7 @@
 using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -9,9 +10,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230717100957_Workshop_20230717_00")]
+    partial class Workshop_20230717_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -85,22 +87,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasIndex("ExecutorId");
 
                     b.ToTable("AActivityExecutor");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.Area", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("WorkshopId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("WorkshopId");
-
-                    b.ToTable("Area","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.Enterprise", b =>
@@ -1203,14 +1189,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.Executor", "Executor")
                         .WithMany()
                         .HasForeignKey("ExecutorId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.Area", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.ASM.Workshop", "Workshop")
-                        .WithMany()
-                        .HasForeignKey("WorkshopId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
