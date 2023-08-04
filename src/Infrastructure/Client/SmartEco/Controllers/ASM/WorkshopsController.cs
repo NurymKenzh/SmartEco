@@ -6,6 +6,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using System.Collections.Generic;
 using SmartEco.Models.ASM.Requests;
+using SmartEco.Models.ASM.Responses;
 
 namespace SmartEco.Controllers.ASM
 {
@@ -21,11 +22,11 @@ namespace SmartEco.Controllers.ASM
 
         // GET: Workshops
         [HttpGet]
-        public async Task<List<Workshop>> List(int? IndSiteEnterpriseId)
+        public async Task<List<Workshop>> List(int? EnterpriseId)
         {
             var workshopsRequest = new WorkshopsRequest()
             {
-                IndSiteEnterpriseId = IndSiteEnterpriseId
+                EnterpriseId = EnterpriseId
             };
             var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlWorkshops, workshopsRequest);
             var response = await _smartEcoApi.Client.SendAsync(request);
@@ -66,7 +67,8 @@ namespace SmartEco.Controllers.ASM
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    return Ok();
+                    var enterpriseResponse = await response.Content.ReadAsAsync<EnterpriseResponse>();
+                    return RedirectToAction("Details", "Enterprises", new { id = enterpriseResponse.Id });
                 }
                 catch
                 {
@@ -90,7 +92,8 @@ namespace SmartEco.Controllers.ASM
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    return Ok();
+                    var enterpriseResponse = await response.Content.ReadAsAsync<EnterpriseResponse>();
+                    return RedirectToAction("Details", "Enterprises", new { id = enterpriseResponse.Id });
                 }
                 catch
                 {
@@ -109,7 +112,8 @@ namespace SmartEco.Controllers.ASM
                 var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlWorkshops}/{id}");
                 var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                return Ok();
+                var enterpriseResponse = await response.Content.ReadAsAsync<EnterpriseResponse>();
+                return RedirectToAction("Details", "Enterprises", new { id = enterpriseResponse.Id });
             }
             catch
             {

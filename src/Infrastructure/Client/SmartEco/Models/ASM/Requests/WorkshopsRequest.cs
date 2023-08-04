@@ -2,6 +2,6 @@
 {
     public class WorkshopsRequest
     {
-        public int? IndSiteEnterpriseId { get; set; }
+        public int? EnterpriseId { get; set; }
     }
 }

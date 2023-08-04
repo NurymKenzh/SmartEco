@@ -1,0 +1,114 @@
+﻿@model SmartEco.Models.ASM.EnterpriseDetailViewModel
+@using SmartEco.Models.ASM;
+
+<h2 class="h4 mb-3">Структура и расположение</h2>
+<hr />
+
+<div class="row">
+    <div class="col-md-4 border-right">
+        <div class="mb-3">
+            <button type="button" class="btn btn-success" data-toggle="modal" data-target="#ShowCreateIndSiteEnterpriseModal">Добавить промплощадку (Производство)</button>
+            <a href="@Url.Action("Details", new { Id = Model.Item.Id })" class="btn btn-primary mr-3">Обновить</a>
+
+            <div id="ContainerButtonsDefault">
+                <button class="btn btn-warning" disabled><i class="fa-solid fa-edit"></i></button>
+                <button class="btn btn-success" disabled><i class="fa-solid fa-plus"></i></button>
+                <button class="btn btn-danger" disabled><i class="fa-solid fa-minus"></i></button>
+            </div>
+
+            <div id="ContainerButtonsIndSiteEnterprise">
+                <button class="btn btn-warning" data-toggle="modal" data-target="#ShowEditIndSiteEnterpriseModal" title="Редактировать промплощадку"><i class="fa-solid fa-edit"></i></button>
+                <button class="btn btn-success" data-toggle="modal" data-target="#ShowCreateWorkshopModal" title="Добавить цех"><i class="fa-solid fa-plus"></i></button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#ShowDeleteIndSiteEnterpriseModal" title="Удалить промплощадку"><i class="fa-solid fa-minus"></i></button>
+            </div>
+
+            <div id="ContainerButtonsWorkshop">
+                <button class="btn btn-warning" data-toggle="modal" data-target="#ShowEditWorkshopModal" title="Редактировать цех"><i class="fa-solid fa-edit"></i></button>
+                <button class="btn btn-success" data-toggle="modal" data-target="#ShowCreateAreaModal" title="Добавить участок"><i class="fa-solid fa-plus"></i></button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#ShowDeleteWorkshopModal" title="Удалить цех"><i class="fa-solid fa-minus"></i></button>
+            </div>
+
+            <div id="ContainerButtonsArea">
+                <button class="btn btn-warning" data-toggle="modal" data-target="#ShowEditAreaModal" title="Редактировать участок"><i class="fa-solid fa-edit"></i></button>
+                <button class="btn btn-success" disabled><i class="fa-solid fa-plus"></i></button>
+                <button class="btn btn-danger" data-toggle="modal" data-target="#ShowDeleteAreaModal" title="Удалить участок"><i class="fa-solid fa-minus"></i></button>
+            </div>
+        </div>
+
+        <div id="JsTreeEnterprise"></div>
+    </div>
+</div>
+
+<div>
+    <div id="ShowCreateIndSiteEnterpriseModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_CreateIndSiteEnterpriseModal.cshtml", new IndSiteEnterprise(){EnterpriseId = Model.Item.Id, Enterprise = Model.Item})
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowEditIndSiteEnterpriseModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_EditIndSiteEnterpriseModal.cshtml", new IndSiteEnterprise(){EnterpriseId = Model.Item.Id, Enterprise = Model.Item})
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowDeleteIndSiteEnterpriseModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_DeleteIndSiteEnterpriseModal.cshtml", new IndSiteEnterprise(){EnterpriseId = Model.Item.Id, Enterprise = Model.Item})
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowCreateWorkshopModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_CreateWorkshopModal.cshtml", new Workshop())
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowEditWorkshopModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_EditWorkshopModal.cshtml", new Workshop())
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowDeleteWorkshopModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_DeleteWorkshopModal.cshtml", new Workshop())
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowCreateAreaModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_CreateAreaModal.cshtml", new Area())
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowEditAreaModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_EditAreaModal.cshtml", new Area())
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowDeleteAreaModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_DeleteAreaModal.cshtml", new Area())
+            </div>
+        </div>
+    </div>
+</div>

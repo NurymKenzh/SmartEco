@@ -1,157 +1,67 @@
-﻿@model SmartEco.Models.ASM.EnterpriseViewModel
+﻿@model SmartEco.Models.ASM.EnterpriseDetailViewModel
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
 @using Microsoft.AspNetCore.Http
-@using SmartEco.Models.ASM.Filsters;
+@using SmartEco.Models.ASM;
 @inject IStringLocalizer<SharedResources> SharedLocalizer
 @{
     ViewData["Title"] = SharedLocalizer["Details"];
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
-@*<h1>@SharedLocalizer["Details"]</h1>
-@{
-    string Role = Context.Session.GetString("Role");
-}
-<div>
-    <h4>@SharedLocalizer["Enterprise"]</h4>
-    <hr />
-    <dl class="row">
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.Id)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.Id)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.Bin)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.Bin)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.Name)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.KatoId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.Kato.KatoComplexName)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.EnterpriseTypeId)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.EnterpriseType.Name)
-        </dd>
-        <dt class="col-sm-2">
-            @Html.DisplayNameFor(model => model.Item.Contacts)
-        </dt>
-        <dd class="col-sm-10">
-            @Html.DisplayFor(model => model.Item.Contacts)
-        </dd>
-    </dl>
-</div>
-@if (Role == "admin" || Role == "moderator" || Role == "ASM")
-{
-    <div>
-        @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new EnterpriseFilterId { Id = Model.Item.Id, PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
-            BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter }) |
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
-            BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
-    </div>
-}
-else
-{
-    <div>
-        @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
-            BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
-    </div>
-}*@
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
-@{
-    string Role = Context.Session.GetString("Role");
-}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/themes/default/style.min.css" />
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jstree/3.2.1/jstree.min.js"></script>
+
+<script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
 
 <div>
     <h4>@SharedLocalizer["Enterprise"] «@Model.Item.Name»</h4>
     <ul class="nav nav-tabs">
         <li class="nav-item">
-            <a class="nav-link active" data-toggle="tab" href="#Details">Общие сведения</a>
+            <a class="nav-link" data-toggle="tab" href="#Details">Общие сведения</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#Structure">Структура и расположение</a>
+            <a class="nav-link" data-toggle="tab" href="#StructureAndLocation">Структура и расположение</a>
         </li>
         <li class="nav-item">
-            <a class="nav-link" data-toggle="tab" href="#PollutionSources">Источники загрязнения атмосферы</a>
+            <a class="nav-link" data-toggle="tab" href="#AirPollutionSources">Источники загрязнения атмосферы</a>
         </li>
     </ul>
 
     <div class="tab-content p-3">
-        <div class="tab-pane fade show active" id="Details">
-            <dl class="row">
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Item.Id)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Item.Id)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Item.Bin)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Item.Bin)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Item.Name)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Item.Name)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Item.KatoId)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Item.Kato.KatoComplexName)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Item.EnterpriseTypeId)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Item.EnterpriseType.Name)
-                </dd>
-                <dt class="col-sm-2">
-                    @Html.DisplayNameFor(model => model.Item.Contacts)
-                </dt>
-                <dd class="col-sm-10">
-                    @Html.DisplayFor(model => model.Item.Contacts)
-                </dd>
-            </dl>
-            @if (Role == "admin" || Role == "moderator" || Role == "ASM")
-            {
-                <div>
-                    @Html.ActionLink(SharedLocalizer["Edit"], "Edit", new EnterpriseFilterId { Id = Model.Item.Id, PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
-                BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter }) |
-                    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
-                BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
-                </div>
-            }
-            else
-            {
-                <div>
-                    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new EnterpriseFilter { PageNumber = Model.Filter.PageNumber, PageSize = Model.Filter.PageSize, SortOrder = Model.Filter.SortOrder,
-                BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
-                </div>
-            }
+        <div class="tab-pane fade" id="Details">
+            @await Html.PartialAsync("_GeneralInfo", Model)
         </div>
-        <div class="tab-pane fade" id="Structure">
-            <h2 class="h4 mb-3">Структура и расположение</h2>
+        <div class="tab-pane fade" id="StructureAndLocation">
+            @await Html.PartialAsync("_StructureAndLocation", Model)
         </div>
-        <div class="tab-pane fade" id="PollutionSources">
+        <div class="tab-pane fade" id="AirPollutionSources">
             <h2 class="h4 mb-3">Источники загрязнения атмосферы</h2>
         </div>
     </div>
 </div>
+
+<script src="~/js/rememberTab.js" data-page="Enterprise"></script>
+<script src="~/js/jsTreeInitializer.js"></script>
+<script>
+    InitializeButtons();
+    var urls = {
+        urlDetailIdnSiteEnterprise: '@Url.Action("Details", "IndSiteEnterprises")',
+        urlDetailWorkhsop: '@Url.Action("Details", "Workshops")',
+        urlDetailArea: '@Url.Action("Details", "Areas")'
+    };
+    $(function () {
+        $('#JsTreeEnterprise')
+            .on('activate_node.jstree', function (e, data) {
+                InitializeButtons(data.node.id, urls);
+            })
+            .jstree({
+                'core': {
+                    'data': @Html.Raw(Model.TreeNodes.GetDataJson())
+                    }
+            });
+    });
+</script>

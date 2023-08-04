@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using SmartEco.Models.ASM;
 using SmartEco.Models.ASM.Requests;
+using SmartEco.Models.ASM.Responses;
 using SmartEco.Services;
 using System.Collections.Generic;
 using System.Net.Http;
@@ -19,11 +20,11 @@ namespace SmartEco.Controllers.ASM
 
         // GET: Areas
         [HttpGet]
-        public async Task<List<Area>> List(int? WorkshopId)
+        public async Task<List<Area>> List(int? EnterpriseId)
         {
             var areasRequest = new AreasRequest()
             {
-                WorkshopId = WorkshopId
+                EnterpriseId = EnterpriseId
             };
             var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAreas, areasRequest);
             var response = await _smartEcoApi.Client.SendAsync(request);
@@ -64,7 +65,8 @@ namespace SmartEco.Controllers.ASM
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    return Ok();
+                    var enterpriseResponse = await response.Content.ReadAsAsync<EnterpriseResponse>();
+                    return RedirectToAction("Details", "Enterprises", new { id = enterpriseResponse.Id });
                 }
                 catch
                 {
@@ -88,7 +90,8 @@ namespace SmartEco.Controllers.ASM
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    return Ok();
+                    var enterpriseResponse = await response.Content.ReadAsAsync<EnterpriseResponse>();
+                    return RedirectToAction("Details", "Enterprises", new { id = enterpriseResponse.Id });
                 }
                 catch
                 {
@@ -107,7 +110,8 @@ namespace SmartEco.Controllers.ASM
                 var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlAreas}/{id}");
                 var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                return Ok();
+                var enterpriseResponse = await response.Content.ReadAsAsync<EnterpriseResponse>();
+                return RedirectToAction("Details", "Enterprises", new { id = enterpriseResponse.Id });
             }
             catch
             {

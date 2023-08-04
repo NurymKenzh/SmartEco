@@ -1,0 +1,27 @@
+﻿@model SmartEco.Models.ASM.IndSiteEnterprise
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<div class="modal-body">
+    <div class="modal-header">
+        <h5 class="modal-title">Удалить промплощадку (Производство)</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="FormDeleteIndSiteEnterprise" asp-action="Delete" asp-controller="IndSiteEnterprises" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" class="indSiteEnterpriseId" />
+            <input type="hidden" asp-for="EnterpriseId" class="enterpriseId" />
+            <div class="form-group">
+                <p>Вы уверены, что хотите удалить промплощадку?</p>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" form="FormDeleteIndSiteEnterprise">@SharedLocalizer["Save"]</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+    </div>
+</div>

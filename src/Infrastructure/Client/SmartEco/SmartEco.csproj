@@ -52,6 +52,19 @@
 
 
   <ItemGroup>
+    <Content Update="Views\StructureAndLocation\_DeleteAreaModal.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\StructureAndLocation\_DeleteIndSiteEnterpriseModal.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+    <Content Update="Views\StructureAndLocation\_DeleteWorkshopModal.cshtml">
+      <CopyToPublishDirectory>PreserveNewest</CopyToPublishDirectory>
+    </Content>
+  </ItemGroup>
+
+
+  <ItemGroup>
     <EmbeddedResource Update="Resources\Controllers\SharedResources.en.resx">
       <Generator>ResXFileCodeGenerator</Generator>
     </EmbeddedResource>

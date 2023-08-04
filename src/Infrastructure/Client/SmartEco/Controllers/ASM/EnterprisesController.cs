@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -17,6 +18,9 @@ namespace SmartEco.Controllers.ASM
         private readonly string _urlEnterprises = "api/Enterprises";
         private readonly string _urlEnterpriseTypes = "api/EnterpriseTypes";
         private readonly string _urlKatoByCode = "api/KATOes/GetByCode";
+        private readonly string _urlIndSiteEnterprises = "api/IndSiteEnterprises";
+        private readonly string _urlWorkshops = "api/Workshops";
+        private readonly string _urlAreas = "api/Areas";
         private readonly SmartEcoApi _smartEcoApi;
         private readonly StatGovKzApi _statGovKzApi;
 
@@ -70,20 +74,21 @@ namespace SmartEco.Controllers.ASM
                 return NotFound();
             }
 
-            var enterpriseViewModel = new EnterpriseViewModel();
+            var enterpriseDetailViewModel = new EnterpriseDetailViewModel();
             var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlEnterprises}/{filter.Id}");
             var response = await _smartEcoApi.Client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
-                enterpriseViewModel.Item = await response.Content.ReadAsAsync<Enterprise>();
+                enterpriseDetailViewModel.Item = await response.Content.ReadAsAsync<Enterprise>();
             }
-            if (enterpriseViewModel == null)
+            if (enterpriseDetailViewModel == null)
             {
                 return NotFound();
             }
 
-            enterpriseViewModel.Filter = filter;
-            return View(enterpriseViewModel);
+            enterpriseDetailViewModel.Filter = filter;
+            enterpriseDetailViewModel.TreeNodes = await GetTreeNodes(filter.Id.Value);
+            return View(enterpriseDetailViewModel);
         }
 
         // GET: Enterprises/Create
@@ -234,5 +239,95 @@ namespace SmartEco.Controllers.ASM
             }
             return null;
         }
+
+        #region Composing tree nodes
+        private async Task<TreeNodes> GetTreeNodes(int enterpriseId)
+        {
+            try
+            {
+                var indSiteEnterprises = await GetIndSiteEnterprises(enterpriseId);
+                var workshops = await GetWorkshops(enterpriseId);
+                var areas = await GetAreas(enterpriseId);
+                return ComposingTreeNodes(indSiteEnterprises, workshops, areas);
+            }
+            catch
+            {
+                BadRequest();
+            }
+
+            return null;
+        }
+
+        private TreeNodes ComposingTreeNodes(List<IndSiteEnterprise> indSiteEnterprises, List<Workshop> workshops, List<Area> areas)
+        {
+            var nodes = new TreeNodes();
+            foreach (var indSiteEnterprise in indSiteEnterprises)
+            {
+                var indSiteEnterpriseId = $"indSiteEnterprise_{indSiteEnterprise.Id}";
+                nodes.Data.Add(AddDataNode(indSiteEnterpriseId, indSiteEnterprise.Name, "/images/ASM/Icons/IndSiteEnterprise.png"));
+
+                foreach (var workshop in workshops.Where(w => w.IndSiteEnterpriseId == indSiteEnterprise.Id))
+                {
+                    var workshopId = $"workshop_{workshop.Id}";
+                    nodes.Data.Add(AddDataNode(workshopId, workshop.Name, "/images/ASM/Icons/Workshop.png", indSiteEnterpriseId));
+
+                    foreach (var area in areas.Where(a => a.WorkshopId == workshop.Id))
+                    {
+                        var areaId = $"area_{area.Id}";
+                        nodes.Data.Add(AddDataNode(areaId, area.Name, "/images/ASM/Icons/Area.png", workshopId));
+                    }
+                }
+            }
+            return nodes;
+        }
+
+        private DataNode AddDataNode(string id, string text, string icon = null, string parent = null)
+            => new DataNode
+            {
+                Id = id,
+                Parent = parent ?? "#",
+                Text = text,
+                Icon = icon
+            };
+
+        private async Task<List<IndSiteEnterprise>> GetIndSiteEnterprises(int enterpriseId)
+        {
+            var indSiteEnterprisesRequest = new IndSiteEnterprisesRequest()
+            {
+                EnterpriseId = enterpriseId
+            };
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlIndSiteEnterprises, indSiteEnterprisesRequest);
+            var response = await _smartEcoApi.Client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var indSiteEnterprisesResponse = await response.Content.ReadAsAsync<List<IndSiteEnterprise>>();
+            return indSiteEnterprisesResponse;
+        }
+
+        private async Task<List<Workshop>> GetWorkshops(int enterpriseId)
+        {
+            var workshopsRequest = new WorkshopsRequest()
+            {
+                EnterpriseId = enterpriseId
+            };
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlWorkshops, workshopsRequest);
+            var response = await _smartEcoApi.Client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var workshopsResponse = await response.Content.ReadAsAsync<List<Workshop>>();
+            return workshopsResponse;
+        }
+
+        private async Task<List<Area>> GetAreas(int enterpriseId)
+        {
+            var areasRequest = new AreasRequest()
+            {
+                EnterpriseId = enterpriseId
+            };
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAreas, areasRequest);
+            var response = await _smartEcoApi.Client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            var areasResponse = await response.Content.ReadAsAsync<List<Area>>();
+            return areasResponse;
+        }
+        #endregion Composing tree nodes
     }
 }

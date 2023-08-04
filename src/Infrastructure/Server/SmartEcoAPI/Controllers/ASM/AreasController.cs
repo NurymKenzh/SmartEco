@@ -4,6 +4,7 @@ using Microsoft.EntityFrameworkCore;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models.ASM;
 using SmartEcoAPI.Models.ASM.Requests;
+using SmartEcoAPI.Models.ASM.Responses;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -28,12 +29,14 @@ namespace SmartEcoAPI.Controllers.ASM
         public async Task<ActionResult<IEnumerable<Area>>> GetAreas(AreasRequest request)
         {
             var areas = _context.Area
-                .Include(w => w.Workshop)
+                .Include(a => a.Workshop)
+                .ThenInclude(a => a.IndSiteEnterprise)
+                .ThenInclude(a => a.Enterprise)
                 .Where(m => true);
 
-            if (request?.WorkshopId != null)
+            if (request?.EnterpriseId != null)
             {
-                areas = areas.Where(m => m.WorkshopId == request.WorkshopId);
+                areas = areas.Where(a => a.Workshop.IndSiteEnterprise.EnterpriseId == request.EnterpriseId);
             }
 
             return await areas.ToListAsync();
@@ -45,9 +48,10 @@ namespace SmartEcoAPI.Controllers.ASM
         public async Task<ActionResult<Area>> GetArea(int id)
         {
             var area = await _context.Area
-                .Include(e => e.Workshop)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
+                .Include(a => a.Workshop)
+                .ThenInclude(a => a.IndSiteEnterprise)
+                .ThenInclude(a => a.Enterprise)
+                .FirstOrDefaultAsync(a => a.Id == id);
             if (area == null)
             {
                 return NotFound();
@@ -59,7 +63,7 @@ namespace SmartEcoAPI.Controllers.ASM
         // PUT: api/Areas/5
         [HttpPut("{id}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<IActionResult> PutArea(int id, Area area)
+        public async Task<ActionResult<EnterpriseResponse>> PutArea(int id, Area area)
         {
             if (id != area.Id)
             {
@@ -84,26 +88,27 @@ namespace SmartEcoAPI.Controllers.ASM
                 }
             }
 
-            return NoContent();
+            return await GetEnterpriseId(area.Id);
         }
 
         // POST: api/Areas
         [HttpPost]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<Area>> PostArea(Area area)
+        public async Task<ActionResult<EnterpriseResponse>> PostArea(Area area)
         {
             _context.Area.Add(area);
             await _context.SaveChangesAsync();
 
-            return CreatedAtAction("GetArea", new { id = area.Id }, area);
+            return await GetEnterpriseId(area.Id);
         }
 
         // DELETE: api/Areas/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<Area>> DeleteArea(int id)
+        public async Task<ActionResult<EnterpriseResponse>> DeleteArea(int id)
         {
             var area = await _context.Area.FindAsync(id);
+            var enerpriseResponse = await GetEnterpriseId(id);
             if (area == null)
             {
                 return NotFound();
@@ -112,12 +117,26 @@ namespace SmartEcoAPI.Controllers.ASM
             _context.Area.Remove(area);
             await _context.SaveChangesAsync();
 
-            return area;
+            return enerpriseResponse;
         }
 
         private bool AreaExists(int id)
         {
             return _context.Area.Any(e => e.Id == id);
+        }
+
+        private async Task<EnterpriseResponse> GetEnterpriseId(int areaId)
+        {
+            var area = await _context.Area
+                .Include(a => a.Workshop)
+                .ThenInclude(a => a.IndSiteEnterprise)
+                .ThenInclude(a => a.Enterprise)
+                .FirstOrDefaultAsync(m => m.Id == areaId);
+
+            return new EnterpriseResponse()
+            {
+                Id = area.Workshop.IndSiteEnterprise.EnterpriseId
+            };
         }
     }
 }

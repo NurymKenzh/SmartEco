@@ -1,13 +1,9 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 using SmartEco.Models.ASM;
-using SmartEco.Models.ASM.Filsters;
 using SmartEco.Models.ASM.Requests;
-using SmartEco.Models.ASM.Responses;
 using SmartEco.Services;
 
 namespace SmartEco.Controllers.ASM
@@ -69,7 +65,7 @@ namespace SmartEco.Controllers.ASM
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    return Ok();
+                    return RedirectToAction("Details", "Enterprises", new { id = indSiteEnterprise.EnterpriseId });
                 }
                 catch
                 {
@@ -93,7 +89,7 @@ namespace SmartEco.Controllers.ASM
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    return Ok();
+                    return RedirectToAction("Details", "Enterprises", new { id = indSiteEnterprise.EnterpriseId });
                 }
                 catch
                 {
@@ -105,14 +101,14 @@ namespace SmartEco.Controllers.ASM
 
         // POST: IndSiteEnterprises/Delete/5
         [HttpPost(Name = nameof(Delete))]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int enterpriseId)
         {
             try
             {
                 var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlIndSiteEnterprises}/{id}");
                 var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                return Ok();
+                return RedirectToAction("Details", "Enterprises", new { id = enterpriseId });
             }
             catch
             {

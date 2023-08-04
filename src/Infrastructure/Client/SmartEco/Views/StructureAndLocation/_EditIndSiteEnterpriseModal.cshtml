@@ -1,0 +1,45 @@
+﻿@model SmartEco.Models.ASM.IndSiteEnterprise
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<div class="modal-body">
+    <div class="modal-header">
+        <h5 class="modal-title">Редактировать промплощадку (Производство)</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="FormEditIndSiteEnterprise" asp-action="Edit" asp-controller="IndSiteEnterprises" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" class="indSiteEnterpriseId" />
+            <input type="hidden" asp-for="EnterpriseId" class="enterpriseId" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" id="NameIndSiteEnterprise" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="Location" class="control-label"></label>
+                <input asp-for="Location" class="form-control" readonly />
+                <span asp-validation-for="Location" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="MinSizeSanitaryZone" class="control-label"></label>
+                <input asp-for="MinSizeSanitaryZone" class="form-control" id="MinSizeSanitaryZoneValue" />
+                <span asp-validation-for="MinSizeSanitaryZone" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" form="FormEditIndSiteEnterprise">@SharedLocalizer["Save"]</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

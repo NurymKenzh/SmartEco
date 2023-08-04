@@ -1,0 +1,35 @@
+﻿@model SmartEco.Models.ASM.Area
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<div class="modal-body">
+    <div class="modal-header">
+        <h5 class="modal-title">Редактировать участок</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form id="FormEditArea" asp-action="Edit" asp-controller="Areas" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="Id" class="areaId" />
+            <input type="hidden" asp-for="WorkshopId" class="workshopId" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" id="NameArea" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" form="FormEditArea">@SharedLocalizer["Save"]</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+    </div>
+</div>
+
+@section Scripts {
+    @{
+        await Html.RenderPartialAsync("_ValidationScriptsPartial");
+    }
+}

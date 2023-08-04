@@ -2,6 +2,6 @@
 {
     public class AreasRequest
     {
-        public int? WorkshopId { get; set; }
+        public int? EnterpriseId { get; set; }
     }
 }

@@ -47,4 +47,9 @@ namespace SmartEco.Models.ASM
         public Enterprise Item { get; set; }
         public SelectList EnterpriseTypesSelectList { get; set; }
     }
+
+    public class EnterpriseDetailViewModel : EnterpriseViewModel
+    {
+        public TreeNodes TreeNodes { get; set; }
+    }
 }
