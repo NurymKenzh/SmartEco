@@ -44,10 +44,14 @@
     </div>
 </div>
 
-<script src="~/js/rememberTab.js" data-page="Enterprise"></script>
-<script src="~/js/jsTreeInitializer.js"></script>
+<script src="~/js/asm/rememberTab.js" data-page="Enterprise"></script>
+<script src="~/js/asm/structure/jsTreeInitializer.js"></script>
+<script src="~/js/asm/structure/borderButtons.js"></script>
+
 <script>
-    InitializeButtons();
+    InitializeBorderButtons();
+    InitializeTreeButtons();
+
     var urls = {
         urlDetailIdnSiteEnterprise: '@Url.Action("Details", "IndSiteEnterprises")',
         urlDetailWorkhsop: '@Url.Action("Details", "Workshops")',
@@ -56,7 +60,8 @@
     $(function () {
         $('#JsTreeEnterprise')
             .on('activate_node.jstree', function (e, data) {
-                InitializeButtons(data.node.id, urls);
+                InitializeTreeButtons(data.node.id, urls);
+                InitializeBorderButtons(data.node.id);
             })
             .jstree({
                 'core': {

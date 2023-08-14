@@ -1,0 +1,28 @@
+﻿@model SmartEco.Models.ASM.IndSiteEnterpriseBorder
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<div class="modal-body">
+    <div class="modal-header">
+        <h5 class="modal-title">Удалить границу промплощадки</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <form asp-action="Delete" id="FormDelete_@Model.Id" method="post">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" name="Id" value="@Model.Id" />
+            <input type="hidden" name="IndSiteEnterpriseId" value="@Model.IndSiteEnterpriseId" />
+            <input type="hidden" name="EnterpriseId" value="@Model.IndSiteEnterprise.EnterpriseId" />
+            <div class="form-group">
+                <p>Вы уверены, что хотите удалить границу промплощадки «@Model.Name»?</p>
+            </div>
+        </form>
+    </div>
+    <div class="modal-footer">
+        <button type="submit" class="btn btn-primary" form="FormDelete_@Model.Id">@SharedLocalizer["Save"]</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+    </div>
+</div>

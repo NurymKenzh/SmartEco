@@ -1,4 +1,4 @@
-﻿function InitializeButtons(id, urls) {
+﻿function InitializeTreeButtons(id, urls) {
     if (id == undefined || id == null) {
         SetFieldsDefault();
         ShowButtonsDefault();

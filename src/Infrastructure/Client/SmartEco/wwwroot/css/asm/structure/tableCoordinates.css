@@ -1,0 +1,69 @@
+﻿table td {
+    position: relative;
+}
+
+    table td input {
+        position: absolute;
+        display: block;
+        top: 0;
+        left: 0;
+        margin: 0;
+        height: 100%;
+        width: 100%;
+        border: none;
+        padding: 10px;
+        box-sizing: border-box;
+    }
+
+#DeleteRowBtn {
+    width: 100%;
+    background-color: transparent;
+}
+
+    #DeleteRowBtn:hover {
+        color: darkred !important;
+    }
+
+/*Scrollablw table*/
+.table-scroll {
+    overflow-y: auto;
+    height: calc(100vh / 2.2);
+    display: block;
+}
+
+    .table-scroll td {
+        width: 100vw;
+    }
+
+/* Modal right */
+/*.modal-dialog {
+    position: fixed;
+    margin: auto;
+    width: 100%;
+    height: 100%;
+    right: 0px;
+}
+
+.modal-content {
+    height: 100%;
+}*/
+
+/* Modal scrolling body */
+/*.modal-dialog {
+    overflow-y: initial !important
+}
+
+.modal-body {
+    height: 80vh;
+    overflow-y: auto;
+}*/
+
+/* Modal backdrop remove */
+/*.modal-backdrop {
+    display: none;
+}
+
+.modal-open .modal {
+    width: 300px;
+    margin: 0 auto;
+}*/

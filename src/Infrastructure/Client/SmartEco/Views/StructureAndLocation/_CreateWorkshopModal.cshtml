@@ -13,7 +13,7 @@
     <div class="modal-body">
         <form id="FormCreateWorkshop" asp-action="Create" asp-controller="Workshops" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" asp-for="IndSiteEnterpriseId" id="IndSiteEnterpriseId" />
+            <input type="hidden" asp-for="IndSiteEnterpriseId" class="indSiteEnterpriseId" />
             <div class="form-group">
                 <label asp-for="Name" class="control-label"></label>
                 <input asp-for="Name" class="form-control" />

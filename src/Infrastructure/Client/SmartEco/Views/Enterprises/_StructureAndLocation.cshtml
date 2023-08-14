@@ -37,6 +37,18 @@
 
         <div id="JsTreeEnterprise"></div>
     </div>
+    <div id="ContainerIndSiteEnterpriseBorders" class="col-md-8">
+        <form asp-action="Index" asp-controller="IndSiteEnterpriseBorders" method="get" class="d-inline-block mr-3">
+            <input type="hidden" class="indSiteEnterpriseId" name="IndSiteEnterpriseId" />
+            <input type="hidden" name="EnterpriseId" value="@Model.Item.Id" />
+            <button type="submit" class="btn btn-secondary">Границы промплощадки</button>
+        </form>
+        <form asp-action="Index" asp-controller="IndSiteEnterpriseBorders" method="get" class="d-inline-block mr-3">
+            <input type="hidden" class="indSiteEnterpriseId" name="IndSiteEnterpriseId" />
+            <input type="hidden" name="EnterpriseId" value="@Model.Item.Id" />
+            <button type="submit" class="btn btn-secondary">Границы нормативной сан. зоны</button>
+        </form>
+    </div>
 </div>
 
 <div>
