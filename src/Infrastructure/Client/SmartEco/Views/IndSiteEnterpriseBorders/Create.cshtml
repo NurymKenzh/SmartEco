@@ -30,6 +30,7 @@
             <div class="form-group">
                 <div id="map" style="height: 400px; width: 100%;"></div>
             </div>
+            <span asp-validation-for="Coordinates" class="text-danger"></span>
             <div id="ContainerCoordinates">
                 @foreach (var coordinate in Model.Coordinates ?? new List<string>())
                 {

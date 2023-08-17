@@ -18,6 +18,7 @@ namespace SmartEco.Models.ASM
         [Display(Name = "Промплощадка предприятия")]
         public IndSiteEnterprise IndSiteEnterprise { get; set; }
 
+        [Required]
         [Display(Name = "Координаты")]
         public List<string> Coordinates { get; set; }
     }
