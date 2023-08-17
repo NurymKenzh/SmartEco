@@ -79,6 +79,8 @@ function ModifyPolygon() {
     })
     vectorSource.addFeature(feature);
 
+    SetMapZoomToExtent();
+
     selectInteraction = new ol.interaction.Select();
     map.addInteraction(selectInteraction);
     // select feature:
@@ -143,6 +145,13 @@ function DrawPolygon() {
             SetTableValues(coords[0]);
         });
     });
+}
+
+function SetMapZoomToExtent() {
+    var featureLength = vectorSource.getFeatures().length;
+    if (featureLength > 0) {
+        map.getView().fit(vectorSource.getExtent(), map.getSize());
+    }
 }
 
 function SetCoordinates(coords) {
