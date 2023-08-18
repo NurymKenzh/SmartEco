@@ -1,0 +1,82 @@
+﻿@model SmartEco.Models.ASM.SanZoneEnterpriseBorder
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Edit"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+<script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
+
+<link href="~/css/asm/structure/tableCoordinates.css" rel="stylesheet" />
+
+<h1>@SharedLocalizer["Edit"]</h1>
+
+<h4>Граница сан. зоны</h4>
+<hr />
+<div class="row">
+    <div class="col-md-6 border-right">
+        <form asp-action="Edit">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <input type="hidden" asp-for="IndSiteEnterpriseId" />
+            <input type="hidden" asp-for="Id" />
+            <div class="form-group">
+                <label asp-for="Name" class="control-label"></label>
+                <input asp-for="Name" class="form-control" />
+                <span asp-validation-for="Name" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <label asp-for="PermissibleConcentration" class="control-label"></label>
+                <input asp-for="PermissibleConcentration" class="form-control" />
+                <span asp-validation-for="PermissibleConcentration" class="text-danger"></span>
+            </div>
+            <div class="form-group">
+                <div id="map" style="height: 400px; width: 100%;"></div>
+            </div>
+            <div id="ContainerCoordinates">
+                @foreach (var coordinate in Model.Coordinates ?? new List<string>())
+                {
+                    <input type="hidden" asp-for="Coordinates" value="@coordinate" />
+                }
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["Save"]" class="btn btn-primary" />
+                <input type="button" value="Очистить" class="btn btn-warning" id="ClearPolygonBtn" />
+            </div>
+        </form>
+    </div>
+
+    <div class="col-auto">
+        <a id="ShowTableCoordinatesBth" class="btn btn-success btn-block" data-toggle="collapse" href="#CollapseTableCoordinates" role="button" aria-expanded="false" aria-controls="CollapseTableCoordinates">
+            Таблица координат
+        </a>
+    </div>
+    <div class="col">
+        <div class="collapse" id="CollapseTableCoordinates">
+            <div class="card card-body">
+                <div class="form-group">
+                    <button id="ApplyCoordsBtn" class="btn btn-outline-primary">Применить</button>
+                    <button id="AddRowBtn" class="btn btn-outline-success">Добавить</button>
+                </div>
+                <div class="form-group">
+                    <table class="table table-bordered">
+                        <thead>
+                            <tr>
+                                <th> №</th>
+                                <th>Долгота</th>
+                                <th> Широта</th>
+                                <th></th>
+                            </tr>
+                        </thead>
+                        <tbody id="CoordinatesTableBody"></tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="~/js/asm/structure/borderIndDrawModify.js"></script>

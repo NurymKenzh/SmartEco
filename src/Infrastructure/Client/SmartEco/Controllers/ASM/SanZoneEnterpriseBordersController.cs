@@ -8,12 +8,12 @@ using SmartEco.Models.ASM.Requests;
 
 namespace SmartEco.Controllers.ASM
 {
-    public class IndSiteEnterpriseBordersController : Controller
+    public class SanZoneEnterpriseBordersController : Controller
     {
-        private readonly string _urlIndSiteEnterpriseBorders = "api/IndSiteEnterpriseBorders";
+        private readonly string _urlSanZoneEnterpriseBorders = "api/SanZoneEnterpriseBorders";
         private readonly SmartEcoApi _smartEcoApi;
 
-        public IndSiteEnterpriseBordersController(SmartEcoApi smartEcoApi)
+        public SanZoneEnterpriseBordersController(SmartEcoApi smartEcoApi)
         {
             _smartEcoApi = smartEcoApi;
         }
@@ -21,17 +21,17 @@ namespace SmartEco.Controllers.ASM
         [HttpGet]
         public async Task<IActionResult> Index(int IndSiteEnterpriseId, int EnterpriseId)
         {
-            var viewModel = new IndSiteEnterpriseBorderListViewModel();
+            var viewModel = new SanZoneEnterpriseBorderListViewModel();
 
-            var bordersRequest = new IndSiteEnterpriseBordersRequest()
+            var bordersRequest = new SanZoneEnterpriseBordersRequest()
             {
                 IndSiteEnterpriseId = IndSiteEnterpriseId
             };
-            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlIndSiteEnterpriseBorders, bordersRequest);
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlSanZoneEnterpriseBorders, bordersRequest);
             var response = await _smartEcoApi.Client.SendAsync(request);
             if (response.IsSuccessStatusCode)
             {
-                var borders = await response.Content.ReadAsAsync<List<IndSiteEnterpriseBorder>>();
+                var borders = await response.Content.ReadAsAsync<List<SanZoneEnterpriseBorder>>();
                 viewModel.Items = borders;
             }
             viewModel.IndSiteEnterpriseId = IndSiteEnterpriseId;
@@ -42,7 +42,7 @@ namespace SmartEco.Controllers.ASM
 
         public IActionResult Create(int IndSiteEnterpriseId)
         {
-            var viewModel = new IndSiteEnterpriseBorder()
+            var viewModel = new SanZoneEnterpriseBorder()
             {
                 IndSiteEnterpriseId = IndSiteEnterpriseId
             };
@@ -50,18 +50,18 @@ namespace SmartEco.Controllers.ASM
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(IndSiteEnterpriseBorder indSiteEnterpriseBorder)
+        public async Task<IActionResult> Create(SanZoneEnterpriseBorder sanZoneEnterpriseBorder)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var body = indSiteEnterpriseBorder;
-                    var request = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlIndSiteEnterpriseBorders, body);
+                    var body = sanZoneEnterpriseBorder;
+                    var request = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlSanZoneEnterpriseBorders, body);
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    var borderResponse = await response.Content.ReadAsAsync<IndSiteEnterpriseBorder>();
+                    var borderResponse = await response.Content.ReadAsAsync<SanZoneEnterpriseBorder>();
                     return RedirectToAction("Index", new
                     {
                         IndSiteEnterpriseId = borderResponse.IndSiteEnterpriseId,
@@ -70,22 +70,22 @@ namespace SmartEco.Controllers.ASM
                 }
                 catch
                 {
-                    return View(indSiteEnterpriseBorder);
+                    return View(sanZoneEnterpriseBorder);
                 }
             }
 
-            return View(indSiteEnterpriseBorder);
+            return View(sanZoneEnterpriseBorder);
         }
 
         public async Task<IActionResult> Edit(int id)
         {
             try
             {
-                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlIndSiteEnterpriseBorders}/{id}");
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlSanZoneEnterpriseBorders}/{id}");
                 var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                var indSiteEnterpriseBorder = await response.Content.ReadAsAsync<IndSiteEnterpriseBorder>();
-                return View(indSiteEnterpriseBorder);
+                var sanZoneEnterpriseBorder = await response.Content.ReadAsAsync<SanZoneEnterpriseBorder>();
+                return View(sanZoneEnterpriseBorder);
             }
             catch
             {
@@ -94,18 +94,18 @@ namespace SmartEco.Controllers.ASM
         }
 
         [HttpPost]
-        public async Task<IActionResult> Edit(IndSiteEnterpriseBorder indSiteEnterpriseBorder)
+        public async Task<IActionResult> Edit(SanZoneEnterpriseBorder sanZoneEnterpriseBorder)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var body = indSiteEnterpriseBorder;
-                    var request = _smartEcoApi.CreateRequest(HttpMethod.Put, $"{_urlIndSiteEnterpriseBorders}/{indSiteEnterpriseBorder.Id}", body);
+                    var body = sanZoneEnterpriseBorder;
+                    var request = _smartEcoApi.CreateRequest(HttpMethod.Put, $"{_urlSanZoneEnterpriseBorders}/{sanZoneEnterpriseBorder.Id}", body);
                     var response = await _smartEcoApi.Client.SendAsync(request);
 
                     response.EnsureSuccessStatusCode();
-                    var borderResponse = await response.Content.ReadAsAsync<IndSiteEnterpriseBorder>();
+                    var borderResponse = await response.Content.ReadAsAsync<SanZoneEnterpriseBorder>();
                     return RedirectToAction("Index", new 
                     { 
                         IndSiteEnterpriseId = borderResponse.IndSiteEnterpriseId,
@@ -114,10 +114,10 @@ namespace SmartEco.Controllers.ASM
                 }
                 catch
                 {
-                    return View(indSiteEnterpriseBorder);
+                    return View(sanZoneEnterpriseBorder);
                 }
             }
-            return View(indSiteEnterpriseBorder);
+            return View(sanZoneEnterpriseBorder);
         }
 
         [HttpPost(Name = nameof(Delete))]
@@ -125,7 +125,7 @@ namespace SmartEco.Controllers.ASM
         {
             try
             {
-                var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlIndSiteEnterpriseBorders}/{id}");
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlSanZoneEnterpriseBorders}/{id}");
                 var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 return RedirectToAction("Index", new

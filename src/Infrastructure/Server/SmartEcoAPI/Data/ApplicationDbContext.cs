@@ -102,6 +102,7 @@ namespace SmartEcoAPI.Data
         public DbSet<Workshop> Workshop { get; set; }
         public DbSet<Area> Area { get; set; }
         public DbSet<IndSiteEnterpriseBorder> IndSiteEnterpriseBorder { get; set; }
+        public DbSet<SanZoneEnterpriseBorder> SanZoneEnterpriseBorder { get; set; }
         #endregion
     }
 

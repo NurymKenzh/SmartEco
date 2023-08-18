@@ -1,4 +1,4 @@
-﻿namespace SmartEco.Models.ASM.Requests
+﻿namespace SmartEcoAPI.Models.ASM.Requests
 {
     public class SanZoneEnterpriseBordersRequest
     {
