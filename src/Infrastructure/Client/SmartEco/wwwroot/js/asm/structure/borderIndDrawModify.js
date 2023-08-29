@@ -28,6 +28,7 @@ var selectInteraction = new ol.interaction.Select();
 
 var map = new ol.Map({
     target: 'map',
+    controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
     layers: [
         new ol.layer.Tile({
             source: new ol.source.OSM()

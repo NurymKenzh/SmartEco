@@ -34,7 +34,7 @@ namespace SmartEcoAPI.Controllers.ASM
 
             if (request.Bin != null)
             {
-                enterprises = enterprises.Where(m => m.Bin.ToString().StartsWith(request.Bin.Value.ToString()));
+                enterprises = enterprises.Where(m => m.Bin.StartsWith(request.Bin));
             }
             if (!string.IsNullOrEmpty(request.Name))
             {

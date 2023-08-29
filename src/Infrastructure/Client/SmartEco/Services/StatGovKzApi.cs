@@ -1,4 +1,5 @@
 ﻿using SmartEco.Models.ASM.Responses;
+using System;
 using System.Net.Http;
 using System.Threading.Tasks;
 
@@ -11,17 +12,21 @@ namespace SmartEco.Services
         public StatGovKzApi(HttpClient client)
             => _client = client;
 
-        public async Task<JuridicalAccountResponse> GetEnterpriseByBin(long bin)
+        public async Task<JuridicalAccountResponse> GetEnterpriseByBin(string bin)
         {
             try
             {
+                await Task.Delay(2000);
                 HttpResponseMessage response = await _client.GetAsync($"api/juridical/counter/api/?bin={bin}&lang=ru");
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsAsync<JuridicalAccountResponse>();
             }
-            catch
+            catch (Exception ex)
             {
-                return new JuridicalAccountResponse();
+                if (ex.Message.Contains("429"))
+                    return new JuridicalAccountResponse() {  Description = "429: Too Many Requests" };
+                else
+                    return new JuridicalAccountResponse();
             }
         }
     }

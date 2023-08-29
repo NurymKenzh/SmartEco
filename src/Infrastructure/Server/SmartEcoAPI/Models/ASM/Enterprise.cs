@@ -7,7 +7,7 @@ namespace SmartEcoAPI.Models.ASM
     public class Enterprise
     {
         public int Id { get; set; }
-        public long Bin { get; set; }
+        public string Bin { get; set; }
         public string Name { get; set; }
         public int KatoId { get; set; }
         public KATO Kato { get; set; }

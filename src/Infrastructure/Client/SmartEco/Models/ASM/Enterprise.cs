@@ -12,7 +12,7 @@ namespace SmartEco.Models.ASM
         [Required]
         [RegularExpression(@"[0-9]{12}", ErrorMessage = "БИН должен содержать 12 цифр")]
         [Display(Name = "БИН (ИНН)")]
-        public long Bin { get; set; }
+        public string Bin { get; set; }
 
         [Required]
         [Display(Name = "Наименование предприятия")]

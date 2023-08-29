@@ -2,7 +2,7 @@
 {
     public class EnterpriseFilter : BaseFilter
     {
-        public long? BinFilter { get; set; }
+        public string BinFilter { get; set; }
         public string NameFilter { get; set; }
         public string KatoComplexFilter { get; set; }
         public int? EnterpriseTypeIdFilter { get; set; }

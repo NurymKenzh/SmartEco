@@ -206,12 +206,13 @@ namespace SmartEco.Controllers.ASM
         }
 
         [HttpPost]
-        public async Task<JuridicalAccountResponse> GetEnterpriseFromStatGovKz(long Bin)
+        public async Task<JuridicalAccountResponse> GetEnterpriseFromStatGovKz(string Bin)
         {
             var response = await _statGovKzApi.GetEnterpriseByBin(Bin);
             if (!response.Success || response.Obj is null)
             {
-                response.Description = "Ничего не найдено";
+                if (response.Description is null)
+                    response.Description = "Ничего не найдено";
             }
             else
             {
