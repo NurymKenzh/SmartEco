@@ -16,7 +16,6 @@ namespace SmartEco.Services
         {
             try
             {
-                await Task.Delay(2000);
                 HttpResponseMessage response = await _client.GetAsync($"api/juridical/counter/api/?bin={bin}&lang=ru");
                 response.EnsureSuccessStatusCode();
                 return await response.Content.ReadAsAsync<JuridicalAccountResponse>();

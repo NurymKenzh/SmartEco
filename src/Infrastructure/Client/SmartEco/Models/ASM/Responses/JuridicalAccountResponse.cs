@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 
 namespace SmartEco.Models.ASM.Responses
 {
@@ -32,6 +33,6 @@ namespace SmartEco.Models.ASM.Responses
         public string Fio { get; set; }
         public bool Ip { get; set; }
 
-        public string KatoComplex { get; set; }
+        public string KatoComplex => $"{KatoCode} {KatoAddress}";
     }
 }

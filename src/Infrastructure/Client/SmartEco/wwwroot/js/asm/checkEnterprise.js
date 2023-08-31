@@ -28,14 +28,16 @@ $('#Item_Bin').bind('input', function (e) {
 function BeforeGetEnterprise() {
     $('#' + errorGetEnterpriseId).remove();
     $('#Item_Name').val('');
-    $('#Item_KatoId').val('');
-    $('#Item_Kato').val('');
+    $('#Item_Kato_Code').val('');
+    $('#Item_Kato_Address').val('');
+    $('#Item_Kato_ComplexName').val('');
 }
 
 function SetValues(data) {
     $('#Item_Name').val(data.obj.name);
-    $('#Item_KatoId').val(data.obj.katoId);
-    $('#Item_Kato').val(data.obj.katoComplex);
+    $('#Item_Kato_Code').val(data.obj.katoCode);
+    $('#Item_Kato_Address').val(data.obj.katoAddress);
+    $('#Item_Kato_ComplexName').val(data.obj.katoComplex);
 }
 
 function SetError(data) {

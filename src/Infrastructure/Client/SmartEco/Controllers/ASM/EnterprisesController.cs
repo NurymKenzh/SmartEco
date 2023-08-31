@@ -17,7 +17,6 @@ namespace SmartEco.Controllers.ASM
     {
         private readonly string _urlEnterprises = "api/Enterprises";
         private readonly string _urlEnterpriseTypes = "api/EnterpriseTypes";
-        private readonly string _urlKatoByCode = "api/KATOes/GetByCode";
         private readonly string _urlIndSiteEnterprises = "api/IndSiteEnterprises";
         private readonly string _urlWorkshops = "api/Workshops";
         private readonly string _urlAreas = "api/Areas";
@@ -213,17 +212,6 @@ namespace SmartEco.Controllers.ASM
             {
                 if (response.Description is null)
                     response.Description = "Ничего не найдено";
-            }
-            else
-            {
-                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlKatoByCode}/{response.Obj.KatoCode}");
-                var responseKato = await _smartEcoApi.Client.SendAsync(request);
-                if (responseKato.IsSuccessStatusCode)
-                {
-                    var kato = await responseKato.Content.ReadAsAsync<KATO>();
-                    response.Obj.KatoId = kato.Id;
-                    response.Obj.KatoComplex = kato.KatoComplexName;
-                }
             }
 
             return response;

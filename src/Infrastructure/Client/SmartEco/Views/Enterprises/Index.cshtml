@@ -92,7 +92,7 @@
                     @Html.Editor(nameof(Model.Filter.NameFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
                 <th>
-                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().KatoId)
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Kato)
                     <br />
                     @Html.Editor(nameof(Model.Filter.KatoComplexFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
                 </th>
@@ -127,7 +127,7 @@
                         @Html.DisplayFor(modelItem => item.Name)
                     </td>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Kato.KatoComplexName)
+                        @Html.DisplayFor(modelItem => item.Kato.ComplexName)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.EnterpriseType.Name)

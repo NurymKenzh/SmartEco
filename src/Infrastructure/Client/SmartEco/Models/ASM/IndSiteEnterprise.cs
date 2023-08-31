@@ -20,6 +20,6 @@ namespace SmartEco.Models.ASM
         public int MinSizeSanitaryZone { get; set; }
 
         [Display(Name = "Местоположение")]
-        public string Location => Enterprise?.Kato?.KatoComplexName;
+        public string Location => Enterprise?.Kato?.ComplexName;
     }
 }

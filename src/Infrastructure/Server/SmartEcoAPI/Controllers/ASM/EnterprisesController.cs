@@ -42,7 +42,7 @@ namespace SmartEcoAPI.Controllers.ASM
             }
             if (!string.IsNullOrEmpty(request.KatoComplex))
             {
-                enterprises = enterprises.Where(m => $"{m.Kato.Code} {m.Kato.NameRU}".ToLower().Contains(request.KatoComplex.ToLower()));
+                enterprises = enterprises.Where(m => $"{m.Kato.Code} {m.Kato.Address}".ToLower().Contains(request.KatoComplex.ToLower()));
             }
             if (request.EnterpriseTypeId != null)
             {
@@ -101,6 +101,7 @@ namespace SmartEcoAPI.Controllers.ASM
             }
 
             _context.Entry(enterprise).State = EntityState.Modified;
+            _context.Entry(enterprise.Kato).State = EntityState.Modified;
 
             try
             {
@@ -127,6 +128,12 @@ namespace SmartEcoAPI.Controllers.ASM
         public async Task<ActionResult<Enterprise>> PostEnterprise(Enterprise enterprise)
         {
             _context.Enterprise.Add(enterprise);
+            _context.KatoEnterprise.Add(new KatoEnterprise 
+            { 
+                Code = enterprise.Kato.Code, 
+                Address = enterprise.Kato.Address, 
+                Enterprise = enterprise 
+            });
             await _context.SaveChangesAsync();
 
             return CreatedAtAction("GetEnterprise", new { id = enterprise.Id }, enterprise);

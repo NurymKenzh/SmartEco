@@ -18,11 +18,8 @@ namespace SmartEco.Models.ASM
         [Display(Name = "Наименование предприятия")]
         public string Name { get; set; }
 
-        [Required]
         [Display(Name = "Город или регион (КАТО)")]
-        public int KatoId { get; set; }
-        [Display(Name = "Город или регион (КАТО)")]
-        public KATO Kato { get; set; }
+        public KatoEnterprise Kato { get; set; }
 
         [Display(Name = "Тип предприятия")]
         public int? EnterpriseTypeId { get; set; }
@@ -33,6 +30,19 @@ namespace SmartEco.Models.ASM
         public string Contacts { get; set; }
     }
 
+    public class KatoEnterprise
+    {
+        public int Id { get; set; }
+        public string Code { get; set; }
+        public string Address { get; set; }
+
+        public int EnterpriseId { get; set; }
+        public Enterprise Enterprise { get; set; }
+
+        public string ComplexName => $"{Code} {Address}";
+    }
+
+    #region ViewModels
     public class EnterpriseListViewModel
     {
         public EnterpriseFilter Filter { get; set; }
@@ -52,4 +62,5 @@ namespace SmartEco.Models.ASM
     {
         public TreeNodes TreeNodes { get; set; }
     }
+    #endregion
 }

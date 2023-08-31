@@ -30,6 +30,8 @@
     <Compile Remove="Migrations\20230112112352_Enterprise_20230112_00.Designer.cs" />
     <Compile Remove="Migrations\20230112115215_SourceEmission_20230112_00.cs" />
     <Compile Remove="Migrations\20230112115215_SourceEmission_20230112_00.Designer.cs" />
+    <Compile Remove="Migrations\20230831092457_KatoEnterprise_20230831_00.cs" />
+    <Compile Remove="Migrations\20230831092457_KatoEnterprise_20230831_00.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

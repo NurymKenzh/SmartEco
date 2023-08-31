@@ -17,7 +17,7 @@ $('.collapse').on('shown.bs.collapse', function () {
     AdjustTable();
 })
 
-//#endregion Initialize buttons
+//#endregion Initialize events
 
 var vectorSource = new ol.source.Vector();
 var vectorLayer = new ol.layer.Vector({
@@ -39,6 +39,30 @@ var map = new ol.Map({
         center: ol.proj.fromLonLat([68.291, 47.5172]),
         zoom: 4
     })
+});
+
+//Instantiate with some options and add the Control
+var geocoder = new Geocoder('nominatim', {
+    provider: 'osm',
+    lang: 'ru',
+    placeholder: 'Search for ...',
+    limit: 5,
+    debug: false,
+    autoComplete: true,
+    autoCompleteMinLength: 3,
+    keepOpen: true,
+    countrycodes: 'KZ'
+});
+map.addControl(geocoder);
+
+//Listen when an address is chosen
+geocoder.on('addresschosen', function (evt) {
+    var featureGeocoder = geocoder.getSource().getFeatures().length;
+    if (featureGeocoder > 0) {
+        var bbox3857 = ConvertBboxExtent(evt.place.bbox);
+        map.getView().fit(bbox3857, map.getSize());
+    }
+    geocoder.getSource().clear();
 });
 
 var formatGeoJSON = new ol.format.GeoJSON();
@@ -146,6 +170,15 @@ function DrawPolygon() {
             SetTableValues(coords[0]);
         });
     });
+}
+
+function ConvertBboxExtent(bbox) {
+    var lat1 = bbox[0],
+        lat2 = bbox[1],
+        long1 = bbox[2],
+        long2 = bbox[3];
+    var bbox4326 = [parseFloat(long1), parseFloat(lat1), parseFloat(long2), parseFloat(lat2)];
+    return ol.proj.transformExtent(bbox4326, 'EPSG:4326', 'EPSG:3857');
 }
 
 function SetMapZoomToExtent() {

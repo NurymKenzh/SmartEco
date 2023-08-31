@@ -98,6 +98,7 @@ namespace SmartEcoAPI.Data
         #region ASM
         public DbSet<EnterpriseType> EnterpriseType { get; set; }
         public DbSet<Enterprise> Enterprise{ get; set; }
+        public DbSet<KatoEnterprise> KatoEnterprise { get; set; }
         public DbSet<IndSiteEnterprise> IndSiteEnterprise { get; set; }
         public DbSet<Workshop> Workshop { get; set; }
         public DbSet<Area> Area { get; set; }

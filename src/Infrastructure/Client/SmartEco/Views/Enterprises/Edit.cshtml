@@ -29,9 +29,16 @@
             </div>
             <div class="form-group">
                 <label asp-for="Item.Kato" class="control-label"></label>
+                <input asp-for="Item.Kato.Id" class="form-control" hidden />
+                <input asp-for="Item.Kato.Code" class="form-control" hidden />
+                <input asp-for="Item.Kato.Address" class="form-control" hidden />
+                <input asp-for="Item.Kato.ComplexName" class="form-control" readonly />
+                <span asp-validation-for="Item.Kato" class="text-danger"></span>
+
+                @*<label asp-for="Item.Kato" class="control-label"></label>
                 <input asp-for="Item.KatoId" class="form-control" hidden />
                 <input asp-for="Item.Kato" class="form-control" value="@Model.Item.Kato.KatoComplexName" readonly />
-                <span asp-validation-for="Item.KatoId" class="text-danger"></span>
+                <span asp-validation-for="Item.KatoId" class="text-danger"></span>*@
             </div>
             <div class="form-group">
                 <label asp-for="Item.EnterpriseTypeId" class="control-label"></label>
@@ -69,4 +76,4 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-<script src="~/js/checkEnterprise.js"></script>
+<script src="~/js/asm/checkEnterprise.js"></script>
