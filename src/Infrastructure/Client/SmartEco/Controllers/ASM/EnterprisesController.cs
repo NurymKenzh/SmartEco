@@ -87,6 +87,8 @@ namespace SmartEco.Controllers.ASM
 
             enterpriseDetailViewModel.Filter = filter;
             enterpriseDetailViewModel.TreeNodes = await GetTreeNodes(filter.Id.Value);
+            enterpriseDetailViewModel.IndSiteEnterprises = await GetIndSiteEnterprises(enterpriseDetailViewModel.Item.Id);
+
             return View(enterpriseDetailViewModel);
         }
 
@@ -232,19 +234,10 @@ namespace SmartEco.Controllers.ASM
         #region Composing tree nodes
         private async Task<TreeNodes> GetTreeNodes(int enterpriseId)
         {
-            try
-            {
-                var indSiteEnterprises = await GetIndSiteEnterprises(enterpriseId);
-                var workshops = await GetWorkshops(enterpriseId);
-                var areas = await GetAreas(enterpriseId);
-                return ComposingTreeNodes(indSiteEnterprises, workshops, areas);
-            }
-            catch
-            {
-                BadRequest();
-            }
-
-            return null;
+            var indSiteEnterprises = await GetIndSiteEnterprises(enterpriseId);
+            var workshops = await GetWorkshops(enterpriseId);
+            var areas = await GetAreas(enterpriseId);
+            return ComposingTreeNodes(indSiteEnterprises, workshops, areas);
         }
 
         private TreeNodes ComposingTreeNodes(List<IndSiteEnterprise> indSiteEnterprises, List<Workshop> workshops, List<Area> areas)
@@ -283,41 +276,53 @@ namespace SmartEco.Controllers.ASM
 
         private async Task<List<IndSiteEnterprise>> GetIndSiteEnterprises(int enterpriseId)
         {
-            var indSiteEnterprisesRequest = new IndSiteEnterprisesRequest()
+            try
             {
-                EnterpriseId = enterpriseId
-            };
-            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlIndSiteEnterprises, indSiteEnterprisesRequest);
-            var response = await _smartEcoApi.Client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var indSiteEnterprisesResponse = await response.Content.ReadAsAsync<List<IndSiteEnterprise>>();
-            return indSiteEnterprisesResponse;
+                var indSiteEnterprisesRequest = new IndSiteEnterprisesRequest()
+                {
+                    EnterpriseId = enterpriseId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlIndSiteEnterprises, indSiteEnterprisesRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var indSiteEnterprisesResponse = await response.Content.ReadAsAsync<List<IndSiteEnterprise>>();
+                return indSiteEnterprisesResponse;
+            }
+            catch { return new List<IndSiteEnterprise>(); }
         }
 
         private async Task<List<Workshop>> GetWorkshops(int enterpriseId)
         {
-            var workshopsRequest = new WorkshopsRequest()
+            try
             {
-                EnterpriseId = enterpriseId
-            };
-            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlWorkshops, workshopsRequest);
-            var response = await _smartEcoApi.Client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var workshopsResponse = await response.Content.ReadAsAsync<List<Workshop>>();
-            return workshopsResponse;
+                var workshopsRequest = new WorkshopsRequest()
+                {
+                    EnterpriseId = enterpriseId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlWorkshops, workshopsRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var workshopsResponse = await response.Content.ReadAsAsync<List<Workshop>>();
+                return workshopsResponse;
+            }
+            catch { return new List<Workshop>(); }
         }
 
         private async Task<List<Area>> GetAreas(int enterpriseId)
         {
-            var areasRequest = new AreasRequest()
+            try
             {
-                EnterpriseId = enterpriseId
-            };
-            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAreas, areasRequest);
-            var response = await _smartEcoApi.Client.SendAsync(request);
-            response.EnsureSuccessStatusCode();
-            var areasResponse = await response.Content.ReadAsAsync<List<Area>>();
-            return areasResponse;
+                var areasRequest = new AreasRequest()
+                {
+                    EnterpriseId = enterpriseId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAreas, areasRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var areasResponse = await response.Content.ReadAsAsync<List<Area>>();
+                return areasResponse;
+            }
+            catch { return new List<Area>(); }
         }
         #endregion Composing tree nodes
     }

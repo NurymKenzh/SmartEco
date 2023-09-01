@@ -52,15 +52,10 @@
     InitializeBorderButtons();
     InitializeTreeButtons();
 
-    var urls = {
-        urlDetailIdnSiteEnterprise: '@Url.Action("Details", "IndSiteEnterprises")',
-        urlDetailWorkhsop: '@Url.Action("Details", "Workshops")',
-        urlDetailArea: '@Url.Action("Details", "Areas")'
-    };
     $(function () {
         $('#JsTreeEnterprise')
             .on('activate_node.jstree', function (e, data) {
-                InitializeTreeButtons(data, urls);
+                InitializeTreeButtons(data);
                 InitializeBorderButtons(data.node.id);
             })
             .jstree({

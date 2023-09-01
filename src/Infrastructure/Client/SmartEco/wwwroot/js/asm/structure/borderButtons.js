@@ -8,7 +8,8 @@
             var idName = idArray[0];
             var idNumber = idArray[1];
             if (idName == 'indSiteEnterprise') {
-                ShowButtons();
+                HideButtons();
+                ShowButtons(idNumber);
             }
             else {
                 HideButtons();
@@ -21,9 +22,12 @@
 }
 
 function HideButtons() {
-    $('#ContainerIndSiteEnterpriseBorders').css('display', 'none');
+    var elements = document.querySelectorAll("[id^='ContainerIndSiteEnterpriseBorders']");
+    $.each(elements, function (index, element) {
+        $('#' + element.id).css('display', 'none');
+    });
 }
 
-function ShowButtons() {
-    $('#ContainerIndSiteEnterpriseBorders').css('display', 'block');
+function ShowButtons(idNumber) {
+    $('#ContainerIndSiteEnterpriseBorders_' + idNumber).css('display', 'block');
 }

@@ -18,7 +18,7 @@ var btnIds = {
     ContainerButtonsArea: '#ContainerButtonsArea'
 }
 
-function InitializeTreeButtons(data, urls) {
+function InitializeTreeButtons(data) {
     if (data == undefined || data == null) {
         ShowButtonsDefault();
     }

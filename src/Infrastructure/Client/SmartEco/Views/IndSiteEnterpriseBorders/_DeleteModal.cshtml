@@ -1,4 +1,4 @@
-﻿@model SmartEco.Models.ASM.IndSiteEnterpriseBorder
+﻿@model SmartEco.Models.ASM.IndSiteEnterprise
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<SharedResources> SharedLocalizer
@@ -11,18 +11,17 @@
         </button>
     </div>
     <div class="modal-body">
-        <form asp-action="Delete" id="FormDelete_@Model.Id" method="post">
-            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" name="Id" value="@Model.Id" />
-            <input type="hidden" name="IndSiteEnterpriseId" value="@Model.IndSiteEnterpriseId" />
-            <input type="hidden" name="EnterpriseId" value="@Model.IndSiteEnterprise.EnterpriseId" />
+        <form asp-action="Delete" id="FormDelete_@Model.IndSiteBorder.Id" asp-controller="IndSiteEnterpriseBorders" method="post">
+            <input type="hidden" name="Id" value="@Model.IndSiteBorder.Id" />
+            <input type="hidden" name="IndSiteEnterpriseId" value="@Model.IndSiteBorder.IndSiteEnterpriseId" />
+            <input type="hidden" name="EnterpriseId" value="@Model.EnterpriseId" />
             <div class="form-group">
-                <p>Вы уверены, что хотите удалить границу промплощадки «@Model.Name»?</p>
+                <p>Вы уверены, что хотите удалить границу промплощадки «@Model.IndSiteBorder.Name»?</p>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" form="FormDelete_@Model.Id">Да</button>
+        <button type="submit" class="btn btn-primary" form="FormDelete_@Model.IndSiteBorder.Id">Да</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
     </div>
 </div>

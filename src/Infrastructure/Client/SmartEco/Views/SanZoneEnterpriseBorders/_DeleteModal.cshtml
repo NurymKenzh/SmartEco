@@ -1,4 +1,4 @@
-﻿@model SmartEco.Models.ASM.SanZoneEnterpriseBorder
+﻿@model SmartEco.Models.ASM.IndSiteEnterprise
 @using SmartEco.Controllers
 @using Microsoft.Extensions.Localization
 @inject IStringLocalizer<SharedResources> SharedLocalizer
@@ -11,18 +11,18 @@
         </button>
     </div>
     <div class="modal-body">
-        <form asp-action="Delete" id="FormDelete_@Model.Id" method="post">
+        <form asp-action="Delete" id="FormDelete_@Model.SanZoneBorder.Id" asp-controller="SanZoneEnterpriseBorders" method="post">
             <div asp-validation-summary="ModelOnly" class="text-danger"></div>
-            <input type="hidden" name="Id" value="@Model.Id" />
-            <input type="hidden" name="IndSiteEnterpriseId" value="@Model.IndSiteEnterpriseId" />
-            <input type="hidden" name="EnterpriseId" value="@Model.IndSiteEnterprise.EnterpriseId" />
+            <input type="hidden" name="Id" value="@Model.SanZoneBorder.Id" />
+            <input type="hidden" name="IndSiteEnterpriseId" value="@Model.SanZoneBorder.IndSiteEnterpriseId" />
+            <input type="hidden" name="EnterpriseId" value="@Model.EnterpriseId" />
             <div class="form-group">
-                <p>Вы уверены, что хотите удалить границу сан.зоны «@Model.Name»?</p>
+                <p>Вы уверены, что хотите удалить границу сан.зоны «@Model.SanZoneBorder.Name»?</p>
             </div>
         </form>
     </div>
     <div class="modal-footer">
-        <button type="submit" class="btn btn-primary" form="FormDelete_@Model.Id">@SharedLocalizer["Save"]</button>
+        <button type="submit" class="btn btn-primary" form="FormDelete_@Model.SanZoneBorder.Id">@SharedLocalizer["Save"]</button>
         <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
     </div>
 </div>

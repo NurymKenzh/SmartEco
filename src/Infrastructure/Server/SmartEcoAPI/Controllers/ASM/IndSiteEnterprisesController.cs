@@ -28,6 +28,8 @@ namespace SmartEcoAPI.Controllers.ASM
         public async Task<ActionResult<IEnumerable<IndSiteEnterprise>>> GetIndSiteEnterprises(IndSiteEnterprisesRequest request)
         {
             var indSiteEnterprises = _context.IndSiteEnterprise
+                .Include(ind => ind.IndSiteBorder)
+                .Include(ind => ind.SanZoneBorder)
                 .Include(ind => ind.Enterprise)
                 .ThenInclude(ind => ind.Kato)
                 .Where(m => true);
@@ -46,6 +48,8 @@ namespace SmartEcoAPI.Controllers.ASM
         public async Task<ActionResult<IndSiteEnterprise>> GetIndSiteEnterprise(int id)
         {
             var indSiteEnterprise = await _context.IndSiteEnterprise
+                .Include(ind => ind.IndSiteBorder)
+                .Include(ind => ind.SanZoneBorder)
                 .Include(e => e.Enterprise)
                 .ThenInclude(ind => ind.Kato)
                 .FirstOrDefaultAsync(m => m.Id == id);

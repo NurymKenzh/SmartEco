@@ -37,7 +37,7 @@
 
         <div id="JsTreeEnterprise"></div>
     </div>
-    <div id="ContainerIndSiteEnterpriseBorders" class="col-md-8">
+    @*<div id="ContainerIndSiteEnterpriseBorders" class="col-md-8">
         <form asp-action="Index" asp-controller="IndSiteEnterpriseBorders" method="get" class="d-inline-block mr-3">
             <input type="hidden" class="indSiteEnterpriseId" name="IndSiteEnterpriseId" />
             <input type="hidden" name="EnterpriseId" value="@Model.Item.Id" />
@@ -48,7 +48,29 @@
             <input type="hidden" name="EnterpriseId" value="@Model.Item.Id" />
             <button type="submit" class="btn btn-secondary">Границы нормативной сан. зоны</button>
         </form>
-    </div>
+    </div>*@
+    @foreach (var indSiteEnterprise in Model.IndSiteEnterprises)
+    {
+        <div id="ContainerIndSiteEnterpriseBorders_@indSiteEnterprise.Id" class="col-md-8">
+            <ul class="nav nav-pills mb-3">
+                <li class="nav-item">
+                    <a class="nav-link active" data-toggle="pill" href="#IndSiteEnterpriseBorders">Границы промплощадки</a>
+                </li>
+                <li class="nav-item">
+                    <a class="nav-link" data-toggle="pill" href="#SanZoneEnterpriseBorders">Границы нормативной сан. зоны</a>
+                </li>
+            </ul>
+
+            <div class="tab-content p-3">
+                <div class="tab-pane fade show active" id="IndSiteEnterpriseBorders" role="tabpanel" aria-labelledby="pills-home-tab">
+                    @await Html.PartialAsync("_IndSiteEnterpriseBorders", indSiteEnterprise)
+                </div>
+                <div class="tab-pane fade" id="SanZoneEnterpriseBorders" role="tabpanel" aria-labelledby="pills-profile-tab">
+                    @await Html.PartialAsync("_SanZoneEnterpriseBorders", indSiteEnterprise)
+                </div>
+            </div>
+        </div>
+    }
 </div>
 
 <div>

@@ -62,11 +62,7 @@ namespace SmartEco.Controllers.ASM
 
                     response.EnsureSuccessStatusCode();
                     var borderResponse = await response.Content.ReadAsAsync<IndSiteEnterpriseBorder>();
-                    return RedirectToAction("Index", new
-                    {
-                        IndSiteEnterpriseId = borderResponse.IndSiteEnterpriseId,
-                        EnterpriseId = borderResponse.IndSiteEnterprise.EnterpriseId
-                    });
+                    return RedirectToAction("Details", "Enterprises", new { id = borderResponse.IndSiteEnterprise.EnterpriseId });
                 }
                 catch
                 {
@@ -106,11 +102,7 @@ namespace SmartEco.Controllers.ASM
 
                     response.EnsureSuccessStatusCode();
                     var borderResponse = await response.Content.ReadAsAsync<IndSiteEnterpriseBorder>();
-                    return RedirectToAction("Index", new 
-                    { 
-                        IndSiteEnterpriseId = borderResponse.IndSiteEnterpriseId,
-                        EnterpriseId = borderResponse.IndSiteEnterprise.EnterpriseId
-                    });
+                    return RedirectToAction("Details", "Enterprises", new { id = borderResponse.IndSiteEnterprise.EnterpriseId });
                 }
                 catch
                 {
@@ -128,11 +120,7 @@ namespace SmartEco.Controllers.ASM
                 var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlIndSiteEnterpriseBorders}/{id}");
                 var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
-                return RedirectToAction("Index", new
-                {
-                    IndSiteEnterpriseId = IndSiteEnterpriseId,
-                    EnterpriseId = EnterpriseId
-                });
+                return RedirectToAction("Details", "Enterprises", new { id = EnterpriseId });
             }
             catch
             {

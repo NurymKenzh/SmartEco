@@ -15,61 +15,61 @@ namespace SmartEcoAPI.Controllers.ASM
     [Route("api/[controller]")]
     [ApiController]
     [ApiExplorerSettings(IgnoreApi = true)]
-    public class IndSiteEnterpriseBordersController : ControllerBase
+    public class SanZoneEnterpriseBordersController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
 
-        public IndSiteEnterpriseBordersController(ApplicationDbContext context)
+        public SanZoneEnterpriseBordersController(ApplicationDbContext context)
         {
             _context = context;
         }
 
-        // GET: api/IndSiteEnterpriseBorders
+        // GET: api/SanZoneEnterpriseBorders
         [HttpGet]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<IEnumerable<IndSiteEnterpriseBorder>>> GetIndSiteEnterpriseBorders(IndSiteEnterpriseBordersRequest request)
+        public async Task<ActionResult<IEnumerable<SanZoneEnterpriseBorder>>> GetSanZoneEnterpriseBorders(SanZoneEnterpriseBordersRequest request)
         {
-            var indSiteEnterpriseBorders = _context.IndSiteEnterpriseBorder
+            var sanZoneEnterpriseBorders = _context.SanZoneEnterpriseBorder
                 .Include(border => border.IndSiteEnterprise)
                 .ThenInclude(border => border.Enterprise)
                 .Where(border => true);
 
             if (request?.IndSiteEnterpriseId != null)
             {
-                indSiteEnterpriseBorders = indSiteEnterpriseBorders.Where(border => border.IndSiteEnterpriseId == request.IndSiteEnterpriseId);
+                sanZoneEnterpriseBorders = sanZoneEnterpriseBorders.Where(border => border.IndSiteEnterpriseId == request.IndSiteEnterpriseId);
             }
 
-            return await indSiteEnterpriseBorders
+            return await sanZoneEnterpriseBorders
                 .OrderBy(border => border.Id)
                 .ToListAsync();
         }
 
-        // GET: api/IndSiteEnterpriseBorders/5
+        // GET: api/SanZoneEnterpriseBorders/5
         [HttpGet("{id}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<IndSiteEnterpriseBorder>> GetIndSiteEnterpriseBorder(int id)
+        public async Task<ActionResult<SanZoneEnterpriseBorder>> GetSanZoneEnterpriseBorder(int id)
         {
-            var indSiteEnterpriseBorder = await GetFirstOrDefault(id);
+            var sanZoneEnterpriseBorder = await GetFirstOrDefault(id);
 
-            if (indSiteEnterpriseBorder == null)
+            if (sanZoneEnterpriseBorder == null)
             {
                 return NotFound();
             }
 
-            return indSiteEnterpriseBorder;
+            return sanZoneEnterpriseBorder;
         }
 
-        // PUT: api/IndSiteEnterpriseBorders/5
+        // PUT: api/SanZoneEnterpriseBorders/5
         [HttpPut("{id}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<IndSiteEnterpriseBorder>> PutIndSiteEnterpriseBorder(int id, IndSiteEnterpriseBorder indSiteEnterpriseBorder)
+        public async Task<ActionResult<SanZoneEnterpriseBorder>> PutSanZoneEnterpriseBorder(int id, SanZoneEnterpriseBorder sanZoneEnterpriseBorder)
         {
-            if (id != indSiteEnterpriseBorder.Id)
+            if (id != sanZoneEnterpriseBorder.Id)
             {
                 return BadRequest();
             }
 
-            _context.Entry(indSiteEnterpriseBorder).State = EntityState.Modified;
+            _context.Entry(sanZoneEnterpriseBorder).State = EntityState.Modified;
 
             try
             {
@@ -77,7 +77,7 @@ namespace SmartEcoAPI.Controllers.ASM
             }
             catch (DbUpdateConcurrencyException)
             {
-                if (!IndSiteEnterpriseBorderExists(id))
+                if (!SanZoneEnterpriseBorderExists(id))
                 {
                     return NotFound();
                 }
@@ -87,44 +87,44 @@ namespace SmartEcoAPI.Controllers.ASM
                 }
             }
 
-            return await GetFirstOrDefault(indSiteEnterpriseBorder.Id);
+            return await GetFirstOrDefault(sanZoneEnterpriseBorder.Id);
         }
 
-        // POST: api/IndSiteEnterpriseBorders
+        // POST: api/SanZoneEnterpriseBorders
         [HttpPost]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<IndSiteEnterpriseBorder>> PostIndSiteEnterpriseBorder(IndSiteEnterpriseBorder indSiteEnterpriseBorder)
+        public async Task<ActionResult<SanZoneEnterpriseBorder>> PostSanZoneEnterpriseBorder(SanZoneEnterpriseBorder sanZoneEnterpriseBorder)
         {
-            _context.IndSiteEnterpriseBorder.Add(indSiteEnterpriseBorder);
+            _context.SanZoneEnterpriseBorder.Add(sanZoneEnterpriseBorder);
             await _context.SaveChangesAsync();
 
-            return await GetFirstOrDefault(indSiteEnterpriseBorder.Id);
+            return await GetFirstOrDefault(sanZoneEnterpriseBorder.Id);
         }
 
-        // DELETE: api/IndSiteEnterpriseBorders/5
+        // DELETE: api/SanZoneEnterpriseBorders/5
         [HttpDelete("{id}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult> DeleteIndSiteEnterpriseBorder(int id)
+        public async Task<ActionResult> DeleteSanZoneEnterpriseBorder(int id)
         {
-            var indSiteEnterpriseBorder = await _context.IndSiteEnterpriseBorder.FindAsync(id);
-            if (indSiteEnterpriseBorder == null)
+            var sanZoneEnterpriseBorder = await _context.SanZoneEnterpriseBorder.FindAsync(id);
+            if (sanZoneEnterpriseBorder == null)
             {
                 return NotFound();
             }
 
-            _context.IndSiteEnterpriseBorder.Remove(indSiteEnterpriseBorder);
+            _context.SanZoneEnterpriseBorder.Remove(sanZoneEnterpriseBorder);
             await _context.SaveChangesAsync();
 
             return Ok();
         }
 
-        private bool IndSiteEnterpriseBorderExists(int id)
+        private bool SanZoneEnterpriseBorderExists(int id)
         {
-            return _context.IndSiteEnterpriseBorder.Any(e => e.Id == id);
+            return _context.SanZoneEnterpriseBorder.Any(e => e.Id == id);
         }
 
-        private async Task<IndSiteEnterpriseBorder> GetFirstOrDefault(int id)
-            => await _context.IndSiteEnterpriseBorder
+        private async Task<SanZoneEnterpriseBorder> GetFirstOrDefault(int id)
+            => await _context.SanZoneEnterpriseBorder
                 .Include(border => border.IndSiteEnterprise)
                 .ThenInclude(border => border.Enterprise)
                 .FirstOrDefaultAsync(border => border.Id == id);

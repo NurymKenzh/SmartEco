@@ -21,5 +21,8 @@ namespace SmartEco.Models.ASM
 
         [Display(Name = "Местоположение")]
         public string Location => Enterprise?.Kato?.ComplexName;
+
+        public IndSiteEnterpriseBorder IndSiteBorder { get; set; }
+        public SanZoneEnterpriseBorder SanZoneBorder { get; set; }
     }
 }
