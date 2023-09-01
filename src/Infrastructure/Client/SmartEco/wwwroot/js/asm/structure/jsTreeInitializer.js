@@ -1,167 +1,117 @@
-﻿function InitializeTreeButtons(id, urls) {
-    if (id == undefined || id == null) {
-        SetFieldsDefault();
+﻿var classes = {
+    indSiteEnterpriseId: '.indSiteEnterpriseId',
+    workshopId: '.workshopId',
+    areaId: '.areaId'
+}
+
+var ids = {
+    NameIndSiteEnterprise: '#NameIndSiteEnterprise',
+    NameWorkshop: '#NameWorkshop',
+    NameArea: '#NameArea',
+    MinSizeSanitaryZoneValue: '#MinSizeSanitaryZoneValue'
+}
+
+var btnIds = {
+    ContainerButtonsDefault: '#ContainerButtonsDefault',
+    ContainerButtonsIndSiteEnterprise: '#ContainerButtonsIndSiteEnterprise',
+    ContainerButtonsWorkshop: '#ContainerButtonsWorkshop',
+    ContainerButtonsArea: '#ContainerButtonsArea'
+}
+
+function InitializeTreeButtons(data, urls) {
+    if (data == undefined || data == null) {
         ShowButtonsDefault();
     }
     else {
-        var idArray = id.split('_');
-        if (idArray.length == 2) {
-            var idName = idArray[0];
-            var idNumber = idArray[1];
-            if (idName == 'indSiteEnterprise') {
-                SetFieldsIndSiteEnterprise(idNumber, urls.urlDetailIdnSiteEnterprise);
+        var parcedId = ParseNodeId(data.node.id);
+        if (parcedId.length == 2) {
+            if (parcedId.name == 'indSiteEnterprise') {
+                SetFieldsIndSiteEnterprise(data, parcedId.number);
                 ShowButtonsIndSiteEnterprise();
             }
-            else if (idName == 'workshop') {
-                SetFieldsWorkshop(idNumber, urls.urlDetailWorkhsop);
+            else if (parcedId.name == 'workshop') {
+                SetFieldsWorkshop(data, parcedId.number);
                 ShowButtonsWorkshop();
             }
-            else if (idName == 'area') {
-                SetFieldsArea(idNumber, urls.urlDetailArea);
+            else if (parcedId.name == 'area') {
+                SetFieldsArea(data, parcedId.number);
                 ShowButtonsArea();
             }
             else {
-                SetFieldsDefault();
                 ShowButtonsDefault();
             }
         }
         else {
-            SetFieldsDefault();
             ShowButtonsDefault();
         }
     }
 }
 
+function ParseNodeId(id) {
+    var idArray = id.split('_');
+    var idName = idArray[0];
+    var idNumber = idArray[1];
+    return {
+        length: idArray.length,
+        name: idName,
+        number: idNumber
+    };
+}
+
 //#region ShowButtons
 
 function ShowButtonsDefault() {
-    $('#ContainerButtonsDefault').css('display', 'inline-block');
-    $('#ContainerButtonsIndSiteEnterprise').css('display', 'none');
-    $('#ContainerButtonsWorkshop').css('display', 'none');
-    $('#ContainerButtonsArea').css('display', 'none');
+    $(btnIds.ContainerButtonsDefault).css('display', 'inline-block');
+    $(btnIds.ContainerButtonsIndSiteEnterprise).css('display', 'none');
+    $(btnIds.ContainerButtonsWorkshop).css('display', 'none');
+    $(btnIds.ContainerButtonsArea).css('display', 'none');
 }
 
 function ShowButtonsIndSiteEnterprise() {
-    $('#ContainerButtonsDefault').css('display', 'none');
-    $('#ContainerButtonsIndSiteEnterprise').css('display', 'inline-block');
-    $('#ContainerButtonsWorkshop').css('display', 'none');
-    $('#ContainerButtonsArea').css('display', 'none');
+    $(btnIds.ContainerButtonsDefault).css('display', 'none');
+    $(btnIds.ContainerButtonsIndSiteEnterprise).css('display', 'inline-block');
+    $(btnIds.ContainerButtonsWorkshop).css('display', 'none');
+    $(btnIds.ContainerButtonsArea).css('display', 'none');
 }
 
 function ShowButtonsWorkshop() {
-    $('#ContainerButtonsDefault').css('display', 'none');
-    $('#ContainerButtonsIndSiteEnterprise').css('display', 'none');
-    $('#ContainerButtonsWorkshop').css('display', 'inline-block');
-    $('#ContainerButtonsArea').css('display', 'none');
+    $(btnIds.ContainerButtonsDefault).css('display', 'none');
+    $(btnIds.ContainerButtonsIndSiteEnterprise).css('display', 'none');
+    $(btnIds.ContainerButtonsWorkshop).css('display', 'inline-block');
+    $(btnIds.ContainerButtonsArea).css('display', 'none');
 }
 
 function ShowButtonsArea() {
-    $('#ContainerButtonsDefault').css('display', 'none');
-    $('#ContainerButtonsIndSiteEnterprise').css('display', 'none');
-    $('#ContainerButtonsWorkshop').css('display', 'none');
-    $('#ContainerButtonsArea').css('display', 'inline-block');
+    $(btnIds.ContainerButtonsDefault).css('display', 'none');
+    $(btnIds.ContainerButtonsIndSiteEnterprise).css('display', 'none');
+    $(btnIds.ContainerButtonsWorkshop).css('display', 'none');
+    $(btnIds.ContainerButtonsArea).css('display', 'inline-block');
 }
 
 //#endregion A
 
 //#region SetFields
 
-function SetFieldsDefault() {
-    $('.indSiteEnterpriseId').val('');
-    $('.workshopId').val('');
-    $('.areaId').val('');
-    $('#NameIndSiteEnterprise').val('');
-    $('#MinSizeSanitaryZoneValue').val('');
-    $('#NameWorkshop').val('');
-    $('#NameArea').val('');
+function SetFieldsIndSiteEnterprise(data, number) {
+    $(classes.indSiteEnterpriseId).val(number);
+    $(ids.NameIndSiteEnterprise).val(data.node.text);
+    $(ids.MinSizeSanitaryZoneValue).val(data.node.a_attr.minSizeSanitaryZone);
 }
 
-function SetFieldsIndSiteEnterprise(indSiteEnterpriseId, url) {
-    GetIndSiteEnterprise(indSiteEnterpriseId, url);
-    $('.workshopId').val('');
-    $('.areaId').val('');
-    $('#NameWorkshop').val('');
-    $('#NameArea').val('');
+function SetFieldsWorkshop(data, number) {
+    var parsedParentId = ParseNodeId(data.node.parent);
+
+    $(classes.indSiteEnterpriseId).val(parsedParentId.number);
+    $(classes.workshopId).val(number);
+    $(ids.NameWorkshop).val(data.node.text);
 }
 
-function SetFieldsWorkshop(worshopId, url) {
-    GetWorkshop(worshopId, url);
-    $('.areaId').val('');
-    $('#NameIndSiteEnterprise').val('');
-    $('#MinSizeSanitaryZoneValue').val('');
-    $('#NameWorkshop').val('');
-}
+function SetFieldsArea(data, number) {
+    var parsedParentId = ParseNodeId(data.node.parent);
 
-function SetFieldsArea(areaId, url) {
-    GetArea(areaId, url);
-    $('.indSiteEnterpriseId').val('');
-    $('#NameIndSiteEnterprise').val('');
-    $('#MinSizeSanitaryZoneValue').val('');
-    $('#NameWorkshop').val('');
+    $(classes.workshopId).val(parsedParentId.number);
+    $(classes.areaId).val(number);
+    $(ids.NameArea).val(data.node.text);
 }
 
 //#endregion SetFields
-
-//#region GetDetailsAjax
-
-function GetIndSiteEnterprise(indSiteEnterpriseId, url) {
-    $.ajax({
-        url: url,
-        data: {
-            id: indSiteEnterpriseId,
-        },
-        type: 'GET',
-        success: function (indSiteEnterprise) {
-            $('.indSiteEnterpriseId').val(indSiteEnterprise.id);
-            $('#NameIndSiteEnterprise').val(indSiteEnterprise.name);
-            $('#MinSizeSanitaryZoneValue').val(indSiteEnterprise.minSizeSanitaryZone);
-        },
-        error: function () {
-            $('.indSiteEnterpriseId').val('');
-            $('#NameIndSiteEnterprise').val('');
-            $('#MinSizeSanitaryZoneValue').val('');
-        }
-    })
-}
-
-function GetWorkshop(workshopId, url) {
-    $.ajax({
-        url: url,
-        data: {
-            id: workshopId,
-        },
-        type: 'GET',
-        success: function (workshop) {
-            $('.indSiteEnterpriseId').val(workshop.indSiteEnterprise.id);
-            $('.workshopId').val(workshop.id);
-            $('#NameWorkshop').val(workshop.name);
-        },
-        error: function () {
-            $('.indSiteEnterpriseId').val('');
-            $('.workshopId').val('');
-            $('#NameWorkshop').val('');
-        }
-    })
-}
-
-function GetArea(areaId, url) {
-    $.ajax({
-        url: url,
-        data: {
-            id: areaId,
-        },
-        type: 'GET',
-        success: function (area) {
-            $('.workshopId').val(area.workshop.id);
-            $('.areaId').val(area.id);
-            $('#NameArea').val(area.name);
-        },
-        error: function () {
-            $('.workshopId').val('');
-            $('.areaId').val('');
-            $('#NameArea').val('');
-        }
-    })
-}
-
-//#endregion GetDetailsAjax

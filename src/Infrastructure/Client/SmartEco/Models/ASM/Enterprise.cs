@@ -35,9 +35,7 @@ namespace SmartEco.Models.ASM
         public int Id { get; set; }
         public string Code { get; set; }
         public string Address { get; set; }
-
         public int EnterpriseId { get; set; }
-        public Enterprise Enterprise { get; set; }
 
         public string ComplexName => $"{Code} {Address}";
     }

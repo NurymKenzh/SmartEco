@@ -34,6 +34,7 @@ namespace SmartEco.Models
         public string Text { get; set; }
         public string Icon { get; set; }
         public StateNode State { get; set; }
+        public object A_attr { get; set; }
     }
 
     public class StateNode

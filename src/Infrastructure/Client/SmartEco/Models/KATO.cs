@@ -46,7 +46,5 @@ namespace SmartEco.Models
                 return name;
             }
         }
-
-        public string KatoComplexName => $"{Code} {NameRU}";
     }
 }

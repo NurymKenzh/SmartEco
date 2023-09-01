@@ -35,7 +35,7 @@
             </div>
             <span asp-validation-for="Coordinates" class="text-danger"></span>
             <div id="ContainerCoordinates">
-                @foreach (var coordinate in Model.Coordinates ?? new List<string>())
+                @foreach (var coordinate in Model.Coordinates)
                 {
                     <input type="hidden" asp-for="Coordinates" value="@coordinate" />
                 }

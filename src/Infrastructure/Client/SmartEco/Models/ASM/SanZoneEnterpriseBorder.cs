@@ -29,7 +29,7 @@ namespace SmartEco.Models.ASM
 
     public class SanZoneEnterpriseBorderListViewModel
     {
-        public List<SanZoneEnterpriseBorder> Items { get; set; }
+        public List<SanZoneEnterpriseBorder> Items { get; set; } = new List<SanZoneEnterpriseBorder>();
         public int IndSiteEnterpriseId { get; set; }
         public int EnterpriseId { get; set; }
     }

@@ -20,7 +20,7 @@
 @if (Role == "admin" || Role == "moderator" || Role == "ASM")
 {
     <div class="form-group">
-        <a class="btn btn-success" href="@Url.Action("Create", controller, new { IndSiteEnterpriseId = Model.IndSiteEnterpriseId })">
+        <a class="btn btn-success @(Model.Items?.Count is 0 ? "" : "disabled")" href="@Url.Action("Create", controller, new { IndSiteEnterpriseId = Model.IndSiteEnterpriseId })">
             @SharedLocalizer["Create"]
         </a>
     </div>

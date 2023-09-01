@@ -60,7 +60,7 @@
     $(function () {
         $('#JsTreeEnterprise')
             .on('activate_node.jstree', function (e, data) {
-                InitializeTreeButtons(data.node.id, urls);
+                InitializeTreeButtons(data, urls);
                 InitializeBorderButtons(data.node.id);
             })
             .jstree({

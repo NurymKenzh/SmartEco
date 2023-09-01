@@ -11,5 +11,8 @@ namespace SmartEcoAPI.Models.ASM
         public int EnterpriseId { get; set; }
         public Enterprise Enterprise { get; set; }
         public int MinSizeSanitaryZone { get; set; }
+
+        public IndSiteEnterpriseBorder IndSiteBorder { get; set; }
+        public SanZoneEnterpriseBorder SanZoneBorder { get; set; }
     }
 }

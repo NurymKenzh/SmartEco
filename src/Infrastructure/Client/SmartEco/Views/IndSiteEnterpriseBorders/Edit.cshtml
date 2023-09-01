@@ -32,7 +32,7 @@
                 <div id="map" style="height: 400px; width: 100%;"></div>
             </div>
             <div id="ContainerCoordinates">
-                @foreach (var coordinate in Model.Coordinates ?? new List<string>())
+                @foreach (var coordinate in Model.Coordinates)
                 {
                     <input type="hidden" asp-for="Coordinates" value="@coordinate" />
                 }

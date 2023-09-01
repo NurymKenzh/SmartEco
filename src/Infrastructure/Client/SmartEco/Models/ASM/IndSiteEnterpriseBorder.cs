@@ -20,12 +20,12 @@ namespace SmartEco.Models.ASM
 
         [Required]
         [Display(Name = "Координаты")]
-        public List<string> Coordinates { get; set; }
+        public List<string> Coordinates { get; set; } = new List<string>();
     }
 
     public class IndSiteEnterpriseBorderListViewModel
     {
-        public List<IndSiteEnterpriseBorder> Items { get; set; }
+        public List<IndSiteEnterpriseBorder> Items { get; set; } = new List<IndSiteEnterpriseBorder>();
         public int IndSiteEnterpriseId { get; set; }
         public int EnterpriseId { get; set; }
     }

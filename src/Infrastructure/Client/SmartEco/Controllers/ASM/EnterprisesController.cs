@@ -253,7 +253,8 @@ namespace SmartEco.Controllers.ASM
             foreach (var indSiteEnterprise in indSiteEnterprises)
             {
                 var indSiteEnterpriseId = $"indSiteEnterprise_{indSiteEnterprise.Id}";
-                nodes.Data.Add(AddDataNode(indSiteEnterpriseId, indSiteEnterprise.Name, "/images/ASM/Icons/IndSiteEnterprise.png"));
+                var attributes = new { indSiteEnterprise.MinSizeSanitaryZone };
+                nodes.Data.Add(AddDataNode(indSiteEnterpriseId, indSiteEnterprise.Name, "/images/ASM/Icons/IndSiteEnterprise.png", null, attributes));
 
                 foreach (var workshop in workshops.Where(w => w.IndSiteEnterpriseId == indSiteEnterprise.Id))
                 {
@@ -270,13 +271,14 @@ namespace SmartEco.Controllers.ASM
             return nodes;
         }
 
-        private DataNode AddDataNode(string id, string text, string icon = null, string parent = null)
+        private DataNode AddDataNode(string id, string text, string icon = null, string parent = null, object a_attr = null)
             => new DataNode
             {
                 Id = id,
                 Parent = parent ?? "#",
                 Text = text,
-                Icon = icon
+                Icon = icon,
+                A_attr = a_attr
             };
 
         private async Task<List<IndSiteEnterprise>> GetIndSiteEnterprises(int enterpriseId)
