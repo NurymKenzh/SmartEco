@@ -1079,4 +1079,10 @@
   <data name="Reset" xml:space="preserve">
     <value>Сбросить</value>
   </data>
+  <data name="AirPollutionSourceType" xml:space="preserve">
+    <value>Тип источника загрязнения атмосферы</value>
+  </data>
+  <data name="AirPollutionSourceTypes" xml:space="preserve">
+    <value>Типы источника загрязнения атмосферы</value>
+  </data>
 </root>

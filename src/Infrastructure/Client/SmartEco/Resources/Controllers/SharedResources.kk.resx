@@ -1077,4 +1077,10 @@
   <data name="Reset" xml:space="preserve">
     <value>Қалпына келтіру</value>
   </data>
+  <data name="AirPollutionSourceType" xml:space="preserve">
+    <value>Атмосфераны ластау көзінің түрі</value>
+  </data>
+  <data name="AirPollutionSourceTypes" xml:space="preserve">
+    <value>Атмосфераны ластау көздерінің түрлері</value>
+  </data>
 </root>

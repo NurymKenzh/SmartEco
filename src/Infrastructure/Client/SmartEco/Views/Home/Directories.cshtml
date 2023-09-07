@@ -33,6 +33,7 @@
     <a class="btn btn-default" asp-controller="TerritoryTypes" asp-action="Index">@SharedLocalizer["TerritoryTypes"]</a>
     <hr />
     <a class="btn btn-default" asp-controller="EnterpriseTypes" asp-action="Index">@SharedLocalizer["EnterpriseTypes"]</a>
+    <a class="btn btn-default" asp-controller="AirPollutionSourceTypes" asp-action="Index">@SharedLocalizer["AirPollutionSourceTypes"]</a>
 }
 else if (Role == "KaragandaRegion")
 {
@@ -58,4 +59,5 @@ else if (Role == "Shymkent")
 else if (Role == "ASM")
 {
     <a class="btn btn-default" asp-controller="EnterpriseTypes" asp-action="Index">@SharedLocalizer["EnterpriseTypes"]</a>
+    <a class="btn btn-default" asp-controller="AirPollutionSourceTypes" asp-action="Index">@SharedLocalizer["AirPollutionSourceTypes"]</a>
 }

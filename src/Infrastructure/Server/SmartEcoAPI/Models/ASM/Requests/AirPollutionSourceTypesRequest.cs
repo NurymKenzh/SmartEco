@@ -1,4 +1,6 @@
-﻿namespace SmartEco.Models.ASM.Requests
+﻿using SmartEcoAPI.Models.ASM.Requests;
+
+namespace SmartEcoAPI.Models.ASM.Responses
 {
     public class AirPollutionSourceTypesRequest : BaseRequest
     {

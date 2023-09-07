@@ -1,10 +1,11 @@
-﻿using System.Collections.Generic;
+﻿using SmartEco.Models.ASM.PollutionSources;
+using System.Collections.Generic;
 
 namespace SmartEco.Models.ASM.Responses
 {
-    public class EnterpriseTypesResponse
+    public class AirPollutionSourceTypesResponse
     {
-        public List<EnterpriseType> EnterpriseTypes { get; set; }
+        public List<AirPollutionSourceType> AirPollutionSourceTypes { get; set; }
         public int Count { get; set; }
     }
 }

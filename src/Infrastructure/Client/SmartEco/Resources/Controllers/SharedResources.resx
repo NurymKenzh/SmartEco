@@ -1074,4 +1074,10 @@
   <data name="Reset" xml:space="preserve">
     <value />
   </data>
+  <data name="AirPollutionSourceType" xml:space="preserve">
+    <value />
+  </data>
+  <data name="AirPollutionSourceTypes" xml:space="preserve">
+    <value />
+  </data>
 </root>

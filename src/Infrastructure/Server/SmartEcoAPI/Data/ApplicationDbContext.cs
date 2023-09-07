@@ -5,6 +5,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using SmartEcoAPI.Models;
 using SmartEcoAPI.Models.ASM;
+using SmartEcoAPI.Models.ASM.PollutionSources;
 
 namespace SmartEcoAPI.Data
 {
@@ -104,6 +105,8 @@ namespace SmartEcoAPI.Data
         public DbSet<Area> Area { get; set; }
         public DbSet<IndSiteEnterpriseBorder> IndSiteEnterpriseBorder { get; set; }
         public DbSet<SanZoneEnterpriseBorder> SanZoneEnterpriseBorder { get; set; }
+
+        public DbSet<AirPollutionSourceType> AirPollutionSourceType { get; set; }
         #endregion
     }
 

@@ -162,6 +162,24 @@ namespace SmartEco.Resources.Controllers {
         /// <summary>
         ///   Looks up a localized string similar to .
         /// </summary>
+        public static string AirPollutionSourceType {
+            get {
+                return ResourceManager.GetString("AirPollutionSourceType", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
+        public static string AirPollutionSourceTypes {
+            get {
+                return ResourceManager.GetString("AirPollutionSourceTypes", resourceCulture);
+            }
+        }
+        
+        /// <summary>
+        ///   Looks up a localized string similar to .
+        /// </summary>
         public static string Aktau {
             get {
                 return ResourceManager.GetString("Aktau", resourceCulture);

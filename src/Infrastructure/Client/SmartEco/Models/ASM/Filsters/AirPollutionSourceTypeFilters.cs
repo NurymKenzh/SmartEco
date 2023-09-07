@@ -1,11 +1,11 @@
 ﻿namespace SmartEco.Models.ASM.Filsters
 {
-    public class AirPollutionSourceTypeFilter : BaseFilter
+    public class EnterpriseTypeFilter : BaseFilter
     {
         public string NameFilter { get; set; }
     }
 
-    public class AirPollutionSourceTypeFilterId : AirPollutionSourceTypeFilter
+    public class EnterpriseTypeFilterId : EnterpriseTypeFilter
     {
         public int? Id { get; set; }
     }
