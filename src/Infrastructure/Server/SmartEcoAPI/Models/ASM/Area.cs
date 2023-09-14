@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartEcoAPI.Models.ASM
 {
-    [Table(nameof(Area), Schema = SchemaType.Asm)]
     public class Area
     {
         public int Id { get; set; }

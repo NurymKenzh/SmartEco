@@ -3,7 +3,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartEcoAPI.Models.ASM
 {
-    [Table(nameof(Enterprise), Schema = SchemaType.Asm)]
     public class Enterprise
     {
         public int Id { get; set; }
@@ -17,7 +16,6 @@ namespace SmartEcoAPI.Models.ASM
         public KatoEnterprise Kato { get; set; }
     }
 
-    [Table(nameof(KatoEnterprise), Schema = SchemaType.Asm)]
     public class KatoEnterprise
     {
         public int Id { get; set; }

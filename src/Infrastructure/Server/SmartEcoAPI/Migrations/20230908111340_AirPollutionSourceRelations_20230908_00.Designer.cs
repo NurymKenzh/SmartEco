@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -10,9 +11,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20230908111340_AirPollutionSourceRelations_20230908_00")]
+    partial class AirPollutionSourceRelations_20230908_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -222,7 +224,10 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<int>("AreaId");
 
-                    b.HasKey("AirPollutionSourceId");
+                    b.HasKey("AirPollutionSourceId", "AreaId");
+
+                    b.HasIndex("AirPollutionSourceId")
+                        .IsUnique();
 
                     b.HasIndex("AreaId");
 
@@ -235,42 +240,14 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<int>("IndSiteEnterpriseId");
 
-                    b.HasKey("AirPollutionSourceId");
+                    b.HasKey("AirPollutionSourceId", "IndSiteEnterpriseId");
+
+                    b.HasIndex("AirPollutionSourceId")
+                        .IsUnique();
 
                     b.HasIndex("IndSiteEnterpriseId");
 
                     b.ToTable("AirPollutionSourceIndSite","asm");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSourceInfo", b =>
-                {
-                    b.Property<int>("SourceId");
-
-                    b.Property<decimal>("AngleDeflection");
-
-                    b.Property<decimal>("AngleRotation");
-
-                    b.Property<string>("Coordinate");
-
-                    b.Property<decimal>("Diameter");
-
-                    b.Property<decimal>("Hight");
-
-                    b.Property<bool>("IsCalculateByGas");
-
-                    b.Property<bool>("IsCovered");
-
-                    b.Property<bool>("IsSignFlare");
-
-                    b.Property<bool>("IsVerticalDeviation");
-
-                    b.Property<int>("RelationBackground");
-
-                    b.Property<int>("TerrainCoefficient");
-
-                    b.HasKey("SourceId");
-
-                    b.ToTable("AirPollutionSourceInfo","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSourceType", b =>
@@ -293,7 +270,10 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<int>("WorkshopId");
 
-                    b.HasKey("AirPollutionSourceId");
+                    b.HasKey("AirPollutionSourceId", "WorkshopId");
+
+                    b.HasIndex("AirPollutionSourceId")
+                        .IsUnique();
 
                     b.HasIndex("WorkshopId");
 
@@ -1433,21 +1413,13 @@ namespace SmartEcoAPI.Migrations
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSourceIndSite", b =>
                 {
                     b.HasOne("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSource", "AirPollutionSource")
-                        .WithOne("SourceIndSite")
+                        .WithOne("SourceIndSitee")
                         .HasForeignKey("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSourceIndSite", "AirPollutionSourceId")
                         .OnDelete(DeleteBehavior.Cascade);
 
                     b.HasOne("SmartEcoAPI.Models.ASM.IndSiteEnterprise", "IndSiteEnterprise")
                         .WithMany()
                         .HasForeignKey("IndSiteEnterpriseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSourceInfo", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSource", "Source")
-                        .WithOne("SourceInfo")
-                        .HasForeignKey("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSourceInfo", "SourceId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

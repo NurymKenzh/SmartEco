@@ -118,7 +118,7 @@
             {
                 <tr>
                     <td>
-                        @Html.DisplayFor(modelItem => item.Id)
+                        @Html.DisplayFor(modelItem => modelItem.Pager.ColumnNumber)
                     </td>
                     <td>
                         @Html.DisplayFor(modelItem => item.Bin)
@@ -155,7 +155,7 @@
                     else
                     {
                         <td>
-                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new { Id = item.Id, PageNumber = Model.Pager.PageNumber, PageSize = Model.Pager.PageSize, SortOrder = Model.Filter.SortOrder, 
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new EnterpriseFilterId { Id = item.Id, PageNumber = Model.Pager.PageNumber, PageSize = Model.Pager.PageSize, SortOrder = Model.Filter.SortOrder, 
                                 BinFilter = Model.Filter.BinFilter, NameFilter = Model.Filter.NameFilter, KatoComplexFilter = Model.Filter.KatoComplexFilter, EnterpriseTypeIdFilter = Model.Filter.EnterpriseTypeIdFilter })
                         </td>
                     }

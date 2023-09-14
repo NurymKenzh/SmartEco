@@ -11,19 +11,21 @@ namespace SmartEco.Models.ASM.Filsters
 
     public static class FilterProcess
     {
+        public static string Sorting(this string sortName, string sortOrder)
+            => sortOrder == sortName.TrimSort() ? sortName.TrimSortDesc() : sortName.TrimSort();
         public static string FilterSorting(this string filterName, string sortOrder)
-        {
-            return sortOrder == filterName.TrimFilter() ? filterName.TrimFilterDesc() : filterName.TrimFilter();
-        }
+            => sortOrder == filterName.TrimFilter() ? filterName.TrimFilterDesc() : filterName.TrimFilter();
 
         private static string TrimFilter(this string filterName)
-        {
-            return filterName.Replace("Filter", "");
-        }
+            => filterName.Replace("Filter", "");
 
         private static string TrimFilterDesc(this string filterName)
-        {
-            return filterName.Replace("Filter", "Desc");
-        }
+            => filterName.Replace("Filter", "Desc");
+
+        private static string TrimSort(this string filterName)
+            => filterName.Replace("Sort", "");
+
+        private static string TrimSortDesc(this string filterName)
+            => filterName.Replace("Sort", "Desc");
     }
 }

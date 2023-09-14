@@ -1,0 +1,20 @@
+﻿namespace SmartEco.Models.ASM.PollutionSources
+{
+    public class AirPollutionSourceInfo
+    {
+        public int SourceId { get; set; }
+        public AirPollutionSource Source { get; set; }
+
+        public string Coordinate { get; set; }
+        public int TerrainCoefficient { get; set; }
+        public bool IsCalculateByGas { get; set; }
+        public bool IsVerticalDeviation { get; set; }
+        public decimal AngleDeflection { get; set; }
+        public decimal AngleRotation { get; set; }
+        public bool IsCovered { get; set; }
+        public bool IsSignFlare { get; set; }
+        public decimal Hight { get; set; }
+        public decimal Diameter { get; set; }
+        public int RelationBackground { get; set; }
+    }
+}

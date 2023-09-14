@@ -1,0 +1,130 @@
+﻿@model AirPollutionSourceListViewModel
+@using SmartEco.Models.ASM.PollutionSources
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    string Role = Context.Session.GetString("Role");
+    string controller = "AirPollutionSources";
+
+    var name = Model.Filter.NameSort;
+}
+
+<thead>
+    <tr>
+        <th>
+            @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Id)
+            <br />
+            <br />
+        </th>
+        <th>
+            <button class="btn btn-link font-weight-bold sort-btn" type="button" data-sort="@Model.Filter.NumberSort">@Html.DisplayNameFor(m => m.Items.FirstOrDefault().Number)</button>
+            <br />
+            @Html.Editor(nameof(Model.Filter.NumberFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </th>
+        <th>
+            <button class="btn btn-link font-weight-bold sort-btn" type="button" data-sort="@Model.Filter.NameSort">@Html.DisplayNameFor(m => m.Items.FirstOrDefault().Name)</button>
+            <br />
+            @Html.Editor(nameof(Model.Filter.NameFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </th>
+        <th>
+            <button class="btn btn-link font-weight-bold sort-btn" type="button" data-sort="@Model.Filter.RelationSort">@Html.DisplayNameFor(m => m.Items.FirstOrDefault().RelationCombine)</button>
+            <br />
+            @Html.Editor(nameof(Model.Filter.RelationFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Type.IsOrganized)
+            <br />
+            <br />
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Type)
+            <br />
+            <br />
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Items.FirstOrDefault().SourceInfo)
+            <br />
+            <br />
+        </th>
+        <th>
+            @Html.DisplayNameFor(model => model.Items.FirstOrDefault().IsActive)
+            <br />
+            <br />
+        </th>
+        <th>
+            @Html.DropDownList(nameof(Model.Pager.PageSize), Model.Pager.PageSizeList, htmlAttributes: new { @class = "form-control" })
+            <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-default">
+        </th>
+    </tr>
+</thead>
+<tbody>
+    @foreach (var item in Model.Items)
+    {
+        <tr>
+            <td>
+                @Html.DisplayFor(modelItem => modelItem.Pager.ColumnNumber)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Number)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Name)
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.RelationCombine, new { style="white-space: pre-line"})
+            </td>
+            <td>
+                <input asp-for="@item.Type.IsOrganized" type="checkbox" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" disabled>
+            </td>
+            <td>
+                @Html.DisplayFor(modelItem => item.Type.Name)
+            </td>
+            <td>
+               Редактировать
+            </td>
+            <td>
+                <input asp-for="@item.IsActive" type="checkbox" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" disabled>
+            </td>
+            @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+            {
+                <td>
+                    @Html.ActionLink(SharedLocalizer["Edit"], "Edit") |
+                    @Html.ActionLink(SharedLocalizer["Details"], "Details") |
+                    @Html.ActionLink(SharedLocalizer["Delete"], "Delete")
+                </td>
+            }
+            else
+            {
+                <td>
+                    @Html.ActionLink(SharedLocalizer["Details"], "Details")
+                </td>
+            }
+        </tr>
+    }
+</tbody>
+
+<script>
+    $(".sort-btn").click(function (e) {
+        e.preventDefault();
+        var sortOrder = $(this).data('sort');
+        $.ajax({
+            data: {
+                EnterpriseId: @Model.Filter.EnterpriseId,
+                SortOrder: sortOrder
+            },
+            url: '@Url.Action("GetSources", "AirPollutionSources")',
+            type: 'GET',
+            success: function (result) {
+                $('#AirPollutionSourcesTable').empty();
+                $('#AirPollutionSourcesTable').html(result);
+            },
+            error: function () {
+            }
+        });
+    });
+</script>

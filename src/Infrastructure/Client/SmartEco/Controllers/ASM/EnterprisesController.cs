@@ -2,11 +2,13 @@
 using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
+using System.Xml.Linq;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using SmartEco.Models;
 using SmartEco.Models.ASM;
 using SmartEco.Models.ASM.Filsters;
+using SmartEco.Models.ASM.PollutionSources;
 using SmartEco.Models.ASM.Requests;
 using SmartEco.Models.ASM.Responses;
 using SmartEco.Services;
@@ -20,6 +22,7 @@ namespace SmartEco.Controllers.ASM
         private readonly string _urlIndSiteEnterprises = "api/IndSiteEnterprises";
         private readonly string _urlWorkshops = "api/Workshops";
         private readonly string _urlAreas = "api/Areas";
+        private readonly string _urlAirPollutionSources = "api/AirPollutionSources";
         private readonly SmartEcoApi _smartEcoApi;
         private readonly StatGovKzApi _statGovKzApi;
 
@@ -88,6 +91,7 @@ namespace SmartEco.Controllers.ASM
             enterpriseDetailViewModel.Filter = filter;
             enterpriseDetailViewModel.TreeNodes = await GetTreeNodes(filter.Id.Value);
             enterpriseDetailViewModel.IndSiteEnterprises = await GetIndSiteEnterprises(enterpriseDetailViewModel.Item.Id);
+            enterpriseDetailViewModel.AirPollutionSourceListViewModel = await GetAirPollutionSources(enterpriseDetailViewModel.Item.Id);
 
             return View(enterpriseDetailViewModel);
         }
@@ -229,6 +233,43 @@ namespace SmartEco.Controllers.ASM
                 return new SelectList(enterpriseTypesResponse.EnterpriseTypes.OrderBy(m => m.Name), "Id", "Name");
             }
             return null;
+        }
+
+        private async Task<AirPollutionSourceListViewModel> GetAirPollutionSources(int enterpriseId)
+        {
+            try
+            {
+                var pager = new Pager(null);
+                var viewModel = new AirPollutionSourceListViewModel();
+
+                var airPollutionSourcesRequest = new AirPollutionSourcesRequest()
+                {
+                    EnterpriseId = enterpriseId,
+                    PageSize = pager.PageSize,
+                    PageNumber = pager.PageNumber,
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAirPollutionSources, airPollutionSourcesRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                int airPollutionSourcesCount = 0;
+                var airPollutionSourcesResponse = await response.Content.ReadAsAsync<AirPollutionSourcesResponse>();
+                viewModel.Items = airPollutionSourcesResponse.AirPollutionSources;
+                airPollutionSourcesCount = airPollutionSourcesResponse.Count;
+
+                viewModel.Pager = new Pager(airPollutionSourcesCount, pager.PageNumber, pager.PageSize);
+                //airPollutionSourcesViewModel.Filter = filter;
+                viewModel.Filter = new AirPollutionSourceFilter() 
+                {  
+                    EnterpriseId = enterpriseId
+                };
+                viewModel.Filter.NameSort = nameof(viewModel.Filter.NameSort).Sorting(viewModel.Filter.SortOrder);
+                viewModel.Filter.NumberSort = nameof(viewModel.Filter.NumberSort).Sorting(viewModel.Filter.SortOrder);
+                viewModel.Filter.RelationSort = nameof(viewModel.Filter.RelationSort).Sorting(viewModel.Filter.SortOrder);
+
+                return viewModel;
+            }
+            catch { return new AirPollutionSourceListViewModel(); }
         }
 
         #region Composing tree nodes

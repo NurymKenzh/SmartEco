@@ -4,7 +4,6 @@ using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartEcoAPI.Models.ASM
 {
-    [Table(nameof(IndSiteEnterpriseBorder), Schema = SchemaType.Asm)]
     public class IndSiteEnterpriseBorder
     {
         public int Id { get; set; }

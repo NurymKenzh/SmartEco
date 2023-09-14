@@ -1,5 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc.Rendering;
 using SmartEco.Models.ASM.Filsters;
+using SmartEco.Models.ASM.PollutionSources;
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 namespace SmartEco.Models.ASM
@@ -62,6 +63,7 @@ namespace SmartEco.Models.ASM
     {
         public TreeNodes TreeNodes { get; set; }
         public List<IndSiteEnterprise> IndSiteEnterprises { get; set; }
+        public AirPollutionSourceListViewModel AirPollutionSourceListViewModel { get; set; }
     }
     #endregion
 }

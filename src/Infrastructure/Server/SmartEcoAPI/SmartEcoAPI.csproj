@@ -32,6 +32,14 @@
     <Compile Remove="Migrations\20230112115215_SourceEmission_20230112_00.Designer.cs" />
     <Compile Remove="Migrations\20230831092457_KatoEnterprise_20230831_00.cs" />
     <Compile Remove="Migrations\20230831092457_KatoEnterprise_20230831_00.Designer.cs" />
+    <Compile Remove="Migrations\20230908100844_AirPollutionSource_20230908_00.cs" />
+    <Compile Remove="Migrations\20230908100844_AirPollutionSource_20230908_00.Designer.cs" />
+    <Compile Remove="Migrations\20230908110106_AirPollutionSourceRelations_20230908_00.cs" />
+    <Compile Remove="Migrations\20230908110106_AirPollutionSourceRelations_20230908_00.Designer.cs" />
+    <Compile Remove="Migrations\20230908110320_AirPollutionSourceRelations_20230908_00.cs" />
+    <Compile Remove="Migrations\20230908110320_AirPollutionSourceRelations_20230908_00.Designer.cs" />
+    <Compile Remove="Migrations\20230911132259_AirPollutionSourceInfo_20230911_00.cs" />
+    <Compile Remove="Migrations\20230911132259_AirPollutionSourceInfo_20230911_00.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

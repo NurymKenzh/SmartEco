@@ -8,6 +8,8 @@ namespace SmartEco.Models.ASM.Filsters
 {
     public class Pager
     {
+        private static int _columnNumber;
+
         public Pager(int? pageNumber, int? pageSize = null)
         {
             IConfigurationSection pageSizeListSection = Startup.Configuration.GetSection("PageSizeList");
@@ -20,6 +22,7 @@ namespace SmartEco.Models.ASM.Filsters
 
             var currentPage = pageNumber is null ? 1 : pageNumber.Value;
             pageSize = pageSize is null ? Convert.ToInt32(pageSizeList.Min(p => p.Value)) : pageSize.Value;
+            _columnNumber = (int)(currentPage * pageSize - pageSize);
 
             PageNumber = currentPage;
             PageSize = (int)pageSize;
@@ -55,6 +58,8 @@ namespace SmartEco.Models.ASM.Filsters
                 }
             }
 
+            _columnNumber = (int)(currentPage * pageSize - pageSize);
+
             PageNumber = currentPage;
             PageSize = (int)pageSize;
             TotalItems = totalItems;
@@ -71,5 +76,9 @@ namespace SmartEco.Models.ASM.Filsters
         public int StartPage { get; private set; }
         public int EndPage { get; private set; }
         public SelectList PageSizeList { get; private set; }
+
+        public int ColumnNumber { get { return GetCurrentColumnNumber(); } }
+        private int GetCurrentColumnNumber()
+            => ++_columnNumber;
     }
 }
