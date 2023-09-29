@@ -8,7 +8,7 @@ namespace SmartEco.Models.ASM.Filsters
 {
     public class Pager
     {
-        private static int _columnNumber;
+        private static int _rowNumber;
 
         public Pager(int? pageNumber, int? pageSize = null)
         {
@@ -22,7 +22,7 @@ namespace SmartEco.Models.ASM.Filsters
 
             var currentPage = pageNumber is null ? 1 : pageNumber.Value;
             pageSize = pageSize is null ? Convert.ToInt32(pageSizeList.Min(p => p.Value)) : pageSize.Value;
-            _columnNumber = (int)(currentPage * pageSize - pageSize);
+            _rowNumber = (int)(currentPage * pageSize - pageSize);
 
             PageNumber = currentPage;
             PageSize = (int)pageSize;
@@ -39,7 +39,7 @@ namespace SmartEco.Models.ASM.Filsters
                     return new KeyValuePair<string, string>(p.Value ?? "0", p.Value);
                 }), "Key", "Value");
 
-            var currentPage = pageNumber is 0 ? 1 : pageNumber.Value;
+            var currentPage = pageNumber.GetValueOrDefault() is 0 ? 1 : pageNumber.Value;
             pageSize = pageSize is null ? Convert.ToInt32(pageSizeList.Min(p => p.Value)) : pageSize.Value;
             var totalPages = pageSize is null ? 1 : (int)Math.Ceiling(totalItems / (decimal)pageSize);
             var startPage = currentPage - 5;
@@ -58,7 +58,7 @@ namespace SmartEco.Models.ASM.Filsters
                 }
             }
 
-            _columnNumber = (int)(currentPage * pageSize - pageSize);
+            _rowNumber = (int)(currentPage * pageSize - pageSize);
 
             PageNumber = currentPage;
             PageSize = (int)pageSize;
@@ -77,8 +77,8 @@ namespace SmartEco.Models.ASM.Filsters
         public int EndPage { get; private set; }
         public SelectList PageSizeList { get; private set; }
 
-        public int ColumnNumber { get { return GetCurrentColumnNumber(); } }
-        private int GetCurrentColumnNumber()
-            => ++_columnNumber;
+        public int RowNumber { get { return GetCurrentRowNumber(); } }
+        private int GetCurrentRowNumber()
+            => ++_rowNumber;
     }
 }

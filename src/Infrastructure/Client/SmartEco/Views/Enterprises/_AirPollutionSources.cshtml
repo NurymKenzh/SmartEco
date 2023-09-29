@@ -11,170 +11,158 @@
     string controller = "AirPollutionSources";
 }
 
-<h2>@SharedLocalizer["AirPollutionSources"]</h2>
-
-@if (Role == "admin" || Role == "moderator" || Role == "ASM")
-{
-    <p>
-        @Html.ActionLink(SharedLocalizer["Create"], "Create", new AirPollutionSourceFilter { 
-            PageNumber = Model.Pager.PageNumber, 
-            PageSize = Model.Pager.PageSize, 
-            SortOrder = Model.Filter.SortOrder,
-            NameFilter = Model.Filter.NameFilter, 
-            NumberFilter = Model.Filter.NumberFilter, 
-            RelationFilter = Model.Filter.RelationFilter })
-    </p>
-}
-@using (Html.BeginForm("Index", "AirPollutionSources", new AirPollutionSourceFilter
- {
-     SortOrder = Model.Filter.SortOrder,
-     NameFilter = Model.Filter.NameFilter,
-     NumberFilter = Model.Filter.NumberFilter,
-     RelationFilter = Model.Filter.RelationFilter
- }, FormMethod.Get))
-{
-    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = Model.Filter.SortOrder })
+<div id="AirPollutionSourcesTab">
     @if (Model.Pager.EndPage > 1)
     {
-        <ul class="pagination">
+        <ul class="pagination d-flex">
             @if (Model.Pager.PageNumber > 1)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                            <button type="button" class="page-link">&laquo;</button>
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new AirPollutionSourceFilter 
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new AirPollutionSourceFilter
                     {
-                        PageSize = Model.Pager.PageSize, 
-                        PageNumber = Model.Pager.PageNumber - 1,
-                        SortOrder = Model.Filter.SortOrder,
-                        NameFilter = Model.Filter.NameFilter,
-                        NumberFilter = Model.Filter.NumberFilter,
-                        RelationFilter = Model.Filter.RelationFilter 
-                    })
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = Model.Pager.PageNumber - 1,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(Model.Pager.PageNumber - 1)">&lsaquo;)</button>
                 </li>
             }
 
             @for (var page = (int)Model.Pager.StartPage; page <= (int)Model.Pager.EndPage; page++)
             {
-                <li class="@(page == Model.Pager.PageNumber ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            PageNumber = page,
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                <li class="page-item @(page == Model.Pager.PageNumber ? "active" : "")">
+                    @*@Html.ActionLink(page.ToString(), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = page,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(page)">@(page)</button>
                 </li>
             }
 
             @if (Model.Pager.PageNumber < Model.Pager.TotalPages)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            PageNumber = Model.Pager.PageNumber + 1,
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = Model.Pager.PageNumber + 1,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(Model.Pager.PageNumber + 1)">&rsaquo;</button>
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            PageNumber = Model.Pager.TotalPages,
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = Model.Pager.TotalPages,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(Model.Pager.TotalPages)">&raquo;</button>
                 </li>
             }
         </ul>
     }
-    <table id="AirPollutionSourcesTable" class="table">
-        @await Html.PartialAsync("~/Views/AirPollutionSources/_AirPollutionSourcesTable.cshtml", Model)
-    </table>
+
+    @await Html.PartialAsync("~/Views/AirPollutionSources/_AirPollutionSourcesTable.cshtml", Model)
+
     @if (Model.Pager.EndPage > 1)
     {
-        <ul class="pagination">
+        <ul class="pagination d-flex">
             @if (Model.Pager.PageNumber > 1)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link">&laquo;</button>
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new AirPollutionSourceFilter 
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new AirPollutionSourceFilter
                     {
-                        PageSize = Model.Pager.PageSize, 
-                        PageNumber = Model.Pager.PageNumber - 1,
-                        SortOrder = Model.Filter.SortOrder,
-                        NameFilter = Model.Filter.NameFilter,
-                        NumberFilter = Model.Filter.NumberFilter,
-                        RelationFilter = Model.Filter.RelationFilter 
-                    })
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = Model.Pager.PageNumber - 1,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(Model.Pager.PageNumber - 1)">&lsaquo;)</button>
                 </li>
             }
 
             @for (var page = (int)Model.Pager.StartPage; page <= (int)Model.Pager.EndPage; page++)
             {
-                <li class="@(page == Model.Pager.PageNumber ? "active" : "")">
-                    @Html.ActionLink(page.ToString(), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            PageNumber = page,
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                <li class="page-item @(page == Model.Pager.PageNumber ? "active" : "")">
+                    @*@Html.ActionLink(page.ToString(), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = page,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(page)">@(page)</button>
                 </li>
             }
 
             @if (Model.Pager.PageNumber < Model.Pager.TotalPages)
             {
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            PageNumber = Model.Pager.PageNumber + 1,
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = Model.Pager.PageNumber + 1,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(Model.Pager.PageNumber + 1)">&rsaquo;</button>
                 </li>
                 <li>
-                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new AirPollutionSourceFilter 
-                        { 
-                            PageSize = Model.Pager.PageSize, 
-                            PageNumber = Model.Pager.TotalPages,
-                            SortOrder = Model.Filter.SortOrder,
-                            NameFilter = Model.Filter.NameFilter,
-                            NumberFilter = Model.Filter.NumberFilter,
-                            RelationFilter = Model.Filter.RelationFilter 
-                        })
+                    @*@Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new AirPollutionSourceFilter
+                    {
+                    PageSize = Model.Pager.PageSize,
+                    PageNumber = Model.Pager.TotalPages,
+                    SortOrder = Model.Filter.SortOrder,
+                    NameFilter = Model.Filter.NameFilter,
+                    NumberFilter = Model.Filter.NumberFilter,
+                    RelationFilter = Model.Filter.RelationFilter
+                    })*@
+                    <button type="button" class="page-link" value="@(Model.Pager.TotalPages)">&raquo;</button>
                 </li>
             }
         </ul>
-    }
-}
+        }
+</div>

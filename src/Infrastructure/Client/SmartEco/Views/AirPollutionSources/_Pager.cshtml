@@ -1,0 +1,39 @@
+﻿@model SmartEco.Models.ASM.Filsters.Pager
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer;
+
+@if (Model.EndPage > 1)
+{
+    <ul class="pagination d-flex">
+        @if (Model.PageNumber > 1)
+        {
+            <li>
+                <button type="button" class="page-link">&laquo;</button>
+            </li>
+            <li>
+                <button type="button" class="page-link" value="@(Model.PageNumber - 1)">&lsaquo;</button>
+            </li>
+        }
+
+        @for (var page = (int)Model.StartPage; page <= (int)Model.EndPage; page++)
+        {
+            <li class="page-item @(page == Model.PageNumber ? "active" : "")">
+                <button type="button" class="page-link" value="@(page)">@(page)</button>
+            </li>
+        }
+
+        @if (Model.PageNumber < Model.TotalPages)
+        {
+            <li>
+                <button type="button" class="page-link" value="@(Model.PageNumber + 1)">&rsaquo;</button>
+            </li>
+            <li>
+                <button type="button" class="page-link" value="@(Model.TotalPages)">&raquo;</button>
+            </li>
+        }
+    </ul>
+}

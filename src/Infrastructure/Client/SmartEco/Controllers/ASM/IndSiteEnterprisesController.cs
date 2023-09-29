@@ -1,8 +1,10 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using SmartEco.Models.ASM;
+using SmartEco.Models.ASM.Filsters;
 using SmartEco.Models.ASM.Requests;
 using SmartEco.Services;
 
@@ -103,15 +105,17 @@ namespace SmartEco.Controllers.ASM
         [HttpPost(Name = nameof(Delete))]
         public async Task<IActionResult> Delete(int? id, int enterpriseId)
         {
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlIndSiteEnterprises}/{id}");
+            var response = await _smartEcoApi.Client.SendAsync(request);
             try
             {
-                var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlIndSiteEnterprises}/{id}");
-                var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 return RedirectToAction("Details", "Enterprises", new { id = enterpriseId });
             }
             catch
             {
+                if (response.StatusCode is HttpStatusCode.Forbidden)
+                    return RedirectToAction("Details", "Enterprises", new EnterpriseFilterId { Id = enterpriseId, IsCannotDelete = true });
 
                 return BadRequest();
             }

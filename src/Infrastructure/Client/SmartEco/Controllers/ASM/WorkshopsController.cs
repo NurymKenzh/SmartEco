@@ -7,6 +7,7 @@ using System.Threading.Tasks;
 using System.Collections.Generic;
 using SmartEco.Models.ASM.Requests;
 using SmartEco.Models.ASM.Responses;
+using System.Net;
 
 namespace SmartEco.Controllers.ASM
 {
@@ -105,18 +106,20 @@ namespace SmartEco.Controllers.ASM
 
         // POST: Workshops/Delete/5
         [HttpPost(Name = nameof(Delete))]
-        public async Task<IActionResult> Delete(int? id)
+        public async Task<IActionResult> Delete(int? id, int enterpriseId)
         {
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlWorkshops}/{id}");
+            var response = await _smartEcoApi.Client.SendAsync(request);
             try
             {
-                var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlWorkshops}/{id}");
-                var response = await _smartEcoApi.Client.SendAsync(request);
                 response.EnsureSuccessStatusCode();
                 var enterpriseResponse = await response.Content.ReadAsAsync<EnterpriseResponse>();
-                return RedirectToAction("Details", "Enterprises", new { id = enterpriseResponse.Id });
+                return RedirectToAction("Details", "Enterprises", new EnterpriseFilterId { Id = enterpriseResponse.Id });
             }
             catch
             {
+                if (response.StatusCode is HttpStatusCode.Forbidden)
+                    return RedirectToAction("Details", "Enterprises", new EnterpriseFilterId { Id = enterpriseId, IsCannotDelete = true });
 
                 return BadRequest();
             }

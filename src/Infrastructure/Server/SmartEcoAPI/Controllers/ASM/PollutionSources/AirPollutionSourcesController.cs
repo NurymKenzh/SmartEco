@@ -8,6 +8,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using OfficeOpenXml.FormulaParsing.ExpressionGraph;
+using Org.BouncyCastle.Asn1.Ocsp;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models.ASM;
 using SmartEcoAPI.Models.ASM.PollutionSources;
@@ -18,8 +19,8 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "admin,moderator,ASM")]
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [Authorize(Roles = "admin,moderator,ASM")]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class AirPollutionSourcesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
@@ -36,9 +37,9 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
             var airPollutionSources = _context.AirPollutionSource
                 .Include(a => a.Type)
                 .Include(a => a.SourceInfo)
-                .Include(a => a.SourceIndSite.IndSiteEnterprise)
-                .Include(a => a.SourceWorkshop.Workshop.IndSiteEnterprise)
-                .Include(a => a.SourceArea.Area.Workshop.IndSiteEnterprise)
+                .Include(a => a.SourceIndSite.IndSiteEnterprise.IndSiteBorder)
+                .Include(a => a.SourceWorkshop.Workshop.IndSiteEnterprise.IndSiteBorder)
+                .Include(a => a.SourceArea.Area.Workshop.IndSiteEnterprise.IndSiteBorder)
                 .Where(m => true);
 
             if (request?.EnterpriseId != null)
@@ -47,6 +48,14 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
                     .Where(a => a.SourceIndSite.IndSiteEnterprise.EnterpriseId == request.EnterpriseId ||
                         a.SourceWorkshop.Workshop.IndSiteEnterprise.EnterpriseId == request.EnterpriseId ||
                         a.SourceArea.Area.Workshop.IndSiteEnterprise.EnterpriseId == request.EnterpriseId);
+            }
+            if (request?.Number != null)
+            {
+                airPollutionSources = airPollutionSources.Where(a => a.Number.StartsWith(request.Number));
+            }
+            if (request?.Name != null)
+            {
+                airPollutionSources = airPollutionSources.Where(a => a.Name.ToLower().StartsWith(request.Name.ToLower()));
             }
 
             switch (request.SortOrder)
@@ -63,12 +72,33 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
                 case "NumberDesc":
                     airPollutionSources = airPollutionSources.OrderByDescending(m => m.Number);
                     break;
+                case "Relation":
+                    airPollutionSources = airPollutionSources.OrderBy(m => m.RelationCombine);
+                    break;
+                case "RelationDesc":
+                    airPollutionSources = airPollutionSources.OrderByDescending(m => m.RelationCombine);
+                    break;
                 default:
                     airPollutionSources = airPollutionSources.OrderBy(m => m.Id);
                     break;
             }
 
-            var count = await airPollutionSources.CountAsync();
+
+            //Load data for use RelationCombine field
+            await airPollutionSources.LoadAsync();
+            if (request?.Relation != null)
+            {
+                airPollutionSources = airPollutionSources.Where(a => a.RelationCombine.ToLower().Contains(request.Relation.ToLower()));
+            }
+            if (request.SortOrder?.Contains("Relation") is true)
+            {
+                if (request.SortOrder.Contains("Desc"))
+                    airPollutionSources = airPollutionSources.OrderByDescending(m => m.RelationCombine);
+                else
+                    airPollutionSources = airPollutionSources.OrderBy(m => m.RelationCombine);
+            }
+
+            var count = airPollutionSources.Count();
             if (request.PageSize != null && request.PageNumber != null)
             {
                 airPollutionSources = airPollutionSources.Skip(((int)request.PageNumber - 1) * (int)request.PageSize).Take((int)request.PageSize);
@@ -162,101 +192,114 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
             return airPollutionSource;
         }
 
+        [HttpGet("[action]/{enterpriseId}")]
+        public async Task<ActionResult<AirPollutinSourceLastNumberResponse>> GetLastNumber(int enterpriseId)
+        {
+            var airPollutionSources = GetSourcesByEnterprise(enterpriseId);
+            var maxNumber = await airPollutionSources.DefaultIfEmpty().MaxAsync(a => Convert.ToInt32(a.Number));
+            var count = await airPollutionSources.CountAsync();
+
+            var response = new AirPollutinSourceLastNumberResponse(maxNumber, count);
+            return response;
+        }
+
         private StatusCodeResult CheckSourceNumber(AirPollutionSource airPollutionSource)
         {
+            int enterpriseId;
             if (airPollutionSource.Relation is SourceRelations.IndSite)
             {
-                var enterpriseId = _context.IndSiteEnterprise
+                enterpriseId = _context.IndSiteEnterprise
                     .Include(i => i.Enterprise)
                     .Where(i => i.Id == airPollutionSource.SourceIndSite.IndSiteEnterpriseId)
-                    .First().EnterpriseId;
-
-                if (IsSourceNumberExists(e => e.SourceIndSite.IndSiteEnterprise.Enterprise,
-                    a => a.Number == airPollutionSource.Number && a.SourceIndSite.IndSiteEnterprise.EnterpriseId == enterpriseId))
-                    return Conflict();
+                    .Single().EnterpriseId;
             }
             else if (airPollutionSource.Relation is SourceRelations.Workshop)
             {
-                var enterpriseId = _context.Workshop
+                enterpriseId = _context.Workshop
                     .Include(i => i.IndSiteEnterprise.Enterprise)
                     .Where(i => i.Id == airPollutionSource.SourceWorkshop.WorkshopId)
-                    .First().IndSiteEnterprise.EnterpriseId;
-
-                if (IsSourceNumberExists(e => e.SourceWorkshop.Workshop.IndSiteEnterprise.Enterprise,
-                    a => a.Number == airPollutionSource.Number && a.SourceWorkshop.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId))
-                    return Conflict();
+                    .Single().IndSiteEnterprise.EnterpriseId;
             }
-            else if (airPollutionSource.Relation is SourceRelations.Area)
+            else
             {
-                var enterpriseId = _context.Area
+                enterpriseId = _context.Area
                     .Include(i => i.Workshop.IndSiteEnterprise.Enterprise)
                     .Where(i => i.Id == airPollutionSource.SourceArea.AreaId)
-                    .First().Workshop.IndSiteEnterprise.EnterpriseId;
-
-                if (IsSourceNumberExists(e => e.SourceArea.Area.Workshop.IndSiteEnterprise.Enterprise,
-                    a => a.Number == airPollutionSource.Number && a.SourceArea.Area.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId))
-                    return Conflict();
+                    .Single().Workshop.IndSiteEnterprise.EnterpriseId;
             }
+
+            var airPollutionSources = GetSourcesByEnterprise(enterpriseId);
+            if (airPollutionSources.Any(a => a.Number == airPollutionSource.Number))
+                return Conflict();
+
             return Ok();
         }
-        private bool IsSourceNumberExists(Expression<Func<AirPollutionSource, Enterprise>> expression, Func<AirPollutionSource, bool> predicat)
-        {
-            return _context.AirPollutionSource
-                .Include(expression)
-                .Any(predicat);
-        }
+
+        private IQueryable<AirPollutionSource> GetSourcesByEnterprise(int enterpriseId)
+            => _context.AirPollutionSource
+                .Where(a => a.SourceIndSite.IndSiteEnterprise.EnterpriseId == enterpriseId
+                || a.SourceWorkshop.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId
+                || a.SourceArea.Area.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId);
+
         private void UpdateRelation(AirPollutionSource airPollutionSource)
         {
-            var id = airPollutionSource.Id;
-            var isSourceIndSite = _context.AirPollutionSourceIndSite.Any(a => a.AirPollutionSourceId == id);
-            var isSourceWorkshop = _context.AirPollutionSourceWorkshop.Any(a => a.AirPollutionSourceId == id);
-            var isSourceArea = _context.AirPollutionSourceArea.Any(a => a.AirPollutionSourceId == id);
-
-            if (airPollutionSource.Relation is SourceRelations.IndSite)
+            try
             {
+                var id = airPollutionSource.Id;
+                var isSourceIndSite = _context.AirPollutionSourceIndSite.Any(a => a.AirPollutionSourceId == id);
+                var isSourceWorkshop = _context.AirPollutionSourceWorkshop.Any(a => a.AirPollutionSourceId == id);
+                var isSourceArea = _context.AirPollutionSourceArea.Any(a => a.AirPollutionSourceId == id);
+
+                if (airPollutionSource.Relation is SourceRelations.IndSite)
+                {
+                    if (isSourceIndSite)
+                    {
+                        _context.Entry(airPollutionSource.SourceIndSite).State = EntityState.Modified;
+                        return;
+                    }
+                    else
+                    {
+                        _context.Add(airPollutionSource.SourceIndSite);
+                    }
+                }
+
+                if (airPollutionSource.Relation is SourceRelations.Workshop)
+                {
+                    if (isSourceWorkshop)
+                    {
+                        _context.Entry(airPollutionSource.SourceWorkshop).State = EntityState.Modified;
+                        return;
+                    }
+                    else
+                    {
+                        _context.Add(airPollutionSource.SourceWorkshop);
+                    }
+                }
+
+                if (airPollutionSource.Relation is SourceRelations.Area)
+                {
+                    if (isSourceArea)
+                    {
+                        _context.Entry(airPollutionSource.SourceArea).State = EntityState.Modified;
+                        return;
+                    }
+                    else
+                    {
+                        _context.Add(airPollutionSource.SourceArea);
+                    }
+                }
+
                 if (isSourceIndSite)
-                {
-                    _context.Entry(airPollutionSource.SourceIndSite).State = EntityState.Modified;
-                    return;
-                }
-                else
-                {
-                    _context.Add(airPollutionSource.SourceIndSite);
-                }
-            }
-
-            if (airPollutionSource.Relation is SourceRelations.Workshop)
-            {
+                    _context.AirPollutionSourceIndSite.Remove(_context.AirPollutionSourceIndSite.First(a => a.AirPollutionSourceId == id));
                 if (isSourceWorkshop)
-                {
-                    _context.Entry(airPollutionSource.SourceWorkshop).State = EntityState.Modified;
-                    return;
-                }
-                else
-                {
-                    _context.Add(airPollutionSource.SourceWorkshop);
-                }
-            }
-
-            if (airPollutionSource.Relation is SourceRelations.Area)
-            {
+                    _context.AirPollutionSourceWorkshop.Remove(_context.AirPollutionSourceWorkshop.First(a => a.AirPollutionSourceId == id));
                 if (isSourceArea)
-                {
-                    _context.Entry(airPollutionSource.SourceArea).State = EntityState.Modified;
-                    return;
-                }
-                else
-                {
-                    _context.Add(airPollutionSource.SourceArea);
-                }
+                    _context.AirPollutionSourceArea.Remove(_context.AirPollutionSourceArea.First(a => a.AirPollutionSourceId == id));
             }
-
-            if (isSourceIndSite)
-                _context.AirPollutionSourceIndSite.Remove(_context.AirPollutionSourceIndSite.First(a => a.AirPollutionSourceId == id));
-            if (isSourceWorkshop)
-                _context.AirPollutionSourceWorkshop.Remove(_context.AirPollutionSourceWorkshop.First(a => a.AirPollutionSourceId == id));
-            if (isSourceArea)
-                _context.AirPollutionSourceArea.Remove(_context.AirPollutionSourceArea.First(a => a.AirPollutionSourceId == id));
+            catch (Exception ex)
+            {
+                var a = ex;
+            }
         }
     }
 }

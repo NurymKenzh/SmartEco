@@ -1,6 +1,11 @@
-﻿using System.Net.Http;
+﻿using System.Collections.Generic;
+using System.Linq;
+using System.Net;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore.Metadata.Internal;
+using SmartEco.Models.ASM;
 using SmartEco.Models.ASM.Filsters;
 using SmartEco.Models.ASM.PollutionSources;
 using SmartEco.Models.ASM.Requests;
@@ -12,6 +17,10 @@ namespace SmartEco.Controllers.ASM.PollutionSources
     public class AirPollutionSourcesController : Controller
     {
         private readonly string _urlAirPollutionSources = "api/AirPollutionSources";
+        private readonly string _urlAirPollutionSourceTypes = "api/AirPollutionSourceTypes";
+        private readonly string _urlIndSiteEnterprises = "api/IndSiteEnterprises";
+        private readonly string _urlWorkshops = "api/Workshops";
+        private readonly string _urlAreas = "api/Areas";
         private readonly SmartEcoApi _smartEcoApi;
 
         public AirPollutionSourcesController(SmartEcoApi smartEcoApi)
@@ -53,177 +62,254 @@ namespace SmartEco.Controllers.ASM.PollutionSources
             viewModel.Filter.NumberSort = nameof(viewModel.Filter.NumberSort).Sorting(viewModel.Filter.SortOrder);
             viewModel.Filter.RelationSort = nameof(viewModel.Filter.RelationSort).Sorting(viewModel.Filter.SortOrder);
 
-            return PartialView("~/Views/AirPollutionSources/_AirPollutionSourcesTable.cshtml", viewModel);
+            viewModel.DropdownTypes = await GetAirPollutionSourceTypes();
+            viewModel.DropdownIndSite = await GetIndSiteEnterprises(filter.EnterpriseId);
+            viewModel.DropdownWorkShop = await GetWorkshops(filter.EnterpriseId);
+            viewModel.DropdownArea = await GetAreas(filter.EnterpriseId);
+
+            return PartialView("~/Views/AirPollutionSources/_AirPollutionSources.cshtml", viewModel);
         }
 
-        // GET: AirPollutionSources
-        //public async Task<IActionResult> Index(AirPollutionSourceFilter filter)
-        //{
-        //    ViewBag.NameSort = nameof(filter.NameFilter).FilterSorting(filter.SortOrder);
-        //    ViewBag.NumberSort = nameof(filter.NumberFilter).FilterSorting(filter.SortOrder);
-        //    ViewBag.RelationSort = nameof(filter.RelationFilter).FilterSorting(filter.SortOrder);
-
-        //    var pager = new Pager(filter.PageNumber, filter.PageSize);
-        //    var airPollutionSourcesViewModel = new AirPollutionSourceListViewModel();
-
-        //    var airPollutionSourcesRequest = new AirPollutionSourcesRequest()
-        //    {
-        //        Name = filter.NameFilter,
-        //        Number = filter.NumberFilter,
-        //        Relation = filter.RelationFilter,
-        //        EnterpriseId = filter.EnterpriseId,
-        //        PageSize = pager.PageSize,
-        //        PageNumber = pager.PageNumber,
-        //    };
-        //    var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAirPollutionSources, airPollutionSourcesRequest);
-        //    var response = await _smartEcoApi.Client.SendAsync(request);
-
-        //    int airPollutionSourcesCount = 0;
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        var airPollutionSourcesResponse = await response.Content.ReadAsAsync<AirPollutionSourcesResponse>();
-        //        airPollutionSourcesViewModel.Items = airPollutionSourcesResponse.AirPollutionSources;
-        //        airPollutionSourcesCount = airPollutionSourcesResponse.Count;
-        //    }
-
-        //    airPollutionSourcesViewModel.Pager = new Pager(airPollutionSourcesCount, pager.PageNumber, pager.PageSize);
-        //    airPollutionSourcesViewModel.Filter = filter;
-
-        //    return PartialView("~/Views/Enterprises/_AirPollutionSources.cshtml", airPollutionSourcesViewModel);
-        //}
-
-        // GET: AirPollutionSources/Details/5
-        //public async Task<IActionResult> Details(AirPollutionSourceFilterId filter)
-        //{
-        //    if (filter.Id == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    var airPollutionSourceViewModel = new AirPollutionSourceViewModel();
-        //    var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/{filter.Id}");
-        //    var response = await _smartEcoApi.Client.SendAsync(request);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        airPollutionSourceViewModel.Item = await response.Content.ReadAsAsync<AirPollutionSource>();
-        //    }
-        //    if (airPollutionSourceViewModel == null)
-        //    {
-        //        return NotFound();
-        //    }
-
-        //    airPollutionSourceViewModel.Filter = filter;
-        //    return View(airPollutionSourceViewModel);
-        //}
-
-        // GET: AirPollutionSources/Create
-        //public IActionResult Create(BaseFilter filter)
-        //{
-        //    var airPollutionSourceViewModel = new AirPollutionSourceViewModel()
-        //    {
-        //        Filter = filter
-        //    };
-        //    return View(airPollutionSourceViewModel);
-        //}
-
         // POST: AirPollutionSources/Create
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Create(AirPollutionSourceViewModel airPollutionSourceViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var body = airPollutionSourceViewModel.Item;
-        //        var request = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlAirPollutionSources, body);
-        //        var response = await _smartEcoApi.Client.SendAsync(request);
+        [HttpPost]
+        public async Task<IActionResult> Create(int enterpriseId, int pageSize)
+        {
+            try
+            {
+                var viewModel = new AirPollutionSourceListViewModel();
+                var sourceLastNumberResponse = await GetLastNumber(enterpriseId);
 
-        //        try
-        //        {
-        //            response.EnsureSuccessStatusCode();
-        //        }
-        //        catch
-        //        {
-        //            ModelState.AddModelError(string.Empty, "Error creating");
-        //            return View(airPollutionSourceViewModel);
-        //        }
+                //Building a new item
+                var sourceTypes = await GetAirPollutionSourceTypes();
+                var indSiteEnterprises = await GetIndSiteEnterprises(enterpriseId);
 
-        //        airPollutionSourceViewModel.Item = await response.Content.ReadAsAsync<AirPollutionSource>();
-        //        return RedirectToAction(nameof(Index), airPollutionSourceViewModel.Filter);
-        //    }
+                var airPollutionSource = CreateSourceObject(sourceLastNumberResponse.Number, sourceTypes.First());
+                airPollutionSource.SourceInfo = CreateSourceInfoObject();
 
-        //    return View(airPollutionSourceViewModel);
-        //}
+                if (indSiteEnterprises.Any())
+                    airPollutionSource.SourceIndSite = new AirPollutionSourceIndSite() { IndSiteEnterpriseId = indSiteEnterprises.First().Id };
+                else
+                    return BadRequest();
 
-        // GET: AirPollutionSources/Edit/5
-        //public async Task<IActionResult> Edit(AirPollutionSourceFilterId filter)
-        //{
-        //    var airPollutionSourceViewModel = new AirPollutionSourceViewModel();
-        //    var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/{filter.Id}");
-        //    var response = await _smartEcoApi.Client.SendAsync(request);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        airPollutionSourceViewModel.Item = await response.Content.ReadAsAsync<AirPollutionSource>();
-        //    }
+                //Create new item
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlAirPollutionSources, airPollutionSource);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
 
-        //    airPollutionSourceViewModel.Filter = filter;
-        //    return View(airPollutionSourceViewModel);
-        //}
+                //Create pager for calculating number last page
+                //Need for move to last page after creating new item
+                var pager = new Pager(sourceLastNumberResponse.Count + 1, null, pageSize);
+                var filter = new AirPollutionSourceFilter()
+                {
+                    EnterpriseId = enterpriseId,
+                    PageNumber = pager.TotalPages,
+                    PageSize = pageSize
+                };
+                return RedirectToAction(nameof(GetSources), filter);
+            }
+            catch
+            {
+                return BadRequest();
+            }
+        }
 
         // POST: AirPollutionSources/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        //[HttpPost]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> Edit(AirPollutionSourceViewModel airPollutionSourceViewModel)
-        //{
-        //    if (ModelState.IsValid)
-        //    {
-        //        var body = airPollutionSourceViewModel.Item;
-        //        var request = _smartEcoApi.CreateRequest(HttpMethod.Put, $"{_urlAirPollutionSources}/{airPollutionSourceViewModel.Item.Id}", body);
-        //        var response = await _smartEcoApi.Client.SendAsync(request);
+        [HttpPost]
+        public async Task<IActionResult> Edit(AirPollutionSource airPollutionSource)
+        {
+            if (ModelState.IsValid)
+            {
+                var body = airPollutionSource;
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Put, $"{_urlAirPollutionSources}/{airPollutionSource.Id}", body);
+                var response = await _smartEcoApi.Client.SendAsync(request);
 
-        //        try
-        //        {
-        //            response.EnsureSuccessStatusCode();
-        //        }
-        //        catch
-        //        {
-        //            ModelState.AddModelError(string.Empty, "Error editing");
-        //            return View(airPollutionSourceViewModel);
-        //        }
+                try
+                {
+                    response.EnsureSuccessStatusCode();
+                }
+                catch
+                {
+                    if (response.StatusCode is HttpStatusCode.Conflict)
+                        ModelState.AddModelError(nameof(airPollutionSource.Number), "Номер должен быть уникальным");
+                    else
+                        ModelState.AddModelError(string.Empty, "Error editing");
+                    return BadRequest(ModelState);
+                }
 
-        //        airPollutionSourceViewModel.Item = await response.Content.ReadAsAsync<AirPollutionSource>();
-        //        return RedirectToAction(nameof(Index), airPollutionSourceViewModel.Filter);
-        //    }
-        //    return View(airPollutionSourceViewModel);
-        //}
+                return Ok();
+            }
+            return BadRequest(ModelState);
+        }
 
-        // GET: AirPollutionSources/Delete/5
-        //public async Task<IActionResult> Delete(AirPollutionSourceFilterId filter)
-        //{
-        //    var airPollutionSourceViewModel = new AirPollutionSourceViewModel();
-        //    var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/{filter.Id}");
-        //    var response = await _smartEcoApi.Client.SendAsync(request);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        airPollutionSourceViewModel.Item = await response.Content.ReadAsAsync<AirPollutionSource>();
-        //    }
+        // POST: AirPollutionSources/Copy
+        [HttpPost]
+        public async Task<IActionResult> Copy(int enterpriseId, int pageSize, AirPollutionSource airPollutionSource)
+        {
+            if (ModelState.IsValid)
+            {
+                try
+                {
+                    var sourceLastNumberResponse = await GetLastNumber(enterpriseId);
 
-        //    airPollutionSourceViewModel.Filter = filter;
-        //    return View(airPollutionSourceViewModel);
-        //}
+                    //Create new item
+                    airPollutionSource = ChangeSourceForCopy(airPollutionSource, sourceLastNumberResponse.Number);
+                    var requestCreate = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlAirPollutionSources, airPollutionSource);
+                    var responseCreate = await _smartEcoApi.Client.SendAsync(requestCreate);
+                    responseCreate.EnsureSuccessStatusCode();
+
+                    //Create pager for calculating number last page
+                    //Need for move to last page after creating new item
+                    var pager = new Pager(sourceLastNumberResponse.Count + 1, null, pageSize);
+                    var filter = new AirPollutionSourceFilter()
+                    {
+                        EnterpriseId = enterpriseId,
+                        PageNumber = pager.TotalPages,
+                        PageSize = pageSize
+                    };
+                    return RedirectToAction(nameof(GetSources), filter);
+                }
+                catch { return BadRequest(); }
+            }
+            return BadRequest(ModelState);
+        }
 
         // POST: AirPollutionSources/Delete/5
-        //[HttpPost, ActionName("Delete")]
-        //[ValidateAntiForgeryToken]
-        //public async Task<IActionResult> DeleteConfirmed(AirPollutionSourceViewModel airPollutionSourceViewModel)
-        //{
-        //    var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlAirPollutionSources}/{airPollutionSourceViewModel.Item.Id}");
-        //    var response = await _smartEcoApi.Client.SendAsync(request);
+        [HttpPost]
+        public async Task<IActionResult> Delete(int id, AirPollutionSourceFilter filter)
+        {
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Delete, $"{_urlAirPollutionSources}/{id}");
+            var response = await _smartEcoApi.Client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
 
-        //    return RedirectToAction(nameof(Index), airPollutionSourceViewModel.Filter);
-        //}
+            var sourceLastNumberResponse = await GetLastNumber(filter.EnterpriseId);
+            //Create pager for calculating number last page
+            //Need for move to last page after creating new item
+            var pager = new Pager(sourceLastNumberResponse.Count, null, filter.PageSize);
+            filter.PageNumber = filter.PageNumber > pager.TotalPages ? pager.TotalPages : filter.PageNumber;
+
+            return RedirectToAction(nameof(GetSources), filter);
+        }
+
+        [HttpPost]
+        public IActionResult ValidInfo(AirPollutionSourceInfo airPollutionSourceInfo)
+        {
+            if (ModelState.IsValid)
+                return Ok();
+
+            return BadRequest(ModelState);
+        }
+
+        private async Task<AirPollutinSourceLastNumberResponse> GetLastNumber(int? enterpriseId)
+        {
+            //Get last number for create new item
+            //Get count items for calculate total pages
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/GetLastNumber/{enterpriseId}");
+            var response = await _smartEcoApi.Client.SendAsync(request);
+            response.EnsureSuccessStatusCode();
+            return await response.Content.ReadAsAsync<AirPollutinSourceLastNumberResponse>();
+        }
+
+        private AirPollutionSource CreateSourceObject(int lastNumber, AirPollutionSourceType type)
+            => new AirPollutionSource()
+            {
+                Number = (++lastNumber).ToString().PadLeft(4, '0'),
+                Name = "ИЗА",
+                IsActive = true,
+                TypeId = type.Id
+            };
+
+        private AirPollutionSourceInfo CreateSourceInfoObject()
+            => new AirPollutionSourceInfo()
+            {
+                TerrainCoefficient = 1,
+                AngleDeflection = 0,
+                AngleRotation = 0,
+                Hight = 0,
+                Diameter = 0,
+                RelationBackground = 1
+            };
+
+        private AirPollutionSource ChangeSourceForCopy(AirPollutionSource source, int lastNumber)
+        {
+            source.Number = (++lastNumber).ToString().PadLeft(4, '0');
+            source.Id = 0;
+            source.SourceInfo.SourceId = 0;
+
+            if (source.Relation is SourceRelations.IndSite)
+                source.SourceIndSite.AirPollutionSourceId = 0;
+            else if (source.Relation is SourceRelations.Workshop)
+                source.SourceWorkshop.AirPollutionSourceId = 0;
+            else
+                source.SourceArea.AirPollutionSourceId = 0;
+
+            return source;
+
+        }
+
+        private async Task<List<AirPollutionSourceType>> GetAirPollutionSourceTypes()
+        {
+            try
+            {
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAirPollutionSourceTypes);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var airPollutionSourceTypesResponse = await response.Content.ReadAsAsync<AirPollutionSourceTypesResponse>();
+
+                return airPollutionSourceTypesResponse.AirPollutionSourceTypes ?? new List<AirPollutionSourceType>();
+            }
+            catch { return new List<AirPollutionSourceType>(); }
+        }
+
+        private async Task<List<IndSiteEnterprise>> GetIndSiteEnterprises(int? enterpriseId)
+        {
+            try
+            {
+                var indSiteEnterprisesRequest = new IndSiteEnterprisesRequest()
+                {
+                    EnterpriseId = enterpriseId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlIndSiteEnterprises, indSiteEnterprisesRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var indSiteEnterprisesResponse = await response.Content.ReadAsAsync<List<IndSiteEnterprise>>();
+                return indSiteEnterprisesResponse;
+            }
+            catch { return new List<IndSiteEnterprise>(); }
+        }
+
+        private async Task<List<Workshop>> GetWorkshops(int? enterpriseId)
+        {
+            try
+            {
+                var workshopsRequest = new WorkshopsRequest()
+                {
+                    EnterpriseId = enterpriseId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlWorkshops, workshopsRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var workshopsResponse = await response.Content.ReadAsAsync<List<Workshop>>();
+                return workshopsResponse;
+            }
+            catch { return new List<Workshop>(); }
+        }
+
+        private async Task<List<Area>> GetAreas(int? enterpriseId)
+        {
+            try
+            {
+                var areasRequest = new AreasRequest()
+                {
+                    EnterpriseId = enterpriseId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAreas, areasRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var areasResponse = await response.Content.ReadAsAsync<List<Area>>();
+                return areasResponse;
+            }
+            catch { return new List<Area>(); }
+        }
     }
 }

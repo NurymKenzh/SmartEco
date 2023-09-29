@@ -1,0 +1,22 @@
+﻿@model SmartEco.Models.ASM.PollutionSources.AirPollutionSource
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<div class="modal-body">
+    <div class="modal-header">
+        <h5 class="modal-title">Удалить источник загрязнения атмосферы</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    <div class="modal-body">
+        <div class="form-group">
+            <p>Вы уверены, что хотите удалить ИЗА?</p>
+        </div>
+    </div>
+    <div class="modal-footer">
+        <button name="DeleteSourceBtn" type="button" class="btn btn-primary" value="@Model.Id">Да</button>
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+    </div>
+</div>

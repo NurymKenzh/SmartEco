@@ -22,6 +22,9 @@ namespace SmartEcoAPI.Models.ASM.PollutionSources
         [NotMapped]
         internal SourceRelations Relation { get { return GetSourceRelation(); } }
 
+        [NotMapped]
+        internal string RelationCombine { get { return GetSourceRelationCombine(); } }
+
         private SourceRelations GetSourceRelation()
         {
             if (SourceIndSite != null) return SourceRelations.IndSite;
@@ -29,6 +32,17 @@ namespace SmartEcoAPI.Models.ASM.PollutionSources
             else if (SourceArea != null) return SourceRelations.Area;
             else return SourceRelations.Undefined;
 
+        }
+
+        private string GetSourceRelationCombine()
+        {
+            switch (Relation)
+            {
+                case SourceRelations.IndSite: return $"{SourceIndSite.IndSiteEnterprise.Name}";
+                case SourceRelations.Workshop: return $"{SourceWorkshop.Workshop.IndSiteEnterprise.Name}, {SourceWorkshop.Workshop.Name}";
+                case SourceRelations.Area: return $"{SourceArea.Area.Workshop.IndSiteEnterprise.Name}, {SourceArea.Area.Workshop.Name}, {SourceArea.Area.Name}";
+                default: return string.Empty;
+            }
         }
     }
 

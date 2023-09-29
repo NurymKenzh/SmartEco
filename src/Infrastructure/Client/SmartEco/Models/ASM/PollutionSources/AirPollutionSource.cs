@@ -12,16 +12,20 @@ namespace SmartEco.Models.ASM.PollutionSources
         public int Id { get; set; }
 
         [Display(Name = "Номер")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [RegularExpression(@"[0-9]{4}", ErrorMessage = "Номер должен содержать 4 цифры")]
         public string Number { get; set; }
 
         [Display(Name = "Наименование")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
         public string Name { get; set; }
 
         [Display(Name = "Используется")]
         public bool IsActive { get; set; }
 
         [Display(Name = "Тип источника")]
-        public int TypeId { get; set; }
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public int? TypeId { get; set; }
         [Display(Name = "Тип источника")]
         public AirPollutionSourceType Type { get; set; }
 
@@ -33,10 +37,8 @@ namespace SmartEco.Models.ASM.PollutionSources
         [Display(Name = "Параметры")]
         public AirPollutionSourceInfo SourceInfo { get; set; }
 
-        public SourceRelations Relation { get { return GetSourceRelation(); } }
-
         [Display(Name = "Подразделение")]
-        public string RelationCombine { get { return GetSourceRelationCombine(); } }
+        public SourceRelations Relation { get { return GetSourceRelation(); } }
 
         private SourceRelations GetSourceRelation()
         {
@@ -45,17 +47,6 @@ namespace SmartEco.Models.ASM.PollutionSources
             else if (SourceArea != null) return SourceRelations.Area;
             else return SourceRelations.Undefined;
 
-        }
-
-        private string GetSourceRelationCombine()
-        {
-            switch (Relation)
-            {
-                case SourceRelations.IndSite: return $"{SourceIndSite.IndSiteEnterprise.Name}";
-                case SourceRelations.Workshop: return $"{SourceWorkshop.Workshop.IndSiteEnterprise.Name}, {SourceWorkshop.Workshop.Name}";
-                case SourceRelations.Area: return $"{SourceArea.Area.Workshop.IndSiteEnterprise.Name}, {SourceArea.Area.Workshop.Name}, {SourceArea.Area.Name}";
-                default: return string.Empty;
-            }
         }
     }
 
@@ -72,6 +63,10 @@ namespace SmartEco.Models.ASM.PollutionSources
         public AirPollutionSourceFilter Filter { get; set; }
         public List<AirPollutionSource> Items { get; set; }
         public Pager Pager { get; set; }
-        public int EnterpriseId { get; set; }
+
+        public List<AirPollutionSourceType> DropdownTypes { get; set; }
+        public List<IndSiteEnterprise> DropdownIndSite { get; set; }
+        public List<Workshop> DropdownWorkShop { get; set; }
+        public List<Area> DropdownArea{ get; set; }
     }
 }

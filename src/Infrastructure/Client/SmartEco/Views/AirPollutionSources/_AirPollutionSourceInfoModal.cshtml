@@ -1,0 +1,130 @@
+﻿@model AirPollutionSourceInfo
+@using SmartEco.Models.ASM.PollutionSources
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+@*<style>
+    dl {
+        width: 100%;
+        overflow: hidden;
+    }
+
+    dt {
+        float: left;
+        width: 50%;
+    }
+
+        dt::after {
+            content: ":";
+        }
+
+    dd {
+        float: left;
+        width: 50%;
+        margin: 0;
+        border-bottom: 1px;
+    }
+</style>*@
+
+<dl class="modal-body">
+    @*@if (Role == "admin" || Role == "moderator" || Role == "ASM")
+    {
+        <dd class="form-group w-100">
+            <div class="d-flex" style="justify-content: space-evenly">
+                <button type="button" class="btn btn-warning edit-btn">@SharedLocalizer["Edit"]</button>
+                <button name="SaveInfoBtn" type="button" class="btn btn-success d-none save-btn">@SharedLocalizer["Save"]</button>
+                <button type="button" class="btn btn-danger d-none cancel-btn">@SharedLocalizer["Reset"]</button>
+            </div>
+        </dd>
+    }*@
+
+    <input asp-for="@Model.SourceId" type="text" name="SourceIdInfo" hidden>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Coordinate)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Coordinate" type="text" class="form-control-plaintext" name="CoordinateInfo" hidden>
+
+        <span>Долгота:</span>
+        <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLongInfo" disabled>
+
+        <span>Широта:</span>
+        <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLatInfo" disabled>
+        <button type="button" class="mt-3 btn btn-primary btn-disabled select-on-map" data-toggle="modal" data-target="#ShowMap_@Model.SourceId" disabled>Выбрать на карте</button>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.TerrainCoefficient)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.TerrainCoefficient" type="number" class="form-control-plaintext" name="TerrainCoefficientInfo" disabled>
+        <div name="TerrainCoefficientInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsCalculateByGas)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle"></button>
+        <div class="m-md-3">
+            <input asp-for="@Model.IsCalculateByGas" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" name="IsCalculateByGasInfo" value="@Model.IsCalculateByGas" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsVerticalDeviation)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle"></button>
+        <div class="m-md-3">
+            <input asp-for="@Model.IsVerticalDeviation" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" name="IsVerticalDeviationInfo" value="@Model.IsVerticalDeviation" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.AngleDeflection)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.AngleDeflection" type="text" class="form-control-plaintext" name="AngleDeflectionInfo" disabled>
+        <div name="AngleDeflectionInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.AngleRotation)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.AngleRotation" type="text" class="form-control-plaintext" name="AngleRotationInfo" disabled>
+        <di name="AngleRotationInvalid" v class="invalid-feedback"></di>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsCovered)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle"></button>
+        <div class="m-md-3">
+            <input asp-for="@Model.IsCovered" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" name="IsCoveredInfo" value="@Model.IsCovered" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsSignFlare)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle"></button>
+        <div class="m-md-3">
+            <input asp-for="@Model.IsSignFlare" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" name="IsSignFlareInfo" value="@Model.IsSignFlare" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Hight)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Hight" type="text" class="form-control-plaintext" name="HightInfo" disabled>
+        <div name="HightInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Diameter)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Diameter" type="text" class="form-control-plaintext" name="DiameterInfo" disabled>
+        <div name="DiameterInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.RelationBackground)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.RelationBackground" type="number" class="form-control-plaintext" name="RelationBackgroundInfo" disabled>
+        <div name="RelationBackgroundInvalid" class="invalid-feedback"></div>
+    </dd>
+</dl>

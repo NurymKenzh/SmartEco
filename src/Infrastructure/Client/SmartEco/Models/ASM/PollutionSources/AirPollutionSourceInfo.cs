@@ -1,20 +1,50 @@
-﻿namespace SmartEco.Models.ASM.PollutionSources
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace SmartEco.Models.ASM.PollutionSources
 {
     public class AirPollutionSourceInfo
     {
         public int SourceId { get; set; }
         public AirPollutionSource Source { get; set; }
 
+        [Display(Name = "Координаты")]
         public string Coordinate { get; set; }
-        public int TerrainCoefficient { get; set; }
+
+        [Display(Name = "Коэффициент рельефа")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public int? TerrainCoefficient { get; set; }
+
+        [Display(Name = "Рассчитывать по газу")]
         public bool IsCalculateByGas { get; set; }
+
+        [Display(Name = "Отклонение по вертикали")]
         public bool IsVerticalDeviation { get; set; }
-        public decimal AngleDeflection { get; set; }
-        public decimal AngleRotation { get; set; }
+
+        [Display(Name = "Угол отклонения по вертикали")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public decimal? AngleDeflection { get; set; }
+
+        [Display(Name = "Угол поворота")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public decimal? AngleRotation { get; set; }
+
+        [Display(Name = "Оборудован зонтом или крышкой")]
         public bool IsCovered { get; set; }
+
+        [Display(Name = "Признак факельного горения")]
         public bool IsSignFlare { get; set; }
-        public decimal Hight { get; set; }
-        public decimal Diameter { get; set; }
-        public int RelationBackground { get; set; }
+
+        [Display(Name = "Высота")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public decimal? Hight { get; set; }
+
+        [Display(Name = "Диаметр")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public decimal? Diameter { get; set; }
+
+        [Display(Name = "Отношение к фону")]
+        [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        public int? RelationBackground { get; set; }
     }
 }

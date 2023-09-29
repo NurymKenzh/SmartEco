@@ -114,6 +114,8 @@ namespace SmartEcoAPI.Controllers.ASM
             {
                 return NotFound();
             }
+            if (await _context.AirPollutionSourceIndSite.AnyAsync(sw => sw.IndSiteEnterpriseId == indSiteEnterprise.Id))
+                return Forbid();
 
             _context.IndSiteEnterprise.Remove(indSiteEnterprise);
             await _context.SaveChangesAsync();

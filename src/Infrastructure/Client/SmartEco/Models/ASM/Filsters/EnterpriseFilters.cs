@@ -6,6 +6,8 @@
         public string NameFilter { get; set; }
         public string KatoComplexFilter { get; set; }
         public int? EnterpriseTypeIdFilter { get; set; }
+
+        public bool? IsCannotDelete { get; set; }
     }
 
     public class EnterpriseFilterId : EnterpriseFilter

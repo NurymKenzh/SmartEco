@@ -117,7 +117,7 @@
     <div id="ShowDeleteWorkshopModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                @await Html.PartialAsync("~/Views/StructureAndLocation/_DeleteWorkshopModal.cshtml", new Workshop())
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_DeleteWorkshopModal.cshtml", new Workshop(){IndSiteEnterprise = new IndSiteEnterprise(){EnterpriseId = Model.Item.Id}})
             </div>
         </div>
     </div>
@@ -141,8 +141,29 @@
     <div id="ShowDeleteAreaModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
         <div class="modal-dialog modal-dialog-centered" role="document">
             <div class="modal-content">
-                @await Html.PartialAsync("~/Views/StructureAndLocation/_DeleteAreaModal.cshtml", new Area())
+                @await Html.PartialAsync("~/Views/StructureAndLocation/_DeleteAreaModal.cshtml", new Area(){Workshop = new Workshop(){IndSiteEnterprise = new IndSiteEnterprise(){EnterpriseId = Model.Item.Id}}})
+            </div>
+        </div>
+    </div>
+
+    <div id="ShowCannotDeleteModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" role="document">
+            <div class="modal-content">
+                <div class="modal-body bg-warning">
+                    <div clas="modal-body">
+                        <p>Объект не может быть удален, т.к. есть связанные с ним объекты</p>
+                    </div>
+                </div>
             </div>
         </div>
     </div>
 </div>
+
+<script>
+    $(document).ready(function () {
+        var isCannotDelete = @((Model.Filter.IsCannotDelete != null).ToString().ToLower()) == true;
+        if (isCannotDelete == true) {
+            $('#ShowCannotDeleteModal').modal('show');
+        }
+    })
+</script>

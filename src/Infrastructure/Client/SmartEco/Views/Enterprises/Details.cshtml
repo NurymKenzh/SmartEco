@@ -17,10 +17,6 @@
 
 <script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
 
-@*On-Off for checkbox*@
-<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
-<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
-
 <div>
     <h4>@SharedLocalizer["Enterprise"] «@Model.Item.Name»</h4>
     <ul class="nav nav-tabs">
@@ -43,7 +39,7 @@
             @await Html.PartialAsync("_StructureAndLocation", Model)
         </div>
         <div class="tab-pane fade" id="AirPollutionSources">
-            @await Html.PartialAsync("_AirPollutionSources", Model.AirPollutionSourceListViewModel)
+            @await Html.PartialAsync("~/Views/AirPollutionSources/_AirPollutionSources.cshtml", Model.AirPollutionSourceListViewModel)
         </div>
     </div>
 </div>

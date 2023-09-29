@@ -112,12 +112,17 @@ namespace SmartEcoAPI.Controllers.ASM
             {
                 return NotFound();
             }
+            if (await _context.AirPollutionSourceWorkshop.AnyAsync(sw => sw.WorkshopId == workshop.Id))
+                return Forbid();
 
             _context.Workshop.Remove(workshop);
             await _context.SaveChangesAsync();
 
             return enerpriseResponse;
         }
+
+        public async Task<EnterpriseResponse> GetEnterprise(int workshopId)
+            => await GetEnterpriseId(workshopId);
 
         private bool WorkshopExists(int id)
         {

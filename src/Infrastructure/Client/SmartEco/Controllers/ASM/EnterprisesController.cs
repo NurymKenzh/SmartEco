@@ -23,6 +23,7 @@ namespace SmartEco.Controllers.ASM
         private readonly string _urlWorkshops = "api/Workshops";
         private readonly string _urlAreas = "api/Areas";
         private readonly string _urlAirPollutionSources = "api/AirPollutionSources";
+        private readonly string _urlAirPollutionSourceTypes = "api/AirPollutionSourceTypes";
         private readonly SmartEcoApi _smartEcoApi;
         private readonly StatGovKzApi _statGovKzApi;
 
@@ -88,10 +89,18 @@ namespace SmartEco.Controllers.ASM
                 return NotFound();
             }
 
+            var indSiteEnterprises = await GetIndSiteEnterprises(filter.Id.Value);
+            var workshops = await GetWorkshops(filter.Id.Value);
+            var areas = await GetAreas(filter.Id.Value);
+
             enterpriseDetailViewModel.Filter = filter;
-            enterpriseDetailViewModel.TreeNodes = await GetTreeNodes(filter.Id.Value);
+            enterpriseDetailViewModel.TreeNodes = ComposingTreeNodes(indSiteEnterprises, workshops, areas);
             enterpriseDetailViewModel.IndSiteEnterprises = await GetIndSiteEnterprises(enterpriseDetailViewModel.Item.Id);
             enterpriseDetailViewModel.AirPollutionSourceListViewModel = await GetAirPollutionSources(enterpriseDetailViewModel.Item.Id);
+
+            enterpriseDetailViewModel.AirPollutionSourceListViewModel.DropdownIndSite = indSiteEnterprises;
+            enterpriseDetailViewModel.AirPollutionSourceListViewModel.DropdownWorkShop = workshops;
+            enterpriseDetailViewModel.AirPollutionSourceListViewModel.DropdownArea = areas;
 
             return View(enterpriseDetailViewModel);
         }
@@ -258,7 +267,6 @@ namespace SmartEco.Controllers.ASM
                 airPollutionSourcesCount = airPollutionSourcesResponse.Count;
 
                 viewModel.Pager = new Pager(airPollutionSourcesCount, pager.PageNumber, pager.PageSize);
-                //airPollutionSourcesViewModel.Filter = filter;
                 viewModel.Filter = new AirPollutionSourceFilter() 
                 {  
                     EnterpriseId = enterpriseId
@@ -266,20 +274,29 @@ namespace SmartEco.Controllers.ASM
                 viewModel.Filter.NameSort = nameof(viewModel.Filter.NameSort).Sorting(viewModel.Filter.SortOrder);
                 viewModel.Filter.NumberSort = nameof(viewModel.Filter.NumberSort).Sorting(viewModel.Filter.SortOrder);
                 viewModel.Filter.RelationSort = nameof(viewModel.Filter.RelationSort).Sorting(viewModel.Filter.SortOrder);
+                viewModel.DropdownTypes = await GetAirPollutionSourceTypes();
 
                 return viewModel;
             }
             catch { return new AirPollutionSourceListViewModel(); }
         }
 
-        #region Composing tree nodes
-        private async Task<TreeNodes> GetTreeNodes(int enterpriseId)
+        private async Task<List<AirPollutionSourceType>> GetAirPollutionSourceTypes()
         {
-            var indSiteEnterprises = await GetIndSiteEnterprises(enterpriseId);
-            var workshops = await GetWorkshops(enterpriseId);
-            var areas = await GetAreas(enterpriseId);
-            return ComposingTreeNodes(indSiteEnterprises, workshops, areas);
+            try
+            {
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlAirPollutionSourceTypes);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var airPollutionSourceTypesResponse = await response.Content.ReadAsAsync<AirPollutionSourceTypesResponse>();
+
+                return airPollutionSourceTypesResponse.AirPollutionSourceTypes ?? new List<AirPollutionSourceType>();
+            }
+            catch { return new List<AirPollutionSourceType>(); }
         }
+
+        #region Composing tree nodes
 
         private TreeNodes ComposingTreeNodes(List<IndSiteEnterprise> indSiteEnterprises, List<Workshop> workshops, List<Area> areas)
         {
