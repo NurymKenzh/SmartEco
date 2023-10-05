@@ -67,6 +67,9 @@ namespace SmartEco.Controllers.ASM.PollutionSources
             viewModel.DropdownWorkShop = await GetWorkshops(filter.EnterpriseId);
             viewModel.DropdownArea = await GetAreas(filter.EnterpriseId);
 
+            var relationBackgrounds = await GetRelationBackgrounds();
+            viewModel.Items.ForEach(source => source.SourceInfo.DropdownBackgrounds = relationBackgrounds);
+
             return PartialView("~/Views/AirPollutionSources/_AirPollutionSources.cshtml", viewModel);
         }
 
@@ -226,7 +229,7 @@ namespace SmartEco.Controllers.ASM.PollutionSources
                 AngleRotation = 0,
                 Hight = 0,
                 Diameter = 0,
-                RelationBackground = 1
+                RelationBackgroundId = 1
             };
 
         private AirPollutionSource ChangeSourceForCopy(AirPollutionSource source, int lastNumber)
@@ -259,6 +262,21 @@ namespace SmartEco.Controllers.ASM.PollutionSources
                 return airPollutionSourceTypesResponse.AirPollutionSourceTypes ?? new List<AirPollutionSourceType>();
             }
             catch { return new List<AirPollutionSourceType>(); }
+        }
+
+        private async Task<List<RelationBackground>> GetRelationBackgrounds()
+        {
+            try
+            {
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/GetRelationBackgrounds");
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var relationBackgroundsResponse = await response.Content.ReadAsAsync<List<RelationBackground>>();
+
+                return relationBackgroundsResponse ?? new List<RelationBackground>();
+            }
+            catch { return new List<RelationBackground>(); }
         }
 
         private async Task<List<IndSiteEnterprise>> GetIndSiteEnterprises(int? enterpriseId)

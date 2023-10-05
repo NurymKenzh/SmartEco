@@ -276,6 +276,9 @@ namespace SmartEco.Controllers.ASM
                 viewModel.Filter.RelationSort = nameof(viewModel.Filter.RelationSort).Sorting(viewModel.Filter.SortOrder);
                 viewModel.DropdownTypes = await GetAirPollutionSourceTypes();
 
+                var relationBackgrounds = await GetRelationBackgrounds();
+                viewModel.Items.ForEach(source => source.SourceInfo.DropdownBackgrounds = relationBackgrounds);
+
                 return viewModel;
             }
             catch { return new AirPollutionSourceListViewModel(); }
@@ -294,6 +297,21 @@ namespace SmartEco.Controllers.ASM
                 return airPollutionSourceTypesResponse.AirPollutionSourceTypes ?? new List<AirPollutionSourceType>();
             }
             catch { return new List<AirPollutionSourceType>(); }
+        }
+
+        private async Task<List<RelationBackground>> GetRelationBackgrounds()
+        {
+            try
+            {
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/GetRelationBackgrounds");
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                var relationBackgroundsResponse = await response.Content.ReadAsAsync<List<RelationBackground>>();
+
+                return relationBackgroundsResponse ?? new List<RelationBackground>();
+            }
+            catch { return new List<RelationBackground>(); }
         }
 
         #region Composing tree nodes

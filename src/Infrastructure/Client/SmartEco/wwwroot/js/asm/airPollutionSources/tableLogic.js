@@ -191,8 +191,8 @@ $('[name="SaveInfoBtn"]').click(function (e) {
             if (error.Diameter) {
                 editRow.find('[name="DiameterInvalid"]').addClass('d-inline-block').text(error.Diameter[0]);
             }
-            if (error.RelationBackground) {
-                editRow.find('[name="RelationBackgroundInvalid"]').addClass('d-inline-block').text(error.RelationBackground[0]);
+            if (error.RelationBackgroundId) {
+                editRow.find('[name="RelationBackgroundInvalid"]').addClass('d-inline-block').text(error.RelationBackgroundId[0]);
             }
         }
     });
@@ -374,7 +374,7 @@ function CreateInfo(editRow) {
     dataInfo.IsSignFlare = editRow.find('[name="IsSignFlareInfo"]').val();
     dataInfo.Hight = editRow.find('[name="HightInfo"]').val();
     dataInfo.Diameter = editRow.find('[name="DiameterInfo"]').val();
-    dataInfo.RelationBackground = editRow.find('[name="RelationBackgroundInfo"]').val();
+    dataInfo.RelationBackgroundId = editRow.find('[name="RelationBackgroundInfo"]').val();
     return dataInfo;
 }
 

@@ -40,6 +40,10 @@
     <Compile Remove="Migrations\20230908110320_AirPollutionSourceRelations_20230908_00.Designer.cs" />
     <Compile Remove="Migrations\20230911132259_AirPollutionSourceInfo_20230911_00.cs" />
     <Compile Remove="Migrations\20230911132259_AirPollutionSourceInfo_20230911_00.Designer.cs" />
+    <Compile Remove="Migrations\20231005110919_RelationBackground_20231005_00.cs" />
+    <Compile Remove="Migrations\20231005110919_RelationBackground_20231005_00.Designer.cs" />
+    <Compile Remove="Migrations\20231005111452_RelationBackground_20231005_01.cs" />
+    <Compile Remove="Migrations\20231005111452_RelationBackground_20231005_01.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

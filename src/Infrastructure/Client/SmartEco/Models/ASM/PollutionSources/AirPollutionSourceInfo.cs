@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
 namespace SmartEco.Models.ASM.PollutionSources
@@ -45,6 +46,15 @@ namespace SmartEco.Models.ASM.PollutionSources
 
         [Display(Name = "Отношение к фону")]
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
-        public int? RelationBackground { get; set; }
+        public int? RelationBackgroundId { get; set; }
+        public RelationBackground RelationBackground { get; set; }
+
+        public List<RelationBackground> DropdownBackgrounds { get; set; }
+    }
+
+    public class RelationBackground
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

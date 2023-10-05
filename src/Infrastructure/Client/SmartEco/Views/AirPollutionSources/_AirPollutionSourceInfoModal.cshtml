@@ -11,41 +11,7 @@
     string Role = Context.Session.GetString("Role");
 }
 
-@*<style>
-    dl {
-        width: 100%;
-        overflow: hidden;
-    }
-
-    dt {
-        float: left;
-        width: 50%;
-    }
-
-        dt::after {
-            content: ":";
-        }
-
-    dd {
-        float: left;
-        width: 50%;
-        margin: 0;
-        border-bottom: 1px;
-    }
-</style>*@
-
 <dl class="modal-body">
-    @*@if (Role == "admin" || Role == "moderator" || Role == "ASM")
-    {
-        <dd class="form-group w-100">
-            <div class="d-flex" style="justify-content: space-evenly">
-                <button type="button" class="btn btn-warning edit-btn">@SharedLocalizer["Edit"]</button>
-                <button name="SaveInfoBtn" type="button" class="btn btn-success d-none save-btn">@SharedLocalizer["Save"]</button>
-                <button type="button" class="btn btn-danger d-none cancel-btn">@SharedLocalizer["Reset"]</button>
-            </div>
-        </dd>
-    }*@
-
     <input asp-for="@Model.SourceId" type="text" name="SourceIdInfo" hidden>
 
     <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Coordinate)</dt>
@@ -122,9 +88,21 @@
         <div name="DiameterInvalid" class="invalid-feedback"></div>
     </dd>
 
-    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.RelationBackground)</dt>
-    <dd class="form-group col-sm-6">
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.RelationBackgroundId)</dt>
+    @*<dd class="form-group col-sm-6">
         <input asp-for="@Model.RelationBackground" type="number" class="form-control-plaintext" name="RelationBackgroundInfo" disabled>
         <div name="RelationBackgroundInvalid" class="invalid-feedback"></div>
+    </dd>*@
+
+    <dd class="form-group col-sm-6">
+        <span class="select-text type-select-text"></span>
+        <select name="RelationBackgroundInfo" class="form-control-plaintext d-none" disabled>
+            @foreach (var background in Model.DropdownBackgrounds)
+            {
+                var isCurrentValue = Model.RelationBackgroundId == background.Id;
+
+                <option value="@background.Id" class="text-wrap" selected="@isCurrentValue">@background.Name</option>
+            }
+        </select>
     </dd>
 </dl>

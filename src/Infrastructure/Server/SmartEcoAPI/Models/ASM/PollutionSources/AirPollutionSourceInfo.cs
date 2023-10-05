@@ -15,6 +15,13 @@
         public bool IsSignFlare { get; set; }
         public decimal Hight { get; set; }
         public decimal Diameter { get; set; }
-        public int RelationBackground { get; set; }
+        public int? RelationBackgroundId { get; set; }
+        public RelationBackground RelationBackground { get; set; }
+    }
+
+    public class RelationBackground
+    {
+        public int Id { get; set; }
+        public string Name { get; set; }
     }
 }

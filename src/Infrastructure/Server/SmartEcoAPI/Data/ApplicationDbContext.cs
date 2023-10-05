@@ -78,6 +78,7 @@ namespace SmartEcoAPI.Data
         public DbSet<AirPollutionSourceType> AirPollutionSourceType { get; set; }
         public DbSet<AirPollutionSource> AirPollutionSource { get; set; }
         public DbSet<AirPollutionSourceInfo> AirPollutionSourceInfo { get; set; }
+        public DbSet<RelationBackground> RelationBackground { get; set; }
         public DbSet<AirPollutionSourceIndSite> AirPollutionSourceIndSite { get; set; }
         public DbSet<AirPollutionSourceWorkshop> AirPollutionSourceWorkshop { get; set; }
         public DbSet<AirPollutionSourceArea> AirPollutionSourceArea { get; set; }
@@ -97,6 +98,7 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<AirPollutionSourceType>().ToTable(nameof(AirPollutionSourceType), _schemaAsm);
             modelBuilder.Entity<AirPollutionSource>().ToTable(nameof(AirPollutionSource), _schemaAsm);
             modelBuilder.Entity<AirPollutionSourceInfo>().ToTable(nameof(AirPollutionSourceInfo), _schemaAsm);
+            modelBuilder.Entity<RelationBackground>().ToTable(nameof(RelationBackground), _schemaAsm);
             modelBuilder.Entity<AirPollutionSourceIndSite>().ToTable(nameof(AirPollutionSourceIndSite), _schemaAsm);
             modelBuilder.Entity<AirPollutionSourceWorkshop>().ToTable(nameof(AirPollutionSourceWorkshop), _schemaAsm);
             modelBuilder.Entity<AirPollutionSourceArea>().ToTable(nameof(AirPollutionSourceArea), _schemaAsm);

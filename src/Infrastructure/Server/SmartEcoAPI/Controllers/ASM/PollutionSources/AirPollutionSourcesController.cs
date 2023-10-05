@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
 using System.Linq.Expressions;
@@ -202,6 +203,12 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
             var response = new AirPollutinSourceLastNumberResponse(maxNumber, count);
             return response;
         }
+
+        [HttpGet("[action]")]
+        public async Task<ActionResult<IEnumerable<RelationBackground>>> GetRelationBackgrounds()
+            => await _context.RelationBackground
+                .Where(r => true)
+                .ToListAsync();
 
         private StatusCodeResult CheckSourceNumber(AirPollutionSource airPollutionSource)
         {
