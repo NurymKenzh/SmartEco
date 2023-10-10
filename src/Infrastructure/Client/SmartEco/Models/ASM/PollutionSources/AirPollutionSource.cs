@@ -37,6 +37,8 @@ namespace SmartEco.Models.ASM.PollutionSources
         [Display(Name = "Параметры")]
         public AirPollutionSourceInfo SourceInfo { get; set; }
 
+        public List<OperationMode> OperationModes { get; set; }
+
         [Display(Name = "Подразделение")]
         public SourceRelations Relation { get { return GetSourceRelation(); } }
 

@@ -1,0 +1,99 @@
+﻿@model IEnumerable<OperationMode>
+@using SmartEco.Models.ASM.PollutionSources
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    string Role = Context.Session.GetString("Role");
+    int number = 0;
+}
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().WorkedTime)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().GasAirMixture)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <p class="pt-sm-2">@(++number)</p>
+                    <input asp-for="@item.Id" type="number" name="IdMode" hidden>
+                </td>
+                <td>
+                    <input asp-for="@item.Name" type="text" class="form-control-plaintext" name="NameMode" disabled>
+                    <div class="invalid-feedback name-invalid"></div>
+                </td>
+                <td>
+                    <input asp-for="@item.WorkedTime" type="number" class="form-control-plaintext" name="WorkedTimeMode" disabled>
+                    <div class="invalid-feedback workedtime-invalid"></div>
+                </td>
+                <td>
+                    <button type="button" class="btn btn-link btn-disabled edit-info-btn" data-toggle="modal" data-target="#ShowGasAirMixture_@item.Id" disabled>Редактировать</button>
+
+                    <div id="ShowGasAirMixture_@item.Id" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+                            <div class="modal-content">
+                                @await Html.PartialAsync("~/Views/AirPollutionSources/_GasAirMixtureModal.cshtml", item.GasAirMixture)
+                            </div>
+                        </div>
+                    </div>
+                </td>
+                @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+                {
+                    <td class="d-flex" style="justify-content: space-evenly">
+                        <button type="button" title="Выбросы" class="btn btn-link text-info emissions-btn">
+                            <i class="fa-solid fa-caret-down fa-2xl"></i>
+                        </button>
+                        <button type="button" title="@SharedLocalizer["Edit"]" class="btn btn-link text-warning edit-mode-btn" onclick="EditModeClick($(this));">
+                            <i class="fa-solid fa-pen-to-square fa-lg"></i>
+                        </button>
+                        <button name="SaveModeBtn" type="button" title="@SharedLocalizer["Save"]" class="btn btn-link text-success d-none save-mode-btn" onclick="SaveModeClick($(this));">
+                            <i class="fa-solid fa-check fa-lg"></i>
+                        </button>
+                        <button type="button" title="@SharedLocalizer["Reset"]" class="btn btn-link text-danger d-none cancel-mode-btn" onclick="CancelModeClick($(this));">
+                            <i class="fa-solid fa-xmark fa-xl"></i>
+                        </button>
+                        <button type="button" title="@SharedLocalizer["Delete"]" class="btn btn-link text-danger" data-toggle="modal" data-target="#DeleteOperationMode_@item.Id">
+                            <i class="fa-solid fa-trash fa-lg"></i>
+                        </button>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Role == "admin" || Role == "moderator" || Role == "ASM")
+{
+    <button type="button" name="AddOperationModeBtn" class="btn btn-success d-block" onclick="AddModeClick($(this));">Добавить</button>
+}
+
+@foreach (var item in Model)
+{
+    <div id="DeleteOperationMode_@item.Id" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/AirPollutionSources/_DeleteOperationModeModal.cshtml", item)
+            </div>
+        </div>
+    </div>
+}

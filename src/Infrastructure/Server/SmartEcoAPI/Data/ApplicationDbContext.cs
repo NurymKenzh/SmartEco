@@ -82,6 +82,9 @@ namespace SmartEcoAPI.Data
         public DbSet<AirPollutionSourceIndSite> AirPollutionSourceIndSite { get; set; }
         public DbSet<AirPollutionSourceWorkshop> AirPollutionSourceWorkshop { get; set; }
         public DbSet<AirPollutionSourceArea> AirPollutionSourceArea { get; set; }
+
+        public DbSet<OperationMode> OperationMode { get; set; }
+        public DbSet<GasAirMixture> GasAirMixture { get; set; }
         #endregion
 
         private void SetSchemaAsm(ModelBuilder modelBuilder)
@@ -102,6 +105,9 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<AirPollutionSourceIndSite>().ToTable(nameof(AirPollutionSourceIndSite), _schemaAsm);
             modelBuilder.Entity<AirPollutionSourceWorkshop>().ToTable(nameof(AirPollutionSourceWorkshop), _schemaAsm);
             modelBuilder.Entity<AirPollutionSourceArea>().ToTable(nameof(AirPollutionSourceArea), _schemaAsm);
+
+            modelBuilder.Entity<OperationMode>().ToTable(nameof(OperationMode), _schemaAsm);
+            modelBuilder.Entity<GasAirMixture>().ToTable(nameof(GasAirMixture), _schemaAsm);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)
@@ -120,6 +126,9 @@ namespace SmartEcoAPI.Data
 
             modelBuilder.Entity<AirPollutionSourceInfo>()
                 .HasKey(a => a.SourceId);
+
+            modelBuilder.Entity<GasAirMixture>()
+                .HasKey(a => a.OperationModeId);
 
             //AirPollutionSource Relations
             modelBuilder.Entity<AirPollutionSourceIndSite>()

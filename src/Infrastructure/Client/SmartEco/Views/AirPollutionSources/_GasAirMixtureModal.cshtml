@@ -1,0 +1,64 @@
+﻿@model GasAirMixture
+@using SmartEco.Models.ASM.PollutionSources
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    string Role = Context.Session.GetString("Role");
+}
+
+<dl class="modal-body">
+    <input asp-for="@Model.OperationModeId" type="text" name="OperationModeIdMixture" hidden>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Temperature)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Temperature" type="text" class="form-control-plaintext" name="TemperatureMixture" disabled>
+        <div name="TemperatureInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Pressure)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Pressure" type="text" class="form-control-plaintext" name="PressureMixture" disabled>
+        <div name="PressureInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Speed)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Speed" type="text" class="form-control-plaintext" name="SpeedMixture" disabled>
+        <div name="SpeedInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Volume)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Volume" type="text" class="form-control-plaintext" name="VolumeMixture" disabled>
+        <div name="VolumeInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Humidity)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Humidity" type="text" class="form-control-plaintext" name="HumidityMixture" disabled>
+        <div name="HumidityInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Density)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Density" type="text" class="form-control-plaintext" name="DensityMixture" disabled>
+        <div name="DensityInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.ThermalPower)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.ThermalPower" type="text" class="form-control-plaintext" name="ThermalPowerMixture" disabled>
+        <div name="ThermalPowerInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.PartRadiation)</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.PartRadiation" type="text" class="form-control-plaintext" name="PartRadiationMixture" disabled>
+        <div name="PartRadiationInvalid" class="invalid-feedback"></div>
+    </dd>
+</dl>

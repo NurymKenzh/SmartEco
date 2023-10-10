@@ -57,3 +57,26 @@ var SourceArea = class {
         this.AreaId = areaId;
     }
 };
+
+//Operation modes and Emissions
+
+var OperationMode = class {
+    Id;
+    Name;
+    WorkedTime;
+    SourceId;
+
+    GasAirMixture
+};
+
+var GasAirMixture = class {
+    OperationModeId;
+    Temperature;
+    Pressure;
+    Speed;
+    Volume;
+    Humidity;
+    Density;
+    ThermalPower;
+    PartRadiation;
+}

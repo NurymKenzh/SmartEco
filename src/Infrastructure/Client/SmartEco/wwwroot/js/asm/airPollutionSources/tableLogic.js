@@ -8,6 +8,11 @@ $(function () {
 
 //#region Row events
 
+$('.operation-modes-btn').click(function () {
+    $(this).toggleClass('down');
+    $(this).parents('tr').next('.operation-modes-row').toggle('slow');
+});
+
 //Add new source
 $('#AddAirPollutionSource').click(function (e) {
     var pageSize = $('[name="PageSize"]').val();
@@ -317,6 +322,10 @@ function EditableButtonsShow(btn, editRow, isEditBtnClick) {
     var saveBtn = editRow.find('.save-btn');
     var cancelBtn = editRow.find('.cancel-btn');
 
+    ShowHideButtons(editRow, editBtn, saveBtn, cancelBtn, isEditBtnClick);
+}
+
+function ShowHideButtons(editRow, editBtn, saveBtn, cancelBtn, isEditBtnClick) {
     if (isEditBtnClick) {
         editBtn.removeClass('d-inline-block').addClass('d-none');
         saveBtn.removeClass('d-none').addClass('d-inline-block');

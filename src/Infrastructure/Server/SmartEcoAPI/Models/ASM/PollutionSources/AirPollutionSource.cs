@@ -1,4 +1,5 @@
-﻿using System.ComponentModel.DataAnnotations.Schema;
+﻿using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace SmartEcoAPI.Models.ASM.PollutionSources
 {
@@ -18,6 +19,8 @@ namespace SmartEcoAPI.Models.ASM.PollutionSources
         public AirPollutionSourceArea SourceArea { get; set; }
 
         public AirPollutionSourceInfo SourceInfo { get; set; }
+
+        public List<OperationMode> OperationModes { get; set; }
 
         [NotMapped]
         internal SourceRelations Relation { get { return GetSourceRelation(); } }

@@ -41,6 +41,8 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
                 .Include(a => a.SourceIndSite.IndSiteEnterprise.IndSiteBorder)
                 .Include(a => a.SourceWorkshop.Workshop.IndSiteEnterprise.IndSiteBorder)
                 .Include(a => a.SourceArea.Area.Workshop.IndSiteEnterprise.IndSiteBorder)
+                .Include(a => a.OperationModes)
+                    .ThenInclude(mode => mode.GasAirMixture)
                 .Where(m => true);
 
             if (request?.EnterpriseId != null)

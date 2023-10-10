@@ -90,7 +90,7 @@
         @if (Role == "admin" || Role == "moderator" || Role == "ASM")
         {
             <td class="d-flex" style="justify-content: space-evenly">
-                <button type="button" title="Выбросы" class="btn btn-link text-info">
+                <button type="button" title="Режимы работы" class="btn btn-link text-info operation-modes-btn">
                     <i class="fa-solid fa-caret-down fa-2xl"></i>
                 </button>
                 <button type="button" title="@SharedLocalizer["Edit"]" class="btn btn-link text-warning edit-btn">
@@ -110,5 +110,19 @@
                 </button>
             </td>
         }
+    </tr>
+    <tr class="operation-modes-row">
+        <td colspan="9" class="bg-light">
+            <ul class="nav nav-tabs">
+                <li class="nav-item">
+                    <a class="nav-link active show" data-toggle="tab" href="#OperationModes_@item.Id">Режимы работы</a>
+                </li>
+            </ul>
+            <div class="tab-content p-3">
+                <div class="tab-pane fade active show" id="OperationModes_@item.Id">
+                    @await Html.PartialAsync("~/Views/AirPollutionSources/_OperationModesTable.cshtml", item.OperationModes)
+                </div>
+            </div>
+        </td>
     </tr>
 }

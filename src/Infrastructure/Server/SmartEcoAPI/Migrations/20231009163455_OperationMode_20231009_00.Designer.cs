@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -10,9 +11,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231009163455_OperationMode_20231009_00")]
+    partial class OperationMode_20231009_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -300,31 +302,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasIndex("WorkshopId");
 
                     b.ToTable("AirPollutionSourceWorkshop","asm");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.GasAirMixture", b =>
-                {
-                    b.Property<int>("OperationModeId");
-
-                    b.Property<double>("Density");
-
-                    b.Property<double>("Humidity");
-
-                    b.Property<double>("PartRadiation");
-
-                    b.Property<double>("Pressure");
-
-                    b.Property<double>("Speed");
-
-                    b.Property<double>("Temperature");
-
-                    b.Property<double>("ThermalPower");
-
-                    b.Property<double>("Volume");
-
-                    b.HasKey("OperationModeId");
-
-                    b.ToTable("GasAirMixture","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.OperationMode", b =>
@@ -1522,14 +1499,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.ASM.Workshop", "Workshop")
                         .WithMany()
                         .HasForeignKey("WorkshopId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.GasAirMixture", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.ASM.PollutionSources.OperationMode", "OperationMode")
-                        .WithOne("GasAirMixture")
-                        .HasForeignKey("SmartEcoAPI.Models.ASM.PollutionSources.GasAirMixture", "OperationModeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
