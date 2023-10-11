@@ -85,6 +85,8 @@ namespace SmartEcoAPI.Data
 
         public DbSet<OperationMode> OperationMode { get; set; }
         public DbSet<GasAirMixture> GasAirMixture { get; set; }
+        public DbSet<HazardLevel> HazardLevel { get; set; }
+        public DbSet<AirPollutant> AirPollutant { get; set; }
         #endregion
 
         private void SetSchemaAsm(ModelBuilder modelBuilder)
@@ -108,6 +110,8 @@ namespace SmartEcoAPI.Data
 
             modelBuilder.Entity<OperationMode>().ToTable(nameof(OperationMode), _schemaAsm);
             modelBuilder.Entity<GasAirMixture>().ToTable(nameof(GasAirMixture), _schemaAsm);
+            modelBuilder.Entity<HazardLevel>().ToTable(nameof(HazardLevel), _schemaAsm);
+            modelBuilder.Entity<AirPollutant>().ToTable(nameof(AirPollutant), _schemaAsm);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)
@@ -127,9 +131,6 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<AirPollutionSourceInfo>()
                 .HasKey(a => a.SourceId);
 
-            modelBuilder.Entity<GasAirMixture>()
-                .HasKey(a => a.OperationModeId);
-
             //AirPollutionSource Relations
             modelBuilder.Entity<AirPollutionSourceIndSite>()
                 .HasKey(a => a.AirPollutionSourceId);
@@ -139,6 +140,13 @@ namespace SmartEcoAPI.Data
 
             modelBuilder.Entity<AirPollutionSourceArea>()
                 .HasKey(a => a.AirPollutionSourceId);
+
+            //Operation modes and Emissions
+            modelBuilder.Entity<GasAirMixture>()
+                .HasKey(mode => mode.OperationModeId);
+
+            modelBuilder.Entity<HazardLevel>()
+                .HasKey(lvl => lvl.Code);
         }
     }
 }

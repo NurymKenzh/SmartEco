@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -10,9 +11,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231010171910_HazardLevel_20231010_00")]
+    partial class HazardLevel_20231010_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -190,42 +192,6 @@ namespace SmartEcoAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("KatoEnterprise","asm");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutant", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("AggregationState");
-
-                    b.Property<decimal?>("Asel");
-
-                    b.Property<string>("Cas");
-
-                    b.Property<int>("Code");
-
-                    b.Property<string>("Formula");
-
-                    b.Property<int?>("HazardLevelId");
-
-                    b.Property<string>("MeasuredUnit");
-
-                    b.Property<decimal?>("MpcAvgDaily");
-
-                    b.Property<decimal?>("MpcMaxSingle");
-
-                    b.Property<decimal?>("MpcMaxSingle2");
-
-                    b.Property<string>("Name");
-
-                    b.Property<string>("SummationGroup");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("HazardLevelId");
-
-                    b.ToTable("AirPollutant","asm");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSource", b =>
@@ -1512,13 +1478,6 @@ namespace SmartEcoAPI.Migrations
                         .WithOne("Kato")
                         .HasForeignKey("SmartEcoAPI.Models.ASM.KatoEnterprise", "EnterpriseId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutant", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.ASM.PollutionSources.HazardLevel", "HazardLevel")
-                        .WithMany()
-                        .HasForeignKey("HazardLevelId");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.PollutionSources.AirPollutionSource", b =>
