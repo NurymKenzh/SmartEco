@@ -62,3 +62,21 @@ dd {
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
     }
+
+/*Air emissions show button*/
+.emissions-row {
+    display: none;
+}
+
+.emissions-btn {
+    -moz-transition: all .5s linear;
+    -webkit-transition: all .5s linear;
+    transition: all .5s linear;
+}
+
+    .emissions-btn.down {
+        -ms-transform: rotate(180deg);
+        -moz-transform: rotate(180deg);
+        -webkit-transform: rotate(180deg);
+        transform: rotate(180deg);
+    }

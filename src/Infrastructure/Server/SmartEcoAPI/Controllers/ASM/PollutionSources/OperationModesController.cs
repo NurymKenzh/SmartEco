@@ -31,6 +31,8 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
         {
             var operationModes = _context.OperationMode
                 .Include(mode => mode.GasAirMixture)
+                .Include(mode => mode.Emissions)
+                    .ThenInclude(e => e.Pollutant)
                 .Where(m => true);
 
             if (request?.SourceId != null)

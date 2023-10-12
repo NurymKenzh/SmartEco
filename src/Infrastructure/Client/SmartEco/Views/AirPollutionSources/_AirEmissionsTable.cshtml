@@ -1,0 +1,115 @@
+﻿@model IEnumerable<AirEmission>
+@using SmartEco.Models.ASM.PollutionSources
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    string Role = Context.Session.GetString("Role");
+    int number = 0;
+}
+
+<h4 class="text-light">Выбросы ИЗА</h4>
+
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Id)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Pollutant)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().MaxGramSec)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().MaxMilligramMeter)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().GrossTonYear)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().SettlingCoef)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().EnteredDate)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    <p class="pt-sm-2">@(++number)</p>
+                    <input asp-for="@item.Id" type="number" name="IdEmission" hidden>
+                </td>
+                <td width="40%">
+                    <input asp-for="@item.PollutantId" type="number" class="form-control-plaintext" name="PollutantEmission" disabled hidden>
+
+                    <input list="AirPollutantsDataList_@item.Id" onkeyup="SetPollutions($(this));" onchange="SetPollutionValue($(this));" value="@item.Pollutant.CodeName" class="form-control-plaintext w-100" disabled>
+                    <div class="invalid-feedback pollutant-invalid"></div>
+                    <datalist id="AirPollutantsDataList_@item.Id"></datalist>
+                </td>
+                <td>
+                    <input asp-for="@item.MaxGramSec" type="text" class="form-control-plaintext" name="MaxGramSecEmission" disabled>
+                    <div class="invalid-feedback maxgramsec-invalid"></div>
+                </td>
+                <td>
+                    <input asp-for="@item.MaxMilligramMeter" type="text" class="form-control-plaintext" name="MaxMilligramMeterEmission" disabled>
+                    <div class="invalid-feedback maxmilligrammeter-invalid"></div>
+                </td>
+                <td>
+                    <input asp-for="@item.GrossTonYear" type="text" class="form-control-plaintext" name="GrossTonYearEmission" disabled>
+                    <div class="invalid-feedback grosstonyear-invalid"></div>
+                </td>
+                <td>
+                    <input asp-for="@item.SettlingCoef" type="text" class="form-control-plaintext" name="SettlingCoefEmission" disabled>
+                    <div class="invalid-feedback settlingcoef-invalid"></div>
+                </td>
+                <td>
+                    <p class="pt-sm-2">@item.EnteredDate</p>
+                    <input asp-for="@item.EnteredDate" type="text" class="form-control-plaintext" name="EnteredDateEmission" disabled hidden>
+                </td>
+                @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+                {
+                    <td class="d-flex" style="justify-content: space-evenly">
+                        <button type="button" title="@SharedLocalizer["Edit"]" class="btn btn-link text-warning edit-emission-btn" onclick="EditEmissionClick($(this));">
+                            <i class="fa-solid fa-pen-to-square fa-lg"></i>
+                        </button>
+                        <button type="button" title="@SharedLocalizer["Save"]" class="btn btn-link text-success d-none save-emission-btn" onclick="SaveEmissionClick($(this));">
+                            <i class="fa-solid fa-check fa-lg"></i>
+                        </button>
+                        <button type="button" title="@SharedLocalizer["Reset"]" class="btn btn-link text-danger d-none cancel-emission-btn" onclick="CancelEmissionClick($(this));">
+                            <i class="fa-solid fa-xmark fa-xl"></i>
+                        </button>
+                        <button type="button" title="@SharedLocalizer["Delete"]" class="btn btn-link text-danger" data-toggle="modal" data-target="#DeleteAirEmission_@item.Id">
+                            <i class="fa-solid fa-trash fa-lg"></i>
+                        </button>
+                    </td>
+                }
+            </tr>
+        }
+    </tbody>
+</table>
+
+@if (Role == "admin" || Role == "moderator" || Role == "ASM")
+{
+    <button type="button" class="btn btn-success d-block" onclick="AddEmissionClick($(this));">Добавить</button>
+}
+
+@foreach (var item in Model)
+{
+    <div id="DeleteAirEmission_@item.Id" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+            <div class="modal-content">
+                @await Html.PartialAsync("~/Views/AirPollutionSources/_DeleteAirEmissionModal.cshtml", item)
+            </div>
+        </div>
+    </div>
+}

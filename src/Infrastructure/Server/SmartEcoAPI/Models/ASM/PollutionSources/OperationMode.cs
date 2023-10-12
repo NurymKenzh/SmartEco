@@ -1,4 +1,6 @@
-﻿namespace SmartEcoAPI.Models.ASM.PollutionSources
+﻿using System.Collections.Generic;
+
+namespace SmartEcoAPI.Models.ASM.PollutionSources
 {
     public class OperationMode
     {
@@ -10,5 +12,7 @@
         public AirPollutionSource Source { get; set; }
 
         public GasAirMixture GasAirMixture { get; set; }
+
+        public List<AirEmission> Emissions { get; set; }
     }
 }

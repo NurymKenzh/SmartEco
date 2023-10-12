@@ -66,7 +66,7 @@
                         <button type="button" title="@SharedLocalizer["Edit"]" class="btn btn-link text-warning edit-mode-btn" onclick="EditModeClick($(this));">
                             <i class="fa-solid fa-pen-to-square fa-lg"></i>
                         </button>
-                        <button name="SaveModeBtn" type="button" title="@SharedLocalizer["Save"]" class="btn btn-link text-success d-none save-mode-btn" onclick="SaveModeClick($(this));">
+                        <button type="button" title="@SharedLocalizer["Save"]" class="btn btn-link text-success d-none save-mode-btn" onclick="SaveModeClick($(this));">
                             <i class="fa-solid fa-check fa-lg"></i>
                         </button>
                         <button type="button" title="@SharedLocalizer["Reset"]" class="btn btn-link text-danger d-none cancel-mode-btn" onclick="CancelModeClick($(this));">
@@ -77,6 +77,13 @@
                         </button>
                     </td>
                 }
+            </tr>
+            <tr class="emissions-row">
+                <td colspan="9" class="bg-secondary">
+                    <div id="AirEmissions_@item.Id">
+                        @await Html.PartialAsync("~/Views/AirPollutionSources/_AirEmissionsTable.cshtml", item.Emissions)
+                    </div>
+                </td>
             </tr>
         }
     </tbody>

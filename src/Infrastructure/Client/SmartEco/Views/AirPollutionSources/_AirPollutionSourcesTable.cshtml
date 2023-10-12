@@ -115,6 +115,13 @@
     <div id="ModeCreateReq" data-url="@Url.Action("Create", "OperationModes")"></div>
     <div id="ModeEditReq" data-url="@Url.Action("Edit", "OperationModes")"></div>
     <div id="ModeDeleteReq" data-url="@Url.Action("Delete", "OperationModes")"></div>
+
+    <div id="EmissionCreateReq" data-url="@Url.Action("Create", "AirEmissions")"></div>
+    <div id="EmissionEditReq" data-url="@Url.Action("Edit", "AirEmissions")"></div>
+    <div id="EmissionDeleteReq" data-url="@Url.Action("Delete", "AirEmissions")"></div>
+
+    <div id="EmissionGetPollutantsReq" data-url="@Url.Action("GetPollutants", "AirPollutants")"></div>
+    <div id="EmissionGetPollutantIdReq" data-url="@Url.Action("GetPollutantId", "AirPollutants")"></div>
 </div>
 
 <script src="~/js/asm/airPollutionSources/initializeObjects.js"></script>
@@ -123,3 +130,4 @@
 <script src="~/js/asm/airPollutionSources/modalWindowNesting.js"></script>
 
 <script src="~/js/asm/airPollutionSources/tableModesLogic.js"></script>
+<script src="~/js/asm/airPollutionSources/tableEmissionLogic.js"></script>

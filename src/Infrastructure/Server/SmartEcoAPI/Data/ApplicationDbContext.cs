@@ -87,6 +87,7 @@ namespace SmartEcoAPI.Data
         public DbSet<GasAirMixture> GasAirMixture { get; set; }
         public DbSet<HazardLevel> HazardLevel { get; set; }
         public DbSet<AirPollutant> AirPollutant { get; set; }
+        public DbSet<AirEmission> AirEmission { get; set; }
         #endregion
 
         private void SetSchemaAsm(ModelBuilder modelBuilder)
@@ -112,6 +113,7 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<GasAirMixture>().ToTable(nameof(GasAirMixture), _schemaAsm);
             modelBuilder.Entity<HazardLevel>().ToTable(nameof(HazardLevel), _schemaAsm);
             modelBuilder.Entity<AirPollutant>().ToTable(nameof(AirPollutant), _schemaAsm);
+            modelBuilder.Entity<AirEmission>().ToTable(nameof(AirEmission), _schemaAsm);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)

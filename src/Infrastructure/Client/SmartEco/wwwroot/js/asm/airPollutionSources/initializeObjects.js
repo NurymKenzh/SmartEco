@@ -80,3 +80,14 @@ var GasAirMixture = class {
     ThermalPower;
     PartRadiation;
 }
+
+var Emission = class {
+    Id;
+    PollutantId;
+    OperationModeId;
+    MaxGramSec;
+    MaxMilligramMeter;
+    GrossTonYear;
+    SettlingCoef;
+    EnteredDate;
+}

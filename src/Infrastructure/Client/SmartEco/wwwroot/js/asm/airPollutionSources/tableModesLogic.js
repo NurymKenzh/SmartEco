@@ -1,6 +1,11 @@
 ﻿//#region Row events
 
 //Add new mode
+$('.emissions-btn').click(function () {
+    $(this).toggleClass('down');
+    $(this).parents('tr').next('.emissions-row').toggle('slow');
+});
+
 function AddModeClick(btn) {
     var sourceId = btn.closest('tr').prev().find('[name="IdSource"]').val();
     $.ajax({
@@ -93,10 +98,6 @@ function DeleteModeClick(btn) {
 };
 
 //#endregion Row events
-
-function GetEditRow(btn) {
-    return btn.closest('tr').length > 0 ? btn.closest('tr') : btn.closest('dl');
-}
 
 function EditableModeButtonsShow(btn, editRow, isEditBtnClick) {
     var editBtn = editRow.find('.edit-mode-btn');

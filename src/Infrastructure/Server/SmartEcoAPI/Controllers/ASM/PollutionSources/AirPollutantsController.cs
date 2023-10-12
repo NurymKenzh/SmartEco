@@ -34,52 +34,14 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
 
         // GET: api/AirPollutants
         [HttpGet]
-        public async Task<ActionResult<AirPollutantsResponse>> GetAirPollutants([FromBody] AirPollutantsRequest request)
-        {
-            var airPollutants = _context.AirPollutant
-                .Where(m => true);
+        public async Task<ActionResult<IEnumerable<AirPollutant>>> GetAirPollutants()
+            => await _context.AirPollutant.ToListAsync();
 
-            if (!string.IsNullOrEmpty(request.Name))
-            {
-                airPollutants = airPollutants.Where(m => m.Name.ToLower().Contains(request.Name.ToLower()));
-            }
-
-            switch (request.SortOrder)
-            {
-                case "Name":
-                    airPollutants = airPollutants.OrderBy(m => m.Name);
-                    break;
-                case "NameDesc":
-                    airPollutants = airPollutants.OrderByDescending(m => m.Name);
-                    break;
-                default:
-                    airPollutants = airPollutants.OrderBy(m => m.Id);
-                    break;
-            }
-
-            var count = await airPollutants.CountAsync();
-            if (request.PageSize != null && request.PageNumber != null)
-            {
-                airPollutants = airPollutants.Skip(((int)request.PageNumber - 1) * (int)request.PageSize).Take((int)request.PageSize);
-            }
-            var response = new AirPollutantsResponse(await airPollutants.ToListAsync(), count);
-
-            return response;
-        }
-
-        // GET: api/AirPollutants/5
-        [HttpGet("{id}")]
-        public async Task<ActionResult<AirPollutant>> GetAirPollutant(int id)
-        {
-            var airPollutant = await _context.AirPollutant.FindAsync(id);
-
-            if (airPollutant == null)
-            {
-                return NotFound();
-            }
-
-            return airPollutant;
-        }
+        [HttpGet("[action]")]
+        public async Task<ActionResult<AirPollutant>> GetFirst()
+            => await _context.AirPollutant
+            .OrderBy(p => p.Id)
+            .FirstAsync();
 
         // PUT: api/AirPollutants/5
         [HttpPut("{id}")]

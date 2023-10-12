@@ -44,7 +44,6 @@ namespace SmartEco.Controllers.ASM.PollutionSources
             {
                 //Building a new item
                 var operationMode = CreateModeObject(sourceId);
-                operationMode.GasAirMixture = new GasAirMixture();
 
                 //Create new item
                 var request = _smartEcoApi.CreateRequest(HttpMethod.Post, _urlOperationModes, operationMode);
@@ -100,7 +99,8 @@ namespace SmartEco.Controllers.ASM.PollutionSources
             {
                 Name = "Режим работы",
                 WorkedTime = 0,
-                SourceId = sourceId
+                SourceId = sourceId,
+                GasAirMixture = new GasAirMixture()
             };
     }
 }

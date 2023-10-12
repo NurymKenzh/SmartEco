@@ -20,7 +20,7 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
 {
     [Route("api/[controller]")]
     [ApiController]
-    [Authorize(Roles = "admin,moderator,ASM")]
+    //[Authorize(Roles = "admin,moderator,ASM")]
     [ApiExplorerSettings(IgnoreApi = true)]
     public class AirPollutionSourcesController : ControllerBase
     {
@@ -43,6 +43,9 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
                 .Include(a => a.SourceArea.Area.Workshop.IndSiteEnterprise.IndSiteBorder)
                 .Include(a => a.OperationModes)
                     .ThenInclude(mode => mode.GasAirMixture)
+                .Include(a => a.OperationModes)
+                    .ThenInclude(mode => mode.Emissions)
+                        .ThenInclude(e => e.Pollutant)
                 .Where(m => true);
 
             if (request?.EnterpriseId != null)
