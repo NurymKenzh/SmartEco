@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Xml.Linq;
 
@@ -38,10 +39,12 @@ namespace SmartEco.Models.ASM.PollutionSources
 
         [Display(Name = "Высота")]
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [Range(0, double.PositiveInfinity, ErrorMessage = "Значение должно быть больше {1}")]
         public decimal? Hight { get; set; }
 
         [Display(Name = "Диаметр")]
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [Range(0, double.PositiveInfinity, ErrorMessage = "Значение должно быть больше {1}")]
         public decimal? Diameter { get; set; }
 
         [Display(Name = "Отношение к фону")]

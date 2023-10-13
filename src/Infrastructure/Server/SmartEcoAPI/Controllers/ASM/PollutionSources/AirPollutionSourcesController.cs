@@ -198,12 +198,14 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
             return airPollutionSource;
         }
 
-        [HttpGet("[action]/{enterpriseId}")]
-        public async Task<ActionResult<AirPollutinSourceLastNumberResponse>> GetLastNumber(int enterpriseId)
+        [HttpGet("[action]")]
+        public async Task<ActionResult<AirPollutinSourceLastNumberResponse>> GetLastNumber(LastNumberRequest request)
         {
-            var airPollutionSources = GetSourcesByEnterprise(enterpriseId);
-            var maxNumber = await airPollutionSources.DefaultIfEmpty().MaxAsync(a => Convert.ToInt32(a.Number));
+            var airPollutionSources = GetSourcesByEnterprise(request.EnterpriseId);
             var count = await airPollutionSources.CountAsync();
+            var maxNumber = await airPollutionSources
+                .Where(a => a.Type.IsOrganized == request.IsOrganized)
+                .DefaultIfEmpty().MaxAsync(a => Convert.ToInt32(a.Number));
 
             var response = new AirPollutinSourceLastNumberResponse(maxNumber, count);
             return response;
@@ -249,6 +251,7 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
 
         private IQueryable<AirPollutionSource> GetSourcesByEnterprise(int enterpriseId)
             => _context.AirPollutionSource
+                .Include(a => a.Type)
                 .Where(a => a.SourceIndSite.IndSiteEnterprise.EnterpriseId == enterpriseId
                 || a.SourceWorkshop.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId
                 || a.SourceArea.Area.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId);

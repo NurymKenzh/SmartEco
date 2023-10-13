@@ -7,4 +7,10 @@
         public string Relation { get; set; }
         public int? EnterpriseId { get; set; }
     }
+
+    public class LastNumberRequest
+    {
+        public int EnterpriseId { get; set; }
+        public bool IsOrganized { get; set; }
+    }
 }

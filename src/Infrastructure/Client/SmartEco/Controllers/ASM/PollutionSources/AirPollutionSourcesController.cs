@@ -80,11 +80,11 @@ namespace SmartEco.Controllers.ASM.PollutionSources
             try
             {
                 var viewModel = new AirPollutionSourceListViewModel();
-                var sourceLastNumberResponse = await GetLastNumber(enterpriseId);
 
                 //Building a new item
                 var sourceTypes = await GetAirPollutionSourceTypes();
                 var indSiteEnterprises = await GetIndSiteEnterprises(enterpriseId);
+                var sourceLastNumberResponse = await GetLastNumber(enterpriseId, sourceTypes.First().IsOrganized);
 
                 var airPollutionSource = CreateSourceObject(sourceLastNumberResponse.Number, sourceTypes.First());
                 airPollutionSource.SourceInfo = CreateSourceInfoObject();
@@ -146,13 +146,13 @@ namespace SmartEco.Controllers.ASM.PollutionSources
 
         // POST: AirPollutionSources/Copy
         [HttpPost]
-        public async Task<IActionResult> Copy(int enterpriseId, int pageSize, AirPollutionSource airPollutionSource)
+        public async Task<IActionResult> Copy(int enterpriseId, int pageSize, bool isOrganized, AirPollutionSource airPollutionSource)
         {
             if (ModelState.IsValid)
             {
                 try
                 {
-                    var sourceLastNumberResponse = await GetLastNumber(enterpriseId);
+                    var sourceLastNumberResponse = await GetLastNumber(enterpriseId, isOrganized);
 
                     //Create new item
                     airPollutionSource = ChangeSourceForCopy(airPollutionSource, sourceLastNumberResponse.Number);
@@ -202,11 +202,16 @@ namespace SmartEco.Controllers.ASM.PollutionSources
             return BadRequest(ModelState);
         }
 
-        private async Task<AirPollutinSourceLastNumberResponse> GetLastNumber(int? enterpriseId)
+        private async Task<AirPollutinSourceLastNumberResponse> GetLastNumber(int? enterpriseId, bool isOrganized = false)
         {
             //Get last number for create new item
             //Get count items for calculate total pages
-            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/GetLastNumber/{enterpriseId}");
+            var body = new LastNumberRequest()
+            {
+                EnterpriseId = (int)enterpriseId,
+                IsOrganized = isOrganized
+            };
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/GetLastNumber", body);
             var response = await _smartEcoApi.Client.SendAsync(request);
             response.EnsureSuccessStatusCode();
             return await response.Content.ReadAsAsync<AirPollutinSourceLastNumberResponse>();

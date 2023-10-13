@@ -123,6 +123,10 @@ function ChangeCoordinates() {
     if (inputLongCoordinate.val() && inputLatCoordinate.val()) {
         var coordinates = [parseFloat(inputLongCoordinate.val()), parseFloat(inputLatCoordinate.val())];
 
+        //Set coordinates to inputs
+        inputCoordinates.val(coordinates);
+
+        //Change coords on map
         coordinates = ol.proj.transform(coordinates, 'EPSG:4326', 'EPSG:3857');
         var point = new ol.geom.Point(
             coordinates

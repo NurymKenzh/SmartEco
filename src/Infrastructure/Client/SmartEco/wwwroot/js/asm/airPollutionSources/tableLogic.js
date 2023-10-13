@@ -58,13 +58,15 @@ $(".edit-btn").click(function (e) {
 //Copy source
 $('.copy-btn').click(function (e) {
     var btn = $(this);
+    var editRow = GetEditRow(btn);
     var dataSource = CreateSource(btn);
     var pageSize = $('[name="PageSize"]').val();
-
+    var isOrganized = editRow.find('[name="IsOrganizedSource"]').val();
     $.ajax({
         data: {
             EnterpriseId: $('#FilterEnterpriseId').data('value'),
             PageSize: pageSize,
+            IsOrganized: isOrganized,
             AirPollutionSource: dataSource
         },
         url: $('#ApsCopyReq').data('url'),
@@ -153,12 +155,7 @@ $('[name="SaveSourceBtn"]').click(function (e) {
         error: function (jqXHR, textStatus, errorThrown) {
             var status = textStatus;;
             var error = $.parseJSON(jqXHR.responseText);
-            if (error.Number) {
-                editRow.find('.number-invalid').addClass('d-inline-block').text(error.Number[0]);
-            }
-            if (error.Name) {
-                editRow.find('.name-invalid').addClass('d-inline-block').text(error.Name[0]);
-            }
+            ValidSourceInfo(editRow, error);
         }
     });
 });
@@ -411,6 +408,37 @@ function ParseRelationValue(value) {
         name: valueName,
         number: valueNumber
     };
+}
+
+function ValidSourceInfo(editRow, error) {
+    if (error.Number) {
+        editRow.find('.number-invalid').addClass('d-inline-block').text(error.Number[0]);
+    }
+    if (error.Name) {
+        editRow.find('.name-invalid').addClass('d-inline-block').text(error.Name[0]);
+    }
+
+    //Check valid info
+    if (error['SourceInfo.TerrainCoefficient']) {
+        SetInvalidParameter(editRow, "TerrainCoefficientInvalid", error['SourceInfo.TerrainCoefficient'][0]);
+    }
+    if (error['SourceInfo.AngleDeflection']) {
+        SetInvalidParameter(editRow, "AngleDeflectionInvalid", error['SourceInfo.AngleDeflection'][0]);
+    }
+    if (error['SourceInfo.AngleRotation']) {
+        SetInvalidParameter(editRow, "AngleRotationInvalid", error['SourceInfo.AngleRotation'][0]);
+    }
+    if (error['SourceInfo.Hight']) {
+        SetInvalidParameter(editRow, "HightInvalid", error['SourceInfo.Hight'][0]);
+    }
+    if (error['SourceInfo.Diameter']) {
+        SetInvalidParameter(editRow, "DiameterInvalid", error['SourceInfo.DiameterInvalid'][0]);
+    }
+}
+
+function SetInvalidParameter(editRow, nameParamInvalid, errorText) {
+    editRow.find(`[name="${nameParamInvalid}"]`).addClass('d-inline-block').text(errorText);
+    editRow.find('.parameters-invalid').addClass('d-inline-block').text('Проверьте параметры');
 }
 
 //#region Pagionation event

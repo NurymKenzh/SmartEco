@@ -146,27 +146,27 @@ function ValidModeMixture(editRow, error) {
 
     //Check valid mixture
     if (error['GasAirMixture.Temperature']) {
-        editRow.find('[name="TemperatureInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.Temperature'][0]);
+        SetInvalidParameter(editRow, "TemperatureInvalid", error['GasAirMixture.Temperature'][0]);
     }
     if (error['GasAirMixture.Pressure']) {
-        editRow.find('[name="PressureInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.Pressure'][0]);
+        SetInvalidParameter(editRow, "PressureInvalid", error['GasAirMixture.Pressure'][0]);
     }
     if (error['GasAirMixture.Speed']) {
-        editRow.find('[name="SpeedInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.Speed'][0]);
+        SetInvalidParameter(editRow, "SpeedInvalid", error['GasAirMixture.Speed'][0]);
     }
     if (error['GasAirMixture.Volume']) {
-        editRow.find('[name="VolumeInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.Volume'][0]);
+        SetInvalidParameter(editRow, "VolumeInvalid", error['GasAirMixture.Volume'][0]);
     }
     if (error['GasAirMixture.Humidity']) {
-        editRow.find('[name="HumidityInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.Humidity'][0]);
+        SetInvalidParameter(editRow, "HumidityInvalid", error['GasAirMixture.Humidity'][0]);
     }
     if (error['GasAirMixture.Density']) {
-        editRow.find('[name="DensityInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.Density'][0]);
+        SetInvalidParameter(editRow, "DensityInvalid", error['GasAirMixture.Density'][0]);
     }
     if (error['GasAirMixture.ThermalPower']) {
-        editRow.find('[name="ThermalPowerInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.ThermalPower'][0]);
+        SetInvalidParameter(editRow, "ThermalPowerInvalid", error['GasAirMixture.ThermalPower'][0]);
     }
     if (error['GasAirMixture.PartRadiation']) {
-        editRow.find('[name="PartRadiationInvalid"]').addClass('d-inline-block').text(error['GasAirMixture.PartRadiation'][0]);
+        SetInvalidParameter(editRow, "PartRadiationInvalid", error['GasAirMixture.PartRadiation'][0]);
     }
 }
