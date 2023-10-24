@@ -61,7 +61,7 @@
                 @if (Role == "admin" || Role == "moderator" || Role == "ASM")
                 {
                     <td class="d-flex" style="justify-content: space-evenly">
-                        <button type="button" title="Выбросы" class="btn btn-link text-info emissions-btn">
+                        <button type="button" title="Выбросы" class="btn btn-link text-info emissions-btn" onclick="EmissionsCollapseExpand($(this));">
                             <i class="fa-solid fa-caret-down fa-2xl"></i>
                         </button>
                         <button type="button" title="@SharedLocalizer["Edit"]" class="btn btn-link text-warning edit-mode-btn" onclick="EditModeClick($(this));">

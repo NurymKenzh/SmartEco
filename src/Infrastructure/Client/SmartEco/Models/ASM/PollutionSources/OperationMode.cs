@@ -14,6 +14,7 @@ namespace SmartEco.Models.ASM.PollutionSources
 
         [Display(Name = "Наработка, Ч")]
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
+        [Range(0, 8784, ErrorMessage = "Значение должно быть больше {1} и меньше {2}")]
         public int WorkedTime { get; set; }
 
         [Display(Name = "Параметры ГВС")]

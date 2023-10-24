@@ -120,7 +120,7 @@ function DeleteEmissionClick(btn) {
     var operationModeId = btn.data('modeid');
     var emissionId = btn.val();
 
-    $(`#DeleteAirEmission_${emissionId} .close`).click();
+    $(`#DeleteAirEmission_${emissionId} .close-btn`).click()
     $.ajax({
         data: {
             Id: emissionId,

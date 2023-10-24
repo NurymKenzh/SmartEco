@@ -11,6 +11,7 @@ $(function () {
 $('.operation-modes-btn').click(function () {
     $(this).toggleClass('down');
     $(this).parents('tr').next('.operation-modes-row').toggle('slow');
+    AddSourceDisabling();
 });
 
 //Add new source
@@ -264,6 +265,16 @@ $("#ResetFilterAirPollutionSources").click(function (e) {
 
 //#endregion Filter events
 
+function AddSourceDisabling() {
+    $('#AddAirPollutionSource').prop('disabled', false);
+    $('.operation-modes-btn').each(function (index) {
+        if ($(this).hasClass('down')) {
+            $('#AddAirPollutionSource').prop('disabled', true);
+            return false;
+        }
+    });
+}
+
 function CreateFilter() {
     var dataFilter = new Filter();
     dataFilter.EnterpriseId = $('#FilterEnterpriseId').data('value');
@@ -432,7 +443,7 @@ function ValidSourceInfo(editRow, error) {
         SetInvalidParameter(editRow, "HightInvalid", error['SourceInfo.Hight'][0]);
     }
     if (error['SourceInfo.Diameter']) {
-        SetInvalidParameter(editRow, "DiameterInvalid", error['SourceInfo.DiameterInvalid'][0]);
+        SetInvalidParameter(editRow, "DiameterInvalid", error['SourceInfo.Diameter'][0]);
     }
 }
 

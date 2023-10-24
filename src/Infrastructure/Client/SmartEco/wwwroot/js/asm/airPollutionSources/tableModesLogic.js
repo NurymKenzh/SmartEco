@@ -1,11 +1,12 @@
 ﻿//#region Row events
 
-//Add new mode
-$('.emissions-btn').click(function () {
-    $(this).toggleClass('down');
-    $(this).parents('tr').next('.emissions-row').toggle('slow');
-});
+function EmissionsCollapseExpand(btn) {
+    btn.toggleClass('down');
+    btn.parents('tr').next('.emissions-row').toggle('slow');
+    AddModeDisabling(btn);
+}
 
+//Add new mode
 function AddModeClick(btn) {
     var sourceId = btn.closest('tr').prev().find('[name="IdSource"]').val();
     $.ajax({
@@ -81,7 +82,7 @@ function DeleteModeClick(btn) {
     var sourceId = btn.data('sourceid');
     var operationModeId = btn.val();
 
-    $(`#DeleteOperationMode_${operationModeId} .close`).click();
+    $(`#DeleteOperationMode_${operationModeId} .close-btn`).click()
     $.ajax({
         data: {
             Id: operationModeId,
@@ -98,6 +99,20 @@ function DeleteModeClick(btn) {
 };
 
 //#endregion Row events
+
+function AddModeDisabling(btn) {
+    var editRow = GetEditRow(btn);
+    var sourceId = editRow.closest('.operation-modes-row').prev().find('[name="IdSource"]').val();
+    var addOperationModeBtn = $(`#OperationModes_${sourceId}`).find('[name="AddOperationModeBtn"]');
+
+    addOperationModeBtn.prop('disabled', false);
+    $(`#OperationModes_${sourceId}`).find('.emissions-btn').each(function (index) {
+        if ($(this).hasClass('down')) {
+            addOperationModeBtn.prop('disabled', true);
+            return false;
+        }
+    });
+}
 
 function EditableModeButtonsShow(btn, editRow, isEditBtnClick) {
     var editBtn = editRow.find('.edit-mode-btn');
