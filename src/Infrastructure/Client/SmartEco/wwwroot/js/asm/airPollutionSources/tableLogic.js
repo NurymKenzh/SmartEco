@@ -8,10 +8,16 @@ $(function () {
 
 //#region Row events
 
+$('tr').click(function () {
+    console.log($(this));
+    RowColorChanging($(this));
+});
+
 $('.operation-modes-btn').click(function () {
     $(this).toggleClass('down');
     $(this).parents('tr').next('.operation-modes-row').toggle('slow');
     AddSourceDisabling();
+    RowColorChanging($(this));
 });
 
 //Add new source
@@ -273,6 +279,16 @@ function AddSourceDisabling() {
             return false;
         }
     });
+}
+
+function RowColorChanging(btn) {
+    var tr = btn.parents('tr');
+    if (tr.hasClass('bg-info-opacity-15')) {
+        tr.removeClass('bg-info-opacity-15');
+    }
+    else {
+        tr.addClass('bg-info-opacity-15');
+    }
 }
 
 function CreateFilter() {

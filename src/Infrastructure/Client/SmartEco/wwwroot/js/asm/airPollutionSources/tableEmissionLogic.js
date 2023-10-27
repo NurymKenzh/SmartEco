@@ -95,6 +95,7 @@ function SaveEmissionClick(btn) {
     var editRow = GetEditRow(btn);
     var dataEmission = CreateEmission(btn);
     editRow.find('.invalid-feedback').removeClass('d-inline-block').text('');
+    SetTitlePollutant(editRow);
 
     $.ajax({
         data: dataEmission,
@@ -144,6 +145,12 @@ function EditableEmissionButtonsShow(btn, editRow, isEditBtnClick) {
     var cancelBtn = editRow.find('.cancel-emission-btn');
 
     ShowHideButtons(editRow, editBtn, saveBtn, cancelBtn, isEditBtnClick);
+}
+
+function SetTitlePollutant(editRow) {
+    var inputPollutant = editRow.find('.pollutant-name');
+    var value = inputPollutant.val();
+    inputPollutant.prop('title', value);
 }
 
 function CreateEmission(btn) {

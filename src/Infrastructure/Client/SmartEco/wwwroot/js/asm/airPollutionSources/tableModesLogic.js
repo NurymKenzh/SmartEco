@@ -4,6 +4,7 @@ function EmissionsCollapseExpand(btn) {
     btn.toggleClass('down');
     btn.parents('tr').next('.emissions-row').toggle('slow');
     AddModeDisabling(btn);
+    RowColorChanging(btn);
 }
 
 //Add new mode

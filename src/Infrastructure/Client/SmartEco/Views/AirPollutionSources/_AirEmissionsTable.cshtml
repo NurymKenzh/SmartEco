@@ -52,7 +52,7 @@
                 <td width="40%">
                     <input asp-for="@item.PollutantId" type="number" class="form-control-plaintext" name="PollutantEmission" disabled hidden>
 
-                    <input list="AirPollutantsDataList_@item.Id" onkeyup="SetPollutions($(this));" onchange="SetPollutionValue($(this));" value="@item.Pollutant.CodeName" class="form-control-plaintext w-100" disabled>
+                    <input list="AirPollutantsDataList_@item.Id" onkeyup="SetPollutions($(this));" onchange="SetPollutionValue($(this));" title="@item.Pollutant.CodeName" value="@item.Pollutant.CodeName" class="form-control-plaintext w-100 pollutant-name" disabled>
                     <div class="invalid-feedback pollutant-invalid"></div>
                     <datalist id="AirPollutantsDataList_@item.Id"></datalist>
                 </td>
