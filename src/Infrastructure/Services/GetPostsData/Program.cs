@@ -1398,6 +1398,10 @@ namespace GetPostsData
             {
                 NewLog($"Send report for Zhanats posts >> Success sended");
             }
+            else
+            {
+                NewLog($"Send report for Zhanats posts >> {result.StatusCode}: {result.ReasonPhrase}");
+            }
         }
         public static void NewLog(string Log)
         {
