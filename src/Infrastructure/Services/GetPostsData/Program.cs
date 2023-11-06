@@ -1342,12 +1342,12 @@ namespace GetPostsData
                 {
                     try
                     {
-                        NewLog($"Send report for Zhanats posts >> Calling Api");
+                        NewLog($"Send report for Zhanatas posts >> Calling Api");
                         Task.WaitAll(SendReportZhanatas());
                     }
                     catch (Exception ex)
                     {
-                        NewLog($"Send report for Zhanats posts >> Error: {ex.Message}");
+                        NewLog($"Send report for Zhanatas posts >> Error: {ex.Message}");
                     }
                     finally
                     {
@@ -1368,7 +1368,8 @@ namespace GetPostsData
                 client.BaseAddress = Debugger.IsAttached ?
                     new Uri("http://localhost:52207") :
                     new Uri("http://localhost:8084");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGlyZGFyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Im1vZGVyYXRvciIsIm5iZiI6MTY2NDI2ODkwNCwiZXhwIjoxNjk1ODkxMzA0LCJpc3MiOiJTbWFydEVjbyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTIyMDcvIn0.qFOJ7nH1WMmEd378PhP7r8Ed8gc6N2UJJH1WOa7YZ6s");
+                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGlyZGFyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Im1vZGVyYXRvciIsIm5iZiI6MTY5ODkyNzI3NSwiZXhwIjoxNzMwNTQ5Njc1LCJpc3MiOiJTbWFydEVjbyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTIyMDcvIn0.4lUrxsfS2eHFTlsM59jzuaGJmgh3jJ7iRUQ14wDbE1M");
+                client.Timeout = TimeSpan.FromMinutes(30);
 
                 var dateTimeYesterdayFrom = DateTime.Now.AddDays(-1).Date + new TimeSpan(00, 00, 00);
                 var dateTimeYesterdayTo = DateTime.Now.AddDays(-1).Date + new TimeSpan(23, 59, 59);
@@ -1408,7 +1409,11 @@ namespace GetPostsData
 
             if (result.IsSuccessStatusCode)
             {
-                NewLog($"Send report for Zhanats posts >> Success sended");
+                NewLog($"Send report for Zhanatas posts >> Success sended");
+            }
+            else
+            {
+                NewLog($"Send report for Zhanatas posts >> {result.StatusCode}: {result.ReasonPhrase}");
             }
         }
         public static void NewLog(string Log)
