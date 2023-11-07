@@ -91,7 +91,6 @@ $('[name="DeleteSourceBtn"]').click(function (e) {
     var dataFilter = CreateFilter();
     dataFilter.PageNumber = $('li.page-item.active .page-link').val();
 
-    $('#DeleteAirPollutionSource_' + sourceId + ' .close').click();
     $.ajax({
         data: {
             Id: sourceId,
@@ -100,6 +99,9 @@ $('[name="DeleteSourceBtn"]').click(function (e) {
         url: $('#ApsDeleteReq').data('url'),
         type: 'POST',
         success: function (result) {
+            $(`DeleteAirPollutionSource_${sourceId}`).remove();
+            $('.modal-backdrop').remove();
+
             $('#AirPollutionSourcesTab').empty();
             $('#AirPollutionSourcesTab').html(result);
         }

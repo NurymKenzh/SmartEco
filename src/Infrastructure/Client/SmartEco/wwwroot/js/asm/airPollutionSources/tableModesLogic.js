@@ -83,7 +83,6 @@ function DeleteModeClick(btn) {
     var sourceId = btn.data('sourceid');
     var operationModeId = btn.val();
 
-    $(`#DeleteOperationMode_${operationModeId} .close-btn`).click()
     $.ajax({
         data: {
             Id: operationModeId,
@@ -92,6 +91,9 @@ function DeleteModeClick(btn) {
         url: $('#ModeDeleteReq').data('url'),
         type: 'POST',
         success: function (result) {
+            $(`#DeleteOperationMode_${operationModeId}`).remove();
+            $('.modal-backdrop').remove();
+
             var operationModeTableId = `#OperationModes_${sourceId}`;
             $(operationModeTableId).empty();
             $(operationModeTableId).html(result);
