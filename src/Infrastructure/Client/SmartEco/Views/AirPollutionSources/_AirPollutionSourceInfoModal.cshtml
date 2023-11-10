@@ -11,10 +11,25 @@
     string Role = Context.Session.GetString("Role");
 }
 
+<!--class 'is-organized-block' show in script if input 'IsOrzanizedSource' is 'true'-->
+<!--class 'isnot-organized-block' show in script if input 'IsOrzanizedSource' is 'false'-->
+
 <dl class="modal-body">
     <input asp-for="@Model.SourceId" type="text" name="SourceIdInfo" hidden>
 
-    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Coordinate)</dt>
+    <dt class="col-sm-6 isnot-organized-block" hidden>Размер площадного источника</dt>
+    <dd class="form-group col-sm-6 isnot-organized-block" hidden>
+        <span>Длина, м:</span>
+        <input asp-for="@Model.Length" type="text" class="form-control-plaintext size-input" name="LengthInfo" disabled>
+        <div name="LengthInvalid" class="invalid-feedback"></div>
+
+        <span>Ширина, м:</span>
+        <input asp-for="@Model.Width" type="text" class="form-control-plaintext size-input" name="WidthInfo" disabled>
+        <div name="WidthInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6 is-organized-block" hidden>@Html.DisplayNameFor(modelItem => modelItem.Coordinate)</dt>
+    <dt class="col-sm-6 isnot-organized-block" hidden>Координаты центра</dt>
     <dd class="form-group col-sm-6">
         <input asp-for="@Model.Coordinate" type="text" class="form-control-plaintext" name="CoordinateInfo" hidden>
 
@@ -90,11 +105,6 @@
     </dd>
 
     <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.RelationBackgroundId)</dt>
-    @*<dd class="form-group col-sm-6">
-        <input asp-for="@Model.RelationBackground" type="number" class="form-control-plaintext" name="RelationBackgroundInfo" disabled>
-        <div name="RelationBackgroundInvalid" class="invalid-feedback"></div>
-    </dd>*@
-
     <dd class="form-group col-sm-6">
         <span class="select-text type-select-text"></span>
         <select name="RelationBackgroundInfo" class="form-control-plaintext d-none" disabled>

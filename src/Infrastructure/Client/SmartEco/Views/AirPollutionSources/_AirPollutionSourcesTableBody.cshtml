@@ -55,7 +55,7 @@
         <td class="position-relative p-0">
             <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle"></button>
             <div class="m-md-3">
-                <input asp-for="@item.Type.IsOrganized" type="checkbox" name="IsOrganizedSource" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" value="@item.Type.IsOrganized" disabled>
+                <input asp-for="@item.Type.IsOrganized" type="checkbox" name="IsOrganizedSource" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" value="@item.Type.IsOrganized.ToString().ToLower()" disabled>
             </div>
         </td>
         <td>
@@ -85,7 +85,7 @@
         <td class="position-relative p-0">
             <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle"></button>
             <div class="m-md-3">
-                <input asp-for="@item.IsActive" type="checkbox" name="IsActiveSource" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" value="@item.IsActive" disabled>
+                <input asp-for="@item.IsActive" type="checkbox" name="IsActiveSource" class="checkbox-toggle" data-toggle="toggle" data-size="xs" data-on="Да" data-off="Нет" value="@item.IsActive.ToString().ToLower()" disabled>
             </div>
         </td>
         @if (Role == "admin" || Role == "moderator" || Role == "ASM")

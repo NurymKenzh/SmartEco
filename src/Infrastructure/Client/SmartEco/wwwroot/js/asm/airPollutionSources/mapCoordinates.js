@@ -1,4 +1,6 @@
-﻿var map, inputCoordinates, inputLongCoordinate, inputLatCoordinate;
+﻿var map, inputCoordinates, inputLongCoordinate, inputLatCoordinate, inputWidth, inputLength;
+var isOrganized;
+var inputs = { coordinates: {}, longCoordinate: {}, latCoordinate: {}, sizeLength: {}, sizeWidth: {} };
 
 $('.edit-info-btn').click(function (e) {
     var btn = $(this);
@@ -6,19 +8,52 @@ $('.edit-info-btn').click(function (e) {
     var sourceId = editRow.find('[name="IdSource"]').val();
     var indSiteId = editRow.find('[name="RelationSource"]').find(':selected').data('indsite');
     var coordinates = editRow.find('[name="RelationSource"]').find(`option[value=indSiteEnterprise_${indSiteId}]`).data('coordinates');
+    isOrganized = editRow.find('[name="IsOrganizedSource"]').val();
     InitializeInputs(editRow);
     InitializeMap(sourceId, coordinates);
-    ChangeCoordinates();
+});
+
+$('.show-map').on('shown.bs.modal', function () {
+    map.updateSize();
+})
+
+$('.clear-map').click(function (e) {
+    airSource.clear();
+    vectorAirSource.clear();
+    $.each(inputs, function (index, value) {
+        $(this).val('');
+    });
+    ChangeMapSources();
+});
+
+$('.coordinate-input').change(function () {
+    ChangeMapSources();
+});
+
+$('.size-input').change(function () {
+    ChangeMapSources();
 });
 
 function InitializeInputs(editRow) {
-    inputCoordinates = editRow.find('[name="CoordinateInfo"]');
-    inputLongCoordinate = editRow.find('[name="CoordinateLongInfo"]');
-    inputLatCoordinate = editRow.find('[name="CoordinateLatInfo"]');
-    if (inputCoordinates.val()) {
-        var coordinatesSplit = inputCoordinates.val().split(',');
-        inputLongCoordinate.val(coordinatesSplit[0]);
-        inputLatCoordinate.val(coordinatesSplit[1]);
+    inputs.coordinates = editRow.find('[name="CoordinateInfo"]');
+    inputs.longCoordinate = editRow.find('[name="CoordinateLongInfo"]');
+    inputs.latCoordinate = editRow.find('[name="CoordinateLatInfo"]');
+    inputs.sizeLength = editRow.find('[name="LengthInfo"]');
+    inputs.sizeWidth = editRow.find('[name="WidthInfo"]');
+    if (inputs.coordinates.val()) {
+        var coordinatesSplit = inputs.coordinates.val().split(',');
+        inputs.longCoordinate.val(coordinatesSplit[0]);
+        inputs.latCoordinate.val(coordinatesSplit[1]);
+    }
+
+    //Changing inputs depending on source type
+    if (isOrganized == 'true') {
+        $('.is-organized-block').prop('hidden', false);
+        $('.isnot-organized-block').prop('hidden', true);
+    }
+    else {
+        $('.is-organized-block').prop('hidden', true);
+        $('.isnot-organized-block').prop('hidden', false);
     }
 }
 
@@ -26,6 +61,12 @@ function InitializeInputs(editRow) {
 var vectorSource = new ol.source.Vector();
 var vectorLayer = new ol.layer.Vector({
     source: vectorSource
+});
+
+//Air source rectangle layer
+var vectorAirSource = new ol.source.Vector();
+var vectorAirLayer = new ol.layer.Vector({
+    source: vectorAirSource
 });
 
 //Air pollution source layer
@@ -38,6 +79,7 @@ function InitializeMap(sourceId, coordinates) {
     var target = 'map_' + sourceId;
     $('#' + target).empty();
     airSource.clear();
+    vectorAirSource.clear();
 
     if (coordinates) {
         var polyCoords = ParcePolyCoordinates(coordinates);
@@ -56,7 +98,8 @@ function InitializeMap(sourceId, coordinates) {
                 source: new ol.source.OSM()
             }),
             vectorLayer,
-            airLayer
+            airLayer,
+            vectorAirLayer
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat([68.291, 47.5172]),
@@ -64,33 +107,48 @@ function InitializeMap(sourceId, coordinates) {
         })
     });
 
-    //Set event click for map
-    map.on('click', function (event) {
-        var coordinates = event.coordinate;
-        var point = new ol.geom.Point(
-            coordinates
-        );
-        var featurePoint = new ol.Feature({
-            geometry: point
-        });
-        airSource.clear();
-        airSource.addFeature(featurePoint);
-
-        //Set coordinates to inputs
-        var featureClone = featurePoint.clone();
-        featureClone.getGeometry().transform('EPSG:3857', 'EPSG:4326');
-        var coords = featureClone.getGeometry().getCoordinates();
-
-        inputCoordinates.val(coords);
-        inputLongCoordinate.val(coords[0]);
-        inputLatCoordinate.val(coords[1]);
-    });
+    ChangeMapSources();
 
     //Set zoom to industrial site
     var featureLength = vectorSource.getFeatures().length;
     if (featureLength > 0) {
         map.getView().fit(vectorSource.getExtent(), map.getSize());
     }
+}
+
+function AddDrawInteraction() {
+    var draw = new ol.interaction.Draw({
+        source: airSource,
+        type: "Point",
+    });
+    map.addInteraction(draw);
+    draw.on('drawend', function (e) {
+        feature = e.feature;
+        map.removeInteraction(draw); // remove draw interaction
+        var featureClone = feature.clone(); // cloning feature
+        featureClone.getGeometry().transform('EPSG:3857', 'EPSG:4326'); // transform cloned feature to EPSG:4326
+
+        CheckShowClearRectangle(e.feature);
+        var coords = featureClone.getGeometry().getCoordinates();
+        SetCoordinates(coords);
+        AddModifyIteraction();
+    });
+}
+
+function AddModifyIteraction() {
+    var modifyInteraction = new ol.interaction.Modify({
+        source: airSource
+    });
+    map.addInteraction(modifyInteraction);
+    modifyInteraction.on('modifyend', function (evt) {
+        var collection = evt.features; // get features
+        var featureClone = collection.item(0).clone(); // There's only one feature, so get the first and only one
+        featureClone.getGeometry().transform('EPSG:3857', 'EPSG:4326'); //transform cloned feature to EPSG:4326
+
+        CheckShowClearRectangle(collection.item(0));
+        var coords = featureClone.getGeometry().getCoordinates();
+        SetCoordinates(coords);
+    });
 }
 
 function ParcePolyCoordinates(coordinates) {
@@ -104,27 +162,12 @@ function ParcePolyCoordinates(coordinates) {
     return polyCoords;
 }
 
-$('.show-map').on('shown.bs.modal', function () {
-    map.updateSize();
-})
-
-$('.clear-map').click(function (e) {
-    airSource.clear();
-    inputCoordinates.val('');
-    inputLongCoordinate.val('');
-    inputLatCoordinate.val('');
-});
-
-$('.coordinate-input').change(function () {
-    ChangeCoordinates();
-});
-
-function ChangeCoordinates() {
-    if (inputLongCoordinate.val() && inputLatCoordinate.val()) {
-        var coordinates = [parseFloat(inputLongCoordinate.val()), parseFloat(inputLatCoordinate.val())];
+function ChangeMapSources() {
+    if (inputs.longCoordinate.val() && inputs.latCoordinate.val()) {
+        var coordinates = [parseFloat(inputs.longCoordinate.val()), parseFloat(inputs.latCoordinate.val())];
 
         //Set coordinates to inputs
-        inputCoordinates.val(coordinates);
+        inputs.coordinates.val(coordinates);
 
         //Change coords on map
         coordinates = ol.proj.transform(coordinates, 'EPSG:4326', 'EPSG:3857');
@@ -136,5 +179,88 @@ function ChangeCoordinates() {
         });
         airSource.clear();
         airSource.addFeature(featurePoint);
+
+        CheckShowClearRectangle(featurePoint);
+        AddModifyIteraction();
+    }
+    else {
+        AddDrawInteraction();
     }
 };
+
+function CheckShowClearRectangle(feature) {
+    if (isOrganized == 'false') {
+        ShowRectangle(feature);
+    }
+    else {
+        ClearSizeRectangle();
+    }
+}
+
+function SetCoordinates(coords) {
+    inputs.coordinates.val(coords);
+    inputs.longCoordinate.val(coords[0]);
+    inputs.latCoordinate.val(coords[1]);
+}
+
+function ShowRectangle(feature) {
+    vectorAirSource.clear();
+    let centerCoordinate = feature.getGeometry().getCoordinates();
+    let sizeRect = GetSizeRectangle();
+    let widthRect = sizeRect.length;
+    let heightRect = sizeRect.width;
+    let scale = 100; // 1 cm on map = 100 cm = 1m in real
+
+    // calculation
+    let widthInMeters = widthRect * (scale / 100);
+    let heightInMeters = widthInMeters * (heightRect / widthRect);
+
+    let pointRes = ol.proj.getPointResolution(map.getView().getProjection(), 1, centerCoordinate);
+    let widthInUnits = widthInMeters / pointRes;
+    let heightInUnits = heightInMeters / pointRes;
+
+    // coordinates of covered region
+    let mapExtent = [
+        centerCoordinate[0] - widthInUnits / 2,
+        centerCoordinate[1] - heightInUnits / 2,
+        centerCoordinate[0] + widthInUnits / 2,
+        centerCoordinate[1] + heightInUnits / 2
+    ];
+
+    // and... the geometry
+    var region = ol.geom.Polygon.fromExtent(mapExtent);
+    var featureAirSource = new ol.Feature(region);
+    vectorAirSource.addFeature(featureAirSource);
+}
+
+function GetSizeRectangle() {
+    var length, width;
+
+    //Get or set length
+    if (inputs.sizeLength.val()) {
+        length = parseFloat(inputs.sizeLength.val().replace(',', '.'));
+    }
+    else {
+        length = 10;
+        inputs.sizeLength.val(length);
+    }
+
+    //Get or set width
+    if (inputs.sizeWidth.val()) {
+        width = parseFloat(inputs.sizeWidth.val().replace(',', '.'));
+    }
+    else {
+        width = 10;
+        inputs.sizeWidth.val(width);
+    }
+
+    return {
+        length: length,
+        width: width
+    }
+}
+
+function ClearSizeRectangle() {
+    inputs.sizeLength.val('');
+    inputs.sizeWidth.val('');
+}

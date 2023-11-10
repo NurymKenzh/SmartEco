@@ -1,4 +1,7 @@
-﻿namespace SmartEcoAPI.Models.ASM.PollutionSources
+﻿using System.ComponentModel.DataAnnotations;
+using System.Xml.Linq;
+
+namespace SmartEcoAPI.Models.ASM.PollutionSources
 {
     public class AirPollutionSourceInfo
     {
@@ -15,6 +18,8 @@
         public bool IsSignFlare { get; set; }
         public decimal Hight { get; set; }
         public decimal Diameter { get; set; }
+        public decimal? Length { get; set; }
+        public decimal? Width { get; set; }
         public int? RelationBackgroundId { get; set; }
         public RelationBackground RelationBackground { get; set; }
     }

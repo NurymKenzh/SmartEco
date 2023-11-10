@@ -47,6 +47,14 @@ namespace SmartEco.Models.ASM.PollutionSources
         [Range(0, double.PositiveInfinity, ErrorMessage = "Значение должно быть больше {1}")]
         public decimal? Diameter { get; set; }
 
+        [Display(Name = "Длина")]
+        [Range(0, double.PositiveInfinity, ErrorMessage = "Значение должно быть больше {1}")]
+        public decimal? Length { get; set; }
+
+        [Display(Name = "Ширина")]
+        [Range(0, double.PositiveInfinity, ErrorMessage = "Значение должно быть больше {1}")]
+        public decimal? Width { get; set; }
+
         [Display(Name = "Отношение к фону")]
         [Required(ErrorMessage = "Поле обязательно для заполнения")]
         public int? RelationBackgroundId { get; set; }

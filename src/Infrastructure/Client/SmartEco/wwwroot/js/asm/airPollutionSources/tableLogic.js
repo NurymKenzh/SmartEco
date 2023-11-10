@@ -9,7 +9,6 @@ $(function () {
 //#region Row events
 
 $('tr').click(function () {
-    console.log($(this));
     RowColorChanging($(this));
 });
 
@@ -205,6 +204,12 @@ $('[name="SaveInfoBtn"]').click(function (e) {
             if (error.RelationBackgroundId) {
                 editRow.find('[name="RelationBackgroundInvalid"]').addClass('d-inline-block').text(error.RelationBackgroundId[0]);
             }
+            if (error.Length) {
+                editRow.find('[name="LengthInvalid"]').addClass('d-inline-block').text(error.Length[0]);
+            }
+            if (error.Width) {
+                editRow.find('[name="WidthInvalid"]').addClass('d-inline-block').text(error.Width[0]);
+            }
         }
     });
 });
@@ -224,7 +229,7 @@ $('.button-checkbox-toggle').click(function () {
         : $(this).closest('td')
     var checkboxToggle = editRow.find('.checkbox-toggle');
     checkboxToggle.bootstrapToggle('toggle');
-    var valueChanged = checkboxToggle.val() ==  'True' ? false : true;
+    var valueChanged = checkboxToggle.val() ==  'true' ? false : true;
     checkboxToggle.val(valueChanged);
 });
 
@@ -379,6 +384,10 @@ function CreateSource(btn) {
     dataSource.Name = editRow.find('[name="NameSource"]').val();
     dataSource.IsActive = editRow.find('[name="IsActiveSource"]').val();
     dataSource.TypeId = editRow.find('[name="TypeIdSource"]').val();
+    dataSource.Type = new AirPollutionSourceType(
+        editRow.find('[name="IsOrganizedSource"]').val(),
+        editRow.find('[name="TypeIdSource"]').find(':selected').text()
+    );
 
     var editRowInfo = $('#ShowAirPollutionSourceInfo_' + dataSource.Id).find('dl');
     dataSource.SourceInfo = CreateInfo(editRowInfo);
@@ -410,6 +419,8 @@ function CreateInfo(editRow) {
     dataInfo.Hight = editRow.find('[name="HightInfo"]').val();
     dataInfo.Diameter = editRow.find('[name="DiameterInfo"]').val();
     dataInfo.RelationBackgroundId = editRow.find('[name="RelationBackgroundInfo"]').val();
+    dataInfo.Length = editRow.find('[name="LengthInfo"]').val();
+    dataInfo.Width = editRow.find('[name="WidthInfo"]').val();
     return dataInfo;
 }
 
@@ -462,6 +473,12 @@ function ValidSourceInfo(editRow, error) {
     }
     if (error['SourceInfo.Diameter']) {
         SetInvalidParameter(editRow, "DiameterInvalid", error['SourceInfo.Diameter'][0]);
+    }
+    if (error['SourceInfo.Length']) {
+        SetInvalidParameter(editRow, "LengthInvalid", error['SourceInfo.Length'][0]);
+    }
+    if (error['SourceInfo.Width']) {
+        SetInvalidParameter(editRow, "WidthInvalid", error['SourceInfo.Width'][0]);
     }
 }
 

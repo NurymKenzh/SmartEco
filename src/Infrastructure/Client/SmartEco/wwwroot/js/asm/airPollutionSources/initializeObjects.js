@@ -15,6 +15,7 @@ var AirPollutionSource = class {
     Name;
     IsActive;
     TypeId;
+    Type;
     SourceInfo;
 
     SourceIndSite;
@@ -35,6 +36,15 @@ var AirPollutionSourceInfo = class {
     Hight;
     Diameter;
     RelationBackground;
+    Length;
+    Width;
+};
+
+var AirPollutionSourceType = class {
+    constructor(isOrganized, name) {
+        this.Name = name;
+        this.IsOrganized = isOrganized;
+    }
 };
 
 var SourceIndSite = class {

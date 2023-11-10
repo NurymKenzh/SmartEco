@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Threading.Tasks;
@@ -120,6 +122,11 @@ namespace SmartEco.Controllers.ASM.PollutionSources
         [HttpPost]
         public async Task<IActionResult> Edit(AirPollutionSource airPollutionSource)
         {
+            if (!airPollutionSource.Type.IsOrganized && airPollutionSource.SourceInfo.Length is null)
+                ModelState.AddModelError(NameOfMember(model => model.SourceInfo.Length), "Поле обязательно для заполнения");
+            if (!airPollutionSource.Type.IsOrganized && airPollutionSource.SourceInfo.Width is null)
+                ModelState.AddModelError(NameOfMember(model => model.SourceInfo.Width), "Поле обязательно для заполнения");
+
             if (ModelState.IsValid)
             {
                 var body = airPollutionSource;
@@ -200,6 +207,14 @@ namespace SmartEco.Controllers.ASM.PollutionSources
                 return Ok();
 
             return BadRequest(ModelState);
+        }
+
+        private static string NameOfMember(Expression<Func<AirPollutionSource, object>> accessor)
+        {
+            string str = accessor.Body.ToString();
+            var startIndex = str.IndexOf('.') + 1;
+            var lastIndex = str.LastIndexOf(",");
+            return str.Substring(startIndex, lastIndex - startIndex);
         }
 
         private async Task<AirPollutinSourceLastNumberResponse> GetLastNumber(int? enterpriseId, bool isOrganized = false)
