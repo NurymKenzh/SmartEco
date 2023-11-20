@@ -80,7 +80,7 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Directories">@SharedLocalizer["Directories"]</a>
                             </li>
                         }
-                        @if (!string.IsNullOrEmpty(Role) && (Role != "Almaty" || Role != "Oskemen"))
+                        @if (!string.IsNullOrEmpty(Role) && (Role != "Almaty" && Role != "Oskemen" && Role != "KaragandaRegion"))
                         {
                             <li class="nav-item">
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Home" asp-action="Data">@SharedLocalizer["Data"]</a>
@@ -143,12 +143,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="MonitoringPosts" asp-action="Index">@SharedLocalizer["MonitoringPosts"]</a>
                             </li>
                         }
-                        @*@if (!string.IsNullOrEmpty(Token))
-                        {*@
-                        <li class="nav-item">
-                            <a class="nav-link text-dark" asp-area="" asp-controller="AppealCitizens" asp-action="Index">@SharedLocalizer["AppealCitizens"]</a>
-                        </li>
-                        @*}*@
+                        @if (Role == "admin" || Role == "moderator")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="AppealCitizens" asp-action="Index">@SharedLocalizer["AppealCitizens"]</a>
+                            </li>
+                        }
                         @*@if (string.IsNullOrEmpty(Token))
                         {
                             <li class="nav-item mx-auto">

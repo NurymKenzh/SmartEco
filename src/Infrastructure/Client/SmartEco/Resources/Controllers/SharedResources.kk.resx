@@ -1083,4 +1083,7 @@
   <data name="AirPollutionSourceTypes" xml:space="preserve">
     <value>Атмосфераны ластау көздерінің түрлері</value>
   </data>
+  <data name="EcoserviceAirPostsKaraganda" xml:space="preserve">
+    <value>Атмосфералық ауаны бақылау қызметі</value>
+  </data>
 </root>

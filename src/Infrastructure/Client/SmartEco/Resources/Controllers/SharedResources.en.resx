@@ -1083,4 +1083,7 @@
   <data name="AirPollutionSourceTypes" xml:space="preserve">
     <value>Air pollution source types</value>
   </data>
+  <data name="EcoserviceAirPostsKaraganda" xml:space="preserve">
+    <value>Air monitoring posts</value>
+  </data>
 </root>
