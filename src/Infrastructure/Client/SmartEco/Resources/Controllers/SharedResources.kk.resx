@@ -1068,4 +1068,7 @@
   <data name="Oskemen" xml:space="preserve">
     <value>Өскемен</value>
   </data>
+  <data name="EcoserviceAirPostsKaraganda" xml:space="preserve">
+    <value>Атмосфералық ауаны бақылау қызметі</value>
+  </data>
 </root>

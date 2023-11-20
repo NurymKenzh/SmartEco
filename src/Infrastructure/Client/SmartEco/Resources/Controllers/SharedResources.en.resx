@@ -1068,4 +1068,7 @@
   <data name="Oskemen" xml:space="preserve">
     <value>Oskemen</value>
   </data>
+  <data name="EcoserviceAirPostsKaraganda" xml:space="preserve">
+    <value>Air monitoring posts</value>
+  </data>
 </root>

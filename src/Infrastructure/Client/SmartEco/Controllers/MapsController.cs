@@ -171,9 +171,9 @@ namespace SmartEco.Controllers
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 4).Value);
-            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 5).Value);
-            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 6).Value);
+            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 4)?.Value ?? 1);
+            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 5)?.Value ?? 1);
+            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault(t => t.MeasuredParameterId == 6)?.Value ?? 1);
             ViewBag.MeasuredData = measuredDatas;
             ViewBag.Temperature = temperature;
             ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
@@ -255,7 +255,7 @@ namespace SmartEco.Controllers
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
 
             route = "";
             route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -265,7 +265,7 @@ namespace SmartEco.Controllers
             measuredDatas = new List<MeasuredData>();
             responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
 
             route = "";
             route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -275,7 +275,7 @@ namespace SmartEco.Controllers
             measuredDatas = new List<MeasuredData>();
             responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
 
             ViewBag.Temperature = temperature;
             ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
@@ -448,7 +448,7 @@ namespace SmartEco.Controllers
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
 
             route = "";
             route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -458,7 +458,7 @@ namespace SmartEco.Controllers
             measuredDatas = new List<MeasuredData>();
             responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
 
             route = "";
             route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -468,7 +468,7 @@ namespace SmartEco.Controllers
             measuredDatas = new List<MeasuredData>();
             responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
             ViewBag.MeasuredData = measuredDatas;
             ViewBag.Temperature = temperature;
             ViewBag.SpeedWind = speedWind == 0 ? 1.0 : speedWind; //Если скорость ветра "0", то рассеивания нет (изолинии будут отсутствовать)
@@ -860,7 +860,7 @@ namespace SmartEco.Controllers
             List<MeasuredData> measuredDatas = new List<MeasuredData>();
             HttpResponseMessage responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double temperature = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
 
             route = "";
             route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -870,7 +870,7 @@ namespace SmartEco.Controllers
             measuredDatas = new List<MeasuredData>();
             responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double speedWind = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
 
             route = "";
             route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -880,7 +880,7 @@ namespace SmartEco.Controllers
             measuredDatas = new List<MeasuredData>();
             responseMeasuredDatas = await _HttpApiClient.GetAsync(urlMeasuredDatas + route);
             measuredDatas = await responseMeasuredDatas.Content.ReadAsAsync<List<MeasuredData>>();
-            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault().Value);
+            double directionWind = Convert.ToDouble(measuredDatas.LastOrDefault()?.Value ?? 1);
             ViewBag.MeasuredData = measuredDatas;
             ViewBag.Temperature = temperature;
             ViewBag.SpeedWind = speedWind;

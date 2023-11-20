@@ -1070,4 +1070,7 @@
   <data name="Oskemen" xml:space="preserve">
     <value>Усть-Каменогорск</value>
   </data>
+  <data name="EcoserviceAirPostsKaraganda" xml:space="preserve">
+    <value>Посты мониторинга атмосферного воздуха</value>
+  </data>
 </root>
