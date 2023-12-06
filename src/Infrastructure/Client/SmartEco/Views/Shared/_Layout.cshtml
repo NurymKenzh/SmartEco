@@ -128,6 +128,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Enterprises" asp-action="Index">@SharedLocalizer["Enterprises"]</a>
                             </li>
                         }
+                        @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Calculations" asp-action="Index">Расчёты рассеивания</a>
+                            </li>
+                        }
                         @if (Role == "admin" || Role == "moderator" || Role == "Zhanatas")
                         {
                             <li class="nav-item">

@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -10,9 +11,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231204153417_CalculationStatus_20231204_00")]
+    partial class CalculationStatus_20231204_00
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -456,30 +458,6 @@ namespace SmartEcoAPI.Migrations
                         .IsUnique();
 
                     b.ToTable("SanZoneEnterpriseBorder","asm");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.UPRZA.Calculation", b =>
-                {
-                    b.Property<int>("Id")
-                        .ValueGeneratedOnAdd();
-
-                    b.Property<string>("KatoCode");
-
-                    b.Property<string>("KatoName");
-
-                    b.Property<string>("Name");
-
-                    b.Property<int>("StatusId");
-
-                    b.Property<int>("TypeId");
-
-                    b.HasKey("Id");
-
-                    b.HasIndex("StatusId");
-
-                    b.HasIndex("TypeId");
-
-                    b.ToTable("Calculation","asmUprza");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.UPRZA.CalculationStatus", b =>
@@ -1693,19 +1671,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasOne("SmartEcoAPI.Models.ASM.IndSiteEnterprise", "IndSiteEnterprise")
                         .WithOne("SanZoneBorder")
                         .HasForeignKey("SmartEcoAPI.Models.ASM.SanZoneEnterpriseBorder", "IndSiteEnterpriseId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.UPRZA.Calculation", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.ASM.UPRZA.CalculationStatus", "Status")
-                        .WithMany()
-                        .HasForeignKey("StatusId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.HasOne("SmartEcoAPI.Models.ASM.UPRZA.CalculationType", "Type")
-                        .WithMany()
-                        .HasForeignKey("TypeId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 

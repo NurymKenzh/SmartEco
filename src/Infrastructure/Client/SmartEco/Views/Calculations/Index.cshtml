@@ -1,0 +1,321 @@
+﻿@model SmartEco.Models.ASM.Uprza.CalculationListViewModel
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = "Расчёт рассеивания";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
+
+<h2>Расчёты рассеивания</h2>
+@{
+    string Role = Context.Session.GetString("Role");
+    string controller = "Calculations";
+}
+@if (Role == "admin" || Role == "moderator" || Role == "ASM")
+{
+    <div class="form-group">
+        <a class="btn btn-success" href="@Url.Action("Create", controller, new CalculationFilter
+        {
+            PageNumber = Model.Filter.PageNumber,
+            PageSize = Model.Filter.PageSize,
+            SortOrder = Model.Filter.SortOrder,
+            NameFilter = Model.Filter.NameFilter,
+            CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+            CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+            KatoComplexFilter = Model.Filter.KatoComplexFilter
+        })">
+            @SharedLocalizer["Create"]
+        </a>
+    </div>
+}
+@using (Html.BeginForm("Index", controller, new CalculationFilter
+ {
+     SortOrder = Model.Filter.SortOrder,
+     NameFilter = Model.Filter.NameFilter,
+     CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+     CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+     KatoComplexFilter = Model.Filter.KatoComplexFilter
+ }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = Model.Filter.SortOrder })
+    @if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Pager.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new CalculationFilter
+                    {
+                        PageSize = Model.Pager.PageSize,
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter,
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber - 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @for (var page = (int)Model.Pager.StartPage; page <= (int)Model.Pager.EndPage; page++)
+            {
+                <li class="@(page == Model.Pager.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = page, SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @if (Model.Pager.PageNumber < Model.Pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber + 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.TotalPages, 
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Id)
+                    <br />
+                    <br />
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.Items.FirstOrDefault().Name).ToString(), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        SortOrder = ViewBag.NameSort,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                    <br />
+                    @Html.Editor(nameof(Model.Filter.NameFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().TypeId)
+                    <br />
+                    @Html.DropDownList(nameof(Model.Filter.CalculationTypeIdFilter), Model.CalculationTypesSelectList, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().KatoComplexName)
+                    <br />
+                    @Html.Editor(nameof(Model.Filter.KatoComplexFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().StatusId)
+                    <br />
+                    @Html.DropDownList(nameof(Model.Filter.CalculationStatusIdFilter), Model.CalculationStatusesSelectList, "", htmlAttributes: new { @class = "form-control" })
+                </th>
+                <th>
+                    @Html.DropDownList(nameof(Model.Pager.PageSize), Model.Pager.PageSizeList, htmlAttributes: new { @class = "form-control" })
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-secondary">
+                    @Html.ActionLink(SharedLocalizer["Reset"], "Index", new CalculationFilter(), htmlAttributes: new { @class = "btn btn-outline-secondary", @role="button" })
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Pager.RowNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Type.Name)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.KatoComplexName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Status.Name)
+                    </td>
+                    @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+                    {
+                        <td class="d-flex" style="justify-content: space-evenly">
+                            <a title="@SharedLocalizer["Details"]" href="@Url.Action("Details", controller, new CalculationFilterId 
+                            { 
+                                Id = item.Id, 
+                                PageNumber = Model.Filter.PageNumber, 
+                                PageSize = Model.Filter.PageSize, 
+                                SortOrder = Model.Filter.SortOrder,
+                                NameFilter = Model.Filter.NameFilter,
+                                CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                                CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                                KatoComplexFilter = Model.Filter.KatoComplexFilter
+                            })">
+                                <i class="fa-solid fa-eye fa-lg"></i>
+                            </a>
+                            <a title="@SharedLocalizer["Edit"]" href="@Url.Action("Edit", controller, new CalculationFilterId 
+                            { 
+                                Id = item.Id, 
+                                PageNumber = Model.Filter.PageNumber, 
+                                PageSize = Model.Filter.PageSize, 
+                                SortOrder = Model.Filter.SortOrder,
+                                NameFilter = Model.Filter.NameFilter,
+                                CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                                CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                                KatoComplexFilter = Model.Filter.KatoComplexFilter
+                            })" class="text-warning">
+                                <i class="fa-solid fa-pen-to-square fa-lg"></i>
+                            </a>
+                            <a title="@SharedLocalizer["Delete"]" href="@Url.Action("Delete", controller, new CalculationFilterId 
+                            { 
+                                Id = item.Id, 
+                                PageNumber = Model.Filter.PageNumber, 
+                                PageSize = Model.Filter.PageSize, 
+                                SortOrder = Model.Filter.SortOrder,
+                                NameFilter = Model.Filter.NameFilter,
+                                CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                                CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                                KatoComplexFilter = Model.Filter.KatoComplexFilter
+                            })" class="text-danger">
+                                <i class="fa-solid fa-trash fa-lg"></i>
+                            </a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new CalculationFilterId 
+                            { 
+                                Id = item.Id, 
+                                PageNumber = Model.Pager.PageNumber, 
+                                PageSize = Model.Pager.PageSize, 
+                                SortOrder = Model.Filter.SortOrder,
+                                NameFilter = Model.Filter.NameFilter,
+                                CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                                CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                                KatoComplexFilter = Model.Filter.KatoComplexFilter
+                            })
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Pager.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new CalculationFilter
+                    {
+                        PageSize = Model.Pager.PageSize,
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter,
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber - 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @for (var page = (int)Model.Pager.StartPage; page <= (int)Model.Pager.EndPage; page++)
+            {
+                <li class="@(page == Model.Pager.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = page, SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @if (Model.Pager.PageNumber < Model.Pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber + 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new CalculationFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.TotalPages, 
+                        SortOrder = Model.Filter.SortOrder,
+                        NameFilter = Model.Filter.NameFilter,
+                        CalculationStatusIdFilter = Model.Filter.CalculationStatusIdFilter,
+                        CalculationTypeIdFilter = Model.Filter.CalculationTypeIdFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+        </ul>
+    }
+}

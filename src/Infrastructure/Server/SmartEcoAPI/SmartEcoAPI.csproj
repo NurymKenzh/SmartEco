@@ -44,6 +44,8 @@
     <Compile Remove="Migrations\20231005110919_RelationBackground_20231005_00.Designer.cs" />
     <Compile Remove="Migrations\20231005111452_RelationBackground_20231005_01.cs" />
     <Compile Remove="Migrations\20231005111452_RelationBackground_20231005_01.Designer.cs" />
+    <Compile Remove="Migrations\20231204165608_Calculation_20231204_00.cs" />
+    <Compile Remove="Migrations\20231204165608_Calculation_20231204_00.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

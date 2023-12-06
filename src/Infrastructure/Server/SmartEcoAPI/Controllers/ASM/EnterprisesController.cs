@@ -6,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models.ASM;
+using SmartEcoAPI.Models.ASM.Requests;
 using SmartEcoAPI.Models.ASM.Responses;
 
 namespace SmartEcoAPI.Controllers.ASM

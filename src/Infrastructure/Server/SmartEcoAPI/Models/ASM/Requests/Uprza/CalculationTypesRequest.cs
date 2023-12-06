@@ -1,6 +1,6 @@
 ﻿namespace SmartEcoAPI.Models.ASM.Requests
 {
-    public class EnterpriseTypesRequest : BaseRequest
+    public class CalculationTypesRequest : BaseRequest
     {
         public string Name { get; set; }
     }

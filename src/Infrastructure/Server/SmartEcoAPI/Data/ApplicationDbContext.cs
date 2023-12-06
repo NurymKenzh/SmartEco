@@ -2,12 +2,14 @@
 using OfficeOpenXml.FormulaParsing.Utilities;
 using SmartEcoAPI.Models.ASM;
 using SmartEcoAPI.Models.ASM.PollutionSources;
+using SmartEcoAPI.Models.ASM.Uprza;
 
 namespace SmartEcoAPI.Data
 {
     public class ApplicationDbContext : DbContext
     {
         private readonly string _schemaAsm = "asm";
+        private readonly string _schemaAsmUprza = "asmUprza";
 
         public ApplicationDbContext(DbContextOptions<ApplicationDbContext> options)
             : base(options)
@@ -88,6 +90,13 @@ namespace SmartEcoAPI.Data
         public DbSet<HazardLevel> HazardLevel { get; set; }
         public DbSet<AirPollutant> AirPollutant { get; set; }
         public DbSet<AirEmission> AirEmission { get; set; }
+
+        #region UPRZA
+        public DbSet<CalculationType> CalculationType { get; set; }
+        public DbSet<CalculationStatus> CalculationStatus { get; set; }
+        public DbSet<Calculation> Calculation { get; set; }
+
+        #endregion
         #endregion
 
         private void SetSchemaAsm(ModelBuilder modelBuilder)
@@ -114,6 +123,11 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<HazardLevel>().ToTable(nameof(HazardLevel), _schemaAsm);
             modelBuilder.Entity<AirPollutant>().ToTable(nameof(AirPollutant), _schemaAsm);
             modelBuilder.Entity<AirEmission>().ToTable(nameof(AirEmission), _schemaAsm);
+
+            //UPRZA
+            modelBuilder.Entity<CalculationType>().ToTable(nameof(CalculationType), _schemaAsmUprza);
+            modelBuilder.Entity<CalculationStatus>().ToTable(nameof(CalculationStatus), _schemaAsmUprza);
+            modelBuilder.Entity<Calculation>().ToTable(nameof(Calculation), _schemaAsmUprza);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)
@@ -149,6 +163,15 @@ namespace SmartEcoAPI.Data
 
             modelBuilder.Entity<HazardLevel>()
                 .HasKey(lvl => lvl.Code);
+
+            ConfigureUprza(modelBuilder);
+        }
+
+        private void ConfigureUprza(ModelBuilder modelBuilder)
+        {
+            modelBuilder.Entity<CalculationStatus>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
         }
     }
 }

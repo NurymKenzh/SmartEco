@@ -1,6 +1,4 @@
-﻿using SmartEcoAPI.Models.ASM.Requests;
-
-namespace SmartEcoAPI.Models.ASM.Responses
+﻿namespace SmartEcoAPI.Models.ASM.Requests
 {
     public class EnterprisesRequest : BaseRequest
     {

@@ -1,7 +1,10 @@
 ﻿namespace SmartEco.Models.ASM.Requests
 {
-    public class IndSiteEnterprisesRequest
+    public class EnterprisesRequest : BaseRequest
     {
-        public int? EnterpriseId { get; set; }
+        public string Bin { get; set; }
+        public string Name { get; set; }
+        public string KatoComplex { get; set; }
+        public int? EnterpriseTypeId { get; set; }
     }
 }
