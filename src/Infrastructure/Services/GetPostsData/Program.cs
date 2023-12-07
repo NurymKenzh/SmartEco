@@ -25,6 +25,25 @@ namespace GetPostsData
             SMTPServer = "smtp.gmail.com";
         const int SMTPPort = 465;
 
+        public enum DataProviders
+        {
+            Kazhydromet = 1,
+            Urus = 2,
+            Ecoservice = 3,
+            Clarity = 4
+        }
+
+        public enum Projects
+        {
+            KaragandaRegion = 1,
+            Arys = 2,
+            Almaty = 3,
+            Shymkent = 4,
+            Altynalmas = 5,
+            Zhanatas = 6,
+            Oskemen = 7
+        }
+
         public class MeasuredParameter
         {
             public int Id { get; set; }
@@ -37,6 +56,8 @@ namespace GetPostsData
         {
             public int Id { get; set; }
             public string MN { get; set; }
+            public int DataProviderId { get; set; }
+            public int? ProjectId { get; set; }
         }
         public class PostData
         {
@@ -1325,83 +1346,100 @@ namespace GetPostsData
                     }
                 }
                 //=================================================================================================================================================================
-                // Send report for Zhanats posts
+                // Send report for Zhanats, Altynalmas posts
                 if (lastSendReportDateTime.AddHours(1) < DateTime.Now && lastSendReportDateTime.ToShortDateString() != DateTime.Now.ToShortDateString())
                 {
-                    try
-                    {
-                        NewLog($"Send report for Zhanatas posts >> Calling Api");
-                        Task.WaitAll(SendReportZhanatas());
-                    }
-                    catch (Exception ex)
-                    {
-                        NewLog($"Send report for Zhanatas posts >> Error: {ex.Message}");
-                    }
-                    finally
-                    {
-                        lastSendReportDateTime = DateTime.Now;
-                    }
+                    Task.WaitAll(SendReport(Projects.Zhanatas, "baimukhanov.a@kpp.kz"));
+                    Task.WaitAll(SendReport(Projects.Altynalmas, "gervana81@mail.ru"));
+                    lastSendReportDateTime = DateTime.Now;
                 }
 
                 Thread.Sleep(30000);
             }
         }
 
-        private static async Task SendReportZhanatas()
+        private static async Task SendReport(Projects project, string emailTo)
         {
-            HttpResponseMessage result = new HttpResponseMessage();
-
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = Debugger.IsAttached ?
-                    new Uri("http://localhost:52207") :
-                    new Uri("http://localhost:8084");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGlyZGFyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Im1vZGVyYXRvciIsIm5iZiI6MTY5ODkyNzI3NSwiZXhwIjoxNzMwNTQ5Njc1LCJpc3MiOiJTbWFydEVjbyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTIyMDcvIn0.4lUrxsfS2eHFTlsM59jzuaGJmgh3jJ7iRUQ14wDbE1M");
-                client.Timeout = TimeSpan.FromMinutes(30);
+                NewLog($"Send report for {project} posts >> Forming request");
 
-                var dateTimeYesterdayFrom = DateTime.Now.AddDays(-1).Date + new TimeSpan(00, 00, 00);
-                var dateTimeYesterdayTo = DateTime.Now.AddDays(-1).Date + new TimeSpan(23, 59, 59);
-                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
-                var monitoringPostIds = new List<int>() { 234, 235 };
-                var measuredParameterIds = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 9, 13, 19, 73 };
+                HttpResponseMessage result = new HttpResponseMessage();
 
-                string url = "api/Analytics/ExcelFormationZhanatas",
-                route = "";
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeFrom={dateTimeYesterdayFrom.ToString(dateTimeFormatInfo)}";
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeTo={dateTimeYesterdayTo.ToString(dateTimeFormatInfo)}";
-
-                foreach (var monitoringPostId in monitoringPostIds)
+                using (var client = new HttpClient())
                 {
+                    client.BaseAddress = Debugger.IsAttached ?
+                        new Uri("http://localhost:52207") :
+                        new Uri("http://localhost:8084");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGlyZGFyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Im1vZGVyYXRvciIsIm5iZiI6MTY5ODkyNzI3NSwiZXhwIjoxNzMwNTQ5Njc1LCJpc3MiOiJTbWFydEVjbyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTIyMDcvIn0.4lUrxsfS2eHFTlsM59jzuaGJmgh3jJ7iRUQ14wDbE1M");
+                    client.Timeout = TimeSpan.FromMinutes(30);
+
+                    var dateTimeYesterdayFrom = DateTime.Now.AddDays(-1).Date + new TimeSpan(00, 00, 00);
+                    var dateTimeYesterdayTo = DateTime.Now.AddDays(-1).Date + new TimeSpan(23, 59, 59);
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    var monitoringPostIds = new List<int>(); //Zhanatas posts: 234, 235
+                    var measuredParameterIds = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 9, 13, 19, 73 };
+
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var monitoringPostsv = connection.Query<MonitoringPost>(
+                            $"SELECT \"Id\", \"MN\", \"DataProviderId\", \"ProjectId\"" +
+                            $"FROM public.\"MonitoringPost\" WHERE \"DataProviderId\" = '{(int)DataProviders.Ecoservice}' and \"ProjectId\" = '{(int)project}';");
+                        monitoringPostIds = monitoringPostsv
+                            .Select(post => post.Id)
+                            .ToList();
+                        connection.Close();
+                    }
+
+                    if (monitoringPostIds.Count is 0)
+                    {
+                        NewLog($"Send report for {project} posts >> No monitoring posts");
+                        return;
+                    }
+
+                    string url = "api/Analytics/ExcelFormationZhanatas",
+                    route = "";
+
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"MonitoringPostsId={monitoringPostId}".Replace(',', '.');
+                    route += $"DateTimeFrom={dateTimeYesterdayFrom.ToString(dateTimeFormatInfo)}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeTo={dateTimeYesterdayTo.ToString(dateTimeFormatInfo)}";
+
+                    foreach (var monitoringPostId in monitoringPostIds)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"MonitoringPostsId={monitoringPostId}".Replace(',', '.');
+                    }
+
+                    foreach (var measuredParametersId in measuredParameterIds)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"MeasuredParametersId={measuredParametersId}".Replace(',', '.');
+                    }
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"Server={!Debugger.IsAttached}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"MailTo={emailTo}";
+
+                    result = await client.PostAsync(url + route, null);
                 }
 
-                foreach (var measuredParametersId in measuredParameterIds)
+                if (result.IsSuccessStatusCode)
                 {
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"MeasuredParametersId={measuredParametersId}".Replace(',', '.');
+                    NewLog($"Send report for {project} posts >> Success sended");
                 }
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"Server={!Debugger.IsAttached}";
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"MailTo=baimukhanov.a@kpp.kz";
-
-                result = await client.PostAsync(url + route, null);
+                else
+                {
+                    NewLog($"Send report for {project} posts >> {result.StatusCode}: {result.ReasonPhrase}");
+                }
             }
-
-            if (result.IsSuccessStatusCode)
+            catch (Exception ex)
             {
-                NewLog($"Send report for Zhanatas posts >> Success sended");
-            }
-            else
-            {
-                NewLog($"Send report for Zhanatas posts >> {result.StatusCode}: {result.ReasonPhrase}");
+                NewLog($"Send report for {project} posts >> Error: {ex.Message}");
             }
         }
         public static void NewLog(string Log)
