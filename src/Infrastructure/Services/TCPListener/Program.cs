@@ -91,32 +91,32 @@ namespace TCPIPTestServer
         public static void NewLog(string Log)
         {
             Console.WriteLine($"{DateTime.Now.ToString()} >> {Log}{Environment.NewLine}");
-            try
-            {
-                using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                {
-                    connection.Open();
-                    DateTime now = DateTime.Now;
-                    string execute = $"INSERT INTO public.\"Log\"(" +
-                        $"\"Log\"," +
-                        $"\"DateTime\") " +
-                        $"VALUES ('{Log}'," +
-                        $"make_timestamptz(" +
-                            $"{now.Year.ToString()}, " +
-                            $"{now.Month.ToString()}, " +
-                            $"{now.Day.ToString()}, " +
-                            $"{now.Hour.ToString()}, " +
-                            $"{now.Minute.ToString()}, " +
-                            $"{now.Second.ToString()})" +
-                        $");";
-                    connection.Execute(execute);
-                    connection.Close();
-                }
-            }
-            catch
-            {
+            //try
+            //{
+            //    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+            //    {
+            //        connection.Open();
+            //        DateTime now = DateTime.Now;
+            //        string execute = $"INSERT INTO public.\"Log\"(" +
+            //            $"\"Log\"," +
+            //            $"\"DateTime\") " +
+            //            $"VALUES ('{Log}'," +
+            //            $"make_timestamptz(" +
+            //                $"{now.Year.ToString()}, " +
+            //                $"{now.Month.ToString()}, " +
+            //                $"{now.Day.ToString()}, " +
+            //                $"{now.Hour.ToString()}, " +
+            //                $"{now.Minute.ToString()}, " +
+            //                $"{now.Second.ToString()})" +
+            //            $");";
+            //        connection.Execute(execute);
+            //        connection.Close();
+            //    }
+            //}
+            //catch
+            //{
 
-            }
+            //}
         }
 
         public static void NewData(string Data, string IP, string ClientNumber)
@@ -164,6 +164,9 @@ namespace TCPIPTestServer
                             $"{dateTimePost.Value.Second})";
                     }
 
+                    if (!IsValidData(Data, MN))
+                        return;
+
                     string execute = $"INSERT INTO public.\"Data\"(" +
                         $"\"Data\"," +
                         $"\"DateTimeServer\"," +
@@ -191,5 +194,8 @@ namespace TCPIPTestServer
 
             }
         }
+
+        private static bool IsValidData(string data, string MN)
+            => MN.All(c => char.IsLetterOrDigit(c) || c is '-' || c is '_') && data.Contains("-Rtd");
     }
 }

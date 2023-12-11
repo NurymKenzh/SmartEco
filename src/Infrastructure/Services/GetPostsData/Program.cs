@@ -725,45 +725,45 @@ namespace GetPostsData
                     }
                     NewLog($"Backup. Get Data from Data (PostsData) finished. {countBackup.ToString()} rows backed up");
 
-                    NewLog($"Backup. Get Data from Log (PostsData) started");
-                    countBackup = 0;
-                    if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
-                    {
-                        using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection.Open();
-                            var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
-                                $"FROM public.\"Log\" " +
-                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
-                            countBackup = postLogs.Count();
-                            foreach (PostLog log in postLogs)
-                            {
-                                string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
-                                fileName = Path.ChangeExtension(fileName, "csv");
-                                string data = log.Log.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
-                                    log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
-                                if (!File.Exists(fileName))
-                                {
-                                    File.AppendAllText(fileName, $"Log\tDateTime" + Environment.NewLine);
-                                }
-                                File.AppendAllText(fileName, data);
-                            }
-                            try
-                            {
-                                connection.Execute($"DELETE FROM public.\"Log\" " +
-                                    $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
-                            }
-                            catch
-                            {
+                    //NewLog($"Backup. Get Data from Log (PostsData) started");
+                    //countBackup = 0;
+                    //if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
+                    //{
+                    //    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                    //    {
+                    //        connection.Open();
+                    //        var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
+                    //            $"FROM public.\"Log\" " +
+                    //            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                    //        countBackup = postLogs.Count();
+                    //        foreach (PostLog log in postLogs)
+                    //        {
+                    //            string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
+                    //            fileName = Path.ChangeExtension(fileName, "csv");
+                    //            string data = log.Log.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
+                    //                log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
+                    //            if (!File.Exists(fileName))
+                    //            {
+                    //                File.AppendAllText(fileName, $"Log\tDateTime" + Environment.NewLine);
+                    //            }
+                    //            File.AppendAllText(fileName, data);
+                    //        }
+                    //        try
+                    //        {
+                    //            connection.Execute($"DELETE FROM public.\"Log\" " +
+                    //                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                    //        }
+                    //        catch
+                    //        {
 
-                            }
-                            finally
-                            {
-                                connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
-                            }
-                        }
-                    }
-                    NewLog($"Backup. Get Data from Log (PostsData) finished. {countBackup.ToString()} rows backed up");
+                    //        }
+                    //        finally
+                    //        {
+                    //            connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
+                    //        }
+                    //    }
+                    //}
+                    //NewLog($"Backup. Get Data from Log (PostsData) finished. {countBackup.ToString()} rows backed up");
 
                     NewLog($"Backup. Get Data from Log (GetPostsData) started");
                     countBackup = 0;
