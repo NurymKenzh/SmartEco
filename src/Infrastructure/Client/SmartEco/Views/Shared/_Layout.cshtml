@@ -110,6 +110,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Shymkent">@SharedLocalizer["Map"]</a>
                             </li>
                         }
+                        @if (Role == "Altynalmas")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="Maps" asp-action="Altynalmas">@SharedLocalizer["Map"]</a>
+                            </li>
+                        }
                         @if (Role == "Zhanatas")
                         {
                             <li class="nav-item">
