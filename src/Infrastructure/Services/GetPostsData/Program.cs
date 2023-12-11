@@ -154,121 +154,121 @@ namespace GetPostsData
 
                 // Copy data
                 // Get Data from PostsData
-                NewLog("Get. Get Data from PostsData started");
+                //NewLog("Get. Get Data from PostsData started");
                 int postDatasCount = 0;
-                using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                {
-                    List<MeasuredData> measuredDatas = new List<MeasuredData>();
-                    connection.Open();
-                    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
-                    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;", commandTimeout: 86400);
-                    postDatasCount = postDatas.Count();
-                    try
-                    {
-                        foreach (PostData postData in postDatas)
-                        {
-                            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
-                            {
-                                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
-                                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
-                                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
-                                var coef = checkPost != null ? checkPost.Coefficient : null;
+                //using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //{
+                //    List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                //    connection.Open();
+                //    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
+                //    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //    postDatasCount = postDatas.Count();
+                //    try
+                //    {
+                //        foreach (PostData postData in postDatas)
+                //        {
+                //            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
+                //            {
+                //                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
+                //                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
+                //                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
+                //                var coef = checkPost != null ? checkPost.Coefficient : null;
 
-                                if (MeasuredParameterId != null && MonitoringPostId != null)
-                                {
-                                    try
-                                    {
-                                        bool adequateDateTimePost = true;
-                                        if (postData.DateTimePost == null)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
-                                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
+                //                if (MeasuredParameterId != null && MonitoringPostId != null)
+                //                {
+                //                    try
+                //                    {
+                //                        bool adequateDateTimePost = true;
+                //                        if (postData.DateTimePost == null)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
+                //                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
 
-                                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
-                                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
-                                        {
-                                            if (coef != null)
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue * Convert.ToDecimal(coef)
-                                                });
-                                            }
-                                            else
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue
-                                                });
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
+                //                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                //                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                //                        {
+                //                            if (coef != null)
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue * Convert.ToDecimal(coef)
+                //                                });
+                //                            }
+                //                            else
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    catch (Exception ex)
+                //                    {
 
-                                    }
+                //                    }
 
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
+                //                }
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
 
-                    }
-                    NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
-                        $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
-                    NewLog($"Get. Insert data to MeasuredDatas started");
-                    // Insert MeasuredDatas into SmartEcoAPI
-                    try
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            foreach (MeasuredData measuredData in measuredDatas)
-                            {
-                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
-                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                    $"make_timestamptz(" +
-                                        $"{measuredData.DateTime?.Year.ToString()}, " +
-                                        $"{measuredData.DateTime?.Month.ToString()}, " +
-                                        $"{measuredData.DateTime?.Day.ToString()}, " +
-                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                        $"{measuredData.DateTime?.Second.ToString()})," +
-                                    $"{measuredData.Value.ToString()}," +
-                                    $"{measuredData.MonitoringPostId.ToString()});";
-                                connection2.Execute(execute);
-                            }
-                        }
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;", commandTimeout: 86400);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;", commandTimeout: 86400);
-                        }
-                    }
-                    NewLog($"Get. Insert data to MeasuredDatas finished");
-                }
+                //    }
+                //    NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                //        $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
+                //    NewLog($"Get. Insert data to MeasuredDatas started");
+                //    // Insert MeasuredDatas into SmartEcoAPI
+                //    try
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            foreach (MeasuredData measuredData in measuredDatas)
+                //            {
+                //                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
+                //                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                //                    $"make_timestamptz(" +
+                //                        $"{measuredData.DateTime?.Year.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Month.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Day.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Hour.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Minute.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Second.ToString()})," +
+                //                    $"{measuredData.Value.ToString()}," +
+                //                    $"{measuredData.MonitoringPostId.ToString()});";
+                //                connection2.Execute(execute);
+                //            }
+                //        }
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //        }
+                //    }
+                //    NewLog($"Get. Insert data to MeasuredDatas finished");
+                //}
                 //=================================================================================================================================================================
                 // Average data
                 // Get Data from PostsData
