@@ -170,7 +170,7 @@ namespace SmartEcoAPI.Controllers
                 package.Save();
 
                 string userEmail = User.Identity.Name;
-                await SendExcel(userEmail, Server);
+                await SendExcel(new List<string> { userEmail }, Server);
                 System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
             }
             return null;
@@ -453,23 +453,24 @@ namespace SmartEcoAPI.Controllers
                 package.Save();
 
                 string userEmail = User.Identity.Name;
-                await SendExcel(userEmail, Server);
+                await SendExcel(new List<string> { userEmail }, Server);
                 System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
             }
 
             return null;
         }
 
-        // POST: api/Analytics/ExcelFormationZhanatas
-        [HttpPost("ExcelFormationZhanatas")]
-        [Authorize(Roles = "admin,moderator,Zhanatas")]
-        public async Task<ActionResult> ExcelFormationZhanatas(
+        // POST: api/Analytics/ExcelFormationByProject
+        [HttpPost("ExcelFormationByProject")]
+        [Authorize(Roles = "admin,moderator,Zhanatas,Altynalmas")]
+        public async Task<ActionResult> ExcelFormationByProject(
             DateTime? DateTimeFrom,
             DateTime? DateTimeTo,
             [FromQuery(Name = "MonitoringPostsId")] List<int> MonitoringPostsId,
             [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
             bool Server,
-            string MailTo)
+            string Project,
+            [FromQuery(Name = "MailTo")] List<string> MailTo)
         {
             string sFileName = $"{sName}.xlsx";
             FileInfo file = Server == true ? new FileInfo(Path.Combine(PathExcelFile, sFileName)) : new FileInfo(Path.Combine(sFileName));
@@ -483,7 +484,7 @@ namespace SmartEcoAPI.Controllers
                 ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(sName);
 
                 //Заголовок
-                worksheet.Cells[2, 1].Value = $"Отчёт по мониторингу качества атмосферного воздуха (Жанатас)";
+                worksheet.Cells[2, 1].Value = $"Отчёт по мониторингу качества атмосферного воздуха ({Project})";
                 worksheet.Cells["A2:I2"].Merge = true;
                 worksheet.Cells[2, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
                 worksheet.Cells[2, 1].Style.Font.Bold = true;
@@ -539,7 +540,7 @@ namespace SmartEcoAPI.Controllers
 
                 package.Save();
 
-                string userEmail = MailTo ?? User.Identity.Name;
+                List<string> userEmail = MailTo ?? new List<string> { User.Identity.Name };
                 await SendExcel(userEmail, Server);
                 System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
             }
@@ -624,7 +625,7 @@ namespace SmartEcoAPI.Controllers
             return measuredDatasR;
         }
 
-        private async Task SendExcel(string mailTo, bool Server)
+        private async Task SendExcel(List<string> mailsTo, bool Server)
         {
             var path = Server == true ? Path.Combine(PathExcelFile, $"{sName}.xlsx") : Path.Combine($"{sName}.xlsx");
             var file = System.IO.File.OpenRead(path);
@@ -633,7 +634,10 @@ namespace SmartEcoAPI.Controllers
             try
             {
                 emailMessage.From.Add(new MailboxAddress(Theme, FromEmail));
-                emailMessage.To.Add(new MailboxAddress("", mailTo));
+                foreach (var mailTo in mailsTo)
+                {
+                    emailMessage.To.Add(new MailboxAddress("", mailTo));
+                }
                 emailMessage.Subject = Heading;
 
                 // create an pdf attachment for the file located at path
