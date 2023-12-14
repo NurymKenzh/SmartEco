@@ -914,7 +914,7 @@ namespace SmartEco.Controllers
             List<int> MonitoringPostsId,
             List<int> MeasuredParametersId)
         {
-            string url = "api/Analytics/ExcelFormationZhanatas",
+            string url = "api/Analytics/ExcelFormationByProject",
                 route = "";
             DateTime dateTimeFrom = DateFrom.Date + TimeFrom.TimeOfDay,
                 dateTimeTo = DateTo.Date + TimeTo.TimeOfDay;
@@ -949,6 +949,10 @@ namespace SmartEco.Controllers
 
             route += string.IsNullOrEmpty(route) ? "?" : "&";
             route += $"Server={Startup.Configuration["Server"]}";
+
+            route += string.IsNullOrEmpty(route) ? "?" : "&";
+            route += $"Project=Zhanatas";
+
             HttpResponseMessage response = await _HttpApiClient.PostAsync(url + route, null);
             //if (response.IsSuccessStatusCode)
             //{
