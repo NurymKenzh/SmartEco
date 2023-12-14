@@ -21,5 +21,27 @@ namespace SmartEco.Common.Data
                 return new SmartEcoRepository(dbContext);
             });
         }
+
+        public static void AddSmartEcoApiDbContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<SmartEcoApiDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("SmartEcoApiDbConnection")));
+        }
+
+        public static void AddSmartEcoServicesDbContext(this IServiceCollection services, IConfiguration configuration)
+        {
+            services.AddDbContext<SmartEcoServicesDbContext>(options =>
+                options.UseNpgsql(configuration.GetConnectionString("SmartEcoServicesDbConnection")));
+        }
+
+        public static void AddServicesPublicRepository(this IServiceCollection services)
+        {
+            services.AddScoped<ISmartEcoServicesPublicRepository, SmartEcoServicesPublicRepository>(sp =>
+            {
+                var dbContext = sp.GetRequiredService<SmartEcoServicesDbContext>();
+                ArgumentNullException.ThrowIfNull(dbContext);
+                return new SmartEcoServicesPublicRepository(dbContext);
+            });
+        }
     }
 }

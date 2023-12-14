@@ -54,6 +54,8 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SmartEco.Akimato", "src\Inf
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Clarity", "src\Infrastructure\Services\Clarity\Clarity.csproj", "{71DBF7B0-C906-491B-9E68-1134508AA2DF}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Reporter", "src\Infrastructure\Services\Reporter\Reporter.csproj", "{69426571-37B3-4299-B596-3B452F8F0778}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -120,6 +122,10 @@ Global
 		{71DBF7B0-C906-491B-9E68-1134508AA2DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{71DBF7B0-C906-491B-9E68-1134508AA2DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{71DBF7B0-C906-491B-9E68-1134508AA2DF}.Release|Any CPU.Build.0 = Release|Any CPU
+		{69426571-37B3-4299-B596-3B452F8F0778}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{69426571-37B3-4299-B596-3B452F8F0778}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{69426571-37B3-4299-B596-3B452F8F0778}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{69426571-37B3-4299-B596-3B452F8F0778}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -146,6 +152,7 @@ Global
 		{0E24E4FD-D05E-41BB-8933-6EFB3120F1AB} = {EC8FDAF7-158B-4791-B4C1-92E69339AD5A}
 		{CF8F01CE-8B90-4E58-8545-BC90257489D9} = {81CDA0CE-BB67-4D62-B050-DE8D8F2CDA9B}
 		{71DBF7B0-C906-491B-9E68-1134508AA2DF} = {CAE7D6E1-74F1-4B09-A139-DE3DBFD3FC33}
+		{69426571-37B3-4299-B596-3B452F8F0778} = {CAE7D6E1-74F1-4B09-A139-DE3DBFD3FC33}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {726BEB27-F4C8-43AD-8112-7A9DCB2D6D0F}
