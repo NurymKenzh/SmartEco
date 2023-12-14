@@ -1377,6 +1377,12 @@ namespace GetPostsData
             {
                 NewLog($"Send report for {project} posts >> Forming request");
 
+                Dictionary<string, string> nameProjects = new Dictionary<string, string>
+                {
+                    ["Zhanatas"] = "Жанатас",
+                    ["Altynalmas"] = "Алтыналмас"
+                };
+
                 HttpResponseMessage result = new HttpResponseMessage();
 
                 using (var client = new HttpClient())
@@ -1436,7 +1442,7 @@ namespace GetPostsData
                     route += $"Server={!Debugger.IsAttached}";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"Project={project}";
+                    route += $"Project={nameProjects[project.ToString()]}";
 
                     emailsTo.Add("gervana81@mail.ru");
                     foreach (var emailTo in emailsTo)
