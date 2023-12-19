@@ -96,6 +96,7 @@ namespace GetPostsData
         {
             public int Id { get; set; }
             public string Email { get; set; }
+            public string Role { get; set; }
         }
         public class LogSendMail
         {
@@ -1349,8 +1350,20 @@ namespace GetPostsData
                 // Send report for Zhanats, Altynalmas posts
                 if (lastSendReportDateTime.AddHours(1) < DateTime.Now && lastSendReportDateTime.ToShortDateString() != DateTime.Now.ToShortDateString())
                 {
-                    Task.WaitAll(SendReport(Projects.Zhanatas, "baimukhanov.a@kpp.kz"));
-                    Task.WaitAll(SendReport(Projects.Altynalmas, "gervana81@mail.ru"));
+                    var reportPersons = new List<Person>();
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\", \"Role\" " +
+                            $"FROM public.\"Person\" " +
+                            $"WHERE \"Role\" = 'Zhanatas' OR \"Role\" = 'Altynalmas' " +
+                            $"ORDER BY \"Id\"");
+                        reportPersons = personsv.ToList();
+                    }
+                    var zhanatasPersons = reportPersons.Where(p => p.Role == "Zhanatas").Select(p => p.Email).ToList();
+                    var altynalmasPersons = reportPersons.Where(p => p.Role == "Altynalmas").Select(p => p.Email).ToList();
+                    Task.WaitAll(SendReport(Projects.Zhanatas, zhanatasPersons));
+                    Task.WaitAll(SendReport(Projects.Altynalmas, altynalmasPersons));
                     lastSendReportDateTime = DateTime.Now;
                 }
 
@@ -1358,11 +1371,17 @@ namespace GetPostsData
             }
         }
 
-        private static async Task SendReport(Projects project, string emailTo)
+        private static async Task SendReport(Projects project, List<string> emailsTo)
         {
             try
             {
                 NewLog($"Send report for {project} posts >> Forming request");
+
+                Dictionary<string, string> nameProjects = new Dictionary<string, string>
+                {
+                    ["Zhanatas"] = "Жанатас",
+                    ["Altynalmas"] = "Алтыналмас"
+                };
 
                 HttpResponseMessage result = new HttpResponseMessage();
 
@@ -1398,7 +1417,7 @@ namespace GetPostsData
                         return;
                     }
 
-                    string url = "api/Analytics/ExcelFormationZhanatas",
+                    string url = "api/Analytics/ExcelFormationByProject",
                     route = "";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
@@ -1423,7 +1442,17 @@ namespace GetPostsData
                     route += $"Server={!Debugger.IsAttached}";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"MailTo={emailTo}";
+                    route += $"Project={nameProjects[project.ToString()]}";
+
+                    emailsTo.Add("gervana81@mail.ru");
+                    foreach (var emailTo in emailsTo)
+                    {
+                        if (IsValidEmail(emailTo))
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MailTo={emailTo}";
+                        }
+                    }
 
                     result = await client.PostAsync(url + route, null);
                 }
