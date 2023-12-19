@@ -1360,8 +1360,8 @@ namespace GetPostsData
                             $"ORDER BY \"Id\"");
                         reportPersons = personsv.ToList();
                     }
-                    var zhanatasPersons = persons.Where(p => p.Role == "Zhanatas").Select(p => p.Email).ToList();
-                    var altynalmasPersons = persons.Where(p => p.Role == "Altynalmas").Select(p => p.Email).ToList();
+                    var zhanatasPersons = reportPersons.Where(p => p.Role == "Zhanatas").Select(p => p.Email).ToList();
+                    var altynalmasPersons = reportPersons.Where(p => p.Role == "Altynalmas").Select(p => p.Email).ToList();
                     Task.WaitAll(SendReport(Projects.Zhanatas, zhanatasPersons));
                     Task.WaitAll(SendReport(Projects.Altynalmas, altynalmasPersons));
                     lastSendReportDateTime = DateTime.Now;
