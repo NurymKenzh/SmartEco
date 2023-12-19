@@ -1,0 +1,10 @@
+{
+  "profiles": {
+    "ServiceManager": {
+      "commandName": "Project",
+      "environmentVariables": {
+        "ASPNETCORE_ENVIRONMENT": "Development"
+      }
+    }
+  }
+}
