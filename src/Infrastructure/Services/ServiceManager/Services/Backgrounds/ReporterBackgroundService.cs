@@ -10,18 +10,13 @@ using SmartEco.Common.Services.Resources;
 namespace Reporter.Services
 {
     internal sealed class ReporterBackgroundService(
-        ILoggerService loggerService,
-        IOptions<ServicesOptions> servicesOption,
-        IOptions<DelayOptions> delayOptions,
-        IReporterService reporterService) : BackgroundService
+        ILoggerService _loggerService,
+        IOptions<DelayOptions> _delayOptions,
+        IReporterService _reporterService) : BackgroundService
     {
-        private readonly int _delaySeconds = delayOptions.Value.ReporterDelay;
+        private readonly int _delaySeconds = _delayOptions.Value.ReporterDelay;
         private readonly ColorType _colorType = ColorType.Black;
         private readonly string serviceName = ServiceNames.ServiceManager;
-
-        private readonly ILoggerService _loggerService = loggerService;
-        private readonly ServicesOptions _servicesOption = servicesOption.Value;
-        private readonly IReporterService _reporterService = reporterService;
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {

@@ -6,10 +6,8 @@ using SmartEco.Common.Enums;
 namespace Reporter.Repositories
 {
     internal class SmartEcoApiRepository(
-        SmartEcoApiDbContext context) : ISmartEcoApiRepository
+        SmartEcoApiDbContext _context) : ISmartEcoApiRepository
     {
-        private readonly SmartEcoApiDbContext _context = context;
-
         public async Task<List<MeasuredDataDto>> GetMeasuredDatas(DateTime lastDateTime)
             => await _context.MeasuredData
             .Where(data => data.DateTime > lastDateTime && data.DateTime != null)

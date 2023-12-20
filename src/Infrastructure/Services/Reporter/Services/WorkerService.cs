@@ -4,14 +4,11 @@ using SmartEco.Common.Enums;
 namespace Reporter.Services
 {
     internal sealed class WorkerService(
-        ILogger<WorkerService> logger,
-        ISmartEcoServicesPublicRepository publicRepository,
-        ICheckDataService checkDataService) : IWorkerService
+        ILogger<WorkerService> _logger,
+        ISmartEcoServicesPublicRepository _publicRepository,
+        ICheckDataService _checkDataService) : IWorkerService
     {
         private readonly int _delayMinutes = 1;
-        private readonly ILogger<WorkerService> _logger = logger;
-        private readonly ISmartEcoServicesPublicRepository _publicRepository = publicRepository;
-        private readonly ICheckDataService _checkDataService = checkDataService;
 
         public async Task DoWorkAsync(CancellationToken stoppingToken)
         {

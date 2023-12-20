@@ -1,24 +1,17 @@
-﻿using Microsoft.Extensions.Logging;
-using Reporter.Models;
+﻿using Reporter.Models;
 using Reporter.Repositories;
 using SmartEco.Common.Data.Entities.SmartEcoServices;
 using SmartEco.Common.Services;
 namespace Reporter.Services
 {
     internal class CheckDataService(
-        ILogger<CheckDataService> logger,
-        ISmartEcoApiRepository apiRepository,
-        ISmartEcoServicesRepository servicesRepository,
-        IConfiguration configuration,
-        IEmailService emailService) : ICheckDataService
+        ILogger<CheckDataService> _logger,
+        ISmartEcoApiRepository _apiRepository,
+        ISmartEcoServicesRepository _servicesRepository,
+        IConfiguration _configuration,
+        IEmailService _emailService) : ICheckDataService
     {
         const string Heading = "Нет данных!";
-
-        readonly ILogger<CheckDataService> _logger = logger;
-        readonly ISmartEcoApiRepository _apiRepository = apiRepository;
-        readonly ISmartEcoServicesRepository _servicesRepository = servicesRepository;
-        readonly IConfiguration _configuration = configuration;
-        readonly IEmailService _emailService = emailService;
 
         public async Task Checking()
         {

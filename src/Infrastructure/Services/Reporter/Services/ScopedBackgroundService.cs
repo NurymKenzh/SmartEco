@@ -1,12 +1,9 @@
 namespace Reporter.Services
 {
     public sealed class ScopedBackgroundService(
-        IServiceProvider serviceProvider,
-        ILogger<ScopedBackgroundService> logger) : BackgroundService
+        IServiceProvider _serviceProvider,
+        ILogger<ScopedBackgroundService> _logger) : BackgroundService
     {
-        private readonly IServiceProvider _serviceProvider = serviceProvider;
-        private readonly ILogger<ScopedBackgroundService> _logger = logger;
-
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
             _logger.LogInformation($"{nameof(ScopedBackgroundService)} is running.");

@@ -6,10 +6,8 @@ using SmartEco.Common.Data.Entities.SmartEcoServices;
 namespace Reporter.Repositories
 {
     internal class SmartEcoServicesRepository(
-        SmartEcoServicesDbContext context) : ISmartEcoServicesRepository
+        SmartEcoServicesDbContext _context) : ISmartEcoServicesRepository
     {
-        private readonly SmartEcoServicesDbContext _context = context;
-
         public async Task<List<SendEmailEventLog>> GetSendEmailEventLogs(DateTime lastWriteDateTime)
             => await _context.SendEmailEventLog
             .Where(eventLog => eventLog.SendedOn > lastWriteDateTime)
