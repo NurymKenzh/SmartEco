@@ -6,6 +6,8 @@ namespace ServiceManager.Services
 {
     internal class BaseService
     {
+        private static readonly string _failedAction = "Failed! Check the specified path, status or settings";
+
         public static async Task<(ServiceStatus, string?)> GetStatus(string serviceName)
         {
             using PowerShell PowerShellInst = PowerShell.Create();
@@ -26,7 +28,10 @@ namespace ServiceManager.Services
             var PSOutput = await PowerShellInst.InvokeAsync();
             await PowerShellInstFailure.InvokeAsync();
 
-            return ServiceInfo(PSOutput);
+            var serviceInfo = ServiceInfo(PSOutput);
+            if (serviceInfo.Item1 is ServiceStatus.Undefined)
+                throw new InvalidOperationException(_failedAction);
+            return serviceInfo;
         }
 
         public static async Task<(ServiceStatus, string?)> RemoveService(string serviceName)
@@ -36,7 +41,10 @@ namespace ServiceManager.Services
 
             var PSOutput = await PowerShellInst.InvokeAsync();
 
-            return ServiceInfo(PSOutput);
+            var serviceInfo = ServiceInfo(PSOutput);
+            if (serviceInfo.Item1 is ServiceStatus.Undefined)
+                throw new InvalidOperationException(_failedAction);
+            return serviceInfo;
         }
 
         public static async Task<(ServiceStatus, string?)> StartService(string serviceName)
@@ -46,7 +54,10 @@ namespace ServiceManager.Services
 
             var PSOutput = await PowerShellInst.InvokeAsync();
 
-            return ServiceInfo(PSOutput);
+            var serviceInfo = ServiceInfo(PSOutput);
+            if (serviceInfo.Item1 is ServiceStatus.Undefined)
+                throw new InvalidOperationException(_failedAction);
+            return serviceInfo;
         }
 
         public static async Task<(ServiceStatus, string?)> StopService(string serviceName)
@@ -56,7 +67,10 @@ namespace ServiceManager.Services
 
             var PSOutput = await PowerShellInst.InvokeAsync();
 
-            return ServiceInfo(PSOutput);
+            var serviceInfo = ServiceInfo(PSOutput);
+            if (serviceInfo.Item1 is ServiceStatus.Undefined)
+                throw new InvalidOperationException(_failedAction);
+            return serviceInfo;
         }
 
         public static void UpdateMonitoringList(
@@ -95,8 +109,9 @@ namespace ServiceManager.Services
             };
 
         public static ButtonState GetButtonState(ServiceStatus status)
-            => new()
+            => !Bindings.IsAdministrator ? new() : new()
             {
+                IsEnabledUpdate = true,
                 IsEnabledCreate = status is ServiceStatus.Undefined,
                 IsEnabledRemove = status is not (ServiceStatus.Running or ServiceStatus.StartPending or ServiceStatus.Undefined),
                 IsEnabledStart = status is not (ServiceStatus.Running or ServiceStatus.StartPending or ServiceStatus.Undefined),

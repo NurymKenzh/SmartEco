@@ -27,19 +27,21 @@ namespace Reporter.Services
         {
             _loggerService.AddInfoLog(serviceName, $"{nameof(ReporterBackgroundService)} is running", Bindings.ReporterTab, _colorType);
 
-            try
+            while (!stoppingToken.IsCancellationRequested)
             {
-                await DoWorkAsync(stoppingToken);
-            }
-            catch (OperationCanceledException)
-            {
-                _loggerService.AddWarningLog(serviceName, $"{nameof(ReporterBackgroundService)} stopping token was canceled", Bindings.ReporterTab);
-            }
-            catch (Exception ex)
-            {
-                _loggerService.AddErrorLog(serviceName, $"{ex.Message}\n{ex.StackTrace}", Bindings.ReporterTab);
-
-                Environment.Exit(1);
+                try
+                {
+                    await DoWorkAsync(stoppingToken);
+                }
+                catch (OperationCanceledException)
+                {
+                    _loggerService.AddWarningLog(serviceName, $"{nameof(ReporterBackgroundService)} stopping token was canceled", Bindings.ReporterTab);
+                }
+                catch (Exception ex)
+                {
+                    _loggerService.AddErrorLog(serviceName, $"{nameof(ReporterBackgroundService)}: {ex.Message}\n{ex.StackTrace}", Bindings.ReporterTab);
+                    await Task.Delay(TimeSpan.FromSeconds(_delaySeconds * 2), stoppingToken);
+                }
             }
         }
 

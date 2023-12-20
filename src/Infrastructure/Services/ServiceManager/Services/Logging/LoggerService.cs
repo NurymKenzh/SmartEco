@@ -5,7 +5,7 @@ namespace ServiceManager.Services.Logging
 {
     internal class LoggerService : ILoggerService
     {
-        public void AddInfoLog(string service, string message, ServiceTab serviceTab, ColorType colorType)
+        public void AddInfoLog(string service, string? message, ServiceTab serviceTab, ColorType colorType)
         => AddLog(service, message, serviceTab, colorType);
 
         public void AddWarningLog(string service, string message, ServiceTab serviceTab)
@@ -14,14 +14,14 @@ namespace ServiceManager.Services.Logging
         public void AddErrorLog(string service, string message, ServiceTab serviceTab)
             => AddLog(service, message, serviceTab, ColorType.Red);
 
-        private static void AddLog(string service, string message, ServiceTab serviceTab, ColorType colorType)
+        private static void AddLog(string service, string? message, ServiceTab serviceTab, ColorType colorType)
         {
-            if (serviceTab.Logs.Count > 10)
-                serviceTab.Logs.RemoveAt(0);
+            if (serviceTab.Logs.Count > 5000)
+                serviceTab.Logs.RemoveAt(serviceTab.Logs.Count - 1);
 
-            serviceTab.Logs.Add(new()
+            serviceTab.Logs.Insert(0, new()
             {
-                Text = $"{DateTime.Now} >> {service} >> {message}",
+                Text = $"{string.Join(" >> ", new List<object?> { DateTime.Now, service, message }.Where(s => s is not null))}",
                 TextColorType = colorType
             });
         }

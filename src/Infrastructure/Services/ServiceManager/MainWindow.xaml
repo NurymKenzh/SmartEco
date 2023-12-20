@@ -80,15 +80,18 @@
                     <Grid.RowDefinitions>
                         <RowDefinition Height="Auto"></RowDefinition>
                         <RowDefinition Height="Auto"></RowDefinition>
-                        <RowDefinition></RowDefinition>
+                        <RowDefinition Height="*"></RowDefinition>
                     </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                    </Grid.ColumnDefinitions>
                     <Border Grid.Row="0" BorderBrush="LightGray" BorderThickness="0 0 0 1" />
                     <Border Grid.Row="1" BorderBrush="LightGray" BorderThickness="0 0 0 1" />
 
                     <Canvas Grid.Row="0" Height="60" Background="Transparent" VerticalAlignment="Top">
                         <Ellipse x:Name="LampReporter" Width="12" Height="12" Fill="{Binding Path=ServiceState.LampColorType, Converter={StaticResource brushColorConverter}}" Margin="15, 23" />
                         <Label x:Name="LabelStatusReporter" Content="{Binding Path=ServiceState.Status, UpdateSourceTrigger=PropertyChanged}" Margin="30, 15" FontSize="14" />
-                        <Button x:Name="BtnReporterUpdateStatus" Style="{StaticResource ActionButtonBorder}" Margin="120, 10" Click="BtnReporterUpdateStatus_Click">
+                        <Button x:Name="BtnReporterUpdateStatus" Style="{StaticResource ActionButtonBorder}" IsEnabled="{Binding BtnState.IsEnabledUpdate}" Margin="120, 10" Click="BtnReporterUpdateStatus_Click">
                             <StackPanel Orientation="Horizontal">
                                 <Image Source="/icons/btn-update.ico" Width="12" Height="12"/>
                                 <Label Style="{StaticResource LabelButton}">Update</Label>
@@ -121,26 +124,34 @@
                             </StackPanel>
                         </Button>
                     </Canvas>
-                    <Canvas Grid.Row="3" Height="Auto" Background="Transparent" VerticalAlignment="Top">
-                        <ListBox x:Name="ReporterLogsList" Padding="5" BorderThickness="0" Width="800" ScrollViewer.HorizontalScrollBarVisibility="Disabled">
+                    <ScrollViewer Grid.Column="0" Grid.Row="3" Background="Transparent" VerticalAlignment="Top" VerticalScrollBarVisibility="Auto">
+                        <ListBox x:Name="ReporterLogsList" Padding="5" BorderThickness="0"
+                                 ScrollViewer.HorizontalScrollBarVisibility="Disabled"
+                                 ScrollViewer.CanContentScroll="True"
+                                 SelectionMode="Extended">
+                            <ListBox.Template>
+                                <ControlTemplate>
+                                    <ItemsPresenter />
+                                </ControlTemplate>
+                            </ListBox.Template>
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
-                                    <WrapPanel>
-                                        <TextBlock Text="{Binding Path=Text}" TextWrapping="Wrap" Foreground="{Binding Path=TextColorType, Converter={StaticResource brushColorConverter}}" />
-                                    </WrapPanel>
+                                    <TextBlock Text="{Binding Path=Text}" TextWrapping="Wrap" Foreground="{Binding Path=TextColorType, Converter={StaticResource brushColorConverter}}" />
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                             <ListBox.ContextMenu>
                                 <ContextMenu>
+                                    <MenuItem Header="Select all" Command = "SelectAll" Click="BtnReporterItemMenuSelectAll_Click"/>
                                     <MenuItem Header="Copy" Command = "Copy" Click="BtnReporterItemMenuCopy_Click"/>
                                     <MenuItem Header="Clear" Click="BtnReporterItemMenuClear_Click"/>
                                 </ContextMenu>
                             </ListBox.ContextMenu>
                             <ListBox.CommandBindings>
-                                <CommandBinding Command="ApplicationCommands.Copy" Executed="BtnReporterItemMenuCopy_Click" CanExecute="CanExecuteCopyLog" />
+                                <CommandBinding Command="ApplicationCommands.SelectAll" CanExecute="CanExecuteLogs" />
+                                <CommandBinding Command="ApplicationCommands.Copy" Executed="BtnReporterItemMenuCopy_Click" CanExecute="CanExecuteLogs" />
                             </ListBox.CommandBindings>
                         </ListBox>
-                    </Canvas>
+                    </ScrollViewer>
                 </Grid>
             </TabItem>
         </TabControl>

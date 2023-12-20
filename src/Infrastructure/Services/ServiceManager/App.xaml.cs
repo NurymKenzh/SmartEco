@@ -3,9 +3,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Reporter.Services;
+using ServiceManager.Models;
 using ServiceManager.Options;
 using ServiceManager.Services;
 using ServiceManager.Services.Logging;
+using System.Security.Principal;
 using System.Windows;
 
 namespace ServiceManager
@@ -36,6 +38,7 @@ namespace ServiceManager
                     services.AddHostedService<ReporterBackgroundService>();
 
                     services.AddTransient<MainWindow>();
+                    Bindings.IsAdministrator = IsAdmin();
                     ServiceProvider serviceProvider = services.BuildServiceProvider();
                     MainWindow mainWindow = serviceProvider.GetRequiredService<MainWindow>();
                     mainWindow.Show();
@@ -47,6 +50,8 @@ namespace ServiceManager
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
             await _host.StartAsync();
+            if (!Bindings.IsAdministrator)
+                MessageBox.Show("If you want to manage services, you must run the application as administrator", "Configuration", MessageBoxButton.OK, MessageBoxImage.Warning);
         }
 
         private async void Application_Exit(object sender, ExitEventArgs e)
@@ -55,6 +60,13 @@ namespace ServiceManager
             {
                 await _host.StopAsync(TimeSpan.FromSeconds(5));
             }
+        }
+
+        private static bool IsAdmin()
+        {
+            using WindowsIdentity identity = WindowsIdentity.GetCurrent();
+            var principal = new WindowsPrincipal(identity);
+            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
     }
 }

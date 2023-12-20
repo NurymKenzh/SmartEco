@@ -2,8 +2,6 @@
 {
     public class ServicesOptions
     {
-        public required ReporterOption Reporter { get; set; }
+        public required BaseOptions Reporter { get; set; }
     }
-
-    public class ReporterOption : BaseOptions;
 }
