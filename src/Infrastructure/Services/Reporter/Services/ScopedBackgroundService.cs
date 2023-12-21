@@ -6,8 +6,6 @@ namespace Reporter.Services
     {
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation($"{nameof(ScopedBackgroundService)} is running.");
-
             try
             {
                 await DoWorkAsync(stoppingToken);
@@ -26,7 +24,7 @@ namespace Reporter.Services
 
         private async Task DoWorkAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation($"{nameof(ScopedBackgroundService)} is working.");
+            _logger.LogInformation($"{nameof(ScopedBackgroundService)} is running");
 
             using IServiceScope scope = _serviceProvider.CreateScope();
             IWorkerService workerService = scope.ServiceProvider.GetRequiredService<IWorkerService>();
@@ -36,7 +34,7 @@ namespace Reporter.Services
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation($"{nameof(ScopedBackgroundService)} is stopping.");
+            _logger.LogInformation($"{nameof(ScopedBackgroundService)} is stopping");
 
             await base.StopAsync(stoppingToken);
         }

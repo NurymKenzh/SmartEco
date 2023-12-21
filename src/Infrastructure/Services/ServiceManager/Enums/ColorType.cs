@@ -7,7 +7,10 @@
         Orange = 3,
         Blue = 4,
         Red = 5,
-        White = 6,
-        Black = 7
+        Black = 6,
+        DarkGreen = 7,
+        DarkMagenta = 8,
+        DarkRed = 9,
+        DarkBlue = 10
     }
 }

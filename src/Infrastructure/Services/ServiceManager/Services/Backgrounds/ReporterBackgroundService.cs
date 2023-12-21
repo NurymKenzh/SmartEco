@@ -1,4 +1,6 @@
+using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using ServiceManager.Enums;
 using ServiceManager.Models;
@@ -10,9 +12,9 @@ using SmartEco.Common.Services.Resources;
 namespace Reporter.Services
 {
     internal sealed class ReporterBackgroundService(
-        ILoggerService _loggerService,
-        IOptions<DelayOptions> _delayOptions,
-        IReporterService _reporterService) : BackgroundService
+        ILogger<ReporterBackgroundService> _logger,
+        IServiceProvider _serviceProvider,
+        IOptions<DelayOptions> _delayOptions) : BackgroundService
     {
         private readonly int _delaySeconds = _delayOptions.Value.ReporterDelay;
         private readonly ColorType _colorType = ColorType.Black;
@@ -20,8 +22,6 @@ namespace Reporter.Services
 
         protected override async Task ExecuteAsync(CancellationToken stoppingToken)
         {
-            _loggerService.AddInfoLog(serviceName, $"{nameof(ReporterBackgroundService)} is running", Bindings.ReporterTab, _colorType);
-
             while (!stoppingToken.IsCancellationRequested)
             {
                 try
@@ -30,11 +30,11 @@ namespace Reporter.Services
                 }
                 catch (OperationCanceledException)
                 {
-                    _loggerService.AddWarningLog(serviceName, $"{nameof(ReporterBackgroundService)} stopping token was canceled", Bindings.ReporterTab);
+                    _logger.LogWarning($"{nameof(ReporterBackgroundService)} stopping token was canceled");
                 }
                 catch (Exception ex)
                 {
-                    _loggerService.AddErrorLog(serviceName, $"{nameof(ReporterBackgroundService)}: {ex.Message}\n{ex.StackTrace}", Bindings.ReporterTab);
+                    _logger.LogError(ex, "{Message}", ex.Message);
                     await Task.Delay(TimeSpan.FromSeconds(_delaySeconds * 2), stoppingToken);
                 }
             }
@@ -42,18 +42,23 @@ namespace Reporter.Services
 
         private async Task DoWorkAsync(CancellationToken stoppingToken)
         {
-            _loggerService.AddInfoLog(serviceName, $"{nameof(ReporterBackgroundService)} is working", Bindings.ReporterTab, _colorType);
-
+            using (IServiceScope scope = _serviceProvider.CreateScope())
+            {
+                var loggerService = scope.ServiceProvider.GetRequiredService<ILoggerService>();
+                loggerService.AddInfoLog(serviceName, $"{nameof(ReporterBackgroundService)} is running", Bindings.ReporterTab, _colorType);
+            }
             while (!stoppingToken.IsCancellationRequested)
             {
-                await _reporterService.SetStatus();
+                using IServiceScope scope = _serviceProvider.CreateScope();
+                var reporterService = scope.ServiceProvider.GetRequiredService<IReporterService>();
+                await reporterService.SetStatus();
                 await Task.Delay(TimeSpan.FromSeconds(_delaySeconds), stoppingToken);
             }
         }
 
         public override async Task StopAsync(CancellationToken stoppingToken)
         {
-            _loggerService.AddInfoLog(serviceName, $"{nameof(ReporterBackgroundService)} is stopping", Bindings.ReporterTab, _colorType);
+            _logger.LogInformation($"{nameof(ReporterBackgroundService)} is stopping");
 
             await base.StopAsync(stoppingToken);
         }

@@ -1,18 +1,19 @@
 ﻿using SmartEco.Common.Data.Repositories.Abstractions;
 using SmartEco.Common.Enums;
+using SmartEco.Common.Services.GrpcClients;
 
 namespace Reporter.Services
 {
     internal sealed class WorkerService(
-        ILogger<WorkerService> _logger,
         ISmartEcoServicesPublicRepository _publicRepository,
-        ICheckDataService _checkDataService) : IWorkerService
+        ICheckDataService _checkDataService,
+        IServiceManagerGrpcClient _serviceManagerClient) : IWorkerService
     {
         private readonly int _delayMinutes = 1;
 
         public async Task DoWorkAsync(CancellationToken stoppingToken)
         {
-            _logger.LogInformation("Worker running at: {time}", DateTimeOffset.Now);
+            await _serviceManagerClient.SendInfoLog(WorkerType.Reporter, $"Worker running at: {DateTimeOffset.Now}");
 
             var lastCheckDataOn = await _publicRepository.GetLastWorked(WorkerType.ReporterCheckData) ?? new DateTime();
             while (!stoppingToken.IsCancellationRequested)

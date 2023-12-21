@@ -42,8 +42,6 @@ namespace ServiceManager.Services
             var PSOutput = await PowerShellInst.InvokeAsync();
 
             var serviceInfo = ServiceInfo(PSOutput);
-            if (serviceInfo.Item1 is ServiceStatus.Undefined)
-                throw new InvalidOperationException(_failedAction);
             return serviceInfo;
         }
 

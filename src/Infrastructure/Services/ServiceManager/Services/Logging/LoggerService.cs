@@ -1,5 +1,6 @@
 ﻿using ServiceManager.Enums;
 using ServiceManager.Models;
+using System.Windows;
 
 namespace ServiceManager.Services.Logging
 {
@@ -19,11 +20,13 @@ namespace ServiceManager.Services.Logging
             if (serviceTab.Logs.Count > 5000)
                 serviceTab.Logs.RemoveAt(serviceTab.Logs.Count - 1);
 
-            serviceTab.Logs.Insert(0, new()
-            {
-                Text = $"{string.Join(" >> ", new List<object?> { DateTime.Now, service, message }.Where(s => s is not null))}",
-                TextColorType = colorType
-            });
+            Application.Current.Dispatcher.Invoke(() =>
+                serviceTab.Logs.Insert(0, new()
+                {
+                    Text = $"{string.Join(" >> ", new List<object?> { DateTime.Now, service, message }.Where(s => s is not null))}",
+                    TextColorType = colorType
+                })
+            );
         }
     }
 }

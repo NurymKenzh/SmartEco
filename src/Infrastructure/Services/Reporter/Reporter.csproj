@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\..\..\Common\SmartEco.Common.Data\SmartEco.Common.Data.csproj" />
+    <ProjectReference Include="..\..\..\Common\SmartEco.Common.Services\SmartEco.Common.Services.csproj" />
     <ProjectReference Include="..\..\..\Common\SmartEco.Common\SmartEco.Common.csproj" />
   </ItemGroup>
 </Project>

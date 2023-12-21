@@ -1,16 +1,19 @@
 ﻿using Reporter.Models;
 using Reporter.Repositories;
 using SmartEco.Common.Data.Entities.SmartEcoServices;
+using SmartEco.Common.Enums;
 using SmartEco.Common.Services;
+using SmartEco.Common.Services.GrpcClients;
 namespace Reporter.Services
 {
     internal class CheckDataService(
-        ILogger<CheckDataService> _logger,
+        IServiceManagerGrpcClient _serviceManagerClient,
         ISmartEcoApiRepository _apiRepository,
         ISmartEcoServicesRepository _servicesRepository,
         IConfiguration _configuration,
         IEmailService _emailService) : ICheckDataService
     {
+        private readonly WorkerType _workerType = WorkerType.ReporterCheckData;
         const string Heading = "Нет данных!";
 
         public async Task Checking()
@@ -83,7 +86,7 @@ namespace Reporter.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error checking data");
+                await _serviceManagerClient.SendErrorLog(_workerType, $"Error checking data\n{ex.Message}", ex.StackTrace);
             }
         }
 
@@ -172,13 +175,12 @@ namespace Reporter.Services
         {
             try
             {
-                _logger.LogInformation("Emails for sending:\n{Emails}", string.Join(", ", emails));
-                _logger.LogInformation("Send checking result:\n{Message}", message);
                 await _emailService.SendAsync(emails, Heading, message);
+                await _serviceManagerClient.SendInfoLog(_workerType, $"Success sending to emails:\n{string.Join(", ", emails)}");
             }
             catch (Exception ex)
             {
-                _logger.LogError(ex, "Error send email");
+                await _serviceManagerClient.SendErrorLog(_workerType, $"Error send email\n{ex.Message}", ex.StackTrace);
             }
         }
     }

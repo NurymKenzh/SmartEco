@@ -2,6 +2,7 @@
 {
     public enum WorkerType
     {
-        ReporterCheckData = 1
+        Reporter = 1,
+        ReporterCheckData = 2
     }
 }

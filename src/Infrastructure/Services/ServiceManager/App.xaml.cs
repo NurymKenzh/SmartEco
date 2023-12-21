@@ -1,7 +1,8 @@
-﻿using Microsoft.Extensions.Configuration;
+﻿using Microsoft.AspNetCore;
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using Microsoft.Extensions.Logging;
 using Reporter.Services;
 using ServiceManager.Models;
 using ServiceManager.Options;
@@ -17,35 +18,18 @@ namespace ServiceManager
     /// </summary>
     public partial class App : Application
     {
-        private readonly IHost _host;
+        private readonly IWebHost _host;
 
         public App()
         {
-            _host = new HostBuilder()
-                .ConfigureAppConfiguration((context, configBuilder) =>
-                {
-                    configBuilder.SetBasePath(context.HostingEnvironment.ContentRootPath);
-                    configBuilder.AddJsonFile("appsettings.json", optional: false);
-                    configBuilder.AddJsonFile($"appsettings.{Environment.GetEnvironmentVariable("ASPNETCORE_ENVIRONMENT")}.json", optional: true);
-                })
-                .ConfigureServices((context, services) =>
-                {
-                    services.Configure<ServicesOptions>(context.Configuration.GetSection(nameof(ServicesOptions)));
-                    services.Configure<DelayOptions>(context.Configuration.GetSection(nameof(DelayOptions)));
-
-                    services.AddScoped<ILoggerService, LoggerService>();
-                    services.AddScoped<IReporterService, ReporterService>();
-                    services.AddHostedService<ReporterBackgroundService>();
-
-                    services.AddTransient<MainWindow>();
-                    Bindings.IsAdministrator = IsAdmin();
-                    ServiceProvider serviceProvider = services.BuildServiceProvider();
-                    MainWindow mainWindow = serviceProvider.GetRequiredService<MainWindow>();
-                    mainWindow.Show();
-                })
-                .Build();
+            _host = CreateWebHostBuilder().Build();
         }
 
+        private static IWebHostBuilder CreateWebHostBuilder() =>
+           WebHost.CreateDefaultBuilder()
+            .UseStartup<Startup>()
+            .UseKestrel()
+            .UseUrls($"https://*:7227");
 
         private async void Application_Startup(object sender, StartupEventArgs e)
         {
@@ -60,13 +44,6 @@ namespace ServiceManager
             {
                 await _host.StopAsync(TimeSpan.FromSeconds(5));
             }
-        }
-
-        private static bool IsAdmin()
-        {
-            using WindowsIdentity identity = WindowsIdentity.GetCurrent();
-            var principal = new WindowsPrincipal(identity);
-            return principal.IsInRole(WindowsBuiltInRole.Administrator);
         }
     }
 }
