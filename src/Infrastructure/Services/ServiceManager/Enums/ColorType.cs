@@ -9,8 +9,9 @@
         Red = 5,
         Black = 6,
         DarkGreen = 7,
-        DarkMagenta = 8,
-        DarkRed = 9,
-        DarkBlue = 10
+        DarkBlue = 8,
+        DarkCyan = 9,
+        DarkMagenta = 10,
+        DarkRed = 11
     }
 }

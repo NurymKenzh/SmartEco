@@ -5,7 +5,6 @@ using ServiceManager.Models;
 using ServiceManager.Services.Logging;
 using SmartEco.Common.Enums;
 using SmartEco.Common.Services.Proto;
-using System.Windows.Controls;
 
 namespace ServiceManager.GrpcServices
 {
@@ -36,7 +35,7 @@ namespace ServiceManager.GrpcServices
             => (WorkerType)worker switch
             {
                 WorkerType.Reporter => ColorType.DarkGreen,
-                WorkerType.ReporterCheckData => ColorType.DarkMagenta,
+                WorkerType.ReporterCheckData => ColorType.DarkBlue,
                 _ => ColorType.Gray
             };
     }

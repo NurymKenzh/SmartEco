@@ -21,12 +21,11 @@ namespace ServiceManager.Services
         public static async Task<(ServiceStatus, string?)> CreateService(string serviceName, string servicePath)
         {
             using PowerShell PowerShellInst = PowerShell.Create();
-            using PowerShell PowerShellInstFailure = PowerShell.Create();
             PowerShellInst.AddScript($"New-Service -Name \"{serviceName}\" -BinaryPathName '{servicePath}' -StartupType \"Automatic\"");
-            PowerShellInstFailure.AddScript($"sc.exe failure \"{serviceName}\" reset=0 actions=restart/60000/restart/60000/run/1000");
+            PowerShellInst.AddScript($"sc.exe failure \"{serviceName}\" reset=0 actions=restart/60000/restart/60000/run/1000");
+            PowerShellInst.AddScript($"Get-Service \"{serviceName}\"");
 
             var PSOutput = await PowerShellInst.InvokeAsync();
-            await PowerShellInstFailure.InvokeAsync();
 
             var serviceInfo = ServiceInfo(PSOutput);
             if (serviceInfo.Item1 is ServiceStatus.Undefined)
@@ -38,10 +37,13 @@ namespace ServiceManager.Services
         {
             using PowerShell PowerShellInst = PowerShell.Create();
             PowerShellInst.AddScript($"Remove-Service \"{serviceName}\"");
+            PowerShellInst.AddScript($"Get-Service \"{serviceName}\"");
 
             var PSOutput = await PowerShellInst.InvokeAsync();
 
             var serviceInfo = ServiceInfo(PSOutput);
+            if (serviceInfo.Item1 is not ServiceStatus.Undefined)
+                throw new InvalidOperationException(_failedAction);
             return serviceInfo;
         }
 
@@ -49,6 +51,7 @@ namespace ServiceManager.Services
         {
             using PowerShell PowerShellInst = PowerShell.Create();
             PowerShellInst.AddScript($"Start-Service \"{serviceName}\"");
+            PowerShellInst.AddScript($"Get-Service \"{serviceName}\"");
 
             var PSOutput = await PowerShellInst.InvokeAsync();
 
@@ -62,6 +65,7 @@ namespace ServiceManager.Services
         {
             using PowerShell PowerShellInst = PowerShell.Create();
             PowerShellInst.AddScript($"Stop-Service \"{serviceName}\"");
+            PowerShellInst.AddScript($"Get-Service \"{serviceName}\"");
 
             var PSOutput = await PowerShellInst.InvokeAsync();
 
