@@ -1,0 +1,22 @@
+﻿syntax = "proto3";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/Empty.proto";
+
+option csharp_namespace = "SmartEco.Common.Services.Proto";
+ 
+service ServiceManagerGrpc {
+  rpc SendInfoLog (LogInfoRequest) returns (google.protobuf.Empty);
+  rpc SendErrorLog (LogErrorRequest) returns (google.protobuf.Empty);
+}
+ 
+message LogInfoRequest {
+    int32 workerType = 1;
+    google.protobuf.StringValue logMessage = 2;
+}
+
+message LogErrorRequest {
+    int32 workerType = 1;
+    google.protobuf.StringValue logMessage = 2;
+    google.protobuf.StringValue stackTrace = 3;
+}

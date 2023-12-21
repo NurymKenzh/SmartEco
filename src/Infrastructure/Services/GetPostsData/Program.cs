@@ -25,6 +25,25 @@ namespace GetPostsData
             SMTPServer = "smtp.gmail.com";
         const int SMTPPort = 465;
 
+        public enum DataProviders
+        {
+            Kazhydromet = 1,
+            Urus = 2,
+            Ecoservice = 3,
+            Clarity = 4
+        }
+
+        public enum Projects
+        {
+            KaragandaRegion = 1,
+            Arys = 2,
+            Almaty = 3,
+            Shymkent = 4,
+            Altynalmas = 5,
+            Zhanatas = 6,
+            Oskemen = 7
+        }
+
         public class MeasuredParameter
         {
             public int Id { get; set; }
@@ -37,6 +56,8 @@ namespace GetPostsData
         {
             public int Id { get; set; }
             public string MN { get; set; }
+            public int DataProviderId { get; set; }
+            public int? ProjectId { get; set; }
         }
         public class PostData
         {
@@ -75,6 +96,7 @@ namespace GetPostsData
         {
             public int Id { get; set; }
             public string Email { get; set; }
+            public string Role { get; set; }
         }
         public class LogSendMail
         {
@@ -133,127 +155,121 @@ namespace GetPostsData
 
                 // Copy data
                 // Get Data from PostsData
-                NewLog("Get. Get Data from PostsData started");
+                //NewLog("Get. Get Data from PostsData started");
                 int postDatasCount = 0;
-                using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                {
-                    List<MeasuredData> measuredDatas = new List<MeasuredData>();
-                    connection.Open();
-                    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
-                    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;", commandTimeout: 86400);
-                    postDatasCount = postDatas.Count();
-                    try
-                    {
-                        foreach (PostData postData in postDatas)
-                        {
-                            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
-                            {
-                                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
-                                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
-                                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
-                                var coef = checkPost != null ? checkPost.Coefficient : null;
+                //using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //{
+                //    List<MeasuredData> measuredDatas = new List<MeasuredData>();
+                //    connection.Open();
+                //    connection.Execute("UPDATE public.\"Data\" SET \"Taken\" = false WHERE \"Taken\" is null;", commandTimeout: 86400);
+                //    var postDatas = connection.Query<PostData>("SELECT \"Data\", \"DateTimeServer\", \"DateTimePost\", \"MN\", \"IP\", \"Taken\" FROM public.\"Data\" WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //    postDatasCount = postDatas.Count();
+                //    try
+                //    {
+                //        foreach (PostData postData in postDatas)
+                //        {
+                //            foreach (string value in postData.Data.Split(";").Where(d => d.Contains("-Rtd")))
+                //            {
+                //                int? MeasuredParameterId = measuredParameters.FirstOrDefault(m => m.OceanusCode == value.Split("-Rtd")[0])?.Id,
+                //                    MonitoringPostId = monitoringPosts.FirstOrDefault(m => m.MN == postData.MN)?.Id;
+                //                var checkPost = monitoringPostMeasuredParameters.FirstOrDefault(m => m.MonitoringPostId == MonitoringPostId && m.MeasuredParameterId == MeasuredParameterId);
+                //                var coef = checkPost != null ? checkPost.Coefficient : null;
 
-                                if (MeasuredParameterId != null && MonitoringPostId != null)
-                                {
-                                    try
-                                    {
-                                        bool adequateDateTimePost = true;
-                                        if (postData.DateTimePost == null)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
-                                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
-                                        {
-                                            adequateDateTimePost = false;
-                                        }
+                //                if (MeasuredParameterId != null && MonitoringPostId != null)
+                //                {
+                //                    try
+                //                    {
+                //                        bool adequateDateTimePost = true;
+                //                        if (postData.DateTimePost == null)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
+                //                        else if (Math.Abs((postData.DateTimePost.Value - postData.DateTimeServer).Days) > 3)
+                //                        {
+                //                            adequateDateTimePost = false;
+                //                        }
 
-                                        var valueArray = value.Split("-Rtd=");
-                                        if (valueArray.Length < 2 || string.IsNullOrEmpty(valueArray[1]))
-                                            continue;
+                //                        var measuredValue = Convert.ToDecimal(value.Split("-Rtd=")[1].Split("&&")[0]);
+                //                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
+                //                        {
+                //                            if (coef != null)
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue * Convert.ToDecimal(coef)
+                //                                });
+                //                            }
+                //                            else
+                //                            {
+                //                                measuredDatas.Add(new MeasuredData()
+                //                                {
+                //                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
+                //                                    DateTime = postData.DateTimeServer,
+                //                                    MeasuredParameterId = (int)MeasuredParameterId,
+                //                                    MonitoringPostId = (int)MonitoringPostId,
+                //                                    Value = measuredValue
+                //                                });
+                //                            }
+                //                        }
+                //                    }
+                //                    catch (Exception ex)
+                //                    {
 
-                                        if (!decimal.TryParse(valueArray[1].Split("&&")[0], out decimal measuredValue))
-                                            continue;
+                //                    }
 
-                                        if (checkPost != null && (string.IsNullOrEmpty(checkPost.MaxMeasuredValue) || Convert.ToDecimal(checkPost.MaxMeasuredValue) > measuredValue))
-                                        {
-                                            if (coef != null)
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue * Convert.ToDecimal(coef)
-                                                });
-                                            }
-                                            else
-                                            {
-                                                measuredDatas.Add(new MeasuredData()
-                                                {
-                                                    //DateTime = adequateDateTimePost ? postData.DateTimePost : postData.DateTimeServer,
-                                                    DateTime = postData.DateTimeServer,
-                                                    MeasuredParameterId = (int)MeasuredParameterId,
-                                                    MonitoringPostId = (int)MonitoringPostId,
-                                                    Value = measuredValue
-                                                });
-                                            }
-                                        }
-                                    }
-                                    catch (Exception ex)
-                                    {
+                //                }
+                //            }
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
 
-                                    }
-
-                                }
-                            }
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-
-                    }
-                    NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
-                        $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
-                    NewLog($"Get. Insert data to MeasuredDatas started");
-                    // Insert MeasuredDatas into SmartEcoAPI
-                    try
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            foreach (MeasuredData measuredData in measuredDatas)
-                            {
-                                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
-                                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
-                                    $"make_timestamptz(" +
-                                        $"{measuredData.DateTime?.Year.ToString()}, " +
-                                        $"{measuredData.DateTime?.Month.ToString()}, " +
-                                        $"{measuredData.DateTime?.Day.ToString()}, " +
-                                        $"{measuredData.DateTime?.Hour.ToString()}, " +
-                                        $"{measuredData.DateTime?.Minute.ToString()}, " +
-                                        $"{measuredData.DateTime?.Second.ToString()})," +
-                                    $"{measuredData.Value.ToString()}," +
-                                    $"{measuredData.MonitoringPostId.ToString()});";
-                                connection2.Execute(execute);
-                            }
-                        }
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;", commandTimeout: 86400);
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection2.Open();
-                            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;", commandTimeout: 86400);
-                        }
-                    }
-                    NewLog($"Get. Insert data to MeasuredDatas finished");
-                }
+                //    }
+                //    NewLog($"Get. Get Data from PostsData finished. Data from PostsData count: {postDatasCount.ToString()}. Data to MeasuredDatas count: {measuredDatas.Count().ToString()}. " +
+                //        $"From {measuredDatas.Min(m => m.DateTime).ToString()} to {measuredDatas.Max(m => m.DateTime).ToString()}");
+                //    NewLog($"Get. Insert data to MeasuredDatas started");
+                //    // Insert MeasuredDatas into SmartEcoAPI
+                //    try
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            foreach (MeasuredData measuredData in measuredDatas)
+                //            {
+                //                string execute = $"INSERT INTO public.\"MeasuredData\"(\"MeasuredParameterId\", \"DateTime\", \"Value\", \"MonitoringPostId\")" +
+                //                    $"VALUES({measuredData.MeasuredParameterId.ToString()}," +
+                //                    $"make_timestamptz(" +
+                //                        $"{measuredData.DateTime?.Year.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Month.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Day.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Hour.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Minute.ToString()}, " +
+                //                        $"{measuredData.DateTime?.Second.ToString()})," +
+                //                    $"{measuredData.Value.ToString()}," +
+                //                    $"{measuredData.MonitoringPostId.ToString()});";
+                //                connection2.Execute(execute);
+                //            }
+                //        }
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = true WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //        }
+                //    }
+                //    catch (Exception ex)
+                //    {
+                //        using (var connection2 = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                //        {
+                //            connection2.Open();
+                //            connection2.Execute("UPDATE public.\"Data\" SET \"Taken\" = null WHERE \"Taken\" = false;", commandTimeout: 86400);
+                //        }
+                //    }
+                //    NewLog($"Get. Insert data to MeasuredDatas finished");
+                //}
                 //=================================================================================================================================================================
                 // Average data
                 // Get Data from PostsData
@@ -716,45 +732,45 @@ namespace GetPostsData
                     }
                     NewLog($"Backup. Get Data from Data (PostsData) finished. {countBackup.ToString()} rows backed up");
 
-                    NewLog($"Backup. Get Data from Log (PostsData) started");
-                    countBackup = 0;
-                    if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
-                    {
-                        using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
-                        {
-                            connection.Open();
-                            var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
-                                $"FROM public.\"Log\" " +
-                                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
-                            countBackup = postLogs.Count();
-                            foreach (PostLog log in postLogs)
-                            {
-                                string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
-                                fileName = Path.ChangeExtension(fileName, "csv");
-                                string data = log.Log.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
-                                    log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
-                                if (!File.Exists(fileName))
-                                {
-                                    File.AppendAllText(fileName, $"Log\tDateTime" + Environment.NewLine);
-                                }
-                                File.AppendAllText(fileName, data);
-                            }
-                            try
-                            {
-                                connection.Execute($"DELETE FROM public.\"Log\" " +
-                                    $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
-                            }
-                            catch
-                            {
+                    //NewLog($"Backup. Get Data from Log (PostsData) started");
+                    //countBackup = 0;
+                    //if ((DateTime.Now - lastBackupDateTime) > new TimeSpan(1, 0, 0, 0))
+                    //{
+                    //    using (var connection = new NpgsqlConnection("Host=localhost;Database=PostsData;Username=postgres;Password=postgres"))
+                    //    {
+                    //        connection.Open();
+                    //        var postLogs = connection.Query<PostLog>($"SELECT \"Log\", \"DateTime\" " +
+                    //            $"FROM public.\"Log\" " +
+                    //            $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                    //        countBackup = postLogs.Count();
+                    //        foreach (PostLog log in postLogs)
+                    //        {
+                    //            string fileName = Path.Combine(@"C:\Users\Administrator\source\repos\Backup", $"PostsData_Log {log.DateTime.ToString("yyyy-MM")}");
+                    //            fileName = Path.ChangeExtension(fileName, "csv");
+                    //            string data = log.Log.Replace(Environment.NewLine, "").Replace("\n", "").Replace("\r", "") + "\t" +
+                    //                log.DateTime.ToString("yyyy-MM-dd HH:mm:ss") + Environment.NewLine;
+                    //            if (!File.Exists(fileName))
+                    //            {
+                    //                File.AppendAllText(fileName, $"Log\tDateTime" + Environment.NewLine);
+                    //            }
+                    //            File.AppendAllText(fileName, data);
+                    //        }
+                    //        try
+                    //        {
+                    //            connection.Execute($"DELETE FROM public.\"Log\" " +
+                    //                $"WHERE \"DateTime\" < '{dateTimeLast.ToString("yyyy-MM-dd")}';", commandTimeout: 86400);
+                    //        }
+                    //        catch
+                    //        {
 
-                            }
-                            finally
-                            {
-                                connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
-                            }
-                        }
-                    }
-                    NewLog($"Backup. Get Data from Log (PostsData) finished. {countBackup.ToString()} rows backed up");
+                    //        }
+                    //        finally
+                    //        {
+                    //            connection.Execute($"VACUUM public.\"Log\"", commandTimeout: 86400);
+                    //        }
+                    //    }
+                    //}
+                    //NewLog($"Backup. Get Data from Log (PostsData) finished. {countBackup.ToString()} rows backed up");
 
                     NewLog($"Backup. Get Data from Log (GetPostsData) started");
                     countBackup = 0;
@@ -1337,83 +1353,128 @@ namespace GetPostsData
                     }
                 }
                 //=================================================================================================================================================================
-                // Send report for Zhanats posts
+                // Send report for Zhanats, Altynalmas posts
                 if (lastSendReportDateTime.AddHours(1) < DateTime.Now && lastSendReportDateTime.ToShortDateString() != DateTime.Now.ToShortDateString())
                 {
-                    try
+                    var reportPersons = new List<Person>();
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
                     {
-                        NewLog($"Send report for Zhanatas posts >> Calling Api");
-                        Task.WaitAll(SendReportZhanatas());
+                        connection.Open();
+                        var personsv = connection.Query<Person>($"SELECT \"Id\", \"Email\", \"Role\" " +
+                            $"FROM public.\"Person\" " +
+                            $"WHERE \"Role\" = 'Zhanatas' OR \"Role\" = 'Altynalmas' " +
+                            $"ORDER BY \"Id\"");
+                        reportPersons = personsv.ToList();
                     }
-                    catch (Exception ex)
-                    {
-                        NewLog($"Send report for Zhanatas posts >> Error: {ex.Message}");
-                    }
-                    finally
-                    {
-                        lastSendReportDateTime = DateTime.Now;
-                    }
+                    var zhanatasPersons = reportPersons.Where(p => p.Role == "Zhanatas").Select(p => p.Email).ToList();
+                    var altynalmasPersons = reportPersons.Where(p => p.Role == "Altynalmas").Select(p => p.Email).ToList();
+                    Task.WaitAll(SendReport(Projects.Zhanatas, zhanatasPersons));
+                    Task.WaitAll(SendReport(Projects.Altynalmas, altynalmasPersons));
+                    lastSendReportDateTime = DateTime.Now;
                 }
 
                 Thread.Sleep(30000);
             }
         }
 
-        private static async Task SendReportZhanatas()
+        private static async Task SendReport(Projects project, List<string> emailsTo)
         {
-            HttpResponseMessage result = new HttpResponseMessage();
-
-            using (var client = new HttpClient())
+            try
             {
-                client.BaseAddress = Debugger.IsAttached ?
-                    new Uri("http://localhost:52207") :
-                    new Uri("http://localhost:8084");
-                client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGlyZGFyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Im1vZGVyYXRvciIsIm5iZiI6MTY5ODkyNzI3NSwiZXhwIjoxNzMwNTQ5Njc1LCJpc3MiOiJTbWFydEVjbyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTIyMDcvIn0.4lUrxsfS2eHFTlsM59jzuaGJmgh3jJ7iRUQ14wDbE1M");
-                client.Timeout = TimeSpan.FromMinutes(30);
+                NewLog($"Send report for {project} posts >> Forming request");
 
-                var dateTimeYesterdayFrom = DateTime.Now.AddDays(-1).Date + new TimeSpan(00, 00, 00);
-                var dateTimeYesterdayTo = DateTime.Now.AddDays(-1).Date + new TimeSpan(23, 59, 59);
-                DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
-                var monitoringPostIds = new List<int>() { 234, 235 };
-                var measuredParameterIds = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 9, 13, 19, 73 };
-
-                string url = "api/Analytics/ExcelFormationZhanatas",
-                route = "";
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeFrom={dateTimeYesterdayFrom.ToString(dateTimeFormatInfo)}";
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"DateTimeTo={dateTimeYesterdayTo.ToString(dateTimeFormatInfo)}";
-
-                foreach (var monitoringPostId in monitoringPostIds)
+                Dictionary<string, string> nameProjects = new Dictionary<string, string>
                 {
+                    ["Zhanatas"] = "Жанатас",
+                    ["Altynalmas"] = "Алтыналмас"
+                };
+
+                HttpResponseMessage result = new HttpResponseMessage();
+
+                using (var client = new HttpClient())
+                {
+                    client.BaseAddress = Debugger.IsAttached ?
+                        new Uri("http://localhost:52207") :
+                        new Uri("http://localhost:8084");
+                    client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJodHRwOi8vc2NoZW1hcy54bWxzb2FwLm9yZy93cy8yMDA1LzA1L2lkZW50aXR5L2NsYWltcy9uYW1lIjoidGVzdGlyZGFyQGdtYWlsLmNvbSIsImh0dHA6Ly9zY2hlbWFzLm1pY3Jvc29mdC5jb20vd3MvMjAwOC8wNi9pZGVudGl0eS9jbGFpbXMvcm9sZSI6Im1vZGVyYXRvciIsIm5iZiI6MTY5ODkyNzI3NSwiZXhwIjoxNzMwNTQ5Njc1LCJpc3MiOiJTbWFydEVjbyIsImF1ZCI6Imh0dHA6Ly9sb2NhbGhvc3Q6NTIyMDcvIn0.4lUrxsfS2eHFTlsM59jzuaGJmgh3jJ7iRUQ14wDbE1M");
+                    client.Timeout = TimeSpan.FromMinutes(30);
+
+                    var dateTimeYesterdayFrom = DateTime.Now.AddDays(-1).Date + new TimeSpan(00, 00, 00);
+                    var dateTimeYesterdayTo = DateTime.Now.AddDays(-1).Date + new TimeSpan(23, 59, 59);
+                    DateTimeFormatInfo dateTimeFormatInfo = CultureInfo.CreateSpecificCulture("en").DateTimeFormat;
+                    var monitoringPostIds = new List<int>(); //Zhanatas posts: 234, 235
+                    var measuredParameterIds = new List<int>() { 1, 2, 3, 4, 5, 6, 7, 9, 13, 19, 73 };
+
+                    using (var connection = new NpgsqlConnection("Host=localhost;Database=SmartEcoAPI;Username=postgres;Password=postgres"))
+                    {
+                        connection.Open();
+                        var monitoringPostsv = connection.Query<MonitoringPost>(
+                            $"SELECT \"Id\", \"MN\", \"DataProviderId\", \"ProjectId\"" +
+                            $"FROM public.\"MonitoringPost\" WHERE \"DataProviderId\" = '{(int)DataProviders.Ecoservice}' and \"ProjectId\" = '{(int)project}';");
+                        monitoringPostIds = monitoringPostsv
+                            .Select(post => post.Id)
+                            .ToList();
+                        connection.Close();
+                    }
+
+                    if (monitoringPostIds.Count is 0)
+                    {
+                        NewLog($"Send report for {project} posts >> No monitoring posts");
+                        return;
+                    }
+
+                    string url = "api/Analytics/ExcelFormationByProject",
+                    route = "";
+
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"MonitoringPostsId={monitoringPostId}".Replace(',', '.');
+                    route += $"DateTimeFrom={dateTimeYesterdayFrom.ToString(dateTimeFormatInfo)}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"DateTimeTo={dateTimeYesterdayTo.ToString(dateTimeFormatInfo)}";
+
+                    foreach (var monitoringPostId in monitoringPostIds)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"MonitoringPostsId={monitoringPostId}".Replace(',', '.');
+                    }
+
+                    foreach (var measuredParametersId in measuredParameterIds)
+                    {
+                        route += string.IsNullOrEmpty(route) ? "?" : "&";
+                        route += $"MeasuredParametersId={measuredParametersId}".Replace(',', '.');
+                    }
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"Server={!Debugger.IsAttached}";
+
+                    route += string.IsNullOrEmpty(route) ? "?" : "&";
+                    route += $"Project={nameProjects[project.ToString()]}";
+
+                    emailsTo.Add("gervana81@mail.ru");
+                    foreach (var emailTo in emailsTo)
+                    {
+                        if (IsValidEmail(emailTo))
+                        {
+                            route += string.IsNullOrEmpty(route) ? "?" : "&";
+                            route += $"MailTo={emailTo}";
+                        }
+                    }
+
+                    result = await client.PostAsync(url + route, null);
                 }
 
-                foreach (var measuredParametersId in measuredParameterIds)
+                if (result.IsSuccessStatusCode)
                 {
-                    route += string.IsNullOrEmpty(route) ? "?" : "&";
-                    route += $"MeasuredParametersId={measuredParametersId}".Replace(',', '.');
+                    NewLog($"Send report for {project} posts >> Success sended");
                 }
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"Server={!Debugger.IsAttached}";
-
-                route += string.IsNullOrEmpty(route) ? "?" : "&";
-                route += $"MailTo=baimukhanov.a@kpp.kz";
-
-                result = await client.PostAsync(url + route, null);
+                else
+                {
+                    NewLog($"Send report for {project} posts >> {result.StatusCode}: {result.ReasonPhrase}");
+                }
             }
-
-            if (result.IsSuccessStatusCode)
+            catch (Exception ex)
             {
-                NewLog($"Send report for Zhanatas posts >> Success sended");
-            }
-            else
-            {
-                NewLog($"Send report for Zhanatas posts >> {result.StatusCode}: {result.ReasonPhrase}");
+                NewLog($"Send report for {project} posts >> Error: {ex.Message}");
             }
         }
         public static void NewLog(string Log)
