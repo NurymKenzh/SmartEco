@@ -1,4 +1,5 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using OfficeOpenXml.FormulaParsing.Utilities;
 using SmartEcoAPI.Models.ASM;
 using SmartEcoAPI.Models.ASM.PollutionSources;
@@ -85,6 +86,8 @@ namespace SmartEcoAPI.Data
         public DbSet<AirPollutionSourceWorkshop> AirPollutionSourceWorkshop { get; set; }
         public DbSet<AirPollutionSourceArea> AirPollutionSourceArea { get; set; }
 
+        public DbSet<KatoCatalog> KatoCatalog { get; set; }
+
         public DbSet<OperationMode> OperationMode { get; set; }
         public DbSet<GasAirMixture> GasAirMixture { get; set; }
         public DbSet<HazardLevel> HazardLevel { get; set; }
@@ -123,6 +126,8 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<HazardLevel>().ToTable(nameof(HazardLevel), _schemaAsm);
             modelBuilder.Entity<AirPollutant>().ToTable(nameof(AirPollutant), _schemaAsm);
             modelBuilder.Entity<AirEmission>().ToTable(nameof(AirEmission), _schemaAsm);
+
+            modelBuilder.Entity<KatoCatalog>().ToTable(nameof(KatoCatalog), _schemaAsm);
 
             //UPRZA
             modelBuilder.Entity<CalculationType>().ToTable(nameof(CalculationType), _schemaAsmUprza);
@@ -163,6 +168,11 @@ namespace SmartEcoAPI.Data
 
             modelBuilder.Entity<HazardLevel>()
                 .HasKey(lvl => lvl.Code);
+
+            //Kato
+            modelBuilder.Entity<KatoCatalog>()
+                .Property(t => t.Id)
+                .ValueGeneratedNever();
 
             ConfigureUprza(modelBuilder);
         }
