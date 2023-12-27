@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Internal;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models.ASM;
 using System;
@@ -21,8 +22,7 @@ namespace SmartEcoAPI.Controllers.ASM
     [ApiExplorerSettings(IgnoreApi = true)]
     public class KatoCatalogsController : Controller
     {
-        private readonly string _katoFileDir = @"C:\Users";
-        //private readonly string _katoFileDir = @"C:\Users\Administrator\source\repos\Download\AlmatyPollution.txt";
+        private readonly string _katoFileDir = @"C:\Users\Administrator\source\repos\Download";
         private readonly Regex _dateRegex = new Regex(@"\d{2}.\d{2}.\d{4}");
 
         private readonly ApplicationDbContext _context;
@@ -31,6 +31,12 @@ namespace SmartEcoAPI.Controllers.ASM
         {
             _context = context;
         }
+
+        [HttpGet]
+        public async Task<ActionResult<IEnumerable<KatoCatalog>>> GetKatoCatalogs()
+            => await _context.KatoCatalog
+                .OrderBy(mode => mode.Id)
+                .ToListAsync();
 
         [HttpGet("Date")]
         [ApiExplorerSettings(IgnoreApi = false)]

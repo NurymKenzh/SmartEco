@@ -144,6 +144,7 @@ namespace SmartEco.Controllers.ASM
                 return RedirectToAction(nameof(Index), enterpriseViewModel.Filter);
             }
 
+            enterpriseViewModel.EnterpriseTypesSelectList = await GetEnterpriseTypesSelectList();
             return View(enterpriseViewModel);
         }
 

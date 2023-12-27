@@ -25,7 +25,9 @@ namespace SmartEco.Models.ASM.Uprza
         [Display(Name = "Статус готовности расчёта")]
         public CalculationStatus Status { get; set; }
 
+        [Required]
         public string KatoCode { get; set; }
+        [Required]
         public string KatoName { get; set; }
 
         [Display(Name = "Город или регион (КАТО)")]

@@ -134,6 +134,7 @@ namespace SmartEco.Controllers.ASM.Uprza
                 return RedirectToAction(nameof(Index), calculationViewModel.Filter);
             }
 
+            calculationViewModel.CalculationTypesSelectList = await GetCalculationTypesSelectList();
             return View(calculationViewModel);
         }
 

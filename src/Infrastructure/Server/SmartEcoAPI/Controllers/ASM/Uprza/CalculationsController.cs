@@ -46,7 +46,7 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
             }
             if (request.CalculationStatusId != null)
             {
-                calculations = calculations.Where(m => m.StatusId == request.CalculationTypeId);
+                calculations = calculations.Where(m => m.StatusId == request.CalculationStatusId);
             }
 
             switch (request.SortOrder)

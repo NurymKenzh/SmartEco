@@ -30,11 +30,13 @@
                 </select>
             </div>
             <div class="form-group">
-                <label asp-for="Item.KatoComplexName" class="control-label"></label>
-                <input asp-for="Item.KatoCode" class="form-control" hidden />
-                <input asp-for="Item.KatoName" class="form-control" hidden />
-                <input asp-for="Item.KatoComplexName" class="form-control" />
-                <span asp-validation-for="Item.KatoComplexName" class="text-danger"></span>
+                <input asp-for="Item.KatoCode" type="hidden" id="KatoCode" class="form-control">
+                <input asp-for="Item.KatoName" type="hidden" id="KatoName" class="form-control">
+
+                <label class="control-label">@Html.DisplayNameFor(c => c.Item.KatoComplexName)</label>
+                <input list="KatoCatologsDataList" onkeyup="SetKatoes($(this));" onchange="SetKatoValue($(this));" title="@Model?.Item?.KatoComplexName" value="@Model?.Item?.KatoComplexName" class="form-control kato-name">
+                <div class="invalid-feedback pollutant-invalid"></div>
+                <datalist id="KatoCatologsDataList"></datalist>
             </div>
             <div hidden="hidden">
                 <input asp-for="@Model.Filter.SortOrder" type="hidden" />
@@ -44,6 +46,10 @@
                 <input asp-for="@Model.Filter.CalculationTypeIdFilter" type="hidden" />
                 <input asp-for="@Model.Filter.CalculationStatusIdFilter" type="hidden" />
                 <input asp-for="@Model.Filter.KatoComplexFilter" type="hidden" />
+            </div>
+            <div hidden>
+                <div id="CalculationGetKatoCatalogsReq" data-url="@Url.Action("GetKatoCatalogs", "KatoCatalogs")"></div>
+                <div id="CalculationGetKatoCatalogReq" data-url="@Url.Action("GetKatoCatalog", "KatoCatalogs")"></div>
             </div>
             <div class="form-group">
                 <input type="submit" value="@SharedLocalizer["Save"]" class="btn btn-primary" />
@@ -69,4 +75,4 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-<script src="~/js/asm/checkEnterprise.js"></script>
+<script src="~/js/asm/katoCatalog.js"></script>
