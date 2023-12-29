@@ -32,8 +32,8 @@
                 <input asp-for="Item.KatoName" type="hidden" id="KatoName" class="form-control">
 
                 <label class="control-label">@Html.DisplayNameFor(c => c.Item.KatoComplexName)</label>
-                <input list="KatoCatologsDataList" onkeyup="SetKatoes($(this));" onchange="SetKatoValue($(this));" title="@Model?.Item?.KatoComplexName" value="@Model?.Item?.KatoComplexName" class="form-control kato-name">
-                <div class="invalid-feedback pollutant-invalid"></div>
+                <input list="KatoCatologsDataList" placeholder="Начните вводить наименование или код" onkeyup="SetKatoes($(this));" onchange="SetKatoValue($(this));" title="@Model?.Item?.KatoComplexName" value="@Model?.Item?.KatoComplexName" class="form-control kato-name">
+                <div class="invalid-feedback kato-invalid"></div>
                 <datalist id="KatoCatologsDataList"></datalist>
             </div>
             <div hidden="hidden">
@@ -46,8 +46,8 @@
                 <input asp-for="@Model.Filter.KatoComplexFilter" type="hidden" />
             </div>
             <div hidden>
-                <div id="CalculationGetKatoCatalogsReq" data-url="@Url.Action("GetKatoCatalogs", "KatoCatalogs")"></div>
-                <div id="CalculationGetKatoCatalogReq" data-url="@Url.Action("GetKatoCatalog", "KatoCatalogs")"></div>
+                <div id="GetKatoCatalogsReq" data-url="@Url.Action("GetKatoCatalogs", "KatoCatalogs")"></div>
+                <div id="GetKatoCatalogReq" data-url="@Url.Action("GetKatoCatalog", "KatoCatalogs")"></div>
             </div>
             <div class="form-group">
                 <input type="submit" value="@SharedLocalizer["Create"]" class="btn btn-primary" />
@@ -73,4 +73,4 @@
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 }
 
-<script src="~/js/asm/katoCatalog.js"></script>
+<script src="~/js/asm/uprza/katoCatalog.js"></script>

@@ -1,0 +1,34 @@
+﻿@model IEnumerable<SmartEco.Models.ASM.Enterprise>
+@using SmartEco.Controllers
+@using System.Net
+@using Microsoft.Extensions.Localization
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    int number = 0;
+}
+
+<table class="table">
+    <tbody>
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @(++number)
+                    <input asp-for="@item.Id" type="number" name="EnterpriseId" hidden>
+                </td>
+                <td>
+                    @item.Name
+                </td>
+                <td>
+                    БИН: @item.Bin
+                </td>
+                <td class="d-flex" style="justify-content: space-evenly">
+                    <button type="button" title="@SharedLocalizer["Delete"]" class="btn btn-link text-danger" onclick="DeleteEnterprise(@item.Id);">
+                        <i class="fa-solid fa-xmark fa-2xl"></i>
+                    </button>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>

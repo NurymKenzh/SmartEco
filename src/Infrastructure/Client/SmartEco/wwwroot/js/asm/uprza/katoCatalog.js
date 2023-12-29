@@ -10,10 +10,9 @@ function SetKatoes(input) {
         data: {
             katoCodeName: value
         },
-        url: $('#CalculationGetKatoCatalogsReq').data('url'),
+        url: $('#GetKatoCatalogsReq').data('url'),
         type: 'GET',
         success: function (data) {
-            console.log(data);
             $(katoCatologsDataId).empty();
             $.each(data, function (i) {
                 $(katoCatologsDataId).append($('<option>').val(data[i].codeName));
@@ -31,7 +30,7 @@ function SetKatoValue(input) {
         data: {
             katoCodeName: value
         },
-        url: $('#CalculationGetKatoCatalogReq').data('url'),
+        url: $('#GetKatoCatalogReq').data('url'),
         type: 'GET',
         success: function (data) {
             if (data != null) {

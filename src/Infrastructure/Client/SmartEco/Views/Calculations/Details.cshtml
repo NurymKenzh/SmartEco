@@ -1,0 +1,54 @@
+﻿@model SmartEco.Models.ASM.Uprza.CalculationDetailViewModel
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Details"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
+<script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
+
+<script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
+
+<div>
+    <input type="hidden" id="CalculationId" value="@Model.Item.Id" />
+    <input type="hidden" id="CalculationKatoCode" value="@Model.Item.KatoCode" />
+
+    <ul class="nav nav-tabs">
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#Enterprises">Предприятия</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#AirPollutionSources">Источники загрязнения атмосферы</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link" data-toggle="tab" href="#CalculationSettings">Настройки расчёта</a>
+        </li>
+    </ul>
+
+    <div class="tab-content p-3">
+        <div class="tab-pane fade" id="Enterprises">
+            @await Html.PartialAsync("_Enterprises", Model.Enterprises)
+        </div>
+        @* <div class="tab-pane fade" id="AirPollutionSources">
+            @await Html.PartialAsync("_AirPollutionSources.cshtml", Model)
+        </div>
+        <div class="tab-pane fade" id="CalculationSettings">
+            @await Html.PartialAsync("_CalculationSettings", Model)
+        </div> *@
+    </div>
+
+    <div hidden>
+        <div id="GetEnterprisesByKatoReq" data-url="@Url.Action("GetEnterprisesByKato", "CalculationToEnterprises")"></div>
+        <div id="CalcToEntCreateReq" data-url="@Url.Action("Create", "CalculationToEnterprises")"></div>
+        <div id="CalcToEntDeleteReq" data-url="@Url.Action("Delete", "CalculationToEnterprises")"></div>
+    </div>
+</div>
+
+<script src="~/js/asm/rememberTab.js" data-page="Calculation"></script>
+<script src="~/js/asm/uprza/initializeObjects.js"></script>
+<script src="~/js/asm/uprza/calcToEnts.js"></script>

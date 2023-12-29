@@ -1,0 +1,28 @@
+﻿@model IEnumerable<SmartEco.Models.ASM.Enterprise>
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<h4>Выберите предприятия:</h4>
+
+<div class="row">
+    <div class="col-md-4">
+        <div class="form-row">
+            <div class="form-group col-md-10">
+                <input list="EnterprisesDataList" placeholder="Начните вводить наименование или БИН" onkeyup="GetEnterprisesByKato($(this));" onchange="SetEnterprise($(this));" class="form-control enterprise-name">
+                <div class="invalid-feedback enterprise-invalid"></div>
+                <datalist id="EnterprisesDataList"></datalist>
+            </div>
+            <div class="form-group col-md-2">
+                <button type="button" id="SelectEnterpriseBtn" class="btn btn-success" onclick="SelectEnterprise();" disabled>Выбрать</button>
+            </div>
+        </div>
+
+        <h5>Предприятия, участвующие в расчёте рассеивания:</h5>
+        <div id="EnterprisesTable">
+            @await Html.PartialAsync("~/Views/Calculations/_EnterprisesTable.cshtml", Model)
+        </div>
+    </div>
+</div>

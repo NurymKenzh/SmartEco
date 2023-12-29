@@ -53,6 +53,7 @@ namespace SmartEco.Models.ASM.Uprza
 
     public class CalculationDetailViewModel : CalculationViewModel
     {
+        public List<Enterprise> Enterprises { get; set; }
     }
     #endregion
 

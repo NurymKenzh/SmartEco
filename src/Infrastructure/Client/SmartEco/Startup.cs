@@ -17,6 +17,7 @@ using Microsoft.AspNetCore.Mvc.Razor;
 using System.Globalization;
 using Microsoft.AspNetCore.Localization;
 using SmartEco.Services;
+using SmartEco.Services.ASM;
 
 namespace SmartEco
 {
@@ -49,6 +50,7 @@ namespace SmartEco
             services.AddTransient<Controllers.HttpApiClientController, Controllers.HttpApiClientController>();
 
             services.AddTransient<AuthenticationHttpClientHandler>();
+            services.AddScoped<IKatoService, KatoService>();
             services.AddHttpClient<SmartEcoApi>(httpClient =>
             {
                 var isServer = Convert.ToBoolean(Configuration["Server"]);

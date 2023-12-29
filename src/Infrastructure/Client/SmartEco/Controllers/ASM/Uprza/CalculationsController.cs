@@ -1,8 +1,10 @@
-﻿using System.Linq;
+﻿using System.Collections.Generic;
+using System.Linq;
 using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SmartEco.Models.ASM;
 using SmartEco.Models.ASM.Filsters;
 using SmartEco.Models.ASM.Requests;
 using SmartEco.Models.ASM.Responses;
@@ -17,6 +19,7 @@ namespace SmartEco.Controllers.ASM.Uprza
         private readonly string _urlCalculations = "api/Calculations";
         private readonly string _urlCalculationTypes = "api/CalculationTypes";
         private readonly string _urlCalculationStatuses = "api/CalculationStatuses";
+        private readonly string _urlCalcToEnts = "api/CalculationToEnterprises";
         private readonly SmartEcoApi _smartEcoApi;
 
         public CalculationsController(SmartEcoApi smartEcoApi)
@@ -62,40 +65,30 @@ namespace SmartEco.Controllers.ASM.Uprza
         }
 
         // GET: Calculations/Details/5
-        //public async Task<IActionResult> Details(CalculationFilterId filter)
-        //{
-        //    if (filter.Id == null)
-        //    {
-        //        return NotFound();
-        //    }
+        public async Task<IActionResult> Details(CalculationFilterId filter)
+        {
+            if (filter.Id == null)
+            {
+                return NotFound();
+            }
 
-        //    var calculationDetailViewModel = new CalculationDetailViewModel();
-        //    var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlCalculations}/{filter.Id}");
-        //    var response = await _smartEcoApi.Client.SendAsync(request);
-        //    if (response.IsSuccessStatusCode)
-        //    {
-        //        calculationDetailViewModel.Item = await response.Content.ReadAsAsync<Calculation>();
-        //    }
-        //    if (calculationDetailViewModel == null)
-        //    {
-        //        return NotFound();
-        //    }
+            var calculationDetailViewModel = new CalculationDetailViewModel();
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlCalculations}/{filter.Id}");
+            var response = await _smartEcoApi.Client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+            {
+                calculationDetailViewModel.Item = await response.Content.ReadAsAsync<Calculation>();
+            }
+            if (calculationDetailViewModel.Item == null)
+            {
+                return NotFound();
+            }
 
-        //    var indSiteCalculations = await GetIndSiteCalculations(filter.Id.Value);
-        //    var workshops = await GetWorkshops(filter.Id.Value);
-        //    var areas = await GetAreas(filter.Id.Value);
+            calculationDetailViewModel.Filter = filter;
+            calculationDetailViewModel.Enterprises = await GetEnterprisesByCalc(calculationDetailViewModel.Item.Id);
 
-        //    calculationDetailViewModel.Filter = filter;
-        //    calculationDetailViewModel.TreeNodes = ComposingTreeNodes(indSiteCalculations, workshops, areas);
-        //    calculationDetailViewModel.IndSiteCalculations = await GetIndSiteCalculations(calculationDetailViewModel.Item.Id);
-        //    calculationDetailViewModel.AirPollutionSourceListViewModel = await GetAirPollutionSources(calculationDetailViewModel.Item.Id);
-
-        //    calculationDetailViewModel.AirPollutionSourceListViewModel.DropdownIndSite = indSiteCalculations;
-        //    calculationDetailViewModel.AirPollutionSourceListViewModel.DropdownWorkShop = workshops;
-        //    calculationDetailViewModel.AirPollutionSourceListViewModel.DropdownArea = areas;
-
-        //    return View(calculationDetailViewModel);
-        //}
+            return View(calculationDetailViewModel);
+        }
 
         // GET: Calculations/Create
         public async Task<IActionResult> Create(CalculationFilter filter)
@@ -228,6 +221,25 @@ namespace SmartEco.Controllers.ASM.Uprza
                 return new SelectList(calculationStatusesResponse.CalculationStatuses.OrderBy(m => m.Id), "Id", "Name");
             }
             return null;
+        }
+
+        private async Task<List<Enterprise>> GetEnterprisesByCalc(int calculationId)
+        {
+            try
+            {
+                var calcToEntsRequest = new CalculationToEnterprisesRequest()
+                {
+                    CalculationId = calculationId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlCalcToEnts, calcToEntsRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var calcToEntsResponse = await response.Content.ReadAsAsync<CalculationToEnterprisesResponse>();
+                return calcToEntsResponse.CalcToEnts
+                    .Select(c => c.Enterprise)
+                    .ToList();
+            }
+            catch { return new List<Enterprise>(); }
         }
     }
 }

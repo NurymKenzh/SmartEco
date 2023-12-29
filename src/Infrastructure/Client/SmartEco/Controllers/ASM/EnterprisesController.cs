@@ -84,7 +84,7 @@ namespace SmartEco.Controllers.ASM
             {
                 enterpriseDetailViewModel.Item = await response.Content.ReadAsAsync<Enterprise>();
             }
-            if (enterpriseDetailViewModel == null)
+            if (enterpriseDetailViewModel.Item == null)
             {
                 return NotFound();
             }
