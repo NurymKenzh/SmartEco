@@ -1,0 +1,15 @@
+﻿@model SmartEco.Models.ASM.Uprza.CalculationToSourcesInvolvedViewModel
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<div id="CalculationToSourcesTab">
+    @await Html.PartialAsync("~/Views/Shared/_Pager.cshtml", Model.Pager)
+
+    @await Html.PartialAsync("_AirPollutionSourcesTable.cshtml", Model)
+
+    @await Html.PartialAsync("~/Views/Shared/_Pager.cshtml", Model.Pager)
+</div>

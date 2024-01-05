@@ -17,6 +17,7 @@ using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models;
+using SmartEcoAPI.Services;
 
 namespace SmartEcoAPI
 {
@@ -77,6 +78,8 @@ namespace SmartEcoAPI
                 var xmlPath = Path.Combine(AppContext.BaseDirectory, xmlFile);
                 c.IncludeXmlComments(xmlPath);
             });
+
+            services.AddScoped<ICalculationService, CalculationService>();
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.

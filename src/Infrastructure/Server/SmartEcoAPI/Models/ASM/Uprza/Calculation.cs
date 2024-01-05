@@ -14,4 +14,13 @@
         public string KatoCode { get; set; }
         public string KatoName { get; set; }
     }
+
+    public enum CalculationStatuses
+    {
+        New = 1,
+        Configuration = 2,
+        Initiated = 3,
+        Error = 4,
+        Done = 5
+    }
 }

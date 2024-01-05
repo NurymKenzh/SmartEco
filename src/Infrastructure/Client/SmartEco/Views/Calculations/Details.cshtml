@@ -34,10 +34,10 @@
         <div class="tab-pane fade" id="Enterprises">
             @await Html.PartialAsync("_Enterprises", Model.Enterprises)
         </div>
-        @* <div class="tab-pane fade" id="AirPollutionSources">
-            @await Html.PartialAsync("_AirPollutionSources.cshtml", Model)
+        <div class="tab-pane fade" id="AirPollutionSources">
+            @await Html.PartialAsync("_AirPollutionSources.cshtml", Model.CalcToSrcsViewModel)
         </div>
-        <div class="tab-pane fade" id="CalculationSettings">
+        @* <div class="tab-pane fade" id="CalculationSettings">
             @await Html.PartialAsync("_CalculationSettings", Model)
         </div> *@
     </div>
@@ -46,6 +46,12 @@
         <div id="GetEnterprisesByKatoReq" data-url="@Url.Action("GetEnterprisesByKato", "CalculationToEnterprises")"></div>
         <div id="CalcToEntCreateReq" data-url="@Url.Action("Create", "CalculationToEnterprises")"></div>
         <div id="CalcToEntDeleteReq" data-url="@Url.Action("Delete", "CalculationToEnterprises")"></div>
+
+        <div id="CalcToSrcGetReq" data-url="@Url.Action("GetSourcesByCalc", "CalculationToSources")"></div>
+        <div id="CalcToSrcCreateReq" data-url="@Url.Action("Create", "CalculationToSources")"></div>
+        <div id="CalcToSrcDeleteReq" data-url="@Url.Action("Delete", "CalculationToSources")"></div>
+        <div id="CalcToSrcSelectAllReq" data-url="@Url.Action("SelectAll", "CalculationToSources")"></div>
+        <div id="CalcToSrcDeleteAllReq" data-url="@Url.Action("DeleteAll", "CalculationToSources")"></div>
     </div>
 </div>
 

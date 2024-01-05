@@ -1,0 +1,73 @@
+﻿@model CalculationToSourcesInvolvedViewModel
+@using SmartEco.Models.ASM.Uprza
+@using SmartEco.Models.ASM.PollutionSources
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@*On-Off for checkbox*@
+<link href="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/css/bootstrap4-toggle.min.css" rel="stylesheet">
+<script src="https://cdn.jsdelivr.net/gh/gitbrent/bootstrap4-toggle@3.6.1/js/bootstrap4-toggle.min.js"></script>
+
+<link href="~/css/asm/airPollutionSource/table.css" rel="stylesheet" />
+
+<div class="form-group row">
+    <div class="col-md-4">
+        <h5>Выберите ИЗА для расчёта рассеивания</h5>
+
+        <label for="IsInvolvedAllSources" class="col-form-label">Выбрать для расчёта все:</label>
+        <div class="d-inline-block position-relative ml-2">
+            <button id="IsInvolvedAllSources" type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle" onclick="AllSourcesToggleChange()"></button>
+            <input asp-for="@Model.IsInvolvedAllSources" type="checkbox" id="IsInvolvedAllSourcesToggle" class="d-inline-block checkbox-toggle" data-toggle="toggle" data-on="Да" data-off="Нет" value="@Model.IsInvolvedAllSources.ToString().ToLower()">
+        </div>
+    </div>
+
+    <div class="col-lg-1 offset-md-6">
+        @Html.DropDownList(nameof(Model.Pager.PageSize), Model.Pager.PageSizeList, htmlAttributes: new { @class = "form-control" })
+        <div class="d-flex justify-content-md-around mt-1">
+            <input type="button" id="FilterCalculationToSources" value="Обновить" class="btn btn-secondary">
+        </div>
+    </div>
+</div>
+
+<table id="CalculationToSourcesTable" class="table">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Id)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Items.FirstOrDefault().SourceIndSite.IndSiteEnterprise.Enterprise)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Items.FirstOrDefault().Relation)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Items.FirstOrDefault().Name)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(m => m.Items.FirstOrDefault().Number)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Type.IsOrganized)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Type)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().SourceInfo)<br /><br />
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Items.FirstOrDefault().IsInvolved)<br /><br />
+            </th>
+        </tr>
+    </thead>
+    <tbody>
+        @await Html.PartialAsync("_AirPollutionSourcesTableBody.cshtml", Model)
+    </tbody>
+</table>
+
+<script src="~/js/asm/uprza/calcToSrcs.js"></script>

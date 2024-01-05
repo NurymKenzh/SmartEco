@@ -48,6 +48,7 @@ function SelectEnterprise() {
         success: function (result) {
             $('#EnterprisesTable').empty();
             $('#EnterprisesTable').html(result);
+            UpdateSources();
         }
     });
     $('.enterprise-name').val('');
@@ -69,6 +70,7 @@ function DeleteEnterprise(enterpriseId) {
         success: function (result) {
             $('#EnterprisesTable').empty();
             $('#EnterprisesTable').html(result);
+            UpdateSources();
         }
     });
 }

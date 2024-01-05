@@ -7,19 +7,22 @@ using SmartEcoAPI.Data;
 using SmartEcoAPI.Models.ASM.Requests;
 using SmartEcoAPI.Models.ASM.Responses;
 using SmartEcoAPI.Models.ASM.Uprza;
+using SmartEcoAPI.Services;
 
 namespace SmartEcoAPI.Controllers.ASM.Uprza
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[ApiExplorerSettings(IgnoreApi = true)]
+    [ApiExplorerSettings(IgnoreApi = true)]
     public class CalculationToEnterprisesController : ControllerBase
     {
         private readonly ApplicationDbContext _context;
+        private readonly ICalculationService _calcService;
 
-        public CalculationToEnterprisesController(ApplicationDbContext context)
+        public CalculationToEnterprisesController(ApplicationDbContext context, ICalculationService calcService)
         {
             _context = context;
+            _calcService = calcService;
         }
 
         // GET: api/CalculationToEnterprises
@@ -70,6 +73,7 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
         {
             _context.CalculationToEnterprise.Add(calcToEnt);
             await _context.SaveChangesAsync();
+            await _calcService.UpdateStatus(calcToEnt.CalculationId, CalculationStatuses.Configuration);
 
             return CreatedAtAction("GetCalculationToEnterprise", new 
             { 
@@ -91,10 +95,34 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
                 return NotFound();
             }
 
+            var calcToSrcs = GetCalcToSourcesByEnterprise(calculationId, enterpriseId); //get calcRoSrcs for relation cascade delete
+            _context.CalculationToSource.RemoveRange(calcToSrcs);
+
             _context.CalculationToEnterprise.Remove(calcToEnt);
             await _context.SaveChangesAsync();
+            await _calcService.UpdateStatus(calculationId, CalculationStatuses.Configuration);
 
             return calcToEnt;
+        }
+
+        private IQueryable<CalculationToSource> GetCalcToSourcesByEnterprise(
+            int calculationId,
+            int enterpriseId)
+        {
+            var idAirPollutionSources = _context.AirPollutionSource
+                .Include(a => a.SourceIndSite.IndSiteEnterprise.Enterprise)
+                .Include(a => a.SourceWorkshop.Workshop.IndSiteEnterprise.Enterprise)
+                .Include(a => a.SourceArea.Area.Workshop.IndSiteEnterprise.Enterprise)
+                .Where(a => a.SourceIndSite.IndSiteEnterprise.EnterpriseId == enterpriseId ||
+                    a.SourceWorkshop.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId ||
+                    a.SourceArea.Area.Workshop.IndSiteEnterprise.EnterpriseId == enterpriseId)
+                .Select(a => a.Id);
+
+            var calcToSrcs = _context.CalculationToSource
+                .Where(c => c.CalculationId == calculationId &&
+                    idAirPollutionSources.Contains(c.SourceId));
+
+            return calcToSrcs;
         }
     }
 }

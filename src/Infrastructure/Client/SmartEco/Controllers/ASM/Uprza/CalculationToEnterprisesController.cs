@@ -64,7 +64,7 @@ namespace SmartEco.Controllers.ASM.Uprza
                 .Select(group => group.First().Code)
                 .ToList();
 
-            //FIltering enterprises, that contain necessary KATO-codes
+            //Filtering enterprises, that contain necessary KATO-codes
             return enterprises
                 .Where(e => katoDownHierarchyCodes.Contains(e.Kato.Code))
                 .ToList();

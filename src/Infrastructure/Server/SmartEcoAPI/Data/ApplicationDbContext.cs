@@ -100,6 +100,7 @@ namespace SmartEcoAPI.Data
         public DbSet<Calculation> Calculation { get; set; }
 
         public DbSet<CalculationToEnterprise> CalculationToEnterprise { get; set; }
+        public DbSet<CalculationToSource> CalculationToSource { get; set; }
 
         #endregion
         #endregion
@@ -136,6 +137,7 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<CalculationStatus>().ToTable(nameof(CalculationStatus), _schemaAsmUprza);
             modelBuilder.Entity<Calculation>().ToTable(nameof(Calculation), _schemaAsmUprza);
             modelBuilder.Entity<CalculationToEnterprise>().ToTable(nameof(CalculationToEnterprise), _schemaAsmUprza);
+            modelBuilder.Entity<CalculationToSource>().ToTable(nameof(CalculationToSource), _schemaAsmUprza);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)
@@ -191,6 +193,13 @@ namespace SmartEcoAPI.Data
                 { 
                     c.CalculationId,
                     c.EnterpriseId 
+                });
+
+            modelBuilder.Entity<CalculationToSource>()
+                .HasKey(c => new
+                {
+                    c.CalculationId,
+                    c.SourceId
                 });
         }
     }

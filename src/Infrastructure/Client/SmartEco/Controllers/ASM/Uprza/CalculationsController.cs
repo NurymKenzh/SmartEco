@@ -20,6 +20,7 @@ namespace SmartEco.Controllers.ASM.Uprza
         private readonly string _urlCalculationTypes = "api/CalculationTypes";
         private readonly string _urlCalculationStatuses = "api/CalculationStatuses";
         private readonly string _urlCalcToEnts = "api/CalculationToEnterprises";
+        private readonly string _urlCalcToSrcs = "api/CalculationToSources";
         private readonly SmartEcoApi _smartEcoApi;
 
         public CalculationsController(SmartEcoApi smartEcoApi)
@@ -86,6 +87,10 @@ namespace SmartEco.Controllers.ASM.Uprza
 
             calculationDetailViewModel.Filter = filter;
             calculationDetailViewModel.Enterprises = await GetEnterprisesByCalc(calculationDetailViewModel.Item.Id);
+            var enterpriseIds = calculationDetailViewModel.Enterprises
+                .Select(x => x.Id)
+                .ToList();
+            calculationDetailViewModel.CalcToSrcsViewModel = await GetSourcesByCalc(calculationDetailViewModel.Item.Id, enterpriseIds);
 
             return View(calculationDetailViewModel);
         }
@@ -240,6 +245,42 @@ namespace SmartEco.Controllers.ASM.Uprza
                     .ToList();
             }
             catch { return new List<Enterprise>(); }
+        }
+
+        private async Task<CalculationToSourcesInvolvedViewModel> GetSourcesByCalc(int calculationId, List<int> enterpriseIds)
+        {
+            try
+            {
+                var pager = new Pager(null);
+                var viewModel = new CalculationToSourcesInvolvedViewModel();
+
+                var calcToSrcsRequest = new CalculationToSourcesRequest()
+                {
+                    CalculationId = calculationId,
+                    EnterpriseIds = enterpriseIds,
+                    PageSize = pager.PageSize,
+                    PageNumber = pager.PageNumber,
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlCalcToSrcs, calcToSrcsRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+
+                int calcToSrcsCount = 0;
+                var calcToSrcsResponse = await response.Content.ReadAsAsync<CalculationToSourcesResponse>();
+                viewModel.Items = calcToSrcsResponse.Sources;
+                calcToSrcsCount = calcToSrcsResponse.Count;
+
+                viewModel.Pager = new Pager(calcToSrcsCount, pager.PageNumber, pager.PageSize);
+                viewModel.Filter = new CalculationToSourcesFilter
+                {
+                    CalculationId = calculationId,
+                    EnterpriseIds = enterpriseIds
+                };
+                viewModel.IsInvolvedAllSources = calcToSrcsResponse.IsInvolvedAllSorces;
+
+                return viewModel;
+            }
+            catch { return new CalculationToSourcesInvolvedViewModel(); }
         }
     }
 }

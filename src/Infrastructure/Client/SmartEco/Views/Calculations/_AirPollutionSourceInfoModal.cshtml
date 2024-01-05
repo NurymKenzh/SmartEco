@@ -1,0 +1,97 @@
+﻿@model AirPollutionSourceInfo
+@using SmartEco.Models.ASM.PollutionSources
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+<!--class 'is-organized-block' show in script if input 'IsOrzanizedSource' is 'true'-->
+<!--class 'isnot-organized-block' show in script if input 'IsOrzanizedSource' is 'false'-->
+
+<dl class="modal-body">
+    <input asp-for="@Model.SourceId" type="text" name="SourceIdInfo" hidden>
+
+    <dt class="col-sm-6 isnot-organized-block" hidden>Размер площадного источника</dt>
+    <dd class="form-group col-sm-6 isnot-organized-block" hidden>
+        <span>Длина, м:</span>
+        <input asp-for="@Model.Length" type="text" class="form-control-plaintext size-input" name="LengthInfo" disabled>
+        <div name="LengthInvalid" class="invalid-feedback"></div>
+
+        <span>Ширина, м:</span>
+        <input asp-for="@Model.Width" type="text" class="form-control-plaintext size-input" name="WidthInfo" disabled>
+        <div name="WidthInvalid" class="invalid-feedback"></div>
+    </dd>
+
+    <dt class="col-sm-6 is-organized-block" hidden>@Html.DisplayNameFor(modelItem => modelItem.Coordinate)</dt>
+    <dt class="col-sm-6 isnot-organized-block" hidden>Координаты центра</dt>
+    <dd class="form-group col-sm-6">
+        <input asp-for="@Model.Coordinate" type="text" class="form-control-plaintext" name="CoordinateInfo" hidden>
+
+        <span>Широта:</span>
+        <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLatInfo" disabled>
+
+        <span>Долгота:</span>
+        <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLongInfo" disabled>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.TerrainCoefficient)</dt>
+    <dd class="form-group col-sm-6">
+        @Model.TerrainCoefficient
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsCalculateByGas)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <div class="m-md-3">
+            <input asp-for="@Model.IsCalculateByGas" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="sm" data-on="Да" data-off="Нет" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsVerticalDeviation)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <div class="m-md-3">
+            <input asp-for="@Model.IsVerticalDeviation" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="sm" data-on="Да" data-off="Нет" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.AngleDeflection)</dt>
+    <dd class="form-group col-sm-6">
+        @Model.AngleDeflection
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.AngleRotation)</dt>
+    <dd class="form-group col-sm-6">
+        @Model.AngleRotation
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsCovered)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle"></button>
+        <div class="m-md-3">
+            <input asp-for="@Model.IsCovered" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="sm" data-on="Да" data-off="Нет" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.IsSignFlare)</dt>
+    <dd class="form-group col-sm-6 position-relative p-0">
+        <div class="m-md-3">
+            <input asp-for="@Model.IsSignFlare" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-size="sm" data-on="Да" data-off="Нет" disabled>
+        </div>
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Hight)</dt>
+    <dd class="form-group col-sm-6">
+        @Model.Hight
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.Diameter)</dt>
+    <dd class="form-group col-sm-6">
+        @Model.Diameter
+    </dd>
+
+    <dt class="col-sm-6">@Html.DisplayNameFor(modelItem => modelItem.RelationBackgroundId)</dt>
+    <dd class="form-group col-sm-6">
+        @Model.RelationBackground?.Name
+    </dd>
+</dl>
