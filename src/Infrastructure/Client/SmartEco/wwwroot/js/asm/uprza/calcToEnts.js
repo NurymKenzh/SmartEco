@@ -6,10 +6,12 @@ function GetEnterprisesByKato(input) {
     $.ajax({
         data: {
             enterpriseBinName: value,
-            calcKatoCode: $('#CalculationKatoCode').val()
+            calcKatoCode: $('#CalculationKatoCode').val(),
+            enterpriseIds: GetEnterpriseIds()
         },
         url: $('#GetEnterprisesByKatoReq').data('url'),
         type: 'GET',
+        traditional: true, //for send array
         success: function (data) {
             $(enterprisesDataId).empty();
             $.each(data, function (i) {

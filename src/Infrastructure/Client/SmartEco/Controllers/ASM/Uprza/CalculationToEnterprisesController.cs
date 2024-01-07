@@ -45,7 +45,7 @@ namespace SmartEco.Controllers.ASM.Uprza
         }
 
         [HttpGet]
-        public async Task<List<Enterprise>> GetEnterprisesByKato(string enterpriseBinName, string calcKatoCode)
+        public async Task<List<Enterprise>> GetEnterprisesByKato(string enterpriseBinName, string calcKatoCode, List<int> enterpriseIds)
         {
             var enterprises = await GetEnterprises(enterpriseBinName);
             var katoCatalogs = await _katoService.GetKatoCatalogs();
@@ -64,9 +64,9 @@ namespace SmartEco.Controllers.ASM.Uprza
                 .Select(group => group.First().Code)
                 .ToList();
 
-            //Filtering enterprises, that contain necessary KATO-codes
+            //Filtering enterprises, that contain necessary KATO-codes and excludes those already used
             return enterprises
-                .Where(e => katoDownHierarchyCodes.Contains(e.Kato.Code))
+                .Where(e => katoDownHierarchyCodes.Contains(e.Kato.Code) && !enterpriseIds.Contains(e.Id))
                 .ToList();
         }
 
