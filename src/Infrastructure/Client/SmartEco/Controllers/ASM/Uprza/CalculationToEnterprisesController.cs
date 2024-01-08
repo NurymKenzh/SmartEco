@@ -9,6 +9,7 @@ using SmartEco.Services.ASM;
 using System.Collections.Generic;
 using System.Linq;
 using System.Net.Http;
+using System.Security.Policy;
 using System.Threading.Tasks;
 
 namespace SmartEco.Controllers.ASM.Uprza
@@ -45,8 +46,11 @@ namespace SmartEco.Controllers.ASM.Uprza
         }
 
         [HttpGet]
-        public async Task<List<Enterprise>> GetEnterprisesByKato(string enterpriseBinName, string calcKatoCode, List<int> enterpriseIds)
+        public async Task<List<Enterprise>> GetEnterprisesByKato(string enterpriseBinName, string calcKatoCode, int calcTypeId, List<int> enterpriseIds)
         {
+            if (IsOnlyOneAllowed(calcTypeId, enterpriseIds.Count))
+                return new List<Enterprise>();
+
             var enterprises = await GetEnterprises(enterpriseBinName);
             var katoCatalogs = await _katoService.GetKatoCatalogs();
             var katoDownHierarchy = katoCatalogs.MapToChildrenHierarchy();
@@ -103,6 +107,9 @@ namespace SmartEco.Controllers.ASM.Uprza
 
             return RedirectToAction(nameof(GetEnterprisesByCalc), new { calculationId });
         }
+
+        private static bool IsOnlyOneAllowed(int calcTypeId, int countEnterprises)
+            => calcTypeId == (int)CalculationTypes.MpeProject && countEnterprises >= 1;
 
         private async Task<List<Enterprise>> GetEnterprises(string enterpriseBinName)
         {

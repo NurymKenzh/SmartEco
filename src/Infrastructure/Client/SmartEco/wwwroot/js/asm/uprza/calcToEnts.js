@@ -7,6 +7,7 @@ function GetEnterprisesByKato(input) {
         data: {
             enterpriseBinName: value,
             calcKatoCode: $('#CalculationKatoCode').val(),
+            calcTypeId: $('#CalculationTypeId').val(),
             enterpriseIds: GetEnterpriseIds()
         },
         url: $('#GetEnterprisesByKatoReq').data('url'),

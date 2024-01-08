@@ -66,4 +66,10 @@ namespace SmartEco.Models.ASM.Uprza
         Error = 4,
         Done = 5
     }
+
+    public enum CalculationTypes
+    {
+        MpeProject = 1,
+        ConsolidatedProject = 2
+    }
 }

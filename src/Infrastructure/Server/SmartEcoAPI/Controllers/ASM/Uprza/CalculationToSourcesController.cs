@@ -38,7 +38,7 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
             var pollutionSourcesResp = await GetAirPollutionSources(request); //get pollution sources by enterprises
             var involvedSources = MapToInvolvedSources(pollutionSourcesResp.AirPollutionSources, calcToSrcs);
 
-            var isInvolvedAllSources = involvedSources.All(s => s.IsInvolved);
+            var isInvolvedAllSources = involvedSources.All(s => s.IsInvolved) && involvedSources.Count != 0;
 
             if (request.PageSize != null && request.PageNumber != null)
             {
@@ -159,6 +159,10 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
 
         private async Task<AirPollutionSourcesResponse> GetAirPollutionSources(CalculationToSourcesRequest request)
         {
+            var enterpriseIds = request.EnterpriseIds;
+            if (enterpriseIds is null)
+                return new AirPollutionSourcesResponse(new List<AirPollutionSource>(), 0);
+
             var airPollutionSources = _context.AirPollutionSource
                 .Include(a => a.Type)
                 .Include(a => a.SourceInfo)
@@ -173,14 +177,10 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
                         .ThenInclude(e => e.Pollutant)
                 .Where(m => true);
 
-            var enterpriseIds = request.EnterpriseIds;
-            if (enterpriseIds != null)
-            {
-                airPollutionSources = airPollutionSources
-                    .Where(a => enterpriseIds.Contains(a.SourceIndSite.IndSiteEnterprise.EnterpriseId) ||
-                        enterpriseIds.Contains(a.SourceWorkshop.Workshop.IndSiteEnterprise.EnterpriseId) ||
-                        enterpriseIds.Contains(a.SourceArea.Area.Workshop.IndSiteEnterprise.EnterpriseId));
-            }
+            airPollutionSources = airPollutionSources
+                .Where(a => enterpriseIds.Contains(a.SourceIndSite.IndSiteEnterprise.EnterpriseId) ||
+                    enterpriseIds.Contains(a.SourceWorkshop.Workshop.IndSiteEnterprise.EnterpriseId) ||
+                    enterpriseIds.Contains(a.SourceArea.Area.Workshop.IndSiteEnterprise.EnterpriseId));
 
             var count = await airPollutionSources.CountAsync();
             var response = new AirPollutionSourcesResponse(await airPollutionSources.ToListAsync(), count);

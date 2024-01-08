@@ -19,7 +19,7 @@
             </li>
         }
 
-        @for (var page = (int)Model.StartPage; page <= (int)Model.EndPage; page++)
+        @for (var page = Model.StartPage; page <= Model.EndPage; page++)
         {
             <li class="page-item @(page == Model.PageNumber ? "active" : "")">
                 <button type="button" class="page-link" value="@(page)">@(page)</button>
