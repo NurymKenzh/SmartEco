@@ -14,7 +14,7 @@ namespace SmartEco.Models.ASM.Uprza
         public AirPollutionSource Source { get; set; }
     }
 
-    public class PollutionSourceInvolved : AirPollutionSource
+    public class AirPollutionSourceInvolved : AirPollutionSource
     {
         [Display(Name = "Участвует в расчёте рассеивания")]
         public bool IsInvolved { get; set; }
@@ -23,9 +23,10 @@ namespace SmartEco.Models.ASM.Uprza
     public class CalculationToSourcesInvolvedViewModel
     {
         public CalculationToSourcesFilter Filter { get; set; } = new CalculationToSourcesFilter();
-        public List<PollutionSourceInvolved> Items { get; set; } = new List<PollutionSourceInvolved>();
+        public List<AirPollutionSourceInvolved> Items { get; set; } = new List<AirPollutionSourceInvolved>();
         public Pager Pager { get; set; } = new Pager(null);
 
         public bool IsInvolvedAllSources { get; set; }
+        public List<AirPollutant> AirPollutants { get; set; }
     }
 }

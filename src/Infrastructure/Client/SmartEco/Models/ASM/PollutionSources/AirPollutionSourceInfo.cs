@@ -1,7 +1,5 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
 
 namespace SmartEco.Models.ASM.PollutionSources
 {
@@ -12,6 +10,9 @@ namespace SmartEco.Models.ASM.PollutionSources
 
         [Display(Name = "Координаты")]
         public string Coordinate { get; set; }
+
+        [Display(Name = "Координаты EPSG:3857")]
+        public string Coordinate3857 { get; set; }
 
         [Display(Name = "Коэффициент рельефа")]
         [Required(ErrorMessage = "Поле обязательно для заполнения")]

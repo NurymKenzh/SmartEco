@@ -32,6 +32,7 @@
     <dt class="col-sm-6 isnot-organized-block" hidden>Координаты центра</dt>
     <dd class="form-group col-sm-6">
         <input asp-for="@Model.Coordinate" type="text" class="form-control-plaintext" name="CoordinateInfo" hidden>
+        <input asp-for="@Model.Coordinate3857" type="text" class="form-control-plaintext" name="Coordinate3857Info" hidden>
 
         <span>Широта:</span>
         <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLatInfo" disabled>

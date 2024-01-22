@@ -4,6 +4,7 @@ using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
+using SmartEco.Helpers.ASM;
 using SmartEco.Models.ASM;
 using SmartEco.Models.ASM.Filsters;
 using SmartEco.Models.ASM.Requests;
@@ -11,6 +12,7 @@ using SmartEco.Models.ASM.Responses;
 using SmartEco.Models.ASM.Responses.Uprza;
 using SmartEco.Models.ASM.Uprza;
 using SmartEco.Services;
+using SmartEco.Services.ASM;
 
 namespace SmartEco.Controllers.ASM.Uprza
 {
@@ -21,11 +23,15 @@ namespace SmartEco.Controllers.ASM.Uprza
         private readonly string _urlCalculationStatuses = "api/CalculationStatuses";
         private readonly string _urlCalcToEnts = "api/CalculationToEnterprises";
         private readonly string _urlCalcToSrcs = "api/CalculationToSources";
+        private readonly string _urlCalcSettings = "api/CalculationSettings";
+        private readonly string _urlStateCalcs = "api/StateCalculations";
         private readonly SmartEcoApi _smartEcoApi;
+        private readonly IUprzaService _uprzaService;
 
-        public CalculationsController(SmartEcoApi smartEcoApi)
+        public CalculationsController(SmartEcoApi smartEcoApi, IUprzaService uprzaService)
         {
             _smartEcoApi = smartEcoApi;
+            _uprzaService = uprzaService;
         }
 
         // GET: Calculations
@@ -91,6 +97,11 @@ namespace SmartEco.Controllers.ASM.Uprza
                 .Select(x => x.Id)
                 .ToList();
             calculationDetailViewModel.CalcToSrcsViewModel = await GetSourcesByCalc(calculationDetailViewModel.Item.Id, enterpriseIds);
+            calculationDetailViewModel.CalcSettingsViewModel = await GetSettingsByCalc(calculationDetailViewModel.Item.Id);
+
+            var airPollutionsSelected = calculationDetailViewModel.CalcSettingsViewModel?.CalculationSetting?.AirPollutantIds;
+            calculationDetailViewModel.CalcSettingsViewModel.AirPollutionsSelectList = 
+                new MultiSelectList(calculationDetailViewModel.CalcToSrcsViewModel.AirPollutants.OrderBy(m => m.Name), "Id", "CodeName", airPollutionsSelected);
 
             return View(calculationDetailViewModel);
         }
@@ -204,6 +215,43 @@ namespace SmartEco.Controllers.ASM.Uprza
             return RedirectToAction(nameof(Index), calculationViewModel.Filter);
         }
 
+        [HttpPost]
+        public async Task<IActionResult> RunCalculation(int calculationId)
+        {
+            if (calculationId == 0)
+                return BadRequest();
+
+            Calculation calculation = null;
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlCalculations}/{calculationId}");
+            var response = await _smartEcoApi.Client.SendAsync(request);
+            if (response.IsSuccessStatusCode)
+                calculation = await response.Content.ReadAsAsync<Calculation>();
+
+            if (calculation == null)
+                return NotFound();
+
+            var enterprises = await GetEnterprisesByCalc(calculationId);
+            var enterpriseIds = enterprises
+                .Select(x => x.Id)
+                .ToList();
+
+            var calculationDetailViewModel = new CalculationDetailViewModel
+            {
+                Item = calculation,
+                CalcToSrcsViewModel = await GetSourcesByCalc(calculationId, enterpriseIds),
+                CalcSettingsViewModel = await GetSettingsByCalc(calculationId)
+            };
+
+            var uprzaRequest = UprzaHelper.MapToRequest(calculationDetailViewModel);
+            var uprzaResponse = await _uprzaService.SendCalculation(uprzaRequest, calculation);
+            if (uprzaResponse.ErrorMessage != null)
+                return BadRequest($"{uprzaResponse.ErrorMessage} - {string.Join(';', uprzaResponse.Description)}");
+
+            await CreateStateCalculation(calculationId, uprzaResponse);
+
+            return Ok();
+        }
+
         private async Task<SelectList> GetCalculationTypesSelectList()
         {
             var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlCalculationTypes);
@@ -277,10 +325,41 @@ namespace SmartEco.Controllers.ASM.Uprza
                     EnterpriseIds = enterpriseIds
                 };
                 viewModel.IsInvolvedAllSources = calcToSrcsResponse.IsInvolvedAllSorces;
+                viewModel.AirPollutants = calcToSrcsResponse.AirPollutants;
 
                 return viewModel;
             }
             catch { return new CalculationToSourcesInvolvedViewModel(); }
+        }
+
+        private async Task<CalculationSettingsViewModel> GetSettingsByCalc(int calculationId)
+        {
+            try
+            {
+                var calcSettingsRequest = new CalculationSettingsRequest()
+                {
+                    CalculationId = calculationId
+                };
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, _urlCalcSettings, calcSettingsRequest);
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                var calcSettingsResponse = await response.Content.ReadAsAsync<CalculationSettingsResponse>();
+                return new CalculationSettingsViewModel
+                {
+                    CalculationPoints = calcSettingsResponse.CalcPoints,
+                    CalculationRectangles = calcSettingsResponse.CalcRectangles,
+                    CalculationSetting = calcSettingsResponse.CalcSetting,
+                    StateCalculation = calcSettingsResponse.StateCalculation
+                };
+            }
+            catch { return new CalculationSettingsViewModel(); }
+        }
+
+        private async Task CreateStateCalculation(int calculationId, StateCalculation uprzaResponse)
+        {
+            var body = uprzaResponse;
+            var requestStateCalc = _smartEcoApi.CreateRequest(HttpMethod.Post, $"{_urlStateCalcs}/{calculationId}", body);
+            await _smartEcoApi.Client.SendAsync(requestStateCalc);
         }
     }
 }

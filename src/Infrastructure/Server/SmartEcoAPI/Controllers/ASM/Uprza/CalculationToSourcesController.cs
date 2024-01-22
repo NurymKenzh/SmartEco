@@ -38,6 +38,16 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
             var pollutionSourcesResp = await GetAirPollutionSources(request); //get pollution sources by enterprises
             var involvedSources = MapToInvolvedSources(pollutionSourcesResp.AirPollutionSources, calcToSrcs);
 
+            //Get AirPollutants form selected sources for setting
+            var airPollutants = involvedSources
+                .Where(s => s.IsInvolved)
+                .SelectMany(s => s.OperationModes
+                    .SelectMany(m => m.Emissions
+                        .Select(e => e.Pollutant)))
+                .GroupBy(p => p.Code)
+                .Select(p => p.First())
+                .ToList();
+
             var isInvolvedAllSources = involvedSources.All(s => s.IsInvolved) && involvedSources.Count != 0;
 
             if (request.PageSize != null && request.PageNumber != null)
@@ -45,7 +55,7 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
                 involvedSources = involvedSources.Skip(((int)request.PageNumber - 1) * (int)request.PageSize).Take((int)request.PageSize).ToList();
             }
 
-            var response = new CalculationToSourcesResponse(involvedSources, isInvolvedAllSources, pollutionSourcesResp.Count);
+            var response = new CalculationToSourcesResponse(involvedSources, isInvolvedAllSources, pollutionSourcesResp.Count, airPollutants);
 
             return response;
         }
@@ -68,6 +78,27 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
             }
 
             return calcToSrc;
+        }
+
+        [HttpGet("AirPollutants")]
+        [Authorize(Roles = "admin,moderator,ASM")]
+        public async Task<ActionResult<List<AirPollutant>>> GetAirPollutants([FromBody] CalculationToSourcesRequest request)
+        {
+            var calcToSrcs = GetCalculationToSources(request.CalculationId);
+            var pollutionSourcesResp = await GetAirPollutionSources(request); //get pollution sources by enterprises
+            var involvedSources = MapToInvolvedSources(pollutionSourcesResp.AirPollutionSources, calcToSrcs);
+
+            //Get AirPollutants form selected sources for setting
+            var airPollutants = involvedSources
+                .Where(s => s.IsInvolved)
+                .SelectMany(s => s.OperationModes
+                    .SelectMany(m => m.Emissions
+                        .Select(e => e.Pollutant)))
+                .GroupBy(p => p.Code)
+                .Select(p => p.First())
+                .ToList();
+
+            return airPollutants;
         }
 
         // POST: api/CalculationToSources

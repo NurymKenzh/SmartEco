@@ -51,12 +51,21 @@ namespace SmartEco
 
             services.AddTransient<AuthenticationHttpClientHandler>();
             services.AddScoped<IKatoService, KatoService>();
+            services.AddScoped<IUprzaService, UprzaService>();
+
             services.AddHttpClient<SmartEcoApi>(httpClient =>
             {
                 var isServer = Convert.ToBoolean(Configuration["Server"]);
                 string apiUrl = isServer ? Configuration["APIUrlServer"] : Configuration["APIUrlDebug"];
                 httpClient.BaseAddress = new Uri(apiUrl);
             }).AddHttpMessageHandler<AuthenticationHttpClientHandler>();
+
+            services.AddHttpClient<UprzaApi>(httpClient =>
+            {
+                var isServer = Convert.ToBoolean(Configuration["Server"]);
+                string apiUrl = isServer ? Configuration["URPZAUrlServer"] : Configuration["URPZAUrlDebug"];
+                httpClient.BaseAddress = new Uri(apiUrl);
+            });
 
             services.AddHttpClient<StatGovKzApi>(httpClient =>
             {

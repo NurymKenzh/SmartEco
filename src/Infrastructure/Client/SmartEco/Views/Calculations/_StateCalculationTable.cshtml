@@ -1,0 +1,115 @@
+﻿@model StateCalculation
+@using SmartEco.Models.ASM.Uprza
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    int stateCalcNumber = 0;
+}
+
+<h5>Состояние расчёта</h5>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.JobId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.InitializedOn)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Calculation.Status)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.DiagnosticInfo.Progress)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model?.Calculation is null)
+        {
+            <tr>
+                <td colspan="5">
+                    Данные отсутствуют
+                </td>
+            </tr>
+        }
+        else
+        {
+            <tr>
+                <td>
+                    <p class="pt-sm-2">@(++stateCalcNumber)</p>
+                    <input id="JobIdStateCalc" value="@Model.JobId" hidden/>
+                    <input id="StatusIdCalc" value="@Model.Calculation.StatusId" hidden/>
+                </td>
+                <td>
+                    <p class="pt-sm-2">@Model.InitializedOn</p>
+                </td>
+                <td>
+                    <p class="pt-sm-2">@Model.Calculation.Status?.Name</p>
+                </td>
+                <td>
+                    <div class="progress">
+                        <div class="progress-bar bg-success" role="progressbar" style="width: @(Model.DiagnosticInfo?.Progress + "%")" aria-valuenow="@Model.DiagnosticInfo?.Progress)" aria-valuemin="0" aria-valuemax="100">@(Model.DiagnosticInfo?.Progress) %</div>
+                    </div>
+                </td>
+                <td class="d-flex border-0" style="justify-content: space-evenly">
+                    <button type="button" title="Диагностическая информация" class="btn btn-link text-info diagnostic-info-btn" onclick="DiagnoscticInfoShowHide($(this));">
+                        <i class="fa-solid fa-caret-down fa-2xl"></i>
+                    </button>
+                    <button type="button" title="@SharedLocalizer["Delete"]" class="btn btn-link text-danger" onclick="DeleteStateCalc();">
+                        <i class="fa-solid fa-trash fa-lg"></i>
+                    </button>
+                    <a title="@SharedLocalizer["Details"]" class="btn btn-link" href="#">
+                        <i class="fa-solid fa-eye fa-lg"></i>
+                    </a>
+                </td>
+            </tr>
+
+            <tr class="diagnostic-info-row">
+                <td colspan="5" class="bg-light">
+                    <dl class="row">
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.DiagnosticInfo.CalculationTime)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.DiagnosticInfo.CalculationTime)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.DiagnosticInfo.NumberOfPoints)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.DiagnosticInfo.NumberOfPoints)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.DiagnosticInfo.AverageTime)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.DiagnosticInfo.AverageTime)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.DiagnosticInfo.NumberOfThreads)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.DiagnosticInfo.NumberOfThreads)
+                        </dd>
+                        <dt class="col-sm-4">
+                            @Html.DisplayNameFor(model => model.DiagnosticInfo.NumberOfIterations)
+                        </dt>
+                        <dd class="col-sm-8">
+                            @Html.DisplayFor(model => model.DiagnosticInfo.NumberOfIterations)
+                        </dd>
+                    </dl>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+
+<button class="btn btn-warning" onclick="SetCalculationSetting();">Запустить расчёт</button>
+<button class="btn btn-info" onclick="UpdateStateCalc();">Обновить</button>

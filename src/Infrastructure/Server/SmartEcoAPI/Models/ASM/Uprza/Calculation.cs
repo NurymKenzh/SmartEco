@@ -13,6 +13,11 @@
 
         public string KatoCode { get; set; }
         public string KatoName { get; set; }
+
+        #region One-to-one relation
+        public CalculationSetting Setting { get; set; }
+        public StateCalculation State { get; set; }
+        #endregion
     }
 
     public enum CalculationStatuses

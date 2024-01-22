@@ -101,6 +101,10 @@ namespace SmartEcoAPI.Data
 
         public DbSet<CalculationToEnterprise> CalculationToEnterprise { get; set; }
         public DbSet<CalculationToSource> CalculationToSource { get; set; }
+        public DbSet<CalculationPoint> CalculationPoint { get; set; }
+        public DbSet<CalculationRectangle> CalculationRectangle { get; set; }
+        public DbSet<CalculationSetting> CalculationSetting { get; set; }
+        public DbSet<StateCalculation> StateCalculation { get; set; }
 
         #endregion
         #endregion
@@ -138,6 +142,10 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<Calculation>().ToTable(nameof(Calculation), _schemaAsmUprza);
             modelBuilder.Entity<CalculationToEnterprise>().ToTable(nameof(CalculationToEnterprise), _schemaAsmUprza);
             modelBuilder.Entity<CalculationToSource>().ToTable(nameof(CalculationToSource), _schemaAsmUprza);
+            modelBuilder.Entity<CalculationPoint>().ToTable(nameof(CalculationPoint), _schemaAsmUprza);
+            modelBuilder.Entity<CalculationRectangle>().ToTable(nameof(CalculationRectangle), _schemaAsmUprza);
+            modelBuilder.Entity<CalculationSetting>().ToTable(nameof(CalculationSetting), _schemaAsmUprza);
+            modelBuilder.Entity<StateCalculation>().ToTable(nameof(StateCalculation), _schemaAsmUprza);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)
@@ -201,6 +209,30 @@ namespace SmartEcoAPI.Data
                     c.CalculationId,
                     c.SourceId
                 });
+
+            modelBuilder.Entity<CalculationPoint>()
+                .HasKey(c => new
+                {
+                    c.CalculationId,
+                    c.Number
+                });
+
+            modelBuilder.Entity<CalculationRectangle>()
+                .HasKey(c => new
+                {
+                    c.CalculationId,
+                    c.Number
+                });
+
+            modelBuilder.Entity<CalculationSetting>()
+                .HasKey(c => c.CalculationId);
+
+            //Primary Key
+            modelBuilder.Entity<StateCalculation>()
+                .HasKey(s => s.CalculationId);
+            //Complex Types
+            modelBuilder.Entity<StateCalculation>()
+                .OwnsOne(s => s.DiagnosticInfo);
         }
     }
 }

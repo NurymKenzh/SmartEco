@@ -55,6 +55,7 @@ namespace SmartEco.Models.ASM.Uprza
     {
         public List<Enterprise> Enterprises { get; set; }
         public CalculationToSourcesInvolvedViewModel CalcToSrcsViewModel { get; set; }
+        public CalculationSettingsViewModel CalcSettingsViewModel { get; set; }
     }
     #endregion
 

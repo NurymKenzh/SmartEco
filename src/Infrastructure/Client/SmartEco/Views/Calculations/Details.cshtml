@@ -9,10 +9,24 @@
     Layout = "~/Views/Shared/_Layout.cshtml";
 }
 
+@{
+    var viewData = new ViewDataDictionary(ViewData)
+    {
+        { "CalcTypeId", Model.Item.TypeId }, 
+        { "AirPollutants", Model.CalcSettingsViewModel.AirPollutionsSelectList } 
+    };
+}
+
 <script src="~/lib/jquery-validation/dist/jquery.validate.min.js"></script>
 <script src="~/lib/jquery-validation-unobtrusive/jquery.validate.unobtrusive.min.js"></script>
 
 <script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
+
+@* Multiple selectlist *@
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/css/bootstrap-multiselect.css">
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/js/bootstrap-multiselect.min.js"></script>
+
+<link href="~/css/asm//uprza/stateCalc.css" rel="stylesheet" />
 
 <div>
     <input type="hidden" id="CalculationId" value="@Model.Item.Id" />
@@ -38,9 +52,9 @@
         <div class="tab-pane fade" id="AirPollutionSources">
             @await Html.PartialAsync("_AirPollutionSources.cshtml", Model.CalcToSrcsViewModel)
         </div>
-        @* <div class="tab-pane fade" id="CalculationSettings">
-            @await Html.PartialAsync("_CalculationSettings", Model)
-        </div> *@
+        <div class="tab-pane fade" id="CalculationSettings">
+            @await Html.PartialAsync("_CalculationSettings", Model.CalcSettingsViewModel, viewData)
+        </div>
     </div>
 
     <div hidden>
@@ -53,9 +67,27 @@
         <div id="CalcToSrcDeleteReq" data-url="@Url.Action("Delete", "CalculationToSources")"></div>
         <div id="CalcToSrcSelectAllReq" data-url="@Url.Action("SelectAll", "CalculationToSources")"></div>
         <div id="CalcToSrcDeleteAllReq" data-url="@Url.Action("DeleteAll", "CalculationToSources")"></div>
+
+        <div id="CalcPointCreateReq" data-url="@Url.Action("CreateCalculationPoint", "CalculationSettings")"></div>
+        <div id="CalcPointDeleteReq" data-url="@Url.Action("DeleteCalculationPoint", "CalculationSettings")"></div>
+
+        <div id="CalcRectangleCreateReq" data-url="@Url.Action("CreateCalculationRectangle", "CalculationSettings")"></div>
+        <div id="CalcRectangleDeleteReq" data-url="@Url.Action("DeleteCalculationRectangle", "CalculationSettings")"></div>
+
+        <div id="SetCalculationSettingReq" data-url="@Url.Action("SetCalculationSetting", "CalculationSettings")"></div>
+        <div id="GetAirPollutants" data-url="@Url.Action("GetAirPollutants", "CalculationSettings")"></div>
+        <div id="RunCalculationReq" data-url="@Url.Action("RunCalculation", "Calculations")"></div>
+
+        <div id="StateCalcGetReq" data-url="@Url.Action("GetState", "StateCalculations")"></div>
+        <div id="StateCalcUpdateReq" data-url="@Url.Action("Update", "StateCalculations")"></div>
+        <div id="StateCalcDeleteReq" data-url="@Url.Action("Delete", "StateCalculations")"></div>
     </div>
 </div>
 
 <script src="~/js/asm/rememberTab.js" data-page="Calculation"></script>
 <script src="~/js/asm/uprza/initializeObjects.js"></script>
 <script src="~/js/asm/uprza/calcToEnts.js"></script>
+<script src="~/js/asm/uprza/calcPoints.js"></script>
+<script src="~/js/asm/uprza/calcRectangles.js"></script>
+<script src="~/js/asm/uprza/calcSetting.js"></script>
+<script src="~/js/asm/uprza/stateCalc.js"></script>

@@ -1,0 +1,121 @@
+﻿@model IList<CalculationPoint>
+@using SmartEco.Models.ASM.Uprza
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    int calcPointNumber = 0;
+}
+
+<h5>Расчётные точки</h5>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().CalculationId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().AbscissaX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().OrdinateY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().ApplicateZ)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is null || Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="6">
+                    Данные отсутствуют
+                </td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <p class="pt-sm-2">@(++calcPointNumber)</p>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.Number</p>
+                        <input type="number" name="PointNumber" value="@item.Number" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.AbscissaX</p>
+                        <input type="text" name="PointAbscissaX" value="@item.AbscissaX" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.OrdinateY</p>
+                        <input type="text" name="PointOrdinateY" value="@item.OrdinateY" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.ApplicateZ</p>
+                        <input type="text" name="PointApplicateZ" value="@item.ApplicateZ" hidden>
+                    </td>
+                    <td class="text-center h-100">
+                        <button type="button" title="@SharedLocalizer["Delete"]" class="btn btn-link text-danger" onclick="DeletePoint(@item.Number)">
+                            <i class="fa-solid fa-trash fa-lg"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#ShowCreateCalculationPointModal">Добавить</button>
+
+@* Modal for create new calculation point *@
+<div id="ShowCreateCalculationPointModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить расчётную точку</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="PointNewNumber" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Number)</label>
+                        <input id="PointNewNumber" class="form-control" type="number" />
+                        <div name="PointNewNumber" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="PointNewAbscissaX" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().AbscissaX)</label>
+                        <input id="PointNewAbscissaX" class="form-control" type="text" />
+                        <div name="PointNewAbscissaX" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="PointNewOrdinateY" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().OrdinateY)</label>
+                        <input id="PointNewOrdinateY" class="form-control" type="text" />
+                        <div name="PointNewOrdinateY" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="PointNewApplicateZ" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().ApplicateZ)</label>
+                        <input id="PointNewApplicateZ" class="form-control" type="text" />
+                        <div name="PointNewApplicateZ" class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="CreatePoint()">@SharedLocalizer["Create"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

@@ -26,6 +26,7 @@ var AirPollutionSource = class {
 var AirPollutionSourceInfo = class {
     SourceId;
     Coordinate;
+    Coordinate3857;
     TerrainCoefficient;
     IsCalculateByGas;
     IsVerticalDeviation;

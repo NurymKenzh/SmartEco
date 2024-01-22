@@ -1,6 +1,6 @@
 ﻿var map, inputCoordinates, inputLongCoordinate, inputLatCoordinate, inputWidth, inputLength;
 var isOrganized;
-var inputs = { coordinates: {}, longCoordinate: {}, latCoordinate: {}, sizeLength: {}, sizeWidth: {} };
+var inputs = { coordinates: {}, coordinates3857: {}, longCoordinate: {}, latCoordinate: {}, sizeLength: {}, sizeWidth: {} };
 
 $('.edit-info-btn').click(function (e) {
     var btn = $(this);
@@ -36,6 +36,7 @@ $('.size-input').change(function () {
 
 function InitializeInputs(editRow) {
     inputs.coordinates = editRow.find('[name="CoordinateInfo"]');
+    inputs.coordinates3857 = editRow.find('[name="Coordinate3857Info"]');
     inputs.longCoordinate = editRow.find('[name="CoordinateLongInfo"]');
     inputs.latCoordinate = editRow.find('[name="CoordinateLatInfo"]');
     inputs.sizeLength = editRow.find('[name="LengthInfo"]');
@@ -130,7 +131,8 @@ function AddDrawInteraction() {
 
         CheckShowClearRectangle(e.feature);
         var coords = featureClone.getGeometry().getCoordinates();
-        SetCoordinates(coords);
+        var coords3875 = feature.getGeometry().getCoordinates();
+        SetCoordinates(coords, coords3875);
         AddModifyIteraction();
     });
 }
@@ -147,7 +149,8 @@ function AddModifyIteraction() {
 
         CheckShowClearRectangle(collection.item(0));
         var coords = featureClone.getGeometry().getCoordinates();
-        SetCoordinates(coords);
+        var coords3875 = collection.item(0).getGeometry().getCoordinates();
+        SetCoordinates(coords, coords3875);
     });
 }
 
@@ -171,6 +174,8 @@ function ChangeMapSources() {
 
         //Change coords on map
         coordinates = ol.proj.transform(coordinates, 'EPSG:4326', 'EPSG:3857');
+        inputs.coordinates3857.val(coordinates);
+
         var point = new ol.geom.Point(
             coordinates
         );
@@ -197,8 +202,9 @@ function CheckShowClearRectangle(feature) {
     }
 }
 
-function SetCoordinates(coords) {
+function SetCoordinates(coords, coords3857) {
     inputs.coordinates.val(coords);
+    inputs.coordinates3857.val(coords3857);
     inputs.longCoordinate.val(coords[0]);
     inputs.latCoordinate.val(coords[1]);
 }

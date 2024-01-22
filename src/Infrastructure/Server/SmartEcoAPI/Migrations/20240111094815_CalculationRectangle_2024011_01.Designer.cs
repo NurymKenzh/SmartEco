@@ -3,6 +3,7 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using SmartEcoAPI.Data;
@@ -10,9 +11,10 @@ using SmartEcoAPI.Data;
 namespace SmartEcoAPI.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20240111094815_CalculationRectangle_2024011_01")]
+    partial class CalculationRectangle_2024011_01
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -331,8 +333,6 @@ namespace SmartEcoAPI.Migrations
 
                     b.Property<string>("Coordinate");
 
-                    b.Property<string>("Coordinate3857");
-
                     b.Property<decimal>("Diameter");
 
                     b.Property<decimal>("Hight");
@@ -541,17 +541,6 @@ namespace SmartEcoAPI.Migrations
                     b.ToTable("CalculationRectangle","asmUprza");
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.Uprza.CalculationSetting", b =>
-                {
-                    b.Property<int>("CalculationId");
-
-                    b.Property<string>("SettingsJson");
-
-                    b.HasKey("CalculationId");
-
-                    b.ToTable("CalculationSetting","asmUprza");
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.Uprza.CalculationStatus", b =>
                 {
                     b.Property<int>("Id");
@@ -599,21 +588,6 @@ namespace SmartEcoAPI.Migrations
                     b.HasKey("Id");
 
                     b.ToTable("CalculationType","asmUprza");
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.Uprza.StateCalculation", b =>
-                {
-                    b.Property<int>("CalculationId");
-
-                    b.Property<List<string>>("Description");
-
-                    b.Property<DateTime>("InitializedOn");
-
-                    b.Property<int>("JobId");
-
-                    b.HasKey("CalculationId");
-
-                    b.ToTable("StateCalculation","asmUprza");
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.Workshop", b =>
@@ -1836,14 +1810,6 @@ namespace SmartEcoAPI.Migrations
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.Uprza.CalculationSetting", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.ASM.Uprza.Calculation", "Calculation")
-                        .WithOne("Setting")
-                        .HasForeignKey("SmartEcoAPI.Models.ASM.Uprza.CalculationSetting", "CalculationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-                });
-
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.Uprza.CalculationToEnterprise", b =>
                 {
                     b.HasOne("SmartEcoAPI.Models.ASM.Uprza.Calculation", "Calculation")
@@ -1868,40 +1834,6 @@ namespace SmartEcoAPI.Migrations
                         .WithMany()
                         .HasForeignKey("SourceId")
                         .OnDelete(DeleteBehavior.Cascade);
-                });
-
-            modelBuilder.Entity("SmartEcoAPI.Models.ASM.Uprza.StateCalculation", b =>
-                {
-                    b.HasOne("SmartEcoAPI.Models.ASM.Uprza.Calculation", "Calculation")
-                        .WithOne("State")
-                        .HasForeignKey("SmartEcoAPI.Models.ASM.Uprza.StateCalculation", "CalculationId")
-                        .OnDelete(DeleteBehavior.Cascade);
-
-                    b.OwnsOne("SmartEcoAPI.Models.ASM.Uprza.DiagnosticInfo", "DiagnosticInfo", b1 =>
-                        {
-                            b1.Property<int>("StateCalculationCalculationId");
-
-                            b1.Property<double>("AverageTime");
-
-                            b1.Property<double>("CalculationTime");
-
-                            b1.Property<int>("NumberOfIterations");
-
-                            b1.Property<int>("NumberOfPoints");
-
-                            b1.Property<int>("NumberOfThreads");
-
-                            b1.Property<int>("Progress");
-
-                            b1.HasKey("StateCalculationCalculationId");
-
-                            b1.ToTable("StateCalculation","asmUprza");
-
-                            b1.HasOne("SmartEcoAPI.Models.ASM.Uprza.StateCalculation")
-                                .WithOne("DiagnosticInfo")
-                                .HasForeignKey("SmartEcoAPI.Models.ASM.Uprza.DiagnosticInfo", "StateCalculationCalculationId")
-                                .OnDelete(DeleteBehavior.Cascade);
-                        });
                 });
 
             modelBuilder.Entity("SmartEcoAPI.Models.ASM.Workshop", b =>

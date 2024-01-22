@@ -1,7 +1,4 @@
-﻿using System.ComponentModel.DataAnnotations;
-using System.Xml.Linq;
-
-namespace SmartEcoAPI.Models.ASM.PollutionSources
+﻿namespace SmartEcoAPI.Models.ASM.PollutionSources
 {
     public class AirPollutionSourceInfo
     {
@@ -9,6 +6,7 @@ namespace SmartEcoAPI.Models.ASM.PollutionSources
         public AirPollutionSource Source { get; set; }
 
         public string Coordinate { get; set; }
+        public string Coordinate3857 { get; set; }
         public int TerrainCoefficient { get; set; }
         public bool IsCalculateByGas { get; set; }
         public bool IsVerticalDeviation { get; set; }

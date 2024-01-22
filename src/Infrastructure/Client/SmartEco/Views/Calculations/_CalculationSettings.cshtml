@@ -1,0 +1,177 @@
+﻿@model CalculationSettingsViewModel
+@using SmartEco.Models.ASM.PollutionSources
+@using SmartEco.Models.ASM.Uprza
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    var calcTypeId = Convert.ToInt32(ViewData["CalcTypeId"]);
+    var airPollutants = (MultiSelectList)ViewData["AirPollutants"];
+}
+
+<div class="row">
+    @if (calcTypeId != (int)CalculationTypes.ConsolidatedProject)
+    {
+        <div class="col-md-8 offset-md-2 mb-5">
+            <div id="CalculationRectanglesTable">
+                @await Html.PartialAsync("_CalculationRectanglesTable", Model.CalculationRectangles)
+            </div>
+        </div>
+    }
+
+    <div class="col-md-8 offset-md-2 mb-5">
+        <div id="CalculationPointsTable">
+            @await Html.PartialAsync("_CalculationPointsTable", Model.CalculationPoints)
+        </div>
+    </div>
+
+    <div class="col-md-8 offset-md-2 mb-5">
+        <div id="CalculationSettingsBlock">
+            <h5>Настройки</h5>
+            @* <hr /> *@
+            <div class="border p-2">
+                <div class="row no-gutters mb-3" name="WindSpeedSettings">
+                    <div class="form-group pr-3">
+                        <label for="WindSpeedMode" class="control-label">Режим скорости ветра</label>
+                        <select asp-for="@Model.CalculationSetting.WindSpeedSetting.Mode" asp-items="Html.GetEnumSelectList<CalculationSetting.CalcWindModes>()" id="WindSpeedMode" class="form-control" onchange="ChangeWindSpeedBlocks(this)"></select>
+                    </div>
+                    <div id="WindSpeedModeFixedBlock" hidden>
+                        <div class="form-group pr-3">
+                            <label for="WindSpeed" class="control-label">Скорость ветра, м/с</label>
+                            <input asp-for="@Model.CalculationSetting.WindSpeedSetting.Speed" id="WindSpeed" class="form-control" value="@Model.CalculationSetting?.WindSpeedSetting?.Speed" placeholder="2,5" />
+                        </div>
+                    </div>
+                    <div id="WindSpeedModeIteratingSetNumbersBlock" hidden>
+                        <div class="form-group pr-3">
+                            <label for="WindSpeeds" class="control-label">Скорости ветра, м/с</label>
+                            <input id="WindSpeeds" class="form-control" value="@(string.Join(';', Model.CalculationSetting?.WindSpeedSetting?.Speeds ?? Array.Empty<float?>().ToList()))" placeholder="1; 2,2; 5,5" />
+                        </div>
+                    </div>
+                    <div id="WindSpeedModeIteratingByStepBlock" class="form-row" hidden>
+                        <div class="form-group pr-3">
+                            <label for="WindStartSpeed" class="control-label">Начальная скорость, м/с</label>
+                            <input asp-for="@Model.CalculationSetting.WindSpeedSetting.StartSpeed" id="WindStartSpeed" class="form-control" value="@Model.CalculationSetting?.WindSpeedSetting?.StartSpeed" placeholder="1" />
+                        </div>
+                        <div class="form-group pr-3">
+                            <label for="WindEndSpeed" class="control-label">Конечная скорость, м/с</label>
+                            <input asp-for="@Model.CalculationSetting.WindSpeedSetting.EndSpeed" id="WindEndSpeed" class="form-control" value="@Model.CalculationSetting?.WindSpeedSetting?.EndSpeed" placeholder="3,5" />
+                        </div>
+                        <div class="form-group pr-3">
+                            <label for="WindStepSpeed" class="control-label">Шаг скорости</label>
+                            <input asp-for="@Model.CalculationSetting.WindSpeedSetting.StepSpeed" id="WindStepSpeed" class="form-control" value="@Model.CalculationSetting?.WindSpeedSetting?.StepSpeed" placeholder="0,5" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-gutters mb-3" name="WindDirectionSettings">
+                    <div class="form-group pr-3">
+                        <label for="WindDirectionMode" class="control-label">Режим направления ветра</label>
+                        <select asp-for="@Model.CalculationSetting.WindDirectionSetting.Mode" asp-items="Html.GetEnumSelectList<CalculationSetting.CalcWindModes>()" id="WindDirectionMode" class="form-control" onchange="ChangeWindDirectionBlocks(this)"></select>
+                    </div>
+                    <div id="WindDirectionModeFixedBlock" hidden>
+                        <div class="form-group pr-3">
+                            <label for="WindDirection" class="control-label">Направление ветра, &#176</label>
+                            <input asp-for="@Model.CalculationSetting.WindDirectionSetting.Direction" id="WindDirection" class="form-control" value="@Model.CalculationSetting?.WindDirectionSetting?.Direction" placeholder="100,5" />
+                        </div>
+                    </div>
+                    <div id="WindDirectionModeIteratingSetNumbersBlock" hidden>
+                        <div class="form-group pr-3">
+                            <label for="WindDirections" class="control-label">Направления ветра, &#176</label>
+                            <input id="WindDirections" class="form-control" value="@(string.Join(';', Model.CalculationSetting?.WindDirectionSetting?.Directions ?? Array.Empty<float?>().ToList()))" placeholder="100; 93,5" />
+                        </div>
+                    </div>
+                    <div id="WindDirectionModeIteratingByStepBlock" class="form-row" hidden>
+                        <div class="form-group pr-3">
+                            <label for="WindStartDirection" class="control-label">Начальное направление, &#176</label>
+                            <input asp-for="@Model.CalculationSetting.WindDirectionSetting.StartDirection" id="WindStartDirection" class="form-control" value="@Model.CalculationSetting?.WindDirectionSetting?.StartDirection" placeholder="90,5" />
+                        </div>
+                        <div class="form-group pr-3">
+                            <label for="WindEndDirection" class="control-label">Конечное направление, &#176</label>
+                            <input asp-for="@Model.CalculationSetting.WindDirectionSetting.EndDirection" id="WindEndDirection" class="form-control" value="@Model.CalculationSetting?.WindDirectionSetting?.EndDirection" placeholder="101" />
+                        </div>
+                        <div class="form-group pr-3">
+                            <label for="WindStepDirection" class="control-label">Шаг направления</label>
+                            <input asp-for="@Model.CalculationSetting.WindDirectionSetting.StepDirection" id="WindStepDirection" class="form-control" value="@Model.CalculationSetting?.WindDirectionSetting?.StepDirection" placeholder="1,5" />
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-gutters mb-3">
+                    <div class="form-group pr-3">
+                        <label for="ContributorCount" class="control-label">Количество вкладчиков</label>
+                        <input id="ContributorCount" class="form-control" type="number" value="@(Model.CalculationSetting?.ContributorCount ?? 1)" placeholder="1" />
+                    </div>
+                    <div class="form-group pr-3">
+                        <label for="ThresholdPdk" class="control-label">Порог целесообразности расчёта, доли пкд</label>
+                        <input asp-for="@Model.CalculationSetting.ThresholdPdk" id="ThresholdPdk" class="form-control" type="text" value="@Model.CalculationSetting?.ThresholdPdk" placeholder="0,3" />
+                    </div>
+                    <div class="form-group pr-3">
+                        <label for="Season" class="control-label">Сезон расчёта</label>
+                        <select asp-for="@Model.CalculationSetting.Season" asp-items="Html.GetEnumSelectList<CalculationSetting.CalcSeasons>()" id="Season" class="form-control"></select>
+                    </div>
+                </div>
+                <div class="row no-gutters mb-3">
+                    <div class="form-group pr-3">
+                        <label for="IsUseSummationGroups" class="control-label">Расчитывать группы суммации</label>
+                        <div class="d-inline-block position-relative">
+                            <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle-setting"></button>
+                            <input asp-for="@Model.CalculationSetting.IsUseSummationGroups" id="IsUseSummationGroups" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-on="Да" data-off="Нет" value="@Model.CalculationSetting?.IsUseSummationGroups">
+                        </div>
+                    </div>
+                    <div class="form-group pr-3">
+                        <label for="IsUseBackground" class="control-label">Учитывать фоновые концентрации</label>
+                        <div class="d-inline-block position-relative">
+                            <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle-setting"></button>
+                            <input asp-for="@Model.CalculationSetting.IsUseBackground" id="IsUseBackground" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-on="Да" data-off="Нет" value="@Model.CalculationSetting?.IsUseBackground">
+                        </div>
+                    </div>
+                    <div class="form-group pr-3">
+                        <label for="IsUseBuilding" class="control-label">Учитывать застройку</label>
+                        <div class="d-inline-block position-relative">
+                            <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle-setting"></button>
+                            <input asp-for="@Model.CalculationSetting.IsUseBuilding" id="IsUseBuilding" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-on="Да" data-off="Нет" value="@Model.CalculationSetting?.IsUseBuilding">
+                        </div>
+                    </div>
+                </div>
+                <div class="row no-gutters mb-3">
+                    <div class="form-group pr-3">
+                        <label for="UnitBorderStep" class="control-label">Шаг расчёта по границе промплощадки</label>
+                        <input asp-for="@Model.CalculationSetting.UnitBorderStep" id="UnitBorderStep" class="form-control" type="text" value="@Model.CalculationSetting?.UnitBorderStep" />
+                    </div>
+                    <div class="form-group pr-3">
+                        <label for="SanitaryAreaBorderStep" class="control-label">Шаг расчёта по границе санитарной зоны</label>
+                        <input asp-for="@Model.CalculationSetting.SanitaryAreaBorderStep" id="SanitaryAreaBorderStep" class="form-control" type="text" value="@Model.CalculationSetting?.SanitaryAreaBorderStep" />
+                    </div>
+                    <div class="form-group pr-3">
+                        <label for="LivingAreaBorderStep" class="control-label">Шаг расчёта по зонам населённого пункта</label>
+                        <input asp-for="@Model.CalculationSetting.LivingAreaBorderStep" id="LivingAreaBorderStep" class="form-control" type="text" value="@Model.CalculationSetting?.LivingAreaBorderStep" />
+                    </div>
+                </div>
+                <div class="row no-gutters mb-3">
+                    <div class="form-group pr-3">
+                        <label for="IsUsePollutantsList" class="control-label">Расчёт по веществам из списка</label>
+                        <div class="d-inline-block position-relative">
+                            <button type="button" class="d-block w-100 h-100 position-absolute button-checkbox-toggle-setting"></button>
+                            <input asp-for="@Model.CalculationSetting.IsUsePollutantsList" id="IsUsePollutantsList" type="checkbox" class="checkbox-toggle" data-toggle="toggle" data-on="Да" data-off="Нет" onchange="IsUsePollutantsListChange(this);" value="@Model.CalculationSetting?.IsUsePollutantsList">
+                        </div>
+                    </div>
+                    <div class="form-group pr-3" id="AirPollutantsSelectListBlock" hidden>
+                        @await Html.PartialAsync("_CalculationSettingAirPollutants", airPollutants)
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="col-md-8 offset-md-2 mb-5">
+        <div id="StateCalculationTable">
+            @await Html.PartialAsync("_StateCalculationTable", Model.StateCalculation)
+        </div>
+    </div>
+
+    <div class="col-md-8 offset-md-2 mb-5">
+        <p id="ErrorSettingValid" class="text-danger" hidden></p>
+    </div>
+</div>

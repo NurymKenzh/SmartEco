@@ -409,6 +409,7 @@ function CreateInfo(editRow) {
     var dataInfo = new AirPollutionSourceInfo();
     dataInfo.SourceId = editRow.find('[name="SourceIdInfo"]').val();
     dataInfo.Coordinate = editRow.find('[name="CoordinateInfo"]').val();
+    dataInfo.Coordinate3857 = editRow.find('[name="Coordinate3857Info"]').val();
     dataInfo.TerrainCoefficient = editRow.find('[name="TerrainCoefficientInfo"]').val();
     dataInfo.IsCalculateByGas = editRow.find('[name="IsCalculateByGasInfo"]').val();
     dataInfo.IsVerticalDeviation = editRow.find('[name="IsVerticalDeviationInfo"]').val();

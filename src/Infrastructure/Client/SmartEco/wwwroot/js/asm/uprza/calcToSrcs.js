@@ -38,6 +38,7 @@ function SelectAllSources(checkboxToggle, valueChanged) {
         success: function (result) {
             $('#AirPollutionSources').empty();
             $('#AirPollutionSources').html(result);
+            UpdatePollutants();
         }
     });
 }
@@ -54,6 +55,7 @@ function DeleteAllSources(checkboxToggle, valueChanged) {
         success: function (result) {
             $('#AirPollutionSources').empty();
             $('#AirPollutionSources').html(result);
+            UpdatePollutants();
         }
     });
 }
@@ -75,6 +77,7 @@ function SelectSource(editRow, checkboxToggle, valueChanged) {
         success: function (result) {
             checkboxToggle.bootstrapToggle('toggle');
             checkboxToggle.val(valueChanged);
+            UpdatePollutants();
         }
     });
 }
@@ -96,6 +99,7 @@ function DeleteSource(editRow, checkboxToggle, valueChanged) {
         success: function (result) {
             checkboxToggle.bootstrapToggle('toggle');
             checkboxToggle.val(valueChanged);
+            UpdatePollutants();
         }
     });
 }
@@ -185,7 +189,7 @@ $("#FilterCalculationToSources").click(function (e) {
 
 //#endregion Filter events
 
-//#region Pagionation event
+//#region Pagination event
 
 $('.page-link').click(function (e) {
     var pageNumber = $(this).val();

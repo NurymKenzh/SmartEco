@@ -44,7 +44,7 @@ dd {
 }
 
 /*Button for work checkbox toggle*/
-.button-checkbox-toggle {
+.button-checkbox-toggle, .button-checkbox-toggle-setting {
     opacity: 0;
     z-index: 1;
     cursor: pointer;

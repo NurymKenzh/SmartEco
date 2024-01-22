@@ -1,0 +1,169 @@
+﻿@model IList<CalculationRectangle>
+@using SmartEco.Models.ASM.Uprza
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    int calcRectangleNumber = 0;
+}
+
+<h5>Расчётные прямоугольники</h5>
+<table class="table table-bordered table-sm">
+    <thead>
+        <tr>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().CalculationId)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Number)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().AbscissaX)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().OrdinateY)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Width)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Length)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().Height)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().StepByWidth)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.FirstOrDefault().StepByLength)
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
+        @if (Model is null || Model.Count() == 0)
+        {
+            <tr>
+                <td colspan="9">
+                    Данные отсутствуют
+                </td>
+            </tr>
+        }
+        else
+        {
+            foreach (var item in Model)
+            {
+                <tr>
+                    <td>
+                        <p class="pt-sm-2">@(++calcRectangleNumber)</p>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.Number</p>
+                        <input type="number" name="RectangleNumber" value="@item.Number" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.AbscissaX</p>
+                        <input type="text" name="RectangleAbscissaX" value="@item.AbscissaX" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.OrdinateY</p>
+                        <input type="text" name="RectangleOrdinateY" value="@item.OrdinateY" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.Width</p>
+                        <input type="number" name="RectangleWidth" value="@item.Width" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.Length</p>
+                        <input type="number" name="RectangleLength" value="@item.Length" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.Height</p>
+                        <input type="number" name="RectangleHeight" value="@item.Height" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.StepByWidth</p>
+                        <input type="number" name="RectangleStepByWidth" value="@item.StepByWidth" hidden>
+                    </td>
+                    <td>
+                        <p class="pt-sm-2">@item.StepByLength</p>
+                        <input type="number" name="RectangleStepByLength" value="@item.StepByLength" hidden>
+                    </td>
+                    <td class="text-center h-100">
+                        <button type="button" title="@SharedLocalizer["Delete"]" class="btn btn-link text-danger" onclick="DeleteRectangle(@item.Number)">
+                            <i class="fa-solid fa-trash fa-lg"></i>
+                        </button>
+                    </td>
+                </tr>
+            }
+        }
+    </tbody>
+</table>
+<button type="button" class="btn btn-success" data-toggle="modal" data-target="#ShowCreateCalculationRectangleModal">Добавить</button>
+
+@* Modal for create new calculation rectangle *@
+<div id="ShowCreateCalculationRectangleModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-body">
+                <div class="modal-header">
+                    <h5 class="modal-title">Добавить расчётный прямоугольник</h5>
+                    <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                        <span aria-hidden="true">&times;</span>
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div class="form-group">
+                        <label for="RectangleNewNumber" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Number)</label>
+                        <input id="RectangleNewNumber" class="form-control" type="number" />
+                        <div name="RectangleNewNumber" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="RectangleNewAbscissaX" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().AbscissaX)</label>
+                        <input id="RectangleNewAbscissaX" class="form-control" type="text" />
+                        <div name="RectangleNewAbscissaX" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="RectangleNewOrdinateY" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().OrdinateY)</label>
+                        <input id="RectangleNewOrdinateY" class="form-control" type="text" />
+                        <div name="RectangleNewOrdinateY" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="RectangleNewWidth" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Width)</label>
+                        <input id="RectangleNewWidth" class="form-control" type="number" />
+                        <div name="RectangleNewWidth" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="RectangleNewLength" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Length)</label>
+                        <input id="RectangleNewLength" class="form-control" type="number" />
+                        <div name="RectangleNewLength" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="RectangleNewHeight" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Height)</label>
+                        <input id="RectangleNewHeight" class="form-control" type="number" />
+                        <div name="RectangleNewHeight" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="RectangleNewStepByWidth" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().StepByWidth)</label>
+                        <input id="RectangleNewStepByWidth" class="form-control" type="number" />
+                        <div name="RectangleNewStepByWidth" class="invalid-feedback"></div>
+                    </div>
+                    <div class="form-group">
+                        <label for="RectangleNewStepByLength" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().StepByLength)</label>
+                        <input id="RectangleNewStepByLength" class="form-control" type="number" />
+                        <div name="RectangleNewStepByLength" class="invalid-feedback"></div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-primary" onclick="CreateRectangle()">@SharedLocalizer["Create"]</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
