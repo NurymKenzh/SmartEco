@@ -9,6 +9,7 @@ function CreatePoint() {
         type: 'POST',
         success: function (result) {
             $('#ShowCreateCalculationPointModal').remove();
+            $('body').removeClass('modal-open');
             $('.modal-backdrop').remove();
 
             $('#CalculationPointsTable').empty();

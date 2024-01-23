@@ -36,28 +36,16 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
         // POST: api/StateCalculations
         [HttpPost("{calculationId}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<CalculationPoint>> CreateStateCalculation(int calculationId, StateCalculation stateCalc)
+        public async Task<ActionResult<CalculationPoint>> CreateOrUpdateStateCalculation(int calculationId, StateCalculation stateCalc)
         {
             if (calculationId != stateCalc.CalculationId)
                 return BadRequest();
 
             _context.Entry(stateCalc.Calculation).State = EntityState.Modified;
-            _context.StateCalculation.Add(stateCalc);
-            await _context.SaveChangesAsync();
-
-            return NoContent();
-        }
-
-        // Put: api/StateCalculations
-        [HttpPut("{calculationId}")]
-        [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<CalculationPoint>> UpdateStateCalculation(int calculationId, StateCalculation stateCalc)
-        {
-            if (calculationId != stateCalc.CalculationId)
-                return BadRequest();
-
-            _context.Entry(stateCalc.Calculation).State = EntityState.Modified;
-            _context.Update(stateCalc);
+            if (await _context.StateCalculation.AnyAsync(s => s.CalculationId == calculationId))
+                _context.Update(stateCalc);
+            else
+                _context.StateCalculation.Add(stateCalc);
             await _context.SaveChangesAsync();
 
             return NoContent();

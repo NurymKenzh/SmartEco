@@ -9,6 +9,7 @@ function CreateRectangle() {
         type: 'POST',
         success: function (result) {
             $('#ShowCreateCalculationRectangleModal').remove();
+            $('body').removeClass('modal-open');
             $('.modal-backdrop').remove();
 
             $('#CalculationRectanglesTable').empty();

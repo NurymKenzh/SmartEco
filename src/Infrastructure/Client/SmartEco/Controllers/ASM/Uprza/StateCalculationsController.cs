@@ -43,7 +43,7 @@ namespace SmartEco.Controllers.ASM.Uprza
                 return RedirectToAction(nameof(GetState), new { calculationId });
 
             var body = stateCalc;
-            var request = _smartEcoApi.CreateRequest(HttpMethod.Put, $"{_urlStateCalcs}/{calculationId}", body);
+            var request = _smartEcoApi.CreateRequest(HttpMethod.Post, $"{_urlStateCalcs}/{calculationId}", body);
             await _smartEcoApi.Client.SendAsync(request);
 
             return RedirectToAction(nameof(GetState), new { calculationId });
