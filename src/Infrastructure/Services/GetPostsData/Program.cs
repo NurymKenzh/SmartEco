@@ -1431,6 +1431,8 @@ namespace GetPostsData
 
                     string url = "api/Analytics/ExcelFormationByProject",
                     route = "";
+                    if (project is Projects.Altynalmas)
+                        url = "api/Analytics/ExcelFormationAltynalmas";
 
                     route += string.IsNullOrEmpty(route) ? "?" : "&";
                     route += $"DateTimeFrom={dateTimeYesterdayFrom.ToString(dateTimeFormatInfo)}";
