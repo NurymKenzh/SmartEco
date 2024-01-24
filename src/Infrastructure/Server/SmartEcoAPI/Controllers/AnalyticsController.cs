@@ -12,6 +12,7 @@ using MimeKit;
 using Newtonsoft.Json.Linq;
 using Npgsql;
 using OfficeOpenXml;
+using OfficeOpenXml.FormulaParsing.Excel.Functions.Math;
 using SmartEcoAPI.Data;
 using SmartEcoAPI.Models;
 
@@ -267,7 +268,7 @@ namespace SmartEcoAPI.Controllers
                     //Параметры, которые включены у постов
                     var monitoringPostMeasuredParameters = _context.MonitoringPostMeasuredParameters
                         .Where(m => m.MonitoringPostId == monitoringPost.Id)
-                        .OrderBy (m => m.MeasuredParameter.NameRU)
+                        .OrderBy(m => m.MeasuredParameter.NameRU)
                         .Include(m => m.MeasuredParameter)
                         .ToList();
                     foreach (var monitoringPostMeasuredParameter in monitoringPostMeasuredParameters)
@@ -493,50 +494,172 @@ namespace SmartEcoAPI.Controllers
                 //Запись информации каждого поста
                 int row = 4;
 
-                    worksheet.Cells[row, 1].Value = $"Дата и время";
-                    worksheet.Cells[row, 2].Value = $"Пост";
-                    worksheet.Cells[row, 3].Value = $"Дополнительная информация";
-                    worksheet.Cells[row, 4].Value = $"Изменяемый параметр";
-                    worksheet.Cells[row, 5].Value = $"Значение";
+                worksheet.Cells[row, 1].Value = $"Дата и время";
+                worksheet.Cells[row, 2].Value = $"Пост";
+                worksheet.Cells[row, 3].Value = $"Дополнительная информация";
+                worksheet.Cells[row, 4].Value = $"Изменяемый параметр";
+                worksheet.Cells[row, 5].Value = $"Значение";
 
-                    //Установка стилей для "шапки" таблицы
+                //Установка стилей для "шапки" таблицы
+                for (int i = 1; i < 7; i++)
+                {
+                    worksheet.Cells[row, i].Style.Font.Bold = true;
+                    worksheet.Cells[row, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[row, i].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+                    worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+                }
+                row++;
+
+                var measuredDatas = _context.MeasuredData
+                    .Include(m => m.MonitoringPost)
+                    .Include(m => m.MeasuredParameter)
+                    .Where(m => m.DateTime >= DateTimeFrom && m.DateTime <= DateTimeTo && MonitoringPostsId.Contains(m.MonitoringPost.Id) && MeasuredParametersId.Contains(m.MeasuredParameter.Id) && m.Averaged == true)
+                    .OrderByDescending(m => m.DateTime)
+                    .ToList();
+
+                foreach (var measuredData in measuredDatas)
+                {
+                    worksheet.Cells[row, 1].Value = $"{measuredData.DateTime}";
+                    worksheet.Cells[row, 2].Value = $"{measuredData.MonitoringPost.Name}";
+                    worksheet.Cells[row, 3].Value = $"{measuredData.MonitoringPost.AdditionalInformation}";
+                    worksheet.Cells[row, 4].Value = $"{measuredData.MeasuredParameter.NameRU}";
+                    worksheet.Cells[row, 5].Value = $"{measuredData.Value}";
+
+                    //Установка стиля для заполненного ряда
                     for (int i = 1; i < 7; i++)
                     {
-                        worksheet.Cells[row, i].Style.Font.Bold = true;
-                        worksheet.Cells[row, i].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
-                        worksheet.Cells[row, i].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
                         worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
                     }
                     row++;
-
-                    var measuredDatas = _context.MeasuredData
-                        .Include(m => m.MonitoringPost)
-                        .Include(m => m.MeasuredParameter)
-                        .Where(m => m.DateTime >= DateTimeFrom && m.DateTime <= DateTimeTo && MonitoringPostsId.Contains(m.MonitoringPost.Id) && MeasuredParametersId.Contains(m.MeasuredParameter.Id) && m.Averaged == true)
-                        .OrderByDescending(m => m.DateTime)
-                        .ToList();
-
-                    foreach (var measuredData in measuredDatas)
-                    {
-                        worksheet.Cells[row, 1].Value = $"{measuredData.DateTime}";
-                        worksheet.Cells[row, 2].Value = $"{measuredData.MonitoringPost.Name}";
-                        worksheet.Cells[row, 3].Value = $"{measuredData.MonitoringPost.AdditionalInformation}";
-                        worksheet.Cells[row, 4].Value = $"{measuredData.MeasuredParameter.NameRU}";
-                        worksheet.Cells[row, 5].Value = $"{measuredData.Value}";
-
-                        //Установка стиля для заполненного ряда
-                        for (int i = 1; i < 7; i++)
-                        {
-                            worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
-                        }
-                        row++;
-                    }
+                }
 
                 //Автовыравнивание по ширине
                 for (int i = 1; i < 7; i++)
                 {
                     worksheet.Column(i).AutoFit();
                 }
+
+                package.Save();
+
+                List<string> userEmail = MailTo ?? new List<string> { User.Identity.Name };
+                await SendExcel(userEmail, Server);
+                System.IO.File.Delete(Server == true ? Path.Combine(PathExcelFile, sFileName) : Path.Combine(sFileName));
+            }
+
+            return Ok();
+        }
+
+        // POST: api/Analytics/ExcelFormationAltynalmas
+        [HttpPost("ExcelFormationAltynalmas")]
+        [Authorize(Roles = "admin,moderator,Altynalmas")]
+        public async Task<ActionResult> ExcelFormationAltynalmas(
+            DateTime? DateTimeFrom,
+            DateTime? DateTimeTo,
+            [FromQuery(Name = "MonitoringPostsId")] List<int> MonitoringPostsId,
+            [FromQuery(Name = "MeasuredParametersId")] List<int> MeasuredParametersId,
+            bool Server,
+            string Project,
+            [FromQuery(Name = "MailTo")] List<string> MailTo)
+        {
+            string sFileName = $"{sName}.xlsx";
+            FileInfo file = Server == true ? new FileInfo(Path.Combine(PathExcelFile, sFileName)) : new FileInfo(Path.Combine(sFileName));
+            if (file.Exists)
+            {
+                file.Delete();
+                file = new FileInfo(Path.Combine(sFileName));
+            }
+            using (ExcelPackage package = new ExcelPackage(file))
+            {
+                ExcelWorksheet worksheet = package.Workbook.Worksheets.Add(sName);
+                int row = 1;
+
+
+                var measuredDatas = _context.MeasuredData
+                    .Include(m => m.MonitoringPost)
+                    .Include(m => m.MeasuredParameter)
+                    .Where(m => m.DateTime >= DateTimeFrom && m.DateTime <= DateTimeTo && MonitoringPostsId.Contains(m.MonitoringPost.Id) && MeasuredParametersId.Contains(m.MeasuredParameter.Id) && m.Averaged == true)
+                    .OrderByDescending(m => m.DateTime)
+                    .ToList();
+
+                //Заголовок
+                worksheet.Cells[row, 1].Value = $"Отчёт по мониторингу качества атмосферного воздуха ({Project})";
+                worksheet.Cells[$"A{row}:C{row}"].Merge = true;
+                worksheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                worksheet.Cells[row, 1].Style.Font.Bold = true;
+                row += 2;
+
+                foreach (var postId in MonitoringPostsId)
+                {
+                    var post = measuredDatas.FirstOrDefault(m => m.MonitoringPostId == postId)?.MonitoringPost;
+                    if (post is null)
+                        continue;
+
+                    //Заголовок
+                    worksheet.Cells[row, 1].Value = $"Пост {post.Name}";
+                    SetBorderAroundHeadAltynalmas(worksheet, row);
+                    worksheet.Cells[$"A{row}:C{row}"].Merge = true;
+                    worksheet.Cells[row, 1].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                    worksheet.Cells[row, 1].Style.Font.Bold = true;
+                    row++;
+
+                    //Создание шапки таблицы
+                    worksheet.Cells[row, 1].Value = $"Название";
+                    SetDefaultStyleHeadAltynalmas(worksheet, row, 1);
+                    worksheet.Cells[row, 2].Value = $"Показатели";
+                    SetDefaultStyleHeadAltynalmas(worksheet, row, 2);
+                    SetBorderAroundHeadAltynalmas(worksheet, row);
+                    worksheet.Cells[$"A{row}:A{row + 2}"].Merge = true;  //Название
+                    worksheet.Cells[$"B{row}:C{row}"].Merge = true;  //Показатели
+                    row++;
+
+                    worksheet.Cells[row, 2].Value = $"Величина предельно-допустимые концентрации (ПДК) (мг/м3)";
+                    SetDefaultStyleHeadAltynalmas(worksheet, row, 2);
+                    worksheet.Cells[row, 2].Style.WrapText = true;
+                    worksheet.Cells[row, 3].Value = $"Фактические показатели";
+                    SetDefaultStyleHeadAltynalmas(worksheet, row, 3);
+                    SetBorderAroundHeadAltynalmas(worksheet, row);
+                    row++;
+
+                    worksheet.Cells[row, 2].Value = $"Среднесуточная";
+                    SetDefaultStyleHeadAltynalmas(worksheet, row, 2);
+                    SetBorderAroundHeadAltynalmas(worksheet, row);
+
+                    worksheet.Cells[$"C{row - 1}:C{row}"].Merge = true;  //Фактические показатели
+                    row++;
+
+                    foreach (var parameterId in MeasuredParametersId)
+                    {
+                        var parameterData = measuredDatas.Where(m => m.MeasuredParameterId == parameterId).ToList();
+                        if (parameterData is null || parameterData.Count == 0)
+                            continue;
+
+                        var parameterName = parameterData.FirstOrDefault()?.MeasuredParameter.NameRU;
+                        var mpcDailyAverage = parameterData.FirstOrDefault()?.MeasuredParameter.MPCDailyAverage;
+                        var averagedVal = parameterData.Select(m => m.Value).Average();
+
+                        //Заполнение значений
+                        worksheet.Cells[row, 1].Value = $"{parameterName}";
+                        worksheet.Cells[row, 2].Value = $"{mpcDailyAverage}";
+                        worksheet.Cells[row, 3].Value = $"{decimal.Round(averagedVal ?? 0, 4)}";
+
+                        //Установка стиля для заполненного ряда
+                        worksheet.Cells[row, 2].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        worksheet.Cells[row, 3].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+                        for (int i = 1; i < 4; i++)
+                            worksheet.Cells[row, i].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+
+                        row++;
+                    }
+
+                    row += 2; //Перенос для следующего поста
+                }
+
+
+                //Автовыравнивание по ширине
+                worksheet.Column(1).AutoFit();
+                //Фиксированная ширина, т.к. объеденённая ячейка и перенос текста (WrapText)
+                worksheet.Column(2).Width = 35;
+                worksheet.Column(3).Width = 25;
 
                 package.Save();
 
@@ -671,6 +794,20 @@ namespace SmartEcoAPI.Controllers
             {
                 file.Close();
             }
+        }
+
+        private void SetDefaultStyleHeadAltynalmas(ExcelWorksheet worksheet, int row, int col)
+        {
+            worksheet.Cells[row, col].Style.Font.Bold = true;
+            worksheet.Cells[row, col].Style.HorizontalAlignment = OfficeOpenXml.Style.ExcelHorizontalAlignment.Center;
+            worksheet.Cells[row, col].Style.VerticalAlignment = OfficeOpenXml.Style.ExcelVerticalAlignment.Center;
+            worksheet.Cells[row, col].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
+        }
+
+        private void SetBorderAroundHeadAltynalmas(ExcelWorksheet worksheet, int row)
+        {
+            for(int col = 1; col < 4; col++)
+                worksheet.Cells[row, col].Style.Border.BorderAround(OfficeOpenXml.Style.ExcelBorderStyle.Thin);
         }
     }
 }
