@@ -629,12 +629,12 @@ namespace SmartEcoAPI.Controllers
 
                     foreach (var parameterId in MeasuredParametersId)
                     {
-                        var parameterData = measuredDatas.Where(m => m.MeasuredParameterId == parameterId).ToList();
+                        var parameterData = measuredDatas.Where(m => m.MonitoringPostId == postId && m.MeasuredParameterId == parameterId).ToList();
                         if (parameterData is null || parameterData.Count == 0)
                             continue;
 
-                        var parameterName = parameterData.FirstOrDefault()?.MeasuredParameter.NameRU;
-                        var mpcDailyAverage = parameterData.FirstOrDefault()?.MeasuredParameter.MPCDailyAverage;
+                        var parameterName = parameterData.First().MeasuredParameter.NameRU;
+                        var mpcDailyAverage = parameterData.First().MeasuredParameter.MPCDailyAverage;
                         var averagedVal = parameterData.Select(m => m.Value).Average();
 
                         //Заполнение значений
