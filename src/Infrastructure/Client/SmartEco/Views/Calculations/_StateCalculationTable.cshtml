@@ -9,6 +9,7 @@
 
 @{
     int stateCalcNumber = 0;
+    var controllerResultEmissions = "ResultEmissions";
 }
 
 <h5>Состояние расчёта</h5>
@@ -65,7 +66,8 @@
                     <button type="button" title="@SharedLocalizer["Delete"]" class="btn btn-link text-danger" onclick="DeleteStateCalc();">
                         <i class="fa-solid fa-trash fa-lg"></i>
                     </button>
-                    <a title="@SharedLocalizer["Details"]" class="btn btn-link" href="#">
+                    <a title="@SharedLocalizer["Details"]" class="btn btn-link @(Model.Calculation.StatusId != (int)CalculationStatuses.Done ? "fa-inactive" : "")" 
+                        href="@Url.Action("DispersionPollutants", controllerResultEmissions, new { calcId = @Model.CalculationId })">
                         <i class="fa-solid fa-eye fa-lg"></i>
                     </a>
                 </td>
@@ -112,4 +114,4 @@
 </table>
 
 <button class="btn btn-warning" onclick="SetCalculationSetting();">Запустить расчёт</button>
-<button class="btn btn-info" onclick="UpdateStateCalc();">Обновить</button>
+<button class="btn btn-info" onclick="UpdateStateCalc();" id="UpdateBtn">Обновить</button>

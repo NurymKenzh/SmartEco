@@ -1,0 +1,125 @@
+﻿@model SmartEco.Models.ASM.Uprza.ResultEmissionViewModel
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+
+@{
+    ViewData["Title"] = "Рассеивание";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<link href="~/css/asm/uprza/dispersion.css" rel="stylesheet" />
+
+@*Openlayers map*@
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+
+@*Advanced geospatial analysis*@
+<script src="~/lib/turf.js/turf516.min.js"></script>
+
+@*Fontawesome icons*@
+<script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
+
+<div class="row justify-content-center">
+    <div id="SidepanelLeft" class="sidepanel col-md-2">
+        @* Расчёт *@
+        <a class="btn btn-light bg-transparent border-0 btn-collapse collapsed" data-toggle="collapse" href="#collapseCalculationLayers" role="button" aria-expanded="false" aria-controls="collapseCalculationLayers">
+            <span class="mr-2"><i class="fas fa-angle-up rotate-icon"></i></span>
+            <span class="title">
+                Расчёт
+            </span>
+        </a>
+        <div class="ml-4 collapse" id="collapseCalculationLayers">
+            <div class="form-check">
+                <input class="form-check-input" type="checkbox" id="IsolinesCheckbox" checked="checked">
+                <label class="form-check-label" for="IsolinesCheckbox">
+                    Изолинии
+                </label>
+            </div>
+        </div>
+
+        @* Промплощадки и СЗЗ *@
+        <a class="btn btn-light bg-transparent border-0 btn-collapse collapsed" data-toggle="collapse" href="#collapseIndSites" role="button" aria-expanded="false" aria-controls="collapseIndSites">
+            <span class="mr-2 float-left"><i class="fas fa-angle-up rotate-icon"></i></span>
+            <span class="title link-text-wrap">
+                Промплощадки и СЗЗ
+            </span>
+        </a>
+        <div class="ml-4 collapse" id="collapseIndSites">
+            @foreach (var indSiteEnterprise in Model.IndSiteEnterprises)
+            {
+                var indSiteBorderId = indSiteEnterprise.IndSiteBorder?.Id;
+                var sanZoneBorderId = indSiteEnterprise.SanZoneBorder?.Id;
+                var indSiteBorderCoordinates = indSiteEnterprise.IndSiteBorder?.Coordinates is null ? string.Empty : string.Join(';', indSiteEnterprise.IndSiteBorder.Coordinates);
+                var sanZoneBorderCoordinates = indSiteEnterprise.SanZoneBorder?.Coordinates is null ? string.Empty : string.Join(';', indSiteEnterprise.SanZoneBorder.Coordinates);
+
+                @* Промплощадка *@
+                <a class="btn btn-light bg-transparent border-0 btn-collapse collapsed" data-toggle="collapse" href="#collapseIndSite_@indSiteEnterprise.Id" role="button" aria-expanded="false" aria-controls="collapseIndSite_@indSiteEnterprise.Id">
+                    <span class="mr-2 float-left"><i class="fas fa-angle-up rotate-icon"></i></span>
+                    <span class="title link-text-wrap">
+                        @indSiteEnterprise.Name
+                    </span>
+                </a>
+                <div class="ml-4 collapse" id="collapseIndSite_@indSiteEnterprise.Id">
+
+                    @* Граница промплощадки *@
+                    @if (indSiteBorderId != null)
+                    {
+                        <a class="btn btn-light bg-transparent border-0 btn-collapse collapsed" data-toggle="collapse" href="#collapseIndSiteBorder_@indSiteBorderId" role="button" aria-expanded="false" aria-controls="collapseIndSiteBorder_@indSiteBorderId">
+                            <span class="mr-2 float-left"><i class="fas fa-angle-up rotate-icon"></i></span>
+                            <span class="title link-text-wrap">
+                                Граница промплощадки
+                            </span>
+                        </a>
+                        <div class="ml-4 collapse" id="collapseIndSiteBorder_@indSiteBorderId">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="IndSiteBorderCheckbox_@indSiteBorderId" data-coordinates="@indSiteBorderCoordinates" checked="checked">
+                                <label class="form-check-label" for="IndSiteBorderCheckbox_@indSiteBorderId">
+                                    @indSiteEnterprise.IndSiteBorder.Name
+                                </label>
+                            </div>
+                        </div>
+                    }
+
+                    @* Граница санзоны *@
+                    @if (sanZoneBorderId != null)
+                    {
+                        <a class="btn btn-light bg-transparent border-0 btn-collapse collapsed" data-toggle="collapse" href="#collapseSanZoneBorder_@sanZoneBorderId" role="button" aria-expanded="false" aria-controls="collapseSanZoneBorder_@sanZoneBorderId">
+                            <span class="mr-2 float-left"><i class="fas fa-angle-up rotate-icon"></i></span>
+                            <span class="title link-text-wrap">
+                                Граница нормативной сантирной зоны
+                            </span>
+                        </a>
+                        <div class="ml-4 collapse" id="collapseSanZoneBorder_@sanZoneBorderId">
+                            <div class="form-check">
+                                <input class="form-check-input" type="checkbox" id="SanZoneBorderCheckbox_@sanZoneBorderId" data-coordinates="@sanZoneBorderCoordinates" checked="checked">
+                                <label class="form-check-label" for="SanZoneBorderCheckbox_@sanZoneBorderId">
+                                    @indSiteEnterprise.SanZoneBorder.Name
+                                </label>
+                            </div>
+                        </div>
+                    }
+                </div>
+            }
+        </div>
+    </div>
+    <div class="col-md-8">
+        <input type="hidden" id="CalculationId" value="@Model.CalculationId" />
+        <select asp-items="Model.AirPollutantsSelectList" class="form-control" id="AirPollutantsSelect" class="form-control"></select>
+        <div id="Map"></div>
+    </div>
+
+
+    <div hidden>
+        <div id="EmissionByCodeGetReq" data-url="@Url.Action("GetEmissionByCode", "ResultEmissions")"></div>
+    </div>
+</div>
+
+<script type="module" src="~/js/asm/uprza/dispersion/staticHelper.js"></script>
+<script type="module" src="~/js/asm/uprza/dispersion/initializeLayers.js"></script>
+
+<script type="module" src="~/js/asm/uprza/dispersion/sidepanel.js"></script>
+<script type="module" src="~/js/asm/uprza/dispersion/dispersionMap.js"></script>

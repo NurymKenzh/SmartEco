@@ -92,9 +92,9 @@ namespace SmartEco.Helpers.ASM
                             RotationAngle = Convert.ToDouble(s.SourceInfo.AngleRotation, CultureInfo.InvariantCulture),
                             Point1 = new Point1
                             {
-                                //?? X и Y временно поменяны местами, чтобы было правильное отображение
-                                X = coordinate3857[0],
-                                Y = coordinate3857[1],
+                                //X и Y поменяны местами, т.к. расчёт приходит с неправильными координатами
+                                X = coordinate3857[1],
+                                Y = coordinate3857[0],
                                 Z = 0
                             },
 
@@ -154,8 +154,9 @@ namespace SmartEco.Helpers.ASM
                         Id = r.Number,
                         CenterPoint = new CenterPoint
                         {
-                            X = r.AbscissaX,
-                            Y = r.OrdinateY,
+                            //X и Y поменяны местами, т.к. расчёт приходит с неправильными координатами
+                            X = r.OrdinateY,
+                            Y = r.AbscissaX,
                             Z = 0
                         },
                         Width = r.Width, 
@@ -167,9 +168,10 @@ namespace SmartEco.Helpers.ASM
                 Points = points
                     .Select(p => new Point
                     {
+                        //X и Y поменяны местами, т.к. расчёт приходит с неправильными координатами
                         Id = p.Number,
-                        X = p.AbscissaX,
-                        Y = p.OrdinateY,
+                        X = p.OrdinateY,
+                        Y = p.AbscissaX,
                         Z = p.ApplicateZ
                     }).ToList(),
 

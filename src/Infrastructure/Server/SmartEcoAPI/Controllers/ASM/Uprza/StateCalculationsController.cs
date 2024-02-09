@@ -36,7 +36,7 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
         // POST: api/StateCalculations
         [HttpPost("{calculationId}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<CalculationPoint>> CreateOrUpdateStateCalculation(int calculationId, StateCalculation stateCalc)
+        public async Task<ActionResult> CreateOrUpdateStateCalculation(int calculationId, StateCalculation stateCalc)
         {
             if (calculationId != stateCalc.CalculationId)
                 return BadRequest();
@@ -46,6 +46,8 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
                 _context.Update(stateCalc);
             else
                 _context.StateCalculation.Add(stateCalc);
+
+            await DeleteAllResultEmissions(calculationId);
             await _context.SaveChangesAsync();
 
             return NoContent();
@@ -54,17 +56,24 @@ namespace SmartEcoAPI.Controllers.ASM.Uprza
         // DELETE: api/StateCalculations
         [HttpDelete("{calculationId}")]
         [Authorize(Roles = "admin,moderator,ASM")]
-        public async Task<ActionResult<Calculation>> DeleteStateCalculation(int calculationId)
+        public async Task<ActionResult> DeleteStateCalculation(int calculationId)
         {
             var stateCalc = await _context.StateCalculation.FindAsync(calculationId);
             if (stateCalc is null)
                 return NotFound();
 
             _context.StateCalculation.Remove(stateCalc);
+            await DeleteAllResultEmissions(calculationId);
             await _context.SaveChangesAsync();
             await _calcService.UpdateStatus(calculationId, CalculationStatuses.Configuration);
 
             return NoContent();
+        }
+
+        private async Task DeleteAllResultEmissions(int calculationId)
+        {
+            if (await _context.ResultEmission.AnyAsync(r => r.CalculationId == calculationId))
+                _context.ResultEmission.RemoveRange(_context.ResultEmission.Where(r => r.CalculationId == calculationId));
         }
     }
 }

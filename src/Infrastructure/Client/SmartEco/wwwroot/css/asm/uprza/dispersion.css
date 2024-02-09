@@ -1,0 +1,12 @@
+﻿.btn-collapse:not(.collapsed) .rotate-icon {
+    transform: rotate(180deg);
+}
+
+.btn-collapse:focus, .btn-collapse:active {
+    outline: none !important;
+    box-shadow: none;
+}
+
+.link-text-wrap {
+    white-space: normal;
+}

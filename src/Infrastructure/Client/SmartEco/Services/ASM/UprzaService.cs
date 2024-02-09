@@ -41,6 +41,12 @@ namespace SmartEco.Services.ASM
             return partialCalc;
         }
 
+        public async Task<UprzaCalcPollutantsResponse> GetCalculationPollutants(int jobId)
+            => await _uprzaApi.GetCalculationPollutants(jobId);
+
+        public async Task<string> GetResultEmission(int jobId, int pollutantCode)
+            => await _uprzaApi.GetResultEmission(jobId, pollutantCode);
+
         private StateCalculation MapResponse(UprzaCalcStatusResponse respone, Calculation calculation)
             => new StateCalculation
             {
@@ -82,6 +88,7 @@ namespace SmartEco.Services.ASM
                 case "init":
                 case "in_queue":
                 case "in_progress":
+                case "in_transform_queue":
                 case "pause":
                     return (int)CalculationStatuses.Initiated;
                 case "ready":
@@ -97,5 +104,7 @@ namespace SmartEco.Services.ASM
     {
         Task<StateCalculation> SendCalculation(UprzaRequest request, Calculation calculation);
         Task<StateCalculation> GetStatusCalculation(int jobId, Calculation calculation);
+        Task<UprzaCalcPollutantsResponse> GetCalculationPollutants(int jobId);
+        Task<string> GetResultEmission(int jobId, int pollutantCode);
     }
 }

@@ -1,4 +1,4 @@
-﻿/*Operation modes show button*/
+﻿/*Diagnostic info show button*/
 .diagnostic-info-row {
     display: none;
 }
@@ -15,3 +15,11 @@
         -webkit-transform: rotate(180deg);
         transform: rotate(180deg);
     }
+
+/*Inactive link with fontawesome icon*/
+.fa-inactive {
+    pointer-events: none;
+    cursor: default;
+    opacity: 0.5;
+    color: gray !important
+}

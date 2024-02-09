@@ -29,8 +29,10 @@ function GetStateCalc() {
 
 //Update state calculation
 function UpdateStateCalc() {
+    var updateBtn = $('#UpdateBtn');
     var calculationId = $('#CalculationId').val();
     var jobId = $('#JobIdStateCalc').val();
+    updateBtn.prop('disabled', true);
     $.ajax({
         data: {
             calculationId: calculationId,

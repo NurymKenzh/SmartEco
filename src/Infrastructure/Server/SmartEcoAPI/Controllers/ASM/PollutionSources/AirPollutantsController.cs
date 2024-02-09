@@ -37,6 +37,12 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
         public async Task<ActionResult<IEnumerable<AirPollutant>>> GetAirPollutants()
             => await _context.AirPollutant.ToListAsync();
 
+        [HttpGet("ByCodes")]
+        public async Task<ActionResult<IEnumerable<AirPollutant>>> GetAirPollutants([FromBody] List<int> pollutantsCode)
+            => await _context.AirPollutant
+            .Where(p => pollutantsCode.Contains(p.Code))
+            .ToListAsync();
+
         [HttpGet("[action]")]
         public async Task<ActionResult<AirPollutant>> GetFirst()
             => await _context.AirPollutant

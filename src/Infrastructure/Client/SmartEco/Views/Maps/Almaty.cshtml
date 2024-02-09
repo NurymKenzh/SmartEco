@@ -3341,6 +3341,7 @@
                 }
                 breaks.push(minAndMax.max);
                 const lines = turf.isolines(turfFeatureCollection, breaks, { zProperty: 'c_pdk' });
+                console.log(turfFeatureCollection);
                 //isolinesLayer.getSource().addFeatures(format.readFeatures(lines));
                 //isolinesLayer.setVisible(true);
                 //var marker = format.readFeatures(lines, {

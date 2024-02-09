@@ -105,6 +105,7 @@ namespace SmartEcoAPI.Data
         public DbSet<CalculationRectangle> CalculationRectangle { get; set; }
         public DbSet<CalculationSetting> CalculationSetting { get; set; }
         public DbSet<StateCalculation> StateCalculation { get; set; }
+        public DbSet<ResultEmission> ResultEmission { get; set; }
 
         #endregion
         #endregion
@@ -146,6 +147,7 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<CalculationRectangle>().ToTable(nameof(CalculationRectangle), _schemaAsmUprza);
             modelBuilder.Entity<CalculationSetting>().ToTable(nameof(CalculationSetting), _schemaAsmUprza);
             modelBuilder.Entity<StateCalculation>().ToTable(nameof(StateCalculation), _schemaAsmUprza);
+            modelBuilder.Entity<ResultEmission>().ToTable(nameof(ResultEmission), _schemaAsmUprza);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)
@@ -233,6 +235,13 @@ namespace SmartEcoAPI.Data
             //Complex Types
             modelBuilder.Entity<StateCalculation>()
                 .OwnsOne(s => s.DiagnosticInfo);
+
+            modelBuilder.Entity<ResultEmission>()
+                .HasKey(c => new
+                {
+                    c.CalculationId,
+                    c.AirPollutantId
+                });
         }
     }
 }

@@ -123,6 +123,22 @@ namespace SmartEcoAPI.Controllers.ASM
             return indSiteEnterprise;
         }
 
+        // GET: api/IndSiteEnterprises/GetByCalculation/5
+        [HttpGet("[action]/{calculationId}")]
+        [Authorize(Roles = "admin,moderator,ASM")]
+        public async Task<ActionResult<IList<IndSiteEnterprise>>> GetByCalculation(int calculationId)
+        {
+            var enterpriseIds = _context.CalculationToEnterprise
+                .Where(c => c.CalculationId == calculationId)
+                .Select(c => c.EnterpriseId);
+
+            return await _context.IndSiteEnterprise
+                .Include(indSite => indSite.IndSiteBorder)
+                .Include(indSite => indSite.SanZoneBorder)
+                .Where(indSite => enterpriseIds.Contains(indSite.EnterpriseId))
+                .ToListAsync();
+        }
+
         private bool IndSiteEnterpriseExists(int id)
         {
             return _context.IndSiteEnterprise.Any(e => e.Id == id);

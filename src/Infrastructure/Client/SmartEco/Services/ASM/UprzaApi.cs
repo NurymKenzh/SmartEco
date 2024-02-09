@@ -4,6 +4,7 @@ using SmartEco.Models.ASM.Requests.Uprza;
 using Newtonsoft.Json;
 using SmartEco.Models.ASM.Responses.Uprza;
 using Microsoft.AspNetCore.Hosting;
+using System.Collections.Generic;
 
 namespace SmartEco.Services.ASM
 {
@@ -12,7 +13,7 @@ namespace SmartEco.Services.ASM
         private readonly HttpClient _client;
         private readonly IHostingEnvironment _env;
 
-        private readonly bool _isTest = true;
+        private readonly bool _isTest = false;
         private readonly string jsonResp200Moq = "{\"id\":946,\"type\":\"dispersion\",\"status\":\"in_queue\",\"created_at\":\"2024-01-17T16:56:43.283647+00:00\",\"started_at\":\"0001-01-01T00:00:00+00:00\",\"updated_at\":\"0001-01-01T00:00:00+00:00\",\"diagnostic_data\":{\"count_of_points\":0,\"avg_time\":0,\"count_of_threads\":0,\"count_of_busts\":0,\"error_info\":null,\"progress\":0,\"calc_started_at\":\"0001-01-01T00:00:00+00:00\",\"calc_finished_at\":\"0001-01-01T00:00:00+00:00\",\"transform_started_at\":\"0001-01-01T00:00:00+00:00\",\"transform_finished_at\":\"0001-01-01T00:00:00+00:00\",\"timers\":null},\"message\":null,\"description\":null,\"daemon_id\":null}";
         private readonly string jsonResp400Moq = "{\"id\":0,\"type\":null,\"status\":null,\"created_at\":\"0001-01-01T00:00:00+00:00\",\"started_at\":\"0001-01-01T00:00:00+00:00\",\"updated_at\":\"0001-01-01T00:00:00+00:00\",\"diagnostic_data\":null,\"message\":\"Bad request\",\"description\":[\"Не задана температура окружающей среды\"],\"daemon_id\":null}";
         private readonly string jsonResp400Moq2 = "{\"id\":0,\"type\":null,\"status\":null,\"created_at\":\"0001-01-01T00:00:00+00:00\",\"started_at\":\"0001-01-01T00:00:00+00:00\",\"updated_at\":\"0001-01-01T00:00:00+00:00\",\"diagnostic_data\":null,\"message\":\"Bad request\",\"description\":[\"Не заданы загрязняющие вещества\",\"Не задана температура окружающей среды\"],\"daemon_id\":null}";
@@ -21,6 +22,8 @@ namespace SmartEco.Services.ASM
         private readonly string jsonRespStatusReadyMoq = "{\"id\":936,\"type\":\"dispersion\",\"status\":\"ready\",\"description\":null,\"created_at\":\"2024-01-17T11:04:23.128348\",\"started_at\":\"2024-01-17T11:04:23.897493\",\"updated_at\":\"2024-01-17T11:05:22.269014\",\"diagnostic_data\":{\"count_of_points\":40401,\"avg_time\":0,\"count_of_threads\":1,\"count_of_busts\":1,\"error_info\":null,\"progress\":100,\"calc_started_at\":\"2024-01-17T11:04:23.8979816+00:00\",\"calc_finished_at\":\"2024-01-17T11:05:21.3869026+00:00\",\"transform_started_at\":\"2024-01-17T11:05:21.7392588+00:00\",\"transform_finished_at\":\"2024-01-17T11:05:22.2690071+00:00\",\"timers\":{\"save_data\":3189,\"calculate\":21816,\"AddJobPoints\":2035,\"AddJobPointPollutantsResults\":821,\"AddContributorsResults\":49626,\"AddJobPointSummationGroupsResults\":14,\"ResolveJobPointsMaxConcentrations\":18}},\"daemon_id\":null}";
         private readonly string jsonRespStatusProccessMoq = "{\"id\":948,\"type\":\"dispersion\",\"status\":\"in_progress\",\"description\":null,\"created_at\":\"2024-01-18T09:53:33.758772\",\"started_at\":\"2024-01-18T09:53:34.582892\",\"updated_at\":\"2024-01-18T09:53:34.583404\",\"diagnostic_data\":{\"count_of_points\":0,\"avg_time\":0,\"count_of_threads\":0,\"count_of_busts\":0,\"error_info\":null,\"progress\":0,\"calc_started_at\":\"2024-01-18T09:53:34.583404+00:00\",\"calc_finished_at\":\"0001-01-01T00:00:00\",\"transform_started_at\":\"0001-01-01T00:00:00\",\"transform_finished_at\":\"0001-01-01T00:00:00\",\"timers\":null},\"daemon_id\":null}";
         private readonly string jsonRespStatusErrorMoq = "{\"id\":935,\"type\":\"dispersion\",\"status\":\"error\",\"description\":null,\"created_at\":\"2024-01-17T11:01:59.637313\",\"started_at\":\"2024-01-17T11:02:00.019001\",\"updated_at\":\"2024-01-17T11:03:18.260441\",\"diagnostic_data\":{\"count_of_points\":40401,\"avg_time\":0,\"count_of_threads\":1,\"count_of_busts\":1,\"error_info\":\"One or more errors occurred. (Exception while reading from stream)\\n StackTrace:\\n    at System.Threading.Tasks.Task.Wait(Int32 millisecondsTimeout, CancellationToken cancellationToken)\\n   at System.Threading.Tasks.Task.Wait(CancellationToken cancellationToken)\\n   at UprzaKernel.Daemon.Services.JobHandler.Calculate(CancellationToken cancellationToken) in /app/UprzaKernel.Daemon/Services/JobHandler.cs:line 142\",\"progress\":100,\"calc_started_at\":\"2024-01-17T11:02:00.0207721+00:00\",\"calc_finished_at\":\"0001-01-01T00:00:00\",\"transform_started_at\":\"0001-01-01T00:00:00\",\"transform_finished_at\":\"0001-01-01T00:00:00\",\"timers\":null},\"daemon_id\":null}";
+
+        private readonly string jsonRespPollutantsMoq = "[{\"jobId\":936,\"code\":301,\"pdk\":0.4,\"pdkPerDay\":null,\"pdkPerYear\":null,\"obuv\":null,\"name\":null,\"dangerLvl\":null,\"isGovernmentControl\":null,\"job\":null}]";
 
         public UprzaApi(HttpClient client, IHostingEnvironment env)
             => (_client, _env) = (client, env);
@@ -64,10 +67,48 @@ namespace SmartEco.Services.ASM
             }
         }
 
+        public async Task<UprzaCalcPollutantsResponse> GetCalculationPollutants(int jobId)
+        {
+            try
+            {
+                if (_env.IsDevelopment() && _isTest)
+                    return new UprzaCalcPollutantsResponse() { CalculationPollutants = GetMoqPollutantsResponse() };
+
+                HttpResponseMessage response = await _client.GetAsync($"calculation/pollutants?jobId={jobId}");
+                var uprzaPollutants = await response.Content.ReadAsAsync<List<UprzaCalculationPollutant>>();
+                var uprzaResp = new UprzaCalcPollutantsResponse() { CalculationPollutants = uprzaPollutants };
+                return uprzaResp;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
+        public async Task<string> GetResultEmission(int jobId, int pollutantCode)
+        {
+            try
+            {
+                //if (_env.IsDevelopment() && _isTest)
+                //    return GetMoqPollutantsResponse();
+
+                HttpResponseMessage response = await _client.GetAsync($"result-emissions?jobId={jobId}&pollutantCode={pollutantCode}");
+                var uprzaResp = await response.Content.ReadAsStringAsync();
+                return uprzaResp;
+            }
+            catch
+            {
+                return null;
+            }
+        }
+
         private UprzaCalcStatusResponse GetMoqResponse()
             => JsonConvert.DeserializeObject<UprzaCalcStatusResponse>(jsonResp200Moq);
 
         private UprzaCalcStatusResponse GetMoqStatusResponse()
             => JsonConvert.DeserializeObject<UprzaCalcStatusResponse>(jsonRespStatusReadyMoq);
+
+        private List<UprzaCalculationPollutant> GetMoqPollutantsResponse()
+            => JsonConvert.DeserializeObject<List<UprzaCalculationPollutant>>(jsonRespPollutantsMoq);
     }
 }
