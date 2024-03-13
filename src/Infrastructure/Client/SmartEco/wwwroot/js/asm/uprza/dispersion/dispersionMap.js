@@ -28,7 +28,7 @@ function GetEmissionByCode(pollutantCode) {
         type: 'GET',
         success: function (result) {
             if (result) {
-                features = result.featureCollection;
+                features = result.rectanglesFeatures;
             }
         },
         complete: function (data) {

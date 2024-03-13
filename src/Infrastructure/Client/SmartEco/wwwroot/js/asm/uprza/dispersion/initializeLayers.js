@@ -1,7 +1,7 @@
 ﻿import { IsolineStyle } from './staticHelper.js';
 
-const indSiteBorderStyle = GetBorderStyle('blue');
-const sanZoneBorderStyle = GetBorderStyle('dodgerBlue');
+const indSiteBorderStyle = GetIndSiteBorderStyle();
+const sanZoneBorderStyle = GetSanZoneBorderStyle();
 
 //Initializing map
 $(function () {
@@ -89,10 +89,23 @@ function SetIsolinesLayer() {
     });
 }
 
-function GetBorderStyle(color) {
+function GetIndSiteBorderStyle() {
     return new ol.style.Style({
         stroke: new ol.style.Stroke({
-            color: color,
+            color: 'black',
+            width: 2,
+        }),
+        fill: new ol.style.Fill({
+            color: 'rgba(100, 100, 100, 0.1)',
+        }),
+    })
+}
+
+function GetSanZoneBorderStyle() {
+    return new ol.style.Style({
+        stroke: new ol.style.Stroke({
+            color: 'red',
+            lineDash: [10],
             width: 2,
         }),
         fill: new ol.style.Fill({
