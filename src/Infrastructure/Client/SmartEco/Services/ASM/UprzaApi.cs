@@ -85,14 +85,14 @@ namespace SmartEco.Services.ASM
             }
         }
 
-        public async Task<string> GetResultEmission(int jobId, int pollutantCode)
+        public async Task<string> GetResultEmission(int jobId, int pollutantCode, string areaType)
         {
             try
             {
                 //if (_env.IsDevelopment() && _isTest)
                 //    return GetMoqPollutantsResponse();
 
-                HttpResponseMessage response = await _client.GetAsync($"result-emissions?jobId={jobId}&pollutantCode={pollutantCode}");
+                HttpResponseMessage response = await _client.GetAsync($"result-emissions?jobId={jobId}&{areaType}&pollutantCode={pollutantCode}");
                 var uprzaResp = await response.Content.ReadAsStringAsync();
                 return uprzaResp;
             }

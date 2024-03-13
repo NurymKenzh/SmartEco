@@ -37,7 +37,7 @@ namespace SmartEco.Controllers.ASM.Uprza
         }
 
         [HttpPost]
-        public async Task<IActionResult> Update(int calculationId, int jobId)
+        public async Task<IActionResult> Update(int calculationId, int jobId, bool isRectangleArea, bool isPointArea)
         {
             var calculation = await GetCalculation(calculationId);
             if (calculation is null)
@@ -71,12 +71,12 @@ namespace SmartEco.Controllers.ASM.Uprza
                 foreach(var airPollutant in airPollutants)
                 {
                     var pollutantCode = airPollutant.Code;
-                    var uprzaResultEmission = await _uprzaService.GetResultEmission(jobId, pollutantCode);
                     resultEmissions.Add(new ResultEmission
                     {
                         CalculationId = calculationId,
                         AirPollutantId = airPollutants.Single(p => p.Code == pollutantCode).Id,
-                        FeatureCollection = uprzaResultEmission
+                        RectanglesFeatures = isRectangleArea ? await _uprzaService.GetResultEmissionRectangle(jobId, pollutantCode) : null,
+                        PointsFeatures = isPointArea ? await _uprzaService.GetResultEmissionPoint(jobId, pollutantCode) : null
                     });
                 }
                 await CreateResultEmissions(calculationId, resultEmissions);

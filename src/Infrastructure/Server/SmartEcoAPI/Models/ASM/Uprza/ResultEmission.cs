@@ -10,6 +10,8 @@ namespace SmartEcoAPI.Models.ASM.Uprza
         public int AirPollutantId { get; set; }
         public AirPollutant AirPollutant { get; set; }
 
-        public string FeatureCollection { get; set; }
+        public string RectanglesFeatures { get; set; }
+
+        public string PointsFeatures { get; set; }
     }
 }

@@ -12,7 +12,9 @@ namespace SmartEco.Models.ASM.Uprza
         public int AirPollutantId { get; set; }
         public AirPollutant AirPollutant { get; set; }
 
-        public string FeatureCollection { get; set; }
+        public string RectanglesFeatures { get; set; }
+
+        public string PointsFeatures { get; set; }
     }
 
     public class ResultEmissionViewModel
@@ -20,5 +22,11 @@ namespace SmartEco.Models.ASM.Uprza
         public int CalculationId { get; set; }
         public SelectList AirPollutantsSelectList { get; set; }
         public List<IndSiteEnterprise> IndSiteEnterprises { get; set; }
+    }
+
+    public enum ResultEmissionType
+    {
+        Rectangle,
+        Point
     }
 }

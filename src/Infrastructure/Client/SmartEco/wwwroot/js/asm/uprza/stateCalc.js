@@ -32,11 +32,15 @@ function UpdateStateCalc() {
     var updateBtn = $('#UpdateBtn');
     var calculationId = $('#CalculationId').val();
     var jobId = $('#JobIdStateCalc').val();
+    var isRectangleArea = IsAreaType('#CalculationRectanglesTable', 'RectangleNumber');
+    var isPointArea = IsAreaType('#CalculationPointsTable', 'PointNumber');
     updateBtn.prop('disabled', true);
     $.ajax({
         data: {
             calculationId: calculationId,
-            jobId: jobId
+            jobId: jobId,
+            isRectangleArea: isRectangleArea,
+            isPointArea: isPointArea
         },
         url: $('#StateCalcUpdateReq').data('url'),
         type: 'POST',
@@ -45,6 +49,11 @@ function UpdateStateCalc() {
             $('#StateCalculationTable').html(result);
         }
     });
+}
+
+function IsAreaType(tableId, areaTypeNameNumber) {
+    var areaTypeArray = $(tableId).find(`[name="${areaTypeNameNumber}"]`);
+    return (typeof areaTypeArray !== 'undefined' && areaTypeArray.length > 0);
 }
 
 //Delete state calculation

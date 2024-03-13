@@ -44,8 +44,11 @@ namespace SmartEco.Services.ASM
         public async Task<UprzaCalcPollutantsResponse> GetCalculationPollutants(int jobId)
             => await _uprzaApi.GetCalculationPollutants(jobId);
 
-        public async Task<string> GetResultEmission(int jobId, int pollutantCode)
-            => await _uprzaApi.GetResultEmission(jobId, pollutantCode);
+        public async Task<string> GetResultEmissionRectangle(int jobId, int pollutantCode)
+            => await _uprzaApi.GetResultEmission(jobId, pollutantCode, GetAreaType(ResultEmissionType.Rectangle));
+
+        public async Task<string> GetResultEmissionPoint(int jobId, int pollutantCode)
+            => await _uprzaApi.GetResultEmission(jobId, pollutantCode, GetAreaType(ResultEmissionType.Point));
 
         private StateCalculation MapResponse(UprzaCalcStatusResponse respone, Calculation calculation)
             => new StateCalculation
@@ -98,6 +101,19 @@ namespace SmartEco.Services.ASM
                     return (int)CalculationStatuses.Error;
             }
         }
+
+        private string GetAreaType(ResultEmissionType emissionType)
+        {
+            switch (emissionType)
+            {
+                case ResultEmissionType.Rectangle:
+                    return "areaType=rectangle";
+                case ResultEmissionType.Point:
+                    return "areaType=point";
+                default:
+                    return string.Empty;
+            }
+        }
     }
 
     public interface IUprzaService
@@ -105,6 +121,7 @@ namespace SmartEco.Services.ASM
         Task<StateCalculation> SendCalculation(UprzaRequest request, Calculation calculation);
         Task<StateCalculation> GetStatusCalculation(int jobId, Calculation calculation);
         Task<UprzaCalcPollutantsResponse> GetCalculationPollutants(int jobId);
-        Task<string> GetResultEmission(int jobId, int pollutantCode);
+        Task<string> GetResultEmissionRectangle(int jobId, int pollutantCode);
+        Task<string> GetResultEmissionPoint(int jobId, int pollutantCode);
     }
 }
