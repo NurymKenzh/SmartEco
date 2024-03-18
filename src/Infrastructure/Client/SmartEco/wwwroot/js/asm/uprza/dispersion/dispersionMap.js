@@ -72,7 +72,6 @@ function DrawDispersionOnMap(features) {
     }
     breaks.push(minAndMax.max);
     const lines = turf.isolines(turfFeatureCollection, breaks, { zProperty: 'c_pdk' });
-    console.log(turfFeatureCollection);
     var marker = objects.format.readFeatures(lines);
     layers.isolinesLayer.getSource().clear(true);
     layers.isolinesLayer.getSource().addFeatures(marker);

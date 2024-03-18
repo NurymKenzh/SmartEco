@@ -155,8 +155,8 @@ namespace SmartEco.Helpers.ASM
                         CenterPoint = new CenterPoint
                         {
                             //X и Y поменяны местами, т.к. расчёт приходит с неправильными координатами
-                            X = r.OrdinateY,
-                            Y = r.AbscissaX,
+                            X = r.Ordinate3857,
+                            Y = r.Abscissa3857,
                             Z = 0
                         },
                         Width = r.Width, 
@@ -170,9 +170,9 @@ namespace SmartEco.Helpers.ASM
                     {
                         //X и Y поменяны местами, т.к. расчёт приходит с неправильными координатами
                         Id = p.Number,
-                        X = p.OrdinateY,
-                        Y = p.AbscissaX,
-                        Z = p.ApplicateZ
+                        X = p.Ordinate3857,
+                        Y = p.Abscissa3857,
+                        Z = 0
                     }).ToList(),
 
                 LivingAreaBorderStep = settings.LivingAreaBorderStep,

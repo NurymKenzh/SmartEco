@@ -82,6 +82,9 @@ namespace SmartEco.Models.ASM.Uprza
         public double OrdinateY { get; set; }
         [Display(Name = "Z (м)")]
         public int ApplicateZ { get; set; }
+
+        public double Abscissa3857 { get; set; }
+        public double Ordinate3857 { get; set; }
     }
 
     public class CalculationRectangle
@@ -109,6 +112,9 @@ namespace SmartEco.Models.ASM.Uprza
         public int StepByWidth { get; set; }
         [Display(Name = "Шаг по Y (м)")]
         public int StepByLength { get; set; }
+
+        public double Abscissa3857 { get; set; }
+        public double Ordinate3857 { get; set; }
     }
 
     public class CalculationSettingsViewModel

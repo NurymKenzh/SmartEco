@@ -22,10 +22,15 @@
 
 <script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
 
+@*Openlayers map*@
+<link href="~/lib/openlayers/ol.css" rel="stylesheet" />
+<script src="~/lib/openlayers/ol.js"></script>
+
 @* Multiple selectlist *@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/css/bootstrap-multiselect.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-multiselect/0.9.16/js/bootstrap-multiselect.min.js"></script>
 
+<link href="~/css/asm//uprza/detailsCalc.css" rel="stylesheet" />
 <link href="~/css/asm//uprza/stateCalc.css" rel="stylesheet" />
 
 <div>
@@ -85,7 +90,10 @@
 </div>
 
 <script src="~/js/asm/rememberTab.js" data-page="Calculation"></script>
+<script src="~/js/asm/airPollutionSources/modalWindowNesting.js"></script>
 <script src="~/js/asm/uprza/initializeObjects.js"></script>
+<script src="~/js/asm/uprza/mapPointCoordinates.js"></script>
+<script src="~/js/asm/uprza/mapRectangleCoordinates.js"></script>
 <script src="~/js/asm/uprza/calcToEnts.js"></script>
 <script src="~/js/asm/uprza/calcPoints.js"></script>
 <script src="~/js/asm/uprza/calcRectangles.js"></script>

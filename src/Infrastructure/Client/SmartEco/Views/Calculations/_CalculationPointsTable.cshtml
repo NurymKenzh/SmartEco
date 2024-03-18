@@ -105,6 +105,10 @@
                         <input id="PointNewOrdinateY" class="form-control" type="text" />
                         <div name="PointNewOrdinateY" class="invalid-feedback"></div>
                     </div>
+                    <div hidden>
+                        <input id="PointNewAbscissa3857">
+                        <input id="PointNewOrdinate3857">
+                    </div>
                     <div class="form-group">
                         <label for="PointNewApplicateZ" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().ApplicateZ)</label>
                         <input id="PointNewApplicateZ" class="form-control" type="text" />
@@ -112,10 +116,20 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-success mr-auto show-map-btn" data-toggle="modal" data-target="#ShowMapPointModal">Выбрать на карте</button>
                     <button type="button" class="btn btn-primary" onclick="CreatePoint()">@SharedLocalizer["Create"]</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+@* Modal for show map *@
+<div id="ShowMapPointModal" class="modal fade show-map" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            @await Html.PartialAsync("_MapModal.cshtml")
         </div>
     </div>
 </div>

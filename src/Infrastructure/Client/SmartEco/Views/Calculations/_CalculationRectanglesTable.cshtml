@@ -133,6 +133,10 @@
                         <input id="RectangleNewOrdinateY" class="form-control" type="text" />
                         <div name="RectangleNewOrdinateY" class="invalid-feedback"></div>
                     </div>
+                    <div hidden>
+                        <input id="RectangleNewAbscissa3857">
+                        <input id="RectangleNewOrdinate3857">
+                    </div>
                     <div class="form-group">
                         <label for="RectangleNewWidth" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Width)</label>
                         <input id="RectangleNewWidth" class="form-control" type="number" />
@@ -160,10 +164,20 @@
                     </div>
                 </div>
                 <div class="modal-footer">
+                    <button type="button" class="btn btn-success mr-auto show-map-btn" data-toggle="modal" data-target="#ShowMapRectangleModal">Выбрать на карте</button>
                     <button type="button" class="btn btn-primary" onclick="CreateRectangle()">@SharedLocalizer["Create"]</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
             </div>
+        </div>
+    </div>
+</div>
+
+@* Modal for show map *@
+<div id="ShowMapRectangleModal" class="modal fade show-map" tabindex="-1" role="dialog" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
+        <div class="modal-content">
+            @await Html.PartialAsync("_MapModal.cshtml")
         </div>
     </div>
 </div>
