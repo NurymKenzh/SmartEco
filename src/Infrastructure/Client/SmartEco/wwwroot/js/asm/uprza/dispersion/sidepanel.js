@@ -4,6 +4,10 @@ $('#IsolinesCheckbox').on("change", function () {
     layers.isolinesLayer.setVisible(this.checked);
 });
 
+$('#PointsCheckbox').on("change", function () {
+    layers.pointsLayer.setVisible(this.checked);
+});
+
 $(function () {
     InitializeIndSiteCheckboxes();
 });

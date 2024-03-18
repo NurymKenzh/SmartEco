@@ -11,15 +11,18 @@ $(function () {
 
 export let objects = {
     map: new ol.Map({}),
-    format: new ol.format.GeoJSON()
+    format: new ol.format.GeoJSON(),
+    pointsFeatures: []
 }
 
 export let sources = {
-    isolinesSource: SetIsolinesSource()
+    isolinesSource: SetIsolinesSource(),
+    pointsSource: {}
 }
 
 export let layers = {
-    isolinesLayer: SetIsolinesLayer()
+    isolinesLayer: SetIsolinesLayer(),
+    pointsLayer: {}
 }
 
 //Isolines

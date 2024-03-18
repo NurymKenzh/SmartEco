@@ -17,7 +17,7 @@ $('#AirPollutantsSelect').on("change", function () {
 });
 
 function GetEmissionByCode(pollutantCode) {
-    var features;
+    var rectanglesFeatures, pointsFeatures;
     var calculationId = $('#CalculationId').val();
     $.ajax({
         data: {
@@ -28,12 +28,22 @@ function GetEmissionByCode(pollutantCode) {
         type: 'GET',
         success: function (result) {
             if (result) {
-                features = result.rectanglesFeatures;
+                rectanglesFeatures = result.rectanglesFeatures;
+                pointsFeatures = result.pointsFeatures;
             }
         },
         complete: function (data) {
-            if (features) {
-                DrawDispersionOnMap(features);
+            $('#IsolinesCheckboxBlock').attr('hidden', true);
+            $('#PointsCheckboxBlock').attr('hidden', true);
+
+            if (rectanglesFeatures) {
+                $('#IsolinesCheckboxBlock').attr('hidden', false);
+                DrawDispersionOnMap(rectanglesFeatures);
+            }
+
+            if (pointsFeatures) {
+                $('#PointsCheckboxBlock').attr('hidden', false);
+                DrawPointsOnMap(pointsFeatures);
             }
         }
     });
@@ -84,4 +94,33 @@ function SetMapZoomToExtent() {
     if (featureLength > 0) {
         objects.map.getView().fit(sources.isolinesSource.getExtent(), objects.map.getSize());
     }
+}
+
+function DrawPointsOnMap(features) {
+    var pointsFeatures = JSON.parse(features);
+    $.each(pointsFeatures.features, function (index, feature) {
+        objects.pointsFeatures.push(new ol.Feature({
+            'geometry': new ol.geom.Point([
+                feature.geometry.coordinates[0],
+                feature.geometry.coordinates[1],
+            ]),
+            'c_pdk': feature.properties['c_pdk']
+        }));
+    });
+
+    sources.pointsSource = new ol.source.Vector({
+        features: objects.pointsFeatures
+    });
+
+    layers.pointsLayer = new ol.layer.Vector({
+        source: sources.pointsSource,
+        name: 'Points',
+        style: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/ASM/Icons/blackTriangle.png'
+            }))
+        })
+    });
+
+    objects.map.addLayer(layers.pointsLayer);
 }
