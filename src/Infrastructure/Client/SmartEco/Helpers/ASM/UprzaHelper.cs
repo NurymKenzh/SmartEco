@@ -100,9 +100,9 @@ namespace SmartEco.Helpers.ASM
 
                             FlowTemperature = s.OperationModes.FirstOrDefault()?.GasAirMixture?.Temperature ?? 0,
                             FlowSpeed = s.OperationModes.FirstOrDefault()?.GasAirMixture?.Speed ?? 0,
-                            ThermalPower = s.OperationModes.FirstOrDefault()?.GasAirMixture?.ThermalPower,
-                            RadiationPower = s.OperationModes.FirstOrDefault()?.GasAirMixture?.PartRadiation,
-                            EmissionDensity = s.OperationModes.FirstOrDefault()?.GasAirMixture?.Density,
+                            ThermalPower = NullInsteadZero(s.OperationModes.FirstOrDefault()?.GasAirMixture?.ThermalPower),
+                            RadiationPower = NullInsteadZero(s.OperationModes.FirstOrDefault()?.GasAirMixture?.PartRadiation),
+                            EmissionDensity = NullInsteadZero(s.OperationModes.FirstOrDefault()?.GasAirMixture?.Density),
                         },
                         Humidity = s.OperationModes.FirstOrDefault()?.GasAirMixture?.Humidity,
                         Pressure = s.OperationModes.FirstOrDefault()?.GasAirMixture?.Pressure,
@@ -284,5 +284,8 @@ namespace SmartEco.Helpers.ASM
                     };
             }
         }
+
+        private static double? NullInsteadZero(double? value)
+            => value is 0 ? null : value;
     }
 }
