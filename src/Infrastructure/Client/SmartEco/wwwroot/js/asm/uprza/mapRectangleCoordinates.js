@@ -1,71 +1,69 @@
-﻿var map;
-var isOrganized;
-var inputs = { coordinates: {}, coordinates3857: {}, abscissaCoordinate: {}, ordinateCoordinate: {}, abscissa3857: {}, ordinate3857: {}, sizeLength: {}, sizeWidth: {} };
+﻿var mapRectangle;
+var rectInputs = { coordinates: {}, coordinates3857: {}, abscissaCoordinate: {}, ordinateCoordinate: {}, abscissa3857: {}, ordinate3857: {}, sizeLength: {}, sizeWidth: {} };
 
-$('.show-map-btn').click(function (e) {
+$('.show-create-rectangle-btn').click(function (e) {
     InitializeInputs();
     InitializeMap();
 });
 
-$('.show-map').on('shown.bs.modal', function () {
-    map.updateSize();
+$('.show-map-rectangle').on('shown.bs.modal', function () {
+    mapRectangle.updateSize();
 })
 
-$('.clear-map').click(function (e) {
-    airSource.clear();
-    vectorAirSource.clear();
-    $.each(inputs, function (index, value) {
+$('.clear-map-rectangle').click(function (e) {
+    centerSource.clear();
+    rectanglerSource.clear();
+    $.each(rectInputs, function (index, value) {
         $(this).val('');
     });
-    ChangeMapSources();
+    ChangeRectangleMapSources();
 });
 
-$('.coordinate-input').change(function () {
-    ChangeMapSources();
+$('.coordinate-rectangle-input').change(function () {
+    ChangeRectangleMapSources();
 });
 
-$('.size-input').change(function () {
-    ChangeMapSources();
+$('.size-rectangle-input').change(function () {
+    ChangeRectangleMapSources();
 });
 
 function InitializeInputs() {
-    inputs.abscissaCoordinate = $('#RectangleNewAbscissaX');
-    inputs.ordinateCoordinate = $('#RectangleNewOrdinateY');
-    inputs.abscissa3857 = $('#RectangleNewAbscissa3857');
-    inputs.ordinate3857 = $('#RectangleNewOrdinate3857');
-    inputs.sizeLength = $('#RectangleNewLength');
-    inputs.sizeWidth = $('#RectangleNewWidth');
+    rectInputs.abscissaCoordinate = $('#RectangleNewAbscissaX');
+    rectInputs.ordinateCoordinate = $('#RectangleNewOrdinateY');
+    rectInputs.abscissa3857 = $('#RectangleNewAbscissa3857');
+    rectInputs.ordinate3857 = $('#RectangleNewOrdinate3857');
+    rectInputs.sizeLength = $('#RectangleNewLength');
+    rectInputs.sizeWidth = $('#RectangleNewWidth');
 }
 
-//Air source rectangle layer
-var vectorAirSource = new ol.source.Vector();
-var vectorAirLayer = new ol.layer.Vector({
-    source: vectorAirSource
+//Rectangle layer
+var rectanglerSource = new ol.source.Vector();
+var rectanglerLayer = new ol.layer.Vector({
+    source: rectanglerSource
 });
 
-//Air pollution source layer
-var airSource = new ol.source.Vector();
-var airLayer = new ol.layer.Vector({
-    source: airSource
+//Center layer
+var centerSource = new ol.source.Vector();
+var centerLayer = new ol.layer.Vector({
+    source: centerSource
 });
 
 function InitializeMap() {
-    var target = 'map';
+    var target = 'MapRectangle';
     $('#' + target).empty();
-    airSource.clear();
-    vectorAirSource.clear();
+    centerSource.clear();
+    rectanglerSource.clear();
 
     //Initialize map
-    map = new ol.Map({
+    mapRectangle = new ol.Map({
         target: target,
         controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
         layers: [
             new ol.layer.Tile({
                 source: new ol.source.OSM()
             }),
-            //vectorLayer,
-            airLayer,
-            vectorAirLayer
+            centerLayer,
+            rectanglerLayer
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat([68.291, 47.5172]),
@@ -73,40 +71,40 @@ function InitializeMap() {
         })
     });
 
-    ChangeMapSources();
+    ChangeRectangleMapSources();
 
     //Set zoom to rectangle source
-    var featureLength = vectorAirSource.getFeatures().length;
+    var featureLength = rectanglerSource.getFeatures().length;
     if (featureLength > 0) {
-        map.getView().fit(vectorAirSource.getExtent(), map.getSize());
+        mapRectangle.getView().fit(rectanglerSource.getExtent(), mapRectangle.getSize());
     }
 }
 
-function AddDrawInteraction() {
+function AddRectangleDrawInteraction() {
     var draw = new ol.interaction.Draw({
-        source: airSource,
+        source: centerSource,
         type: "Point",
     });
-    map.addInteraction(draw);
+    mapRectangle.addInteraction(draw);
     draw.on('drawend', function (e) {
         feature = e.feature;
-        map.removeInteraction(draw); // remove draw interaction
+        mapRectangle.removeInteraction(draw); // remove draw interaction
         var featureClone = feature.clone(); // cloning feature
         featureClone.getGeometry().transform('EPSG:3857', 'EPSG:4326'); // transform cloned feature to EPSG:4326
 
         ShowRectangle(e.feature);
         var coords = featureClone.getGeometry().getCoordinates();
         var coords3857 = feature.getGeometry().getCoordinates();
-        SetCoordinates(coords, coords3857);
-        AddModifyIteraction();
+        SetRectangleCoordinates(coords, coords3857);
+        AddRectangleModifyIteraction();
     });
 }
 
-function AddModifyIteraction() {
+function AddRectangleModifyIteraction() {
     var modifyInteraction = new ol.interaction.Modify({
-        source: airSource
+        source: centerSource
     });
-    map.addInteraction(modifyInteraction);
+    mapRectangle.addInteraction(modifyInteraction);
     modifyInteraction.on('modifyend', function (evt) {
         var collection = evt.features; // get features
         var featureClone = collection.item(0).clone(); // There's only one feature, so get the first and only one
@@ -115,18 +113,22 @@ function AddModifyIteraction() {
         ShowRectangle(collection.item(0));
         var coords = featureClone.getGeometry().getCoordinates();
         var coords3857 = collection.item(0).getGeometry().getCoordinates();
-        SetCoordinates(coords, coords3857);
+        SetRectangleCoordinates(coords, coords3857);
     });
 }
 
-function ChangeMapSources() {
-    if (inputs.abscissaCoordinate.val() && inputs.ordinateCoordinate.val()) {
-        var coordinates = [parseFloat(inputs.abscissaCoordinate.val()), parseFloat(inputs.ordinateCoordinate.val())];
+function ChangeRectangleMapSources() {
+    if (rectInputs.abscissaCoordinate.val() && rectInputs.ordinateCoordinate.val()) {
+        var coordinates =
+            [
+                parseFloat(rectInputs.abscissaCoordinate.val().replaceCommaToDot()),
+                parseFloat(rectInputs.ordinateCoordinate.val().replaceCommaToDot())
+            ];
 
         //Change coords on map
         coordinates = ol.proj.transform(coordinates, 'EPSG:4326', 'EPSG:3857');
-        inputs.abscissa3857.val(coordinates[0]);
-        inputs.ordinate3857.val(coordinates[1]);
+        rectInputs.abscissa3857.val(coordinates[0]);
+        rectInputs.ordinate3857.val(coordinates[1]);
 
         var point = new ol.geom.Point(
             coordinates
@@ -134,26 +136,32 @@ function ChangeMapSources() {
         var featurePoint = new ol.Feature({
             geometry: point
         });
-        airSource.clear();
-        airSource.addFeature(featurePoint);
+        centerSource.clear();
+        centerSource.addFeature(featurePoint);
 
         ShowRectangle(featurePoint);
-        AddModifyIteraction();
+        AddRectangleModifyIteraction();
+
+        //Set zoom to rectangle source
+        var featureLength = rectanglerSource.getFeatures().length;
+        if (featureLength > 0) {
+            mapRectangle.getView().fit(rectanglerSource.getExtent(), mapRectangle.getSize());
+        }
     }
     else {
-        AddDrawInteraction();
+        AddRectangleDrawInteraction();
     }
 };
 
-function SetCoordinates(coords, coords3857) {
-    inputs.abscissaCoordinate.val(coords[0]);
-    inputs.ordinateCoordinate.val(coords[1]);
-    inputs.abscissa3857.val(coords3857[0]);
-    inputs.ordinate3857.val(coords3857[1]);
+function SetRectangleCoordinates(coords, coords3857) {
+    rectInputs.abscissaCoordinate.val(coords[0]);
+    rectInputs.ordinateCoordinate.val(coords[1]);
+    rectInputs.abscissa3857.val(coords3857[0]);
+    rectInputs.ordinate3857.val(coords3857[1]);
 }
 
 function ShowRectangle(feature) {
-    vectorAirSource.clear();
+    rectanglerSource.clear();
     let centerCoordinate = feature.getGeometry().getCoordinates();
     let sizeRect = GetSizeRectangle();
     let widthRect = sizeRect.length;
@@ -164,7 +172,7 @@ function ShowRectangle(feature) {
     let widthInMeters = widthRect * (scale / 100);
     let heightInMeters = widthInMeters * (heightRect / widthRect);
 
-    let pointRes = ol.proj.getPointResolution(map.getView().getProjection(), 1, centerCoordinate);
+    let pointRes = ol.proj.getPointResolution(mapRectangle.getView().getProjection(), 1, centerCoordinate);
     let widthInUnits = widthInMeters / pointRes;
     let heightInUnits = heightInMeters / pointRes;
 
@@ -179,28 +187,28 @@ function ShowRectangle(feature) {
     // and... the geometry
     var region = ol.geom.Polygon.fromExtent(mapExtent);
     var featureAirSource = new ol.Feature(region);
-    vectorAirSource.addFeature(featureAirSource);
+    rectanglerSource.addFeature(featureAirSource);
 }
 
 function GetSizeRectangle() {
     var length, width;
 
     //Get or set length
-    if (inputs.sizeLength.val()) {
-        length = parseFloat(inputs.sizeLength.val().replace(',', '.'));
+    if (rectInputs.sizeLength.val()) {
+        length = parseFloat(rectInputs.sizeLength.val().replace(',', '.'));
     }
     else {
         length = 10;
-        inputs.sizeLength.val(length);
+        rectInputs.sizeLength.val(length);
     }
 
     //Get or set width
-    if (inputs.sizeWidth.val()) {
-        width = parseFloat(inputs.sizeWidth.val().replace(',', '.'));
+    if (rectInputs.sizeWidth.val()) {
+        width = parseFloat(rectInputs.sizeWidth.val().replace(',', '.'));
     }
     else {
         width = 10;
-        inputs.sizeWidth.val(width);
+        rectInputs.sizeWidth.val(width);
     }
 
     return {

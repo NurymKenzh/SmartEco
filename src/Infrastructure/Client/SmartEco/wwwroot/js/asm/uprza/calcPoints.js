@@ -25,9 +25,11 @@ function CreateCalculationPointObj() {
         calculationId,
         number
     );
-    calcPoint.AbscissaX = $('#PointNewAbscissaX').val();
-    calcPoint.OrdinateY = $('#PointNewOrdinateY').val();
+    calcPoint.AbscissaX = $('#PointNewAbscissaX').val().replaceDotToComma();
+    calcPoint.OrdinateY = $('#PointNewOrdinateY').val().replaceDotToComma();
     calcPoint.ApplicateZ = $('#PointNewApplicateZ').val();
+    calcPoint.Abscissa3857 = $('#PointNewAbscissa3857').val().replaceDotToComma();
+    calcPoint.Ordinate3857 = $('#PointNewOrdinate3857').val().replaceDotToComma();
     return calcPoint;
 }
 

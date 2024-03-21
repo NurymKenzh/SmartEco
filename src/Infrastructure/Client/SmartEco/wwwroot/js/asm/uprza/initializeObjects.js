@@ -33,6 +33,9 @@ var CalculationPoint = class {
     AbscissaX;
     OrdinateY;
     ApplicateZ;
+
+    Abscissa3857;
+    Ordinate3857;
 };
 
 var CalculationRectangle = class {
@@ -48,6 +51,9 @@ var CalculationRectangle = class {
     Height;
     StepByWidth;
     StepByLength;
+
+    Abscissa3857;
+    Ordinate3857;
 };
 
 const CalcWindModes = Object.freeze({
@@ -106,3 +112,19 @@ const CalcStatuses = Object.freeze({
     Error: 4,
     Done: 5
 })
+
+Object.defineProperty(String.prototype, "replaceDotToComma", {
+    value: function replaceDotToComma() {
+        return this.replace('.', ',');
+    },
+    writable: true,
+    configurable: true,
+});
+
+Object.defineProperty(String.prototype, "replaceCommaToDot", {
+    value: function replaceCommaToDot() {
+        return this.replace(',', '.');
+    },
+    writable: true,
+    configurable: true,
+});

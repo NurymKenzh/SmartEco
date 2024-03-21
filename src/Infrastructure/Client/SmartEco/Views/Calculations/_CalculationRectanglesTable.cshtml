@@ -104,7 +104,7 @@
         }
     </tbody>
 </table>
-<button type="button" class="btn btn-success" data-toggle="modal" data-target="#ShowCreateCalculationRectangleModal">Добавить</button>
+<button type="button" class="btn btn-success show-create-rectangle-btn" data-toggle="modal" data-target="#ShowCreateCalculationRectangleModal">Добавить</button>
 
 @* Modal for create new calculation rectangle *@
 <div id="ShowCreateCalculationRectangleModal" class="modal fade" tabindex="-1" role="dialog" aria-hidden="true">
@@ -125,12 +125,12 @@
                     </div>
                     <div class="form-group">
                         <label for="RectangleNewAbscissaX" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().AbscissaX)</label>
-                        <input id="RectangleNewAbscissaX" class="form-control" type="text" />
+                        <input id="RectangleNewAbscissaX" class="form-control coordinate-rectangle-input" type="text" />
                         <div name="RectangleNewAbscissaX" class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="RectangleNewOrdinateY" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().OrdinateY)</label>
-                        <input id="RectangleNewOrdinateY" class="form-control" type="text" />
+                        <input id="RectangleNewOrdinateY" class="form-control coordinate-rectangle-input" type="text" />
                         <div name="RectangleNewOrdinateY" class="invalid-feedback"></div>
                     </div>
                     <div hidden>
@@ -139,12 +139,12 @@
                     </div>
                     <div class="form-group">
                         <label for="RectangleNewWidth" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Width)</label>
-                        <input id="RectangleNewWidth" class="form-control" type="number" />
+                        <input id="RectangleNewWidth" class="form-control size-rectangle-input" type="number" />
                         <div name="RectangleNewWidth" class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
                         <label for="RectangleNewLength" class="control-label">@Html.DisplayNameFor(model => model.FirstOrDefault().Length)</label>
-                        <input id="RectangleNewLength" class="form-control" type="number" />
+                        <input id="RectangleNewLength" class="form-control size-rectangle-input" type="number" />
                         <div name="RectangleNewLength" class="invalid-feedback"></div>
                     </div>
                     <div class="form-group">
@@ -164,7 +164,7 @@
                     </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-success mr-auto show-map-btn" data-toggle="modal" data-target="#ShowMapRectangleModal">Выбрать на карте</button>
+                    <button type="button" class="btn btn-success mr-auto" data-toggle="modal" data-target="#ShowMapRectangleModal">Выбрать на карте</button>
                     <button type="button" class="btn btn-primary" onclick="CreateRectangle()">@SharedLocalizer["Create"]</button>
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Закрыть</button>
                 </div>
@@ -174,10 +174,12 @@
 </div>
 
 @* Modal for show map *@
-<div id="ShowMapRectangleModal" class="modal fade show-map" tabindex="-1" role="dialog" aria-hidden="true">
+<div id="ShowMapRectangleModal" class="modal fade show-map-rectangle" tabindex="-1" role="dialog" aria-hidden="true">
     <div class="modal-dialog modal-dialog-centered modal-lg" role="document">
         <div class="modal-content">
-            @await Html.PartialAsync("_MapModal.cshtml")
+            @await Html.PartialAsync("_MapRectangleModal.cshtml")
         </div>
     </div>
 </div>
+
+<script src="~/js/asm/uprza/mapRectangleCoordinates.js"></script>

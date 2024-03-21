@@ -1,59 +1,54 @@
-﻿var map;
-var isOrganized;
-var inputs = { coordinates: {}, coordinates3857: {}, abscissaCoordinate: {}, ordinateCoordinate: {}, abscissa3857: {}, ordinate3857: {} };
+﻿var mapPoint;
+var pointInputs = { coordinates: {}, coordinates3857: {}, abscissaCoordinate: {}, ordinateCoordinate: {}, abscissa3857: {}, ordinate3857: {} };
 
-$('.show-map-btn').click(function (e) {
-    InitializeInputs();
-    InitializeMap();
+$('.show-create-point-btn').click(function (e) {
+    InitializePointInputs();
+    InitializePointMap();
 });
 
-$('.show-map').on('shown.bs.modal', function () {
-    map.updateSize();
+$('.show-map-point').on('shown.bs.modal', function () {
+    mapPoint.updateSize();
 })
 
-$('.clear-map').click(function (e) {
-    airSource.clear();
-    $.each(inputs, function (index, value) {
+$('.clear-map-point').click(function (e) {
+    pointSource.clear();
+    $.each(pointInputs, function (index, value) {
         $(this).val('');
     });
-    ChangeMapSources();
+    ChangePointMapSources();
 });
 
-$('.coordinate-input').change(function () {
-    ChangeMapSources();
+$('.coordinate-point-input').change(function () {
+    ChangePointMapSources();
 });
 
-$('.size-input').change(function () {
-    ChangeMapSources();
-});
-
-function InitializeInputs() {
-    inputs.abscissaCoordinate = $('#PointNewAbscissaX');
-    inputs.ordinateCoordinate = $('#PointNewOrdinateY');
-    inputs.abscissa3857 = $('#PointNewAbscissa3857');
-    inputs.ordinate3857 = $('#PointNewOrdinate3857');
+function InitializePointInputs() {
+    pointInputs.abscissaCoordinate = $('#PointNewAbscissaX');
+    pointInputs.ordinateCoordinate = $('#PointNewOrdinateY');
+    pointInputs.abscissa3857 = $('#PointNewAbscissa3857');
+    pointInputs.ordinate3857 = $('#PointNewOrdinate3857');
 }
 
-//Air pollution source layer
-var airSource = new ol.source.Vector();
-var airLayer = new ol.layer.Vector({
-    source: airSource
+//Point layer
+var pointSource = new ol.source.Vector();
+var pointLayer = new ol.layer.Vector({
+    source: pointSource
 });
 
-function InitializeMap() {
-    var target = 'map';
+function InitializePointMap() {
+    var target = 'MapPoint';
     $('#' + target).empty();
-    airSource.clear();
+    pointSource.clear();
 
     //Initialize map
-    map = new ol.Map({
+    mapPoint = new ol.Map({
         target: target,
         controls: ol.control.defaults().extend([new ol.control.FullScreen()]),
         layers: [
             new ol.layer.Tile({
                 source: new ol.source.OSM()
             }),
-            airLayer
+            pointLayer
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat([68.291, 47.5172]),
@@ -61,33 +56,33 @@ function InitializeMap() {
         })
     });
 
-    ChangeMapSources();
+    ChangePointMapSources();
 }
 
-function AddDrawInteraction() {
+function AddPointDrawInteraction() {
     var draw = new ol.interaction.Draw({
-        source: airSource,
+        source: pointSource,
         type: "Point",
     });
-    map.addInteraction(draw);
+    mapPoint.addInteraction(draw);
     draw.on('drawend', function (e) {
         feature = e.feature;
-        map.removeInteraction(draw); // remove draw interaction
+        mapPoint.removeInteraction(draw); // remove draw interaction
         var featureClone = feature.clone(); // cloning feature
         featureClone.getGeometry().transform('EPSG:3857', 'EPSG:4326'); // transform cloned feature to EPSG:4326
         
         var coords = featureClone.getGeometry().getCoordinates();
         var coords3857 = feature.getGeometry().getCoordinates();
-        SetCoordinates(coords, coords3857);
-        AddModifyIteraction();
+        SetPointCoordinates(coords, coords3857);
+        AddPointModifyIteraction();
     });
 }
 
-function AddModifyIteraction() {
+function AddPointModifyIteraction() {
     var modifyInteraction = new ol.interaction.Modify({
-        source: airSource
+        source: pointSource
     });
-    map.addInteraction(modifyInteraction);
+    mapPoint.addInteraction(modifyInteraction);
     modifyInteraction.on('modifyend', function (evt) {
         var collection = evt.features; // get features
         var featureClone = collection.item(0).clone(); // There's only one feature, so get the first and only one
@@ -95,18 +90,22 @@ function AddModifyIteraction() {
         
         var coords = featureClone.getGeometry().getCoordinates();
         var coords3857 = collection.item(0).getGeometry().getCoordinates();
-        SetCoordinates(coords, coords3857);
+        SetPointCoordinates(coords, coords3857);
     });
 }
 
-function ChangeMapSources() {
-    if (inputs.abscissaCoordinate.val() && inputs.ordinateCoordinate.val()) {
-        var coordinates = [parseFloat(inputs.abscissaCoordinate.val()), parseFloat(inputs.ordinateCoordinate.val())];
+function ChangePointMapSources() {
+    if (pointInputs.abscissaCoordinate.val() && pointInputs.ordinateCoordinate.val()) {
+        var coordinates = 
+            [
+                parseFloat(pointInputs.abscissaCoordinate.val().replaceCommaToDot()),
+                parseFloat(pointInputs.ordinateCoordinate.val().replaceCommaToDot())
+            ];
 
         //Change coords on map
         coordinates = ol.proj.transform(coordinates, 'EPSG:4326', 'EPSG:3857');
-        inputs.abscissa3857.val(coordinates[0]);
-        inputs.ordinate3857.val(coordinates[1]);
+        pointInputs.abscissa3857.val(coordinates[0]);
+        pointInputs.ordinate3857.val(coordinates[1]);
 
         var point = new ol.geom.Point(
             coordinates
@@ -114,19 +113,19 @@ function ChangeMapSources() {
         var featurePoint = new ol.Feature({
             geometry: point
         });
-        airSource.clear();
-        airSource.addFeature(featurePoint);
+        pointSource.clear();
+        pointSource.addFeature(featurePoint);
         
-        AddModifyIteraction();
+        AddPointModifyIteraction();
     }
     else {
-        AddDrawInteraction();
+        AddPointDrawInteraction();
     }
 };
 
-function SetCoordinates(coords, coords3857) {
-    inputs.abscissaCoordinate.val(coords[0]);
-    inputs.ordinateCoordinate.val(coords[1]);
-    inputs.abscissa3857.val(coords3857[0]);
-    inputs.ordinate3857.val(coords3857[1]);
+function SetPointCoordinates(coords, coords3857) {
+    pointInputs.abscissaCoordinate.val(coords[0]);
+    pointInputs.ordinateCoordinate.val(coords[1]);
+    pointInputs.abscissa3857.val(coords3857[0]);
+    pointInputs.ordinate3857.val(coords3857[1]);
 }

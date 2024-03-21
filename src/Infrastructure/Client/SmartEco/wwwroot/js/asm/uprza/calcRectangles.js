@@ -25,13 +25,15 @@ function CreateCalculationRectangleObj() {
         calculationId,
         number
     );
-    calcRectangle.AbscissaX = $('#RectangleNewAbscissaX').val();
-    calcRectangle.OrdinateY = $('#RectangleNewOrdinateY').val();
+    calcRectangle.AbscissaX = $('#RectangleNewAbscissaX').val().replaceDotToComma();
+    calcRectangle.OrdinateY = $('#RectangleNewOrdinateY').val().replaceDotToComma();
     calcRectangle.Width = $('#RectangleNewWidth').val();
     calcRectangle.Length = $('#RectangleNewLength').val();
     calcRectangle.Height = $('#RectangleNewHeight').val();
     calcRectangle.StepByWidth = $('#RectangleNewStepByWidth').val();
     calcRectangle.StepByLength = $('#RectangleNewStepByLength').val();
+    calcRectangle.Abscissa3857 = $('#RectangleNewAbscissa3857').val().replaceDotToComma();
+    calcRectangle.Ordinate3857 = $('#RectangleNewOrdinate3857').val().replaceDotToComma();
     return calcRectangle;
 }
 
@@ -53,4 +55,8 @@ function DeleteRectangle(number) {
             $('#CalculationRectanglesTable').html(result);
         }
     });
+}
+
+function ReplaceRectangleMarks(value) {
+    return value.replace('.', ',');
 }
