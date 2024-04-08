@@ -34,11 +34,11 @@
         <input asp-for="@Model.Coordinate" type="text" class="form-control-plaintext" name="CoordinateInfo" hidden>
         <input asp-for="@Model.Coordinate3857" type="text" class="form-control-plaintext" name="Coordinate3857Info" hidden>
 
-        <span>Широта:</span>
-        <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLatInfo" disabled>
-
-        <span>Долгота:</span>
+        <span>Долгота, X:</span>
         <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLongInfo" disabled>
+
+        <span>Широта, Y:</span>
+        <input type="text" class="form-control-plaintext coordinate-input" name="CoordinateLatInfo" disabled>
 
         <button type="button" class="mt-3 btn btn-primary btn-disabled select-on-map" data-toggle="modal" data-target="#ShowMap_@Model.SourceId" disabled>Выбрать на карте</button>
     </dd>

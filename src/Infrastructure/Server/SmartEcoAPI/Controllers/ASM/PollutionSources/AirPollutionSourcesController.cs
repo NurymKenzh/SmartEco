@@ -1,26 +1,20 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Linq.Expressions;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
-using OfficeOpenXml.FormulaParsing.ExpressionGraph;
-using Org.BouncyCastle.Asn1.Ocsp;
 using SmartEcoAPI.Data;
-using SmartEcoAPI.Models.ASM;
 using SmartEcoAPI.Models.ASM.PollutionSources;
-using SmartEcoAPI.Models.ASM.Requests;
 using SmartEcoAPI.Models.ASM.Responses;
 
 namespace SmartEcoAPI.Controllers.ASM.PollutionSources
 {
     [Route("api/[controller]")]
     [ApiController]
-    //[Authorize(Roles = "admin,moderator,ASM")]
+    [Authorize(Roles = "admin,moderator,ASM")]
     [ApiExplorerSettings(IgnoreApi = true)]
     public class AirPollutionSourcesController : ControllerBase
     {
@@ -215,6 +209,17 @@ namespace SmartEcoAPI.Controllers.ASM.PollutionSources
         public async Task<ActionResult<IEnumerable<RelationBackground>>> GetRelationBackgrounds()
             => await _context.RelationBackground
                 .Where(r => true)
+                .ToListAsync();
+
+        [HttpGet("[action]/{calculationId}")]
+        [Authorize(Roles = "admin,moderator,ASM")]
+        public async Task<ActionResult<IList<AirPollutionSource>>> GetByCalculation(int calculationId)
+            => await _context.CalculationToSource
+                .Include(c => c.Source)
+                .Where(c => c.CalculationId == calculationId)
+                .Select(c => c.Source)
+                .Include(s => s.SourceInfo)
+                .Include(s => s.Type)
                 .ToListAsync();
 
         private StatusCodeResult CheckSourceNumber(AirPollutionSource airPollutionSource)

@@ -14,14 +14,12 @@
 }
 
 <div class="row">
-    @if (calcTypeId != (int)CalculationTypes.ConsolidatedProject)
-    {
-        <div class="col-md-8 offset-md-2 mb-5">
-            <div id="CalculationRectanglesTable">
-                @await Html.PartialAsync("_CalculationRectanglesTable", Model.CalculationRectangles)
-            </div>
+    @* @if (calcTypeId != (int)CalculationTypes.ConsolidatedProject) *@
+    <div class="col-md-8 offset-md-2 mb-5">
+        <div id="CalculationRectanglesTable">
+            @await Html.PartialAsync("_CalculationRectanglesTable", Model.CalculationRectangles)
         </div>
-    }
+    </div>
 
     <div class="col-md-8 offset-md-2 mb-5">
         <div id="CalculationPointsTable">

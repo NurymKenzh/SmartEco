@@ -15,6 +15,7 @@ namespace SmartEco.Controllers.ASM.Uprza
     {
         private readonly string _urlResultEmissions = "api/ResultEmissions";
         private readonly string _urlIndSiteEnterprises = "api/IndSiteEnterprises";
+        private readonly string _urlAirPollutionSources = "api/AirPollutionSources";
         private readonly SmartEcoApi _smartEcoApi;
 
         public ResultEmissionsController(SmartEcoApi smartEcoApi)
@@ -25,10 +26,13 @@ namespace SmartEco.Controllers.ASM.Uprza
         [HttpGet]
         public async Task<IActionResult> DispersionPollutants(int calcId)
         {
-            var resultEmissionViewModel = new ResultEmissionViewModel();
-            resultEmissionViewModel.CalculationId = calcId;
-            resultEmissionViewModel.AirPollutantsSelectList = await GetAirPollutantsSelectList(calcId);
-            resultEmissionViewModel.IndSiteEnterprises = await GetIndSiteEnterprises(calcId);
+            var resultEmissionViewModel = new ResultEmissionViewModel
+            {
+                CalculationId = calcId,
+                AirPollutantsSelectList = await GetAirPollutantsSelectList(calcId),
+                IndSiteEnterprises = await GetIndSiteEnterprises(calcId),
+                AirPollutionSources = await GetAirPollutionSources(calcId)
+            };
             return View(resultEmissionViewModel);
         }
 
@@ -57,7 +61,7 @@ namespace SmartEco.Controllers.ASM.Uprza
             return null;
         }
 
-        public async Task<List<IndSiteEnterprise>> GetIndSiteEnterprises(int calculationId)
+        private async Task<List<IndSiteEnterprise>> GetIndSiteEnterprises(int calculationId)
         {
             try
             {
@@ -67,6 +71,18 @@ namespace SmartEco.Controllers.ASM.Uprza
                 return await response.Content.ReadAsAsync<List<IndSiteEnterprise>>();
             }
             catch { return new List<IndSiteEnterprise>(); }
+        }
+
+        private async Task<List<AirPollutionSource>> GetAirPollutionSources(int calculationId)
+        {
+            try
+            {
+                var request = _smartEcoApi.CreateRequest(HttpMethod.Get, $"{_urlAirPollutionSources}/GetByCalculation/{calculationId}");
+                var response = await _smartEcoApi.Client.SendAsync(request);
+                response.EnsureSuccessStatusCode();
+                return await response.Content.ReadAsAsync<List<AirPollutionSource>>();
+            }
+            catch { return new List<AirPollutionSource>(); }
         }
     }
 }

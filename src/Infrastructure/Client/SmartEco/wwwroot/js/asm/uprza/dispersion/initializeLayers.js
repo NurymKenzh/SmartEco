@@ -6,6 +6,7 @@ const sanZoneBorderStyle = GetSanZoneBorderStyle();
 //Initializing map
 $(function () {
     InitializeMap();
+    InitializeAirSources();
     InitializeIndSites();
 });
 
@@ -22,7 +23,8 @@ export let sources = {
 
 export let layers = {
     isolinesLayer: SetIsolinesLayer(),
-    pointsLayer: {}
+    pointsLayer: {},
+    airSourcesLayer: {}
 }
 
 //Isolines
@@ -59,8 +61,6 @@ function InitializeMap() {
                 source: new ol.source.OSM()
             }),
             layers.isolinesLayer
-            //airLayer,
-            //vectorAirLayer
         ],
         view: new ol.View({
             center: ol.proj.fromLonLat([68.291, 47.5172]),
@@ -115,6 +115,41 @@ function GetSanZoneBorderStyle() {
             color: 'rgba(0, 0, 0, 0)',
         }),
     })
+}
+
+function InitializeAirSources() {
+    var sourcesFeatures = [];
+    $('input[id^="AirSourceCheckbox_"]').each(function () {  // Matches those that begin with 'AirSourceCheckbox_'
+        var coordinates = $(this).data('coordinates');
+        if (coordinates) {
+            var coordinates4326 =
+                [
+                    parseFloat(coordinates.split(',')[0]),
+                    parseFloat(coordinates.split(',')[1])
+                ];
+            var coordinates3857 = ol.proj.transform(coordinates4326, 'EPSG:4326', 'EPSG:3857');
+            console.log(coordinates3857);
+            sourcesFeatures.push(new ol.Feature({
+                'geometry': new ol.geom.Point(coordinates3857)
+            }));
+        }
+    });
+
+    var airSourcesSource = new ol.source.Vector({
+        features: sourcesFeatures
+    });
+
+    layers.airSourcesLayer = new ol.layer.Vector({
+        source: airSourcesSource,
+        name: 'Points',
+        style: new ol.style.Style({
+            image: new ol.style.Icon(({
+                src: '/images/ASM/Icons/redCross.png'
+            }))
+        })
+    });
+
+    objects.map.addLayer(layers.airSourcesLayer);
 }
 
 function InitializeIndSites() {

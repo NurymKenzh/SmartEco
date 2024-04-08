@@ -22,6 +22,7 @@ namespace SmartEco.Models.ASM.Uprza
         public int CalculationId { get; set; }
         public SelectList AirPollutantsSelectList { get; set; }
         public List<IndSiteEnterprise> IndSiteEnterprises { get; set; }
+        public List<AirPollutionSource> AirPollutionSources { get; set; }
     }
 
     public enum ResultEmissionType

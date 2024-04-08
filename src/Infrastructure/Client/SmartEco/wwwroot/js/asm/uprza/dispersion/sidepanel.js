@@ -1,5 +1,9 @@
 ﻿import { objects, layers } from './initializeLayers.js'
 
+$('#AirSourcesCheckbox').on("change", function () {
+    layers.airSourcesLayer.setVisible(this.checked);
+});
+
 $('#IsolinesCheckbox').on("change", function () {
     layers.isolinesLayer.setVisible(this.checked);
 });
