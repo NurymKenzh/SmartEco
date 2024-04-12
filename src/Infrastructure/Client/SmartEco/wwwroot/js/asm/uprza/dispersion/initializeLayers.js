@@ -128,7 +128,6 @@ function InitializeAirSources() {
                     parseFloat(coordinates.split(',')[1])
                 ];
             var coordinates3857 = ol.proj.transform(coordinates4326, 'EPSG:4326', 'EPSG:3857');
-            console.log(coordinates3857);
             sourcesFeatures.push(new ol.Feature({
                 'geometry': new ol.geom.Point(coordinates3857)
             }));

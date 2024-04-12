@@ -1,4 +1,4 @@
-﻿import { objects, layers } from './initializeLayers.js'
+﻿import { objects, layers, sources } from './initializeLayers.js'
 
 $('#AirSourcesCheckbox').on("change", function () {
     layers.airSourcesLayer.setVisible(this.checked);
@@ -11,6 +11,14 @@ $('#IsolinesCheckbox').on("change", function () {
 $('#PointsCheckbox').on("change", function () {
     layers.pointsLayer.setVisible(this.checked);
 });
+
+$('#MpcCheckbox').on("change", function () {
+    if (sources.isolinesSource.state_)
+        sources.isolinesSource.refresh();
+    if (sources.pointsSource.state_)
+        sources.pointsSource.refresh();
+});
+
 
 $(function () {
     InitializeIndSiteCheckboxes();

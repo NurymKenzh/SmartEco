@@ -52,8 +52,11 @@
 
     static GetText(feature, resolution, dom) {
         var text = dom.getPropertyFunction(feature);
-
-        return this.StringDivider(text, 16, '\n');
+        var isMpcChecked = $('#MpcCheckbox').is(':checked');
+        if (isMpcChecked)
+            return this.StringDivider(text, 16, '\n');
+        else
+            return null;
     }
 
     static StringDivider(str, width, spaceReplacer) {

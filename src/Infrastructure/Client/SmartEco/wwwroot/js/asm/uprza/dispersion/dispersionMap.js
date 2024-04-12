@@ -96,6 +96,28 @@ function SetMapZoomToExtent() {
     }
 }
 
+var textProperties = {
+    text: 'wrap',
+    align: '',
+    baseline: 'middle',
+    rotation: '0',
+    font: '\'Courier New\'',
+    weight: 'normal',
+    placement: 'point',
+    maxangle: '0.1',
+    overflow: 'false',
+    size: '8px',
+    offsetX: '0',
+    offsetY: '15',
+    color: 'black',
+    outline: '#ffffff',
+    outlineWidth: '3',
+    maxreso: '20',
+    getPropertyFunction: function (feature) {
+        return (Math.round(+feature.get('c_pdk') * 100) / 100).toString();
+    }
+};
+
 function DrawPointsOnMap(features) {
     var pointsFeatures = JSON.parse(features);
     $.each(pointsFeatures.features, function (index, feature) {
@@ -115,11 +137,14 @@ function DrawPointsOnMap(features) {
     layers.pointsLayer = new ol.layer.Vector({
         source: sources.pointsSource,
         name: 'Points',
-        style: new ol.style.Style({
-            image: new ol.style.Icon(({
-                src: '/images/ASM/Icons/blackTriangle.png'
-            }))
-        })
+        style: (feature, resolution) => {
+            return new ol.style.Style({
+                image: new ol.style.Icon(({
+                    src: '/images/ASM/Icons/blackTriangle.png'
+                })),
+                text: IsolineStyle.CreateTextStyle(feature, resolution, textProperties)
+            });
+        }
     });
 
     objects.map.addLayer(layers.pointsLayer);
