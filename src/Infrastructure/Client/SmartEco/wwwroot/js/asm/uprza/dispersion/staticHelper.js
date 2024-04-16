@@ -54,11 +54,169 @@
         var text = dom.getPropertyFunction(feature);
         var isMpcChecked = $('#MpcCheckbox').is(':checked');
         if (isMpcChecked)
-            return this.StringDivider(text, 16, '\n');
+            return CommonStyle.StringDivider(text, 16, '\n');
         else
             return null;
     }
+}
 
+export class BorderStyle {
+    static dom = {
+        polygons: {
+            text: 'wrap',
+            align: '',
+            baseline: 'middle',
+            rotation: '0',
+            font: '\'Verdana\'',
+            weight: 'normal',
+            placement: 'line',
+            maxangle: '0.1',
+            overflow: 'false',
+            size: '10px',
+            height: '1',
+            offsetX: '0',
+            offsetY: '0',
+            color: 'black',
+            outline: '#ffffff',
+            outlineWidth: '3',
+            maxreso: '20',
+        },
+    };
+
+    static GetIndSiteBorderStyle(borderText) {
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'black',
+                width: 2,
+            }),
+            fill: new ol.style.Fill({
+                color: 'rgba(100, 100, 100, 0.1)',
+            }),
+            text: this.CreateTextStyle(borderText)
+        })
+    }
+
+    static GetSanZoneBorderStyle(borderText) {
+        return new ol.style.Style({
+            stroke: new ol.style.Stroke({
+                color: 'red',
+                lineDash: [10],
+                width: 2,
+            }),
+            fill: new ol.style.Fill({
+                color: 'rgba(0, 0, 0, 0)',
+            }),
+            text: this.CreateTextStyle(borderText)
+        })
+    }
+
+    static CreateTextStyle(text) {
+        var align = this.dom.polygons.align;
+        var baseline = this.dom.polygons.baseline;
+        var size = this.dom.polygons.size;
+        var offsetX = parseInt(this.dom.polygons.offsetX, 10);
+        var offsetY = parseInt(this.dom.polygons.offsetY, 10);
+        var weight = this.dom.polygons.weight;
+        var placement = this.dom.polygons.placement ? this.dom.polygons.placement : undefined;
+        var maxAngle = this.dom.polygons.maxangle ? parseFloat(this.dom.polygons.maxangle) : undefined;
+        var overflow = this.dom.polygons.overflow ? (this.dom.polygons.overflow.value === 'true') : undefined;
+        var rotation = parseFloat(this.dom.polygons.rotation);
+        var font = weight + ' ' + size + ' ' + this.dom.polygons.font;
+        var fillColor = this.dom.polygons.color;
+        var outlineColor = this.dom.polygons.outline;
+        var outlineWidth = parseInt(this.dom.polygons.outlineWidth, 10);
+
+        return new ol.style.Text({
+            textAlign: align === '' ? undefined : align,
+            textBaseline: baseline,
+            font: font,
+            text: this.GetText(text),
+            fill: new ol.style.Fill({ color: fillColor }),
+            stroke: new ol.style.Stroke({ color: outlineColor, width: outlineWidth }),
+            offsetX: offsetX,
+            offsetY: offsetY,
+            placement: placement,
+            maxAngle: true,
+            overflow: overflow,
+            rotation: rotation
+        });
+    }
+
+    static GetText(text) {
+        var isBordersChecked = $('#MarkerBordersCheckbox').is(':checked');
+        if (isBordersChecked)
+            return CommonStyle.StringDivider(text, 16, '\n');
+        else
+            return null;
+    }
+}
+
+export class ApsStyle {
+    static dom = {
+        polygons: {
+            text: 'wrap',
+            align: '',
+            baseline: 'middle',
+            rotation: '0',
+            font: '\'Verdana\'',
+            weight: 'normal',
+            placement: 'point',
+            maxangle: '0.1',
+            overflow: 'false',
+            size: '10px',
+            height: '1',
+            offsetX: '0',
+            offsetY: '15',
+            color: 'black',
+            outline: '#ffffff',
+            outlineWidth: '3',
+            maxreso: '20',
+        },
+    };
+
+    static CreateTextStyle(feature) {
+        var text = feature.get('name');
+        var align = this.dom.polygons.align;
+        var baseline = this.dom.polygons.baseline;
+        var size = this.dom.polygons.size;
+        var offsetX = parseInt(this.dom.polygons.offsetX, 10);
+        var offsetY = parseInt(this.dom.polygons.offsetY, 10);
+        var weight = this.dom.polygons.weight;
+        var placement = this.dom.polygons.placement ? this.dom.polygons.placement : undefined;
+        var maxAngle = this.dom.polygons.maxangle ? parseFloat(this.dom.polygons.maxangle) : undefined;
+        var overflow = this.dom.polygons.overflow ? (this.dom.polygons.overflow.value === 'true') : undefined;
+        var rotation = parseFloat(this.dom.polygons.rotation);
+        var font = weight + ' ' + size + ' ' + this.dom.polygons.font;
+        var fillColor = this.dom.polygons.color;
+        var outlineColor = this.dom.polygons.outline;
+        var outlineWidth = parseInt(this.dom.polygons.outlineWidth, 10);
+
+        return new ol.style.Text({
+            textAlign: align === '' ? undefined : align,
+            textBaseline: baseline,
+            font: font,
+            text: this.GetText(text),
+            fill: new ol.style.Fill({ color: fillColor }),
+            stroke: new ol.style.Stroke({ color: outlineColor, width: outlineWidth }),
+            offsetX: offsetX,
+            offsetY: offsetY,
+            placement: placement,
+            maxAngle: true,
+            overflow: overflow,
+            rotation: rotation
+        });
+    }
+
+    static GetText(text) {
+        var isApsChecked = $('#ApsCheckbox').is(':checked');
+        if (isApsChecked)
+            return CommonStyle.StringDivider(text, 16, '\n');
+        else
+            return null;
+    }
+}
+
+class CommonStyle {
     static StringDivider(str, width, spaceReplacer) {
         if (str.length > width) {
             let p = width;

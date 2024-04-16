@@ -37,11 +37,17 @@
                 @foreach (var airSource in Model.AirPollutionSources)
                 {
                     var coorinates = airSource.SourceInfo?.Coordinate is null ? string.Empty : airSource.SourceInfo.Coordinate;
-                    <input class="form-check-input" type="checkbox" id="AirSourceCheckbox_@airSource.Id" data-coordinates="@coorinates" hidden>
+                    <input class="form-check-input" type="checkbox" id="AirSourceCheckbox_@airSource.Id" data-coordinates="@coorinates" data-name="@airSource.Name" hidden>
                 }
                 <input class="form-check-input" type="checkbox" id="AirSourcesCheckbox" checked="checked">
                 <label class="form-check-label" for="AirSourcesCheckbox">
                     Источники загрязнения атмосферы
+                </label>
+            </div>
+            <div id="ApsCheckboxBlock" class="form-check">
+                <input class="form-check-input" type="checkbox" id="ApsCheckbox">
+                <label class="form-check-label" for="ApsCheckbox">
+                    Названия ИЗА
                 </label>
             </div>
         </div>
@@ -67,7 +73,7 @@
                 </label>
             </div>
             <div id="MpcCheckboxBlock" class="form-check">
-                <input class="form-check-input" type="checkbox" id="MpcCheckbox" checked="checked">
+                <input class="form-check-input" type="checkbox" id="MpcCheckbox">
                 <label class="form-check-label" for="MpcCheckbox">
                     Доли ПДК
                 </label>
@@ -137,6 +143,12 @@
                     }
                 </div>
             }
+            <div id="MarkerBordersCheckboxBlock" class="form-check">
+                <input class="form-check-input" type="checkbox" id="MarkerBordersCheckbox" checked="checked">
+                <label class="form-check-label" for="MarkerBordersCheckbox">
+                    Названия границ
+                </label>
+            </div>
         </div>
     </div>
     <div class="col-md-8">

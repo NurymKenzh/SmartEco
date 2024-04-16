@@ -1,4 +1,5 @@
 ﻿import { objects, layers, sources } from './initializeLayers.js'
+import { BorderStyle } from './staticHelper.js';
 
 $('#AirSourcesCheckbox').on("change", function () {
     layers.airSourcesLayer.setVisible(this.checked);
@@ -19,6 +20,19 @@ $('#MpcCheckbox').on("change", function () {
         sources.pointsSource.refresh();
 });
 
+$('#ApsCheckbox').on("change", function () {
+    layers.airSourcesLayer.getSource().refresh();
+});
+
+$('#MarkerBordersCheckbox').on("change", function () {
+    $('input[id^="IndSiteBorderCheckbox_"]').each(function () {  // Matches those that begin with 'IndSiteBorderCheckbox_'
+        ChangeBorderStyle($(this), true);
+    });
+    $('input[id^="SanZoneBorderCheckbox_"]').each(function () {  // Matches those that begin with 'SanZoneBorderCheckbox_'
+        ChangeBorderStyle($(this), false);
+    });
+});
+
 
 $(function () {
     InitializeIndSiteCheckboxes();
@@ -26,25 +40,33 @@ $(function () {
 
 function InitializeIndSiteCheckboxes() {
     $('input[id^="IndSiteBorderCheckbox_"]').each(function () {  // Matches those that begin with 'IndSiteBorderCheckbox_'
-        var indSiteBorderCheckbox = $(this);
-        var id = indSiteBorderCheckbox.attr('id');
-        objects.map.getLayers().forEach(function (layer) {
-            if (layer.get('name') == id) {
-                indSiteBorderCheckbox.on("change", function () {
-                    layer.setVisible(this.checked);
-                });
-            }
-        })
+        SetVisibleBorderListener($(this))
     });
     $('input[id^="SanZoneBorderCheckbox_"]').each(function () {  // Matches those that begin with 'SanZoneBorderCheckbox_'
-        var sanZoneBorderCheckbox = $(this);
-        var id = sanZoneBorderCheckbox.attr('id');
-        objects.map.getLayers().forEach(function (layer) {
-            if (layer.get('name') == id) {
-                sanZoneBorderCheckbox.on("change", function () {
-                    layer.setVisible(this.checked);
-                });
-            }
-        })
+        SetVisibleBorderListener($(this))
     });
+}
+
+function SetVisibleBorderListener(borderCheckbox) {
+    var id = borderCheckbox.attr('id');
+    objects.map.getLayers().forEach(function (layer) {
+        if (layer.get('name') == id) {
+            borderCheckbox.on("change", function () {
+                layer.setVisible(this.checked);
+            });
+        }
+    })
+}
+
+function ChangeBorderStyle(borderCheckbox, isIndSite) {
+    var id = borderCheckbox.attr('id');
+    objects.map.getLayers().forEach(function (layer) {
+        if (layer.get('name') == id) {
+            var borderText = $('label[for="' + id + '"]').text().trim();
+            if (isIndSite)
+                layer.setStyle(BorderStyle.GetIndSiteBorderStyle(borderText));
+            else
+                layer.setStyle(BorderStyle.GetSanZoneBorderStyle(borderText));
+        }
+    })
 }

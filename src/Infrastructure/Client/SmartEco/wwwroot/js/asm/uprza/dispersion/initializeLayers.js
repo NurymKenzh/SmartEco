@@ -1,7 +1,4 @@
-﻿import { IsolineStyle } from './staticHelper.js';
-
-const indSiteBorderStyle = GetIndSiteBorderStyle();
-const sanZoneBorderStyle = GetSanZoneBorderStyle();
+﻿import { ApsStyle, BorderStyle, IsolineStyle } from './staticHelper.js';
 
 //Initializing map
 $(function () {
@@ -92,35 +89,11 @@ function SetIsolinesLayer() {
     });
 }
 
-function GetIndSiteBorderStyle() {
-    return new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: 'black',
-            width: 2,
-        }),
-        fill: new ol.style.Fill({
-            color: 'rgba(100, 100, 100, 0.1)',
-        }),
-    })
-}
-
-function GetSanZoneBorderStyle() {
-    return new ol.style.Style({
-        stroke: new ol.style.Stroke({
-            color: 'red',
-            lineDash: [10],
-            width: 2,
-        }),
-        fill: new ol.style.Fill({
-            color: 'rgba(0, 0, 0, 0)',
-        }),
-    })
-}
-
 function InitializeAirSources() {
     var sourcesFeatures = [];
     $('input[id^="AirSourceCheckbox_"]').each(function () {  // Matches those that begin with 'AirSourceCheckbox_'
         var coordinates = $(this).data('coordinates');
+        var name = $(this).data('name');
         if (coordinates) {
             var coordinates4326 =
                 [
@@ -129,6 +102,7 @@ function InitializeAirSources() {
                 ];
             var coordinates3857 = ol.proj.transform(coordinates4326, 'EPSG:4326', 'EPSG:3857');
             sourcesFeatures.push(new ol.Feature({
+                'name': name,
                 'geometry': new ol.geom.Point(coordinates3857)
             }));
         }
@@ -141,11 +115,14 @@ function InitializeAirSources() {
     layers.airSourcesLayer = new ol.layer.Vector({
         source: airSourcesSource,
         name: 'Points',
-        style: new ol.style.Style({
-            image: new ol.style.Icon(({
-                src: '/images/ASM/Icons/redCross.png'
-            }))
-        })
+        style: (feature) => {
+            return new ol.style.Style({
+                image: new ol.style.Icon(({
+                    src: '/images/ASM/Icons/redCross.png'
+                })),
+                text: ApsStyle.CreateTextStyle(feature)
+            })
+        }
     });
 
     objects.map.addLayer(layers.airSourcesLayer);
@@ -156,14 +133,18 @@ function InitializeIndSites() {
         var borderCoordinates = $(this).data('coordinates');
         if (borderCoordinates) {
             //Industrial site border layer
-            SetBorderLayer(borderCoordinates, indSiteBorderStyle, $(this).attr('id'));
+            var inputId = $(this).attr('id');
+            var borderText = $('label[for="' + inputId + '"]').text().trim();
+            SetBorderLayer(borderCoordinates, BorderStyle.GetIndSiteBorderStyle(borderText), inputId);
         }
     });
     $('input[id^="SanZoneBorderCheckbox_"]').each(function () {  // Matches those that begin with 'SanZoneBorderCheckbox_'
         var borderCoordinates = $(this).data('coordinates');
         if (borderCoordinates) {
             //Industrial site border layer
-            SetBorderLayer(borderCoordinates, sanZoneBorderStyle, $(this).attr('id'));
+            var inputId = $(this).attr('id');
+            var borderText = $('label[for="' + inputId + '"]').text().trim();
+            SetBorderLayer(borderCoordinates, BorderStyle.GetSanZoneBorderStyle(borderText), inputId);
         }
     });
 }
