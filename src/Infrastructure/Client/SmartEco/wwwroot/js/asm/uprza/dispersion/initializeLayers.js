@@ -1,4 +1,4 @@
-﻿import { ApsStyle, BorderStyle, IsolineStyle } from './staticHelper.js';
+﻿import { ApsStyle, BorderStyle, IsolineStyle, IsobandStyle } from './staticHelper.js';
 
 //Initializing map
 $(function () {
@@ -15,11 +15,13 @@ export let objects = {
 
 export let sources = {
     isolinesSource: SetIsolinesSource(),
+    isobandsSource: SetIsobandsSource(),
     pointsSource: {}
 }
 
 export let layers = {
     isolinesLayer: SetIsolinesLayer(),
+    isobandsLayer: SetIsobandsLayer(),
     pointsLayer: {},
     airSourcesLayer: {}
 }
@@ -35,10 +37,10 @@ var linesProperties = {
     placement: 'point',
     maxangle: '0.1',
     overflow: 'false',
-    size: '8px',
+    size: '12px',
     offsetX: '0',
     offsetY: '0',
-    color: 'green',
+    color: 'black',
     outline: '#ffffff',
     outlineWidth: '3',
     maxreso: '20',
@@ -57,6 +59,7 @@ function InitializeMap() {
             new ol.layer.Tile({
                 source: new ol.source.OSM()
             }),
+            layers.isobandsLayer,
             layers.isolinesLayer
         ],
         view: new ol.View({
@@ -77,13 +80,39 @@ function SetIsolinesLayer() {
         source: sources.isolinesSource,
         name: 'Isolines',
         style: (feature, resolution) => {
-            const color = IsolineStyle.Perc2colorForIsolines(parseFloat(feature.get('c_pdk')), 1);
+            //const color = IsolineStyle.Perc2colorForIsolines(parseFloat(feature.get('c_pdk')), 1);
             return new ol.style.Style({
                 stroke: new ol.style.Stroke({
-                    color: color,
-                    width: 2
+                    color: 'rgba(128, 128, 128, 0.5)',
+                    //color: color,
+                    width: 1
                 }),
                 text: IsolineStyle.CreateTextStyle(feature, resolution, linesProperties)
+            });
+        }
+    });
+}
+
+function SetIsobandsSource() {
+    return new ol.source.Vector({
+        format: objects.format
+    });
+}
+
+function SetIsobandsLayer() {
+    return new ol.layer.Vector({
+        source: sources.isobandsSource,
+        name: 'Isolines',
+        style: (feature, resolution) => {
+            const color = IsobandStyle.Perc2colorForIsobands(feature.get('c_pdk'), 0.3);
+            return new ol.style.Style({
+                fill: new ol.style.Fill({
+                    color: color
+                }),
+                //stroke: new ol.style.Stroke({
+                //    color: '#000000',
+                //    width: 1
+                //})
             });
         }
     });

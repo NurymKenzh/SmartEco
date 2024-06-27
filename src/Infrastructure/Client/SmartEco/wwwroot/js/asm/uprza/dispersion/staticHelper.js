@@ -21,7 +21,7 @@
     static CreateTextStyle(feature, resolution, dom) {
         var align = dom.align;
         var baseline = dom.baseline;
-        var size = 100;
+        var size = dom.size;
         var offsetX = parseInt(dom.offsetX, 10);
         var offsetY = parseInt(dom.offsetY, 10);
         var weight = dom.weight;
@@ -57,6 +57,20 @@
             return CommonStyle.StringDivider(text, 16, '\n');
         else
             return null;
+    }
+}
+
+export class IsobandStyle {
+    static Perc2colorForIsobands(pdkRange, opacity) {
+        let color;
+        let pdk = parseFloat(pdkRange.split('-')[0]);
+
+        if (pdk < 0.2) { color = '0, 255, 0' }
+        else if (pdk < 0.5) { color = '255, 255, 0' }
+        else if (pdk < 1) { color = '255, 100, 0' }
+        else { color = '100, 0, 255' }
+
+        return 'rgba(' + color + ', ' + opacity + ')';
     }
 }
 

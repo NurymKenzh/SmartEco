@@ -82,12 +82,86 @@ function DrawDispersionOnMap(features) {
     }
     breaks.push(minAndMax.max);
     const lines = turf.isolines(turfFeatureCollection, breaks, { zProperty: 'c_pdk' });
-    var marker = objects.format.readFeatures(lines);
+    var smoothedLines = SmoothingIsolines(lines);
+    var marker = objects.format.readFeatures(smoothedLines);
     layers.isolinesLayer.getSource().clear(true);
     layers.isolinesLayer.getSource().addFeatures(marker);
 
+    const bands = turf.isobands(turfFeatureCollection, breaks, { zProperty: 'c_pdk' });
+    bands.features.shift();
+    var smoothedBands = SmoothingIsobandes(bands);
+    var markerBands = objects.format.readFeatures(smoothedBands);
+    layers.isobandsLayer.getSource().clear(true);
+    layers.isobandsLayer.getSource().addFeatures(markerBands);
+
     SetMapZoomToExtent();
 }
+
+function SmoothingIsolines(lines) {
+    try {
+        var geojsonObject = {
+            type: 'FeatureCollection',
+            features: []
+        };
+
+        $.each(lines.features, function (index, line) {
+            if (line.geometry.coordinates.length === 0)
+                return;
+
+            var polygon = turf.lineToPolygon(line);
+            var smoothed = turf.polygonSmooth(polygon, { iterations: 5 })
+            var line = turf.polygonToLine(smoothed.features.find(e => typeof e !== 'undefined'));
+            if (line) {
+                geojsonObject['features'].push(line);
+            }
+        });
+        return geojsonObject;
+    }
+    catch (err) {
+        return lines;
+    }
+}
+
+function SmoothingIsobandes(bands) {
+    try {
+        var geojsonObject = {
+            type: 'FeatureCollection',
+            features: []
+        };
+
+        $.each(bands.features, function (index, band) {
+            if (band.geometry.coordinates.length === 0)
+                return;
+
+            var bandCoords = [];
+            $.each(band.geometry.coordinates, function (index, coord) {
+                bandCoords.push({
+                    type: "Feature",
+                    geometry: {
+                        type: "MultiPolygon",
+                        coordinates: [coord]
+                    },
+                    properties: {
+                        c_pdk: band.properties.c_pdk
+                    }
+                })
+            });
+
+            $.each(bandCoords, function (index, bandCoord) {
+                var smoothed = turf.polygonSmooth(bandCoord, { iterations: 5 })
+                var bandSmoothed = smoothed.features.find(e => typeof e !== 'undefined');
+                if (bandSmoothed) {
+                    geojsonObject['features'].push(bandSmoothed);
+                }
+            });
+        });
+        return geojsonObject;
+    }
+    catch (err) {
+        return bands;
+    }
+}
+
 
 function SetMapZoomToExtent() {
     var featureLength = sources.isolinesSource.getFeatures().length;
@@ -106,7 +180,7 @@ var textProperties = {
     placement: 'point',
     maxangle: '0.1',
     overflow: 'false',
-    size: '8px',
+    size: '12px',
     offsetX: '0',
     offsetY: '15',
     color: 'black',
