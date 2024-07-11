@@ -50,6 +50,8 @@
     <Compile Remove="Migrations\20240122092212_StateCalculation_20240122_00.Designer.cs" />
     <Compile Remove="Migrations\20240122092442_StateCalculation_20240122_00.cs" />
     <Compile Remove="Migrations\20240122092442_StateCalculation_20240122_00.Designer.cs" />
+    <Compile Remove="Migrations\20240709113504_ReportEnterprise_20240709_00.cs" />
+    <Compile Remove="Migrations\20240709113504_ReportEnterprise_20240709_00.Designer.cs" />
   </ItemGroup>
 
   <ItemGroup>

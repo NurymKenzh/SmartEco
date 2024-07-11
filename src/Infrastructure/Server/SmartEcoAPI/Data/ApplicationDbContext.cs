@@ -3,6 +3,7 @@ using Microsoft.VisualStudio.Web.CodeGeneration.EntityFrameworkCore;
 using OfficeOpenXml.FormulaParsing.Utilities;
 using SmartEcoAPI.Models.ASM;
 using SmartEcoAPI.Models.ASM.PollutionSources;
+using SmartEcoAPI.Models.ASM.Reports;
 using SmartEcoAPI.Models.ASM.Uprza;
 
 namespace SmartEcoAPI.Data
@@ -108,6 +109,10 @@ namespace SmartEcoAPI.Data
         public DbSet<ResultEmission> ResultEmission { get; set; }
 
         #endregion
+
+        #region Reports
+        public DbSet<ReportEnterprise> ReportEnterprise { get; set; }
+        #endregion
         #endregion
 
         private void SetSchemaAsm(ModelBuilder modelBuilder)
@@ -148,6 +153,9 @@ namespace SmartEcoAPI.Data
             modelBuilder.Entity<CalculationSetting>().ToTable(nameof(CalculationSetting), _schemaAsmUprza);
             modelBuilder.Entity<StateCalculation>().ToTable(nameof(StateCalculation), _schemaAsmUprza);
             modelBuilder.Entity<ResultEmission>().ToTable(nameof(ResultEmission), _schemaAsmUprza);
+
+            //Reports
+            modelBuilder.Entity<ReportEnterprise>().ToTable(nameof(ReportEnterprise), _schemaAsm);
         }
 
         private void ConfigureProperties(ModelBuilder modelBuilder)

@@ -1,0 +1,294 @@
+﻿@model SmartEco.Models.ASM.Reports.ReportEnterpriseListViewModel
+@using System.Net
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Http
+@using SmartEco.Models.ASM.Filsters;
+@using SmartEco.Models.ASM.Uprza
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = "Отчёты предприятий";
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<script src="https://kit.fontawesome.com/a1bcdb39a4.js" crossorigin="anonymous"></script>
+
+<h2>Отчёты предприятий</h2>
+@{
+    string Role = Context.Session.GetString("Role");
+    string controller = "ReportsEnterprises";
+}
+@if (Role == "admin" || Role == "moderator" || Role == "ASM")
+{
+    <div class="form-group">
+        <a class="btn btn-success" href="@Url.Action("CreateParameters", controller, new ReportFilter
+        {
+            PageNumber = Model.Filter.PageNumber,
+            PageSize = Model.Filter.PageSize,
+            SortOrder = Model.Filter.SortOrder,
+            CreatedDateFilter = Model.Filter.CreatedDateFilter,
+            NameFilter = Model.Filter.NameFilter,
+            KatoComplexFilter = Model.Filter.KatoComplexFilter
+        })">
+            @SharedLocalizer["Create"]
+        </a>
+    </div>
+}
+@using (Html.BeginForm("Index", controller, new ReportFilter
+ {
+     SortOrder = Model.Filter.SortOrder,
+     CreatedDateFilter = Model.Filter.CreatedDateFilter,
+     NameFilter = Model.Filter.NameFilter,
+     KatoComplexFilter = Model.Filter.KatoComplexFilter
+ }, FormMethod.Get))
+{
+    @Html.Editor("SortOrder", null, new { htmlAttributes = new { @hidden = "hidden" }, value = Model.Filter.SortOrder })
+    @if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Pager.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new ReportFilter
+                    {
+                        PageSize = Model.Pager.PageSize,
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter,
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber - 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @for (var page = (int)Model.Pager.StartPage; page <= (int)Model.Pager.EndPage; page++)
+            {
+                <li class="@(page == Model.Pager.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = page, SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @if (Model.Pager.PageNumber < Model.Pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber + 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.TotalPages, 
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+        </ul>
+    }
+    <table class="table">
+        <thead>
+            <tr>
+                <th>
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().Id)
+                    <br />
+                    <br />
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.Items.FirstOrDefault().CreatedDate).ToString(), "Index", new ReportFilter
+                   {
+                       PageSize = Model.Pager.PageSize,
+                       SortOrder = ViewBag.CreatedDateSort,
+                       CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                       NameFilter = Model.Filter.NameFilter,
+                       KatoComplexFilter = Model.Filter.KatoComplexFilter
+                   })
+                    <br />
+                    @Html.Editor(nameof(Model.Filter.CreatedDateFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.DisplayNameFor(model => model.Items.FirstOrDefault().KatoComplexName)
+                    <br />
+                    @Html.Editor(nameof(Model.Filter.KatoComplexFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.ActionLink(Html.DisplayNameFor(c => c.Items.FirstOrDefault().Name).ToString(), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        SortOrder = ViewBag.NameSort,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                    <br />
+                    @Html.Editor(nameof(Model.Filter.NameFilter), null, new { htmlAttributes = new { @class = "form-control" }, value = "" })
+                </th>
+                <th>
+                    @Html.DropDownList(nameof(Model.Pager.PageSize), Model.Pager.PageSizeList, htmlAttributes: new { @class = "form-control" })
+                    <input type="submit" value="@SharedLocalizer["Find"]" class="btn btn-secondary">
+                    @Html.ActionLink(SharedLocalizer["Reset"], "Index", new ReportFilter(), htmlAttributes: new { @class = "btn btn-outline-secondary", @role="button" })
+                </th>
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Model.Items)
+            {
+                <tr>
+                    <td>
+                        @Html.DisplayFor(modelItem => modelItem.Pager.RowNumber)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.CreatedDate)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.KatoComplexName)
+                    </td>
+                    <td>
+                        @Html.DisplayFor(modelItem => item.Name)
+                    </td>
+                    @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+                    {
+                        <td class="d-flex" style="justify-content: space-evenly">
+                            <a title="@SharedLocalizer["Download"]" href="@Url.Action("Download", controller,
+                            new ReportFilterId 
+                            { 
+                                Id = item.Id, 
+                                PageNumber = Model.Filter.PageNumber, 
+                                PageSize = Model.Filter.PageSize, 
+                                SortOrder = Model.Filter.SortOrder,
+                                CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                                NameFilter = Model.Filter.NameFilter,
+                                KatoComplexFilter = Model.Filter.KatoComplexFilter
+                            })">
+                                <i class="fa-solid fa-download fa-lg"></i>
+                            </a>
+                            <a title="@SharedLocalizer["Delete"]" href="@Url.Action("Delete", controller, 
+                            new ReportFilterId 
+                            { 
+                                Id = item.Id, 
+                                PageNumber = Model.Filter.PageNumber, 
+                                PageSize = Model.Filter.PageSize, 
+                                SortOrder = Model.Filter.SortOrder,
+                                CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                                NameFilter = Model.Filter.NameFilter,
+                                KatoComplexFilter = Model.Filter.KatoComplexFilter
+                            })" class="text-danger">
+                                <i class="fa-solid fa-trash fa-lg"></i>
+                            </a>
+                        </td>
+                    }
+                    else
+                    {
+                        <td>
+                            @Html.ActionLink(SharedLocalizer["Details"], "Details", new ReportFilterId 
+                            { 
+                                Id = item.Id, 
+                                PageNumber = Model.Pager.PageNumber, 
+                                PageSize = Model.Pager.PageSize, 
+                                CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                                SortOrder = Model.Filter.SortOrder,
+                                NameFilter = Model.Filter.NameFilter,
+                                KatoComplexFilter = Model.Filter.KatoComplexFilter
+                            })
+                        </td>
+                    }
+                </tr>
+            }
+        </tbody>
+    </table>
+    @if (Model.Pager.EndPage > 1)
+    {
+        <ul class="pagination">
+            @if (Model.Pager.PageNumber > 1)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;&laquo;"), "Index", new ReportFilter
+                    {
+                        PageSize = Model.Pager.PageSize,
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter,
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&laquo;"), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber - 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @for (var page = (int)Model.Pager.StartPage; page <= (int)Model.Pager.EndPage; page++)
+            {
+                <li class="@(page == Model.Pager.PageNumber ? "active" : "")">
+                    @Html.ActionLink(page.ToString(), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = page, SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+
+            @if (Model.Pager.PageNumber < Model.Pager.TotalPages)
+            {
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;"), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.PageNumber + 1, 
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+                <li>
+                    @Html.ActionLink(WebUtility.HtmlDecode("&raquo;&raquo;"), "Index", new ReportFilter 
+                    { 
+                        PageSize = Model.Pager.PageSize, 
+                        PageNumber = Model.Pager.TotalPages, 
+                        SortOrder = Model.Filter.SortOrder,
+                        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+                        NameFilter = Model.Filter.NameFilter,
+                        KatoComplexFilter = Model.Filter.KatoComplexFilter
+                    })
+                </li>
+            }
+        </ul>
+    }
+}

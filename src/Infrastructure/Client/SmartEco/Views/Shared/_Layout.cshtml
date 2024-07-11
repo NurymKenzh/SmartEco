@@ -140,6 +140,12 @@
                                 <a class="nav-link text-dark" asp-area="" asp-controller="Calculations" asp-action="Index">Расчёты рассеивания</a>
                             </li>
                         }
+                        @if (Role == "admin" || Role == "moderator" || Role == "ASM")
+                        {
+                            <li class="nav-item">
+                                <a class="nav-link text-dark" asp-area="" asp-controller="ReportsEnterprises" asp-action="Index">Отчёты</a>
+                            </li>
+                        }
                         @if (Role == "admin" || Role == "moderator" || Role == "Zhanatas")
                         {
                             <li class="nav-item">

@@ -1,0 +1,63 @@
+﻿@model SmartEco.Models.ASM.Reports.ReportEnterpriseViewModel
+@using SmartEco.Controllers
+@using Microsoft.Extensions.Localization
+@using SmartEco.Models.ASM.Filsters;
+@inject IStringLocalizer<SharedResources> SharedLocalizer
+@{
+    ViewData["Title"] = SharedLocalizer["Create"];
+    Layout = "~/Views/Shared/_Layout.cshtml";
+}
+
+<h1>@SharedLocalizer["Create"]</h1>
+
+<h4>Расчёт рассеивания</h4>
+<hr />
+<div class="row">
+    <div class="col-md-4">
+        <form asp-action="CreateParameters">
+            <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+            <div class="form-group">
+                <input asp-for="Item.KatoCode" type="hidden" id="KatoCode" class="form-control">
+                <input asp-for="Item.KatoName" type="hidden" id="KatoName" class="form-control">
+
+                <label class="control-label">@Html.DisplayNameFor(c => c.Item.KatoComplexName)</label>
+                <input list="KatoCatologsDataList" placeholder="Начните вводить наименование или код" onkeyup="SetKatoes($(this));" onchange="SetKatoValue($(this));" title="@Model?.Item?.KatoComplexName" value="@Model?.Item?.KatoComplexName" class="form-control kato-name">
+                <div class="invalid-feedback kato-invalid"></div>
+                <datalist id="KatoCatologsDataList"></datalist>
+            </div>
+            <div hidden="hidden">
+                <input asp-for="@Model.Filter.SortOrder" type="hidden" />
+                <input asp-for="@Model.Filter.PageSize" type="hidden" />
+                <input asp-for="@Model.Filter.PageNumber" type="hidden" />
+                <input asp-for="@Model.Filter.CreatedDateFilter" type="hidden" />
+                <input asp-for="@Model.Filter.NameFilter" type="hidden" />
+                <input asp-for="@Model.Filter.KatoComplexFilter" type="hidden" />
+            </div>
+            <div hidden>
+                <div id="GetKatoCatalogsReq" data-url="@Url.Action("GetKatoCatalogs", "KatoCatalogs")"></div>
+                <div id="GetKatoCatalogReq" data-url="@Url.Action("GetKatoCatalog", "KatoCatalogs")"></div>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="@SharedLocalizer["Create"]" class="btn btn-primary" />
+            </div>
+        </form>
+    </div>
+</div>
+
+<div>
+    @Html.ActionLink(SharedLocalizer["BackToList"], "Index", new ReportFilter 
+    { 
+        PageNumber = Model.Filter.PageNumber, 
+        PageSize = Model.Filter.PageSize, 
+        SortOrder = Model.Filter.SortOrder,
+        CreatedDateFilter = Model.Filter.CreatedDateFilter,
+        NameFilter = Model.Filter.NameFilter, 
+        KatoComplexFilter = Model.Filter.KatoComplexFilter 
+    })
+</div>
+
+@section Scripts {
+    @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+}
+
+<script src="~/js/asm/uprza/katoCatalog.js"></script>
